@@ -1,0 +1,212 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-26T13:20:00Z"
+  },
+  "title": "떡볶여지도 시안 v2",
+  "launch": {
+    "view": "canvas",
+    "page": "2e9cfe98992d"
+  },
+  "pages": [
+    {
+      "id": "2e9cfe98992d",
+      "name": "스튜디오"
+    },
+    {
+      "id": "main",
+      "name": "메인 화면"
+    },
+    {
+      "id": "palette",
+      "name": "색 팔레트"
+    },
+    {
+      "id": "character",
+      "name": "캐릭터"
+    }
+  ],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "page": "main",
+      "title": "메인 v2 · Tweaks에서 팔레트 바꾸기"
+    },
+    "RedAudit.dc.html": {
+      "x": 470,
+      "y": 0,
+      "w": 1240,
+      "h": 844,
+      "page": "main",
+      "title": "v1 → v2 · 빨강이 가는 곳"
+    },
+    "MainCompare.dc.html": {
+      "x": 0,
+      "y": 1340,
+      "w": 2620,
+      "h": 1010,
+      "page": "main",
+      "title": "같은 화면 · 팔레트 6가지"
+    },
+    "Palette.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1280,
+      "page": "palette",
+      "title": "색 팔레트 비교"
+    },
+    "Character.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1700,
+      "page": "character",
+      "title": "캐릭터 방향 6가지"
+    },
+    "CharacterStamp.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1200,
+      "h": 1100,
+      "page": "character",
+      "title": "추천 깊게 · 도장이"
+    },
+    "NeutralPalette.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "page": "palette",
+      "title": "중립 팔레트 6가지"
+    },
+    "MainCompareNeutral.dc.html": {
+      "x": 0,
+      "y": 2950,
+      "w": 2620,
+      "h": 1010,
+      "page": "main",
+      "title": "같은 화면 · 중립 팔레트 6가지"
+    },
+    "ZoomFlow.dc.html": {
+      "x": 0,
+      "y": 4560,
+      "w": 1450,
+      "h": 1140,
+      "page": "main",
+      "title": "그림 지도 → 실제 지도 → 가게 위치"
+    },
+    "ZoomStreet.dc.html": {
+      "x": 1530,
+      "y": 4560,
+      "w": 390,
+      "h": 844,
+      "page": "main",
+      "title": "확대 화면 · Tweaks에서 팔레트·가장자리"
+    },
+    "ZoomStore.dc.html": {
+      "x": 2000,
+      "y": 4560,
+      "w": 390,
+      "h": 844,
+      "page": "main",
+      "title": "가게 위치 · 길찾기"
+    },
+    "ZoomEdgeCompare.dc.html": {
+      "x": 0,
+      "y": 6300,
+      "w": 1330,
+      "h": 1010,
+      "page": "main",
+      "title": "가장자리 3가지 · 흐림 / 번짐 / 액자"
+    },
+    "Studio.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1100,
+      "page": "2e9cfe98992d",
+      "title": "v2 스튜디오 · 프로토타입",
+      "expand": "fill",
+      "is_interactive": true
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "RedAudit.dc.html",
+    "MainCompare.dc.html",
+    "Palette.dc.html",
+    "Character.dc.html",
+    "CharacterStamp.dc.html",
+    "NeutralPalette.dc.html",
+    "MainCompareNeutral.dc.html",
+    "ZoomFlow.dc.html",
+    "ZoomStreet.dc.html",
+    "ZoomStore.dc.html",
+    "ZoomEdgeCompare.dc.html",
+    "Studio.dc.html"
+  ],
+  "notes": {
+    "t_main": {
+      "x": 0,
+      "y": -300,
+      "text": "메인 화면 v2 · 빨강은 도장과 로고에만",
+      "kind": "title1",
+      "maxW": 1710,
+      "page": "main"
+    },
+    "t_compare": {
+      "x": 0,
+      "y": 1040,
+      "text": "같은 화면 · 기존 팔레트 6가지",
+      "kind": "title1",
+      "maxW": 2620,
+      "page": "main"
+    },
+    "t_palette": {
+      "x": 0,
+      "y": -300,
+      "text": "색 팔레트 · 기존 6가지 + 누런 기 뺀 중립 6가지",
+      "kind": "title1",
+      "maxW": 2960,
+      "page": "palette"
+    },
+    "t_char": {
+      "x": 0,
+      "y": -300,
+      "text": "캐릭터 방향 · 지금은 기획만 (크레딧 0)",
+      "kind": "title1",
+      "maxW": 2720,
+      "page": "character"
+    },
+    "t_neutral2": {
+      "x": 0,
+      "y": 2650,
+      "text": "같은 화면 · 중립 팔레트 6가지",
+      "kind": "title1",
+      "maxW": 2620,
+      "page": "main"
+    },
+    "t_zoom": {
+      "x": 0,
+      "y": 4260,
+      "text": "확대하면 실제 지도(네이버)로",
+      "kind": "title1",
+      "maxW": 2390,
+      "page": "main"
+    },
+    "t_edge": {
+      "x": 0,
+      "y": 6000,
+      "text": "실제 지도 가장자리 처리 3가지",
+      "kind": "title1",
+      "maxW": 1330,
+      "page": "main"
+    }
+  },
+  "designSystems": []
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 120 120">
+<rect x="14" y="16" width="92" height="92" rx="8" fill="#E3814D"></rect>
+<rect x="21" y="23" width="78" height="78" rx="4" fill="none" stroke="#2E0F05" stroke-width="1.5" opacity="0.35"></rect>
+<text x="60" y="46" text-anchor="middle" font-family="Song Myung, serif" font-size="18" fill="#2E0F05">2</text>
+<circle cx="46" cy="64" r="4.5" fill="#2E0F05"></circle>
+<circle cx="74" cy="64" r="4.5" fill="#2E0F05"></circle>
+<path d="M50 80 q10 8 20 0" fill="none" stroke="#2E0F05" stroke-width="3" stroke-linecap="round"></path>
+<path d="M98 30 q6 10 0 14 q-6 -4 0 -14 Z" fill="#7FA6D6"></path>
+</svg>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>v1에서 v2로 빨강 줄이기</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;family=Song+Myung&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2D5B9A}a:hover{color:#1E3A64}
+</style>
+</helmet>
+<div style="width: 1240px; height: 844px; box-sizing: border-box; padding: 0 40px 0 0; display: flex; gap: 40px; background: #F4EDE0; font-family: 'Noto Sans KR', sans-serif; color: #1F1A17">
+
+<div style="position: relative; width: 390px; height: 844px; flex-shrink: 0">
+<img src="/_blob/2e4b424c41fa674d92f9f240882769b5" alt="v1 지도 홈 화면. 빨강이 쓰인 곳 11군데에 번호를 달았다" style="display: block; width: 390px; height: 844px">
+<span style="position: absolute; left: 100px; top: 4px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">1</span>
+<span style="position: absolute; left: 352px; top: 220px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">2</span>
+<span style="position: absolute; left: 62px; top: 48px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">3</span>
+<span style="position: absolute; left: 334px; top: 144px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">4</span>
+<span style="position: absolute; left: 364px; top: 110px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">5</span>
+<span style="position: absolute; left: 298px; top: 546px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">6</span>
+<span style="position: absolute; left: 54px; top: 626px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">7</span>
+<span style="position: absolute; left: 240px; top: 624px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">8</span>
+<span style="position: absolute; left: 294px; top: 690px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">9</span>
+<span style="position: absolute; left: 364px; top: 722px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">10</span>
+<span style="position: absolute; left: 78px; top: 780px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #1F1A17; color: #F6EFE3; font-size: 12px; font-weight: 700; box-shadow: 0 0 0 2px #F6EFE3">11</span>
+</div>
+
+<div style="flex-grow: 1; min-width: 0; padding-top: 40px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-size: 14px; color: #5C5046">v1 지도 홈 (왼쪽 번호)</p>
+<h2 style="margin: 0; font-family: 'Song Myung', serif; font-size: 34px; font-weight: 400; line-height: 1.3">빨강 11곳 → 3곳만 남긴다</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3B3029">버튼·선택·숫자까지 도장과 같은 빨강이라 정작 도장(맵기)이 묻혔다. v2 규칙: <b>빨강은 맵기(도장)와 로고에만.</b> 버튼과 선택은 팔레트의 주색이 맡는다.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; border-top: 1.5px solid #1F1A17">
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-bottom: 1px solid #D5C6AE; font-size: 12px; color: #5C5046">
+<span>번호</span><span>v1에서 빨강</span><span>무슨 정보</span><span>v2 (A 먹과 쪽빛 기준)</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>1</b><span>로고 붓글씨</span><span style="color: #5C5046">브랜드</span><span><b style="color: #C00000">빨강 그대로</b> · 앱에 하나뿐인 브랜드 빨강</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>2</b><span>지도 위 가게 도장 · 범례</span><span style="color: #5C5046">맵기</span><span><b style="color: #C8102E">빨강 계열 유지</b> · 1~2는 살구·주황, 맵기 오를수록 진하게</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>3</b><span>「취향」 칩</span><span style="color: #5C5046">버튼</span><span>먹색 칩</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>4</b><span>묶음 핀 「8곳」</span><span style="color: #5C5046">가게 수</span><span>먹색 동그라미 · 맵기가 아니니 빨강을 쓰지 않는다</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>5</b><span>「7일 제보 37건」 숫자</span><span style="color: #5C5046">숫자</span><span>먹색 굵은 글씨</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>6</b><span>제보 버튼</span><span style="color: #5C5046">주 행동</span><span><b style="color: #2D5B9A">쪽빛</b> · 화면에서 하나만 색이 있는 버튼</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>7</b><span>카드 도장 · 선택한 도장 테두리</span><span style="color: #5C5046">맵기 · 선택</span><span>도장은 그대로, 선택 테두리는 먹색</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>8</b><span>「떡볶이 전문」 테두리</span><span style="color: #5C5046">가게 종류</span><span>흐린 먹 테두리</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>9</b><span>맵기 태그</span><span style="color: #5C5046">맵기</span><span><b style="color: #9A0F25">옅은 도장색</b> · 맵기 정보라 남긴다</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>10</b><span>「자세히 보기」</span><span style="color: #5C5046">링크</span><span>쪽빛 글씨</span>
+</div>
+<div style="display: grid; grid-template-columns: 36px 220px 130px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #E3D7C3; font-size: 14px; align-items: center">
+<b>11</b><span>아래 메뉴 「지도」</span><span style="color: #5C5046">지금 화면</span><span>쪽빛 아이콘과 글씨</span>
+</div>
+</div>
+
+<div style="display: flex; gap: 28px; align-items: flex-start">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; color: #5C5046">v1 도장 · 1과 2의 밝기가 같다</span>
+<div style="display: flex; gap: 6px">
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #A6521B; color: #F6EFE3; font-family: 'Song Myung', serif; font-size: 16px">1</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #BC3A12; color: #F6EFE3; font-family: 'Song Myung', serif; font-size: 16px">2</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #C00000; color: #F6EFE3; font-family: 'Song Myung', serif; font-size: 16px">3</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #9E0012; color: #F6EFE3; font-family: 'Song Myung', serif; font-size: 16px">4</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #6E0A0E; color: #F6EFE3; font-family: 'Song Myung', serif; font-size: 16px">5</span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; color: #5C5046">v2 도장 · 맵기가 오를수록 진해진다</span>
+<div style="display: flex; gap: 6px">
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #F2B78C; color: #3A1408; font-family: 'Song Myung', serif; font-size: 16px">1</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #E3814D; color: #2E0F05; font-family: 'Song Myung', serif; font-size: 16px">2</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #C8102E; color: #FFF4E6; font-family: 'Song Myung', serif; font-size: 16px">3</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #8E0B1F; color: #FFF4E6; font-family: 'Song Myung', serif; font-size: 16px">4</span>
+<span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 3px; background: #4A0710; color: #FFF4E6; font-family: 'Song Myung', serif; font-size: 16px">5</span>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

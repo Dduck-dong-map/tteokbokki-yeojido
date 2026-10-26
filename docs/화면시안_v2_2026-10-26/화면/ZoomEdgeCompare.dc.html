@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>실제 지도 가장자리 처리 3가지</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;family=Song+Myung&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2D5B9A}a:hover{color:#1E3A64}
+</style>
+</helmet>
+<div style="width: 1330px; height: 1010px; box-sizing: border-box; padding: 32px 40px 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 40px; background: #ECECE9; font-family: 'Noto Sans KR', sans-serif; color: #1C1C1B">
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 110px; display: flex; flex-direction: column; gap: 5px">
+<b style="font-size: 20px">가) 흐림</b>
+<span style="font-size: 14px; color: #3D3D3B">처음 말씀하신 방식. 가장자리를 흐리게 덮는다.</span>
+<span style="font-size: 13px; line-height: 1.5; color: #3D3D3B">+ 가운데 실제 지도에 눈이 모인다</span>
+<span style="font-size: 13px; line-height: 1.5; color: #3D3D3B">− 지도를 움직일 때마다 흐림을 다시 그려 오래된 폰에서 버벅일 수 있다</span>
+</div>
+<dc-import name="ZoomStreet" palette="N1 쌀종이" edge="흐림" hint-size="390px,844px"></dc-import>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 110px; display: flex; flex-direction: column; gap: 5px">
+<div style="display: flex; align-items: center; gap: 8px"><b style="font-size: 20px">나) 번짐</b><span style="padding: 2px 8px; border-radius: 10px; background: #2D5B9A; color: #FFFFFF; font-size: 12px; font-weight: 700">추천</span></div>
+<span style="font-size: 14px; color: #3D3D3B">가장자리에서 그림 지도가 비쳐 보인다.</span>
+<span style="font-size: 13px; line-height: 1.5; color: #3D3D3B">+ 그림 지도와 이어져 브랜드 느낌이 살고, 가볍다</span>
+<span style="font-size: 13px; line-height: 1.5; color: #3D3D3B">− 그림 지도를 실제 축척으로 다시 그려야 강·길이 안 어긋난다</span>
+</div>
+<dc-import name="ZoomStreet" palette="N1 쌀종이" edge="번짐" hint-size="390px,844px"></dc-import>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 110px; display: flex; flex-direction: column; gap: 5px">
+<b style="font-size: 20px">다) 액자</b>
+<span style="font-size: 14px; color: #3D3D3B">실제 지도를 그림 지도 액자에 끼운다.</span>
+<span style="font-size: 13px; line-height: 1.5; color: #3D3D3B">+ 가장 단순하고, 어디까지가 실제 지도인지 분명하다</span>
+<span style="font-size: 13px; line-height: 1.5; color: #3D3D3B">− 지도를 보는 면이 조금 줄어든다</span>
+</div>
+<dc-import name="ZoomStreet" palette="N1 쌀종이" edge="액자" hint-size="390px,844px"></dc-import>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1330,"height":1010}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>확대하면 실제 지도</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;family=Song+Myung&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2D5B9A}a:hover{color:#1E3A64}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: {{c.mapBg}}; font-family: 'Noto Sans KR', sans-serif; color: {{c.ink}}">
+
+<img src="{{c.map}}" alt="" style="position: absolute; left: 0; top: 0; width: 390px; height: 844px">
+
+<sc-if value="{{isFade}}" hint-placeholder-val="{{true}}">
+<div style="position: absolute; left: 0; top: 0; width: 390px; height: 844px; -webkit-mask-image: radial-gradient(ellipse 70% 54% at 50% 50%, #000 48%, transparent 100%); mask-image: radial-gradient(ellipse 70% 54% at 50% 50%, #000 48%, transparent 100%)">
+<img src="{{c.street}}" alt="실제 지도 자리, 네이버 지도 API가 들어간다. 모양은 예시" style="position: absolute; left: 0; top: 0; width: 390px; height: 844px">
+</div>
+</sc-if>
+
+<sc-if value="{{isBlur}}" hint-placeholder-val="{{false}}">
+<img src="{{c.street}}" alt="실제 지도 자리, 네이버 지도 API가 들어간다. 모양은 예시" style="position: absolute; left: 0; top: 0; width: 390px; height: 844px">
+<div style="position: absolute; left: 0; top: 0; width: 390px; height: 844px; background: {{mapBgA}}; -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px); -webkit-mask-image: radial-gradient(ellipse 70% 54% at 50% 50%, transparent 46%, #000 86%); mask-image: radial-gradient(ellipse 70% 54% at 50% 50%, transparent 46%, #000 86%)"></div>
+</sc-if>
+
+<sc-if value="{{isFrame}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; left: 12px; top: 112px; width: 366px; height: 498px; overflow: hidden; border-radius: 14px; border: 1px solid {{c.chipLine}}; box-shadow: 0 2px 10px {{c.cardShadow}}">
+<img src="{{c.street}}" alt="실제 지도 자리, 네이버 지도 API가 들어간다. 모양은 예시" style="position: absolute; left: -12px; top: -112px; width: 390px; height: 844px">
+</div>
+</sc-if>
+
+<div style="position: absolute; left: 0; top: 0; width: 390px; height: 844px; font-size: 11px; color: {{c.streetLabel}}; text-shadow: 0 0 2px {{c.streetHalo}}, 0 0 2px {{c.streetHalo}}">
+<span style="position: absolute; left: 282px; top: 340px; transform: rotate(-27deg); font-weight: 500">양화로</span>
+<span style="position: absolute; left: 198px; top: 214px; transform: rotate(-86deg); font-weight: 500">독막로</span>
+<span style="position: absolute; left: 30px; top: 214px; transform: rotate(-12deg)">와우산로</span>
+</div>
+
+<div style="position: absolute; left: 190px; top: 398px; display: flex; align-items: center; gap: 4px">
+<span style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: {{c.ink2}}; color: {{c.surface}}; font-size: 10px; font-weight: 700">역</span>
+<span style="font-size: 12px; font-weight: 700; color: {{c.ink}}; text-shadow: 0 0 2px {{c.streetHalo}}, 0 0 3px {{c.streetHalo}}">합정역</span>
+</div>
+
+<div style="position: absolute; left: 206px; top: 462px; width: 28px; height: 28px; border-radius: 50%; background: {{c.locHalo}}"></div>
+<div style="position: absolute; left: 213px; top: 469px; width: 10px; height: 10px; border-radius: 50%; background: {{c.loc}}; border: 2px solid {{c.locBorder}}"></div>
+
+<button type="button" aria-label="망원 기름떡볶이, 맵기 1" style="position: absolute; left: 26px; top: 286px; display: flex; align-items: center; gap: 4px; padding: 0; border: 0; background: transparent; cursor: pointer">
+<span style="display: block; width: 30px; height: 30px; padding: 2px; box-sizing: border-box; border-radius: 3px; background: {{s1.bg}}; box-shadow: {{c.pinShadow}}; transform: rotate(-3deg)"><span style="display: flex; align-items: center; justify-content: center; height: 100%; border: 1px solid {{s1.edge}}; border-radius: 2px; color: {{s1.fg}}; font-family: 'Song Myung', serif; font-size: 16px">1</span></span>
+<span style="padding: 1px 6px; border-radius: 4px; background: {{c.surface}}; border: 1px solid {{c.line}}; font-size: 11px; color: {{c.ink2}}; white-space: nowrap">망원 기름떡볶이</span>
+</button>
+
+<button type="button" aria-label="서강 분식, 맵기 2, 오래된 정보일 수 있음" style="position: absolute; left: 296px; top: 196px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; border: 0; background: transparent; cursor: pointer; opacity: 0.45">
+<span style="display: block; width: 30px; height: 30px; padding: 2px; box-sizing: border-box; border-radius: 3px; background: {{s2.bg}}; transform: rotate(-5deg)"><span style="display: flex; align-items: center; justify-content: center; height: 100%; border: 1px solid {{s2.edge}}; border-radius: 2px; color: {{s2.fg}}; font-family: 'Song Myung', serif; font-size: 16px">2</span></span>
+<span style="padding: 1px 6px; border-radius: 4px; background: {{c.surface}}; border: 1px solid {{c.line}}; font-size: 11px; color: {{c.ink2}}; white-space: nowrap">서강 분식</span>
+</button>
+
+<button type="button" aria-label="와우산 즉석떡볶이, 맵기 4" style="position: absolute; left: 236px; top: 288px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; border: 0; background: transparent; cursor: pointer">
+<span style="display: block; width: 30px; height: 30px; padding: 2px; box-sizing: border-box; border-radius: 3px; background: {{s4.bg}}; box-shadow: {{c.pinShadow}}; transform: rotate(-4deg)"><span style="display: flex; align-items: center; justify-content: center; height: 100%; border: 1px solid {{s4.edge}}; border-radius: 2px; color: {{s4.fg}}; font-family: 'Song Myung', serif; font-size: 16px">4</span></span>
+<span style="padding: 1px 6px; border-radius: 4px; background: {{c.surface}}; border: 1px solid {{c.line}}; font-size: 11px; color: {{c.ink2}}; white-space: nowrap">와우산 즉석떡볶이</span>
+</button>
+
+<button type="button" aria-label="이름 없는 분식집, 맵기 3, 메뉴에 있음" style="position: absolute; left: 290px; top: 450px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; border: 0; background: transparent; cursor: pointer">
+<span style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 2px; background: {{s3.bg}}; box-shadow: {{c.pinShadow}}; color: {{s3.fg}}; font-family: 'Song Myung', serif; font-size: 12px; transform: rotate(4deg)">3</span>
+<span style="padding: 1px 6px; border-radius: 4px; background: {{c.surface}}; border: 1px solid {{c.line}}; font-size: 11px; color: {{c.ink2}}; white-space: nowrap">골목 분식</span>
+</button>
+
+<button type="button" aria-label="상수 떡볶이, 맵기 4" style="position: absolute; left: 238px; top: 522px; display: flex; align-items: center; gap: 4px; padding: 0; border: 0; background: transparent; cursor: pointer">
+<span style="display: block; width: 30px; height: 30px; padding: 2px; box-sizing: border-box; border-radius: 3px; background: {{s4.bg}}; box-shadow: {{c.pinShadow}}; transform: rotate(2deg)"><span style="display: flex; align-items: center; justify-content: center; height: 100%; border: 1px solid {{s4.edge}}; border-radius: 2px; color: {{s4.fg}}; font-family: 'Song Myung', serif; font-size: 16px">4</span></span>
+<span style="padding: 1px 6px; border-radius: 4px; background: {{c.surface}}; border: 1px solid {{c.line}}; font-size: 11px; color: {{c.ink2}}; white-space: nowrap">상수 떡볶이</span>
+</button>
+
+<a href="ZoomStore.dc.html" aria-label="합정 쌀떡집, 맵기 3, 선택됨" style="position: absolute; left: 92px; top: 440px; display: flex; align-items: center; gap: 8px; text-decoration: none">
+<span style="display: block; width: 44px; height: 44px; padding: 3px; box-sizing: border-box; border-radius: 4px; background: {{s3.bg}}; box-shadow: 0 0 0 3px {{c.surface}}, 0 0 0 5px {{c.selRing}}; transform: rotate(-3deg)"><span style="display: flex; align-items: center; justify-content: center; height: 100%; border: 1.5px solid {{s3.edge}}; border-radius: 2px; color: {{s3.fg}}; font-family: 'Song Myung', serif; font-size: 22px">3</span></span>
+<span style="padding: 3px 8px; border-radius: 4px; background: {{c.nameBg}}; color: {{c.nameText}}; font-size: 13px; font-weight: 700">합정 쌀떡집</span>
+</a>
+
+<div style="position: absolute; left: 0; top: 0; width: 390px; box-sizing: border-box; padding: 10px 12px 10px; background: {{c.bar}}; border-bottom: 1px solid {{c.line}}; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px">
+<img src="/_blob/1db414b5d5b52826b8e4f111e53034d8" alt="떡볶여지도" style="width: 96px; height: 31px; flex-shrink: 0; filter: {{c.logoFilter}}">
+<label style="flex-grow: 1; display: flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 20px; background: {{c.surface}}; border: 1px solid {{c.line}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.ink3}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">동네나 가게 이름으로 찾기</span>
+<input type="search" placeholder="동네, 가게 이름" style="flex-grow: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: {{c.ink}}; outline: none">
+</label>
+</div>
+<div style="display: flex; gap: 6px; overflow: hidden">
+<a href="#" style="display: flex; align-items: center; gap: 5px; height: 36px; padding: 0 12px; box-sizing: border-box; border-radius: 18px; background: {{c.primary}}; color: {{c.onPrimary}}; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{c.onPrimary}}" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>취향</a>
+<a href="#" style="display: flex; align-items: center; height: 36px; padding: 0 12px; box-sizing: border-box; border-radius: 18px; background: {{c.surface}}; border: 1px solid {{c.chipLine}}; color: {{c.ink}}; font-size: 13px; text-decoration: none; white-space: nowrap">떡</a>
+<a href="#" style="display: flex; align-items: center; height: 36px; padding: 0 12px; box-sizing: border-box; border-radius: 18px; background: {{c.surface}}; border: 1px solid {{c.chipLine}}; color: {{c.ink}}; font-size: 13px; text-decoration: none; white-space: nowrap">스타일</a>
+<a href="#" style="display: flex; align-items: center; height: 36px; padding: 0 12px; box-sizing: border-box; border-radius: 18px; background: {{c.surface}}; border: 1px solid {{c.chipLine}}; color: {{c.ink}}; font-size: 13px; text-decoration: none; white-space: nowrap">맵기</a>
+<a href="#" style="display: flex; align-items: center; height: 36px; padding: 0 12px; box-sizing: border-box; border-radius: 18px; background: {{c.surface}}; border: 1px solid {{c.chipLine}}; color: {{c.ink}}; font-size: 13px; text-decoration: none; white-space: nowrap">1인분 가격</a>
+<a href="#" style="display: flex; align-items: center; height: 36px; padding: 0 12px; box-sizing: border-box; border-radius: 18px; background: {{c.surface}}; border: 1px solid {{c.chipLine}}; color: {{c.ink}}; font-size: 13px; text-decoration: none; white-space: nowrap">영업 중</a>
+</div>
+</div>
+
+<div role="group" aria-label="지도 보기 방식" style="position: absolute; left: 12px; top: 120px; display: flex; padding: 3px; border-radius: 16px; background: {{c.bar}}; border: 1px solid {{c.line}}; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12)">
+<a href="Main.dc.html" style="display: flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 13px; font-size: 12px; color: {{c.ink3}}; text-decoration: none">그림 지도</a>
+<a href="#" aria-current="true" style="display: flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 13px; background: {{c.primary}}; font-size: 12px; font-weight: 700; color: {{c.onPrimary}}; text-decoration: none">실제 지도</a>
+</div>
+<span style="position: absolute; right: 12px; top: 126px; padding: 3px 8px; border-radius: 10px; background: {{c.bar}}; border: 1px solid {{c.line}}; font-size: 11px; color: {{c.ink3}}">골목 단위 · 축소하면 그림 지도</span>
+
+<button type="button" aria-label="내 위치로" style="position: absolute; left: 330px; top: 498px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid {{c.chipLine}}; background: {{c.surface}}; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.loc}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button>
+
+<a href="#" aria-label="제보하기" style="position: absolute; left: 318px; top: 552px; width: 58px; height: 58px; border-radius: 50%; background: {{c.fab}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; text-decoration: none; color: {{c.onFab}}; box-shadow: 0 2px 6px {{c.fabShadow}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.onFab}}" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+<span style="font-size: 11px; font-weight: 700">제보</span>
+</a>
+
+<div style="position: absolute; left: 12px; top: 590px; display: flex; align-items: center; gap: 8px">
+<span style="padding: 2px 6px; border-radius: 3px; background: {{c.attrBg}}; border: 1px dashed {{c.ink3}}; font-size: 10px; color: {{c.ink2}}">네이버 로고·저작권 자리 · 안 흐림</span>
+</div>
+<div style="position: absolute; left: 262px; top: 592px; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; font-size: 10px; color: {{c.ink2}}">
+<span>50m</span>
+<span style="display: block; width: 46px; height: 4px; border: 1.5px solid {{c.ink2}}; border-top: 0; box-sizing: border-box"></span>
+</div>
+
+<a href="ZoomStore.dc.html" style="position: absolute; left: 12px; top: 622px; width: 366px; box-sizing: border-box; padding: 14px 14px 12px; border-radius: 14px; background: {{c.surface}}; border: 1px solid {{c.line}}; box-shadow: 0 2px 10px {{c.cardShadow}}; text-decoration: none; color: {{c.ink}}; display: flex; flex-direction: column; gap: 9px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: block; width: 34px; height: 34px; padding: 2px; box-sizing: border-box; border-radius: 3px; background: {{s3.bg}}; flex-shrink: 0; transform: rotate(-3deg)"><span style="display: flex; align-items: center; justify-content: center; height: 100%; border: 1px solid {{s3.edge}}; border-radius: 2px; color: {{s3.fg}}; font-family: 'Song Myung', serif; font-size: 18px">3</span></span>
+<div style="flex-grow: 1; min-width: 0">
+<div style="display: flex; align-items: center; gap: 6px"><span style="font-size: 17px; font-weight: 700">합정 쌀떡집</span><span style="padding: 1px 6px; border-radius: 4px; border: 1px solid {{c.chipLine}}; color: {{c.ink2}}; font-size: 11px; font-weight: 500">떡볶이 전문</span></div>
+<div style="font-size: 13px; color: {{c.ink2}}; margin-top: 2px">합정역에서 걸어서 3분 · [예시 주소]</div>
+</div>
+<span style="font-size: 13px; color: {{c.ink3}}; flex-shrink: 0">350m</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 5px">
+<span style="padding: 3px 8px; border-radius: 12px; background: {{c.chip}}; font-size: 12px; color: {{c.ink2}}">쌀떡</span>
+<span style="padding: 3px 8px; border-radius: 12px; background: {{c.chip}}; font-size: 12px; color: {{c.ink2}}">국물</span>
+<span style="padding: 3px 8px; border-radius: 12px; background: {{c.spicyBg}}; font-size: 12px; color: {{c.spicyText}}">맵기 3 · 신라면 정도</span>
+<span style="padding: 3px 8px; border-radius: 12px; background: {{c.chip}}; font-size: 12px; color: {{c.ink2}}">1인분 4,500원</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: {{c.ink3}}">
+<span>3일 전 확인 · 오늘 21:00까지</span>
+<span style="display: flex; gap: 14px"><span style="color: {{c.accent}}; font-weight: 700">길찾기</span><span style="color: {{c.accent}}; font-weight: 700">자세히 보기</span></span>
+</div>
+</a>
+
+<nav aria-label="아래 메뉴" style="position: absolute; left: 0; bottom: 0; width: 390px; height: 68px; box-sizing: border-box; padding: 6px 8px 10px; background: {{c.bar}}; border-top: 1px solid {{c.line}}; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+<a href="#" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: {{c.accent}}; font-size: 11px; font-weight: 700"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"></path><path d="M9 4v14M15 6v14"></path></svg>지도</a>
+<a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: {{c.ink3}}; font-size: 11px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.ink3}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>목록</a>
+<a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: {{c.ink3}}; font-size: 11px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.ink3}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>떡볶이방</a>
+<a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: {{c.ink3}}; font-size: 11px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.ink3}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>내 떡지도</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"palette":{"editor":"enum","options":["N1 쌀종이","N2 먹 회색","N3 쪽빛 종이","N4 옥빛","N5 순백","N6 먹밤","A 먹과 쪽빛","B 청자","C 노포","D 흰 떡","E 밤 포장마차","V1 기준"],"default":"N1 쌀종이"},"edge":{"editor":"enum","options":["흐림","번짐","액자"],"default":"번짐"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  palettes() {
+    const lightStamps = [
+      { bg: '#F2B78C', fg: '#3A1408', edge: 'rgba(58, 20, 8, 0.38)' },
+      { bg: '#E3814D', fg: '#2E0F05', edge: 'rgba(46, 15, 5, 0.38)' },
+      { bg: '#C8102E', fg: '#FFF4E6', edge: 'rgba(255, 244, 230, 0.75)' },
+      { bg: '#8E0B1F', fg: '#FFF4E6', edge: 'rgba(255, 244, 230, 0.75)' },
+      { bg: '#4A0710', fg: '#FFF4E6', edge: 'rgba(255, 244, 230, 0.75)' }
+    ];
+    const nightStamps = [
+      { bg: '#F6C08A', fg: '#2B1006', edge: 'rgba(43, 16, 6, 0.38)' },
+      { bg: '#EE8752', fg: '#2B1006', edge: 'rgba(43, 16, 6, 0.38)' },
+      { bg: '#C92A30', fg: '#FFF4E6', edge: 'rgba(255, 244, 230, 0.85)' },
+      { bg: '#9C1430', fg: '#FFF4E6', edge: 'rgba(255, 244, 230, 0.85)' },
+      { bg: '#6C0E22', fg: '#FFF4E6', edge: 'rgba(255, 244, 230, 0.85)' }
+    ];
+    const v1Stamps = ['#A6521B', '#BC3A12', '#C00000', '#9E0012', '#6E0A0E'].map((bg) => ({ bg, fg: '#F6EFE3', edge: 'rgba(246, 239, 227, 0.75)' }));
+    const make = (k, dark, stamps) => {
+      const [map, street, mapBg, bar, line, surface, chip, chipLine, ink, ink2, ink3, primary, onPrimary, accent, fab, onFab] = k;
+      return dark
+        ? { map, street, mapBg, bar, line, surface, chip, chipLine, ink, ink2, ink3, primary, onPrimary, accent, fab, onFab, nameBg: ink, nameText: bar, selRing: ink, loc: '#8FB4E0', locHalo: 'rgba(143, 180, 224, 0.22)', locBorder: bar, streetLabel: '#B5B5B5', streetHalo: surface, fabShadow: 'rgba(0, 0, 0, 0.5)', cardShadow: 'rgba(0, 0, 0, 0.45)', pinShadow: '0 1px 3px rgba(0, 0, 0, 0.5)', logoFilter: 'brightness(2.1) saturate(0.85)', spicyBg: '#4A1E22', spicyText: '#FFB4AE', attrBg: 'rgba(20, 21, 22, 0.85)', stamps: stamps || nightStamps }
+        : { map, street, mapBg, bar, line, surface, chip, chipLine, ink, ink2, ink3, primary, onPrimary, accent, fab, onFab, nameBg: ink, nameText: surface, selRing: primary, loc: '#2D5B9A', locHalo: 'rgba(45, 91, 154, 0.18)', locBorder: surface, streetLabel: ink3, streetHalo: surface, fabShadow: 'rgba(0, 0, 0, 0.28)', cardShadow: 'rgba(0, 0, 0, 0.12)', pinShadow: '0 1px 2px rgba(0, 0, 0, 0.22)', logoFilter: 'none', spicyBg: '#F6DCD9', spicyText: '#9A0F25', attrBg: 'rgba(255, 255, 255, 0.88)', stamps: stamps || lightStamps };
+    };
+    return {
+      N1: make(['/_blob/ab53088324e387ef2bd377c096df7738', '/_blob/95e0a1eb4bc1109658e2abacc43b5507', '#F2F2EF', '#FAFAF8', '#DEDED9', '#FFFFFF', '#EFEFEC', '#D3D3CE', '#1C1C1B', '#3D3D3B', '#62625F', '#232323', '#FFFFFF', '#2D5B9A', '#2D5B9A', '#FFFFFF']),
+      N2: make(['/_blob/29c7a5f449d17d1e3c20b046d949e363', '/_blob/12048e74c3be6a865033914a2daabd52', '#E6E6E4', '#F4F4F2', '#D2D2CE', '#FCFCFB', '#EAEAE7', '#C6C6C1', '#161616', '#383836', '#5B5B58', '#161616', '#FFFFFF', '#161616', '#161616', '#FFFFFF']),
+      N3: make(['/_blob/76616c35079050fd9501d3fb47e15368', '/_blob/65a2d26e40c0e3c70bf7fd57376b5d90', '#E7EBEF', '#F5F7F9', '#D3DAE1', '#FBFCFD', '#E8EDF2', '#C3CCD6', '#141B23', '#34404C', '#566270', '#1F3A5F', '#FFFFFF', '#2D5B9A', '#1F3A5F', '#FFFFFF']),
+      N4: make(['/_blob/b906d89eadee0de96ef1c4afe3ced131', '/_blob/89e2ec2f22e6f1c0b763872f4d0c96fc', '#E5ECE8', '#F4F7F5', '#CFD9D3', '#FBFCFB', '#E6EEE9', '#C0CCC5', '#14201B', '#33433B', '#54655C', '#24574F', '#FFFFFF', '#2B6259', '#24574F', '#FFFFFF']),
+      N5: make(['/_blob/a4ce6ca124d6b3d6c8cd1434a03b225f', '/_blob/205f0a3b224f4d7139e275568334d02c', '#F7F7F7', '#FFFFFF', '#E4E4E4', '#FFFFFF', '#F1F1F1', '#DADADA', '#111111', '#333333', '#666666', '#111111', '#FFFFFF', '#2D5B9A', '#111111', '#FFFFFF']),
+      N6: make(['/_blob/1de00c6b1d90b6979dab3c24d5949e5f', '/_blob/d0c6f2da5d35a5a7852fb384c85ff40d', '#1C1D1F', '#141516', '#34373A', '#242628', '#2E3134', '#44484C', '#EDEDED', '#C9C9C9', '#9C9C9C', '#EDEDED', '#141516', '#8FB4E0', '#8FB4E0', '#141516'], true),
+      A: make(['/_blob/a410bb704d18f8ef487c5b91a3b38bec', '/_blob/dbd3647068002ef2dbe01594fa1a0b03', '#ECE3D1', '#F4EDE0', '#D5C6AE', '#FBF7EF', '#EFE6D6', '#CDBDA3', '#1F1A17', '#3B3029', '#5C5046', '#2A2421', '#F6EFE3', '#2D5B9A', '#2D5B9A', '#F6F1E6']),
+      B: make(['/_blob/580d3eff287cae9e8cf07bb8296e3798', '/_blob/62c87784f2dd44f342caccfca3c9039d', '#E8E6D8', '#F1F0E7', '#CDD3C6', '#FAFAF5', '#E2EBE5', '#B9C4BC', '#18211E', '#313D38', '#52605A', '#2F6B62', '#F3F8F5', '#2B6259', '#2F6B62', '#F3F8F5']),
+      C: make(['/_blob/5943729667c19f54a49c5feafec346ce', '/_blob/3a4e70049924560fe5be3db20301b5da', '#F0E3C8', '#F4E9D4', '#D9C4A1', '#FDF7EB', '#F2E4C9', '#D2BB95', '#2A1D14', '#46331F', '#6A5440', '#5A3A22', '#FBF3E4', '#7A4A16', '#E3A93C', '#2A1D14']),
+      D: make(['/_blob/c755118580bfb620416494da2d4a03be', '/_blob/39780c144bfb5a7db19886b9703e91a4', '#F4F2EC', '#FFFFFF', '#E5E1D9', '#FFFFFF', '#F2F0EB', '#DAD5CC', '#151515', '#383838', '#666666', '#151515', '#FFFFFF', '#151515', '#151515', '#FFFFFF']),
+      E: make(['/_blob/27260cd1af3dc27f3e95e90ab64fb6c2', '/_blob/221293acb9fbf4d2f2ecfe3a09202d4a', '#1A2231', '#121925', '#2C384D', '#1D2637', '#29344A', '#3A465C', '#F3ECDF', '#D3CAB9', '#A69E8F', '#F0A23A', '#1A1206', '#F5B862', '#F0A23A', '#1A1206'], true),
+      V1: make(['/_blob/a410bb704d18f8ef487c5b91a3b38bec', '/_blob/dbd3647068002ef2dbe01594fa1a0b03', '#ECE3D1', '#F4EDE0', '#D5C6AE', '#FBF7EF', '#EFE6D6', '#CDBDA3', '#1A1614', '#3B3029', '#5C5046', '#C00000', '#F6EFE3', '#C00000', '#C00000', '#F6EFE3'], false, v1Stamps)
+    };
+  }
+  renderVals() {
+    const all = this.palettes();
+    const key = String(this.props.palette ?? 'N1 쌀종이').split(' ')[0];
+    const c = all[key] || all.N1;
+    const edge = this.props.edge ?? '번짐';
+    const h = c.mapBg.replace('#', '');
+    const mapBgA = 'rgba(' + parseInt(h.slice(0, 2), 16) + ', ' + parseInt(h.slice(2, 4), 16) + ', ' + parseInt(h.slice(4, 6), 16) + ', 0.55)';
+    return { c, mapBgA, isFade: edge === '번짐', isBlur: edge === '흐림', isFrame: edge === '액자', s1: c.stamps[0], s2: c.stamps[1], s3: c.stamps[2], s4: c.stamps[3], s5: c.stamps[4] };
+  }
+}
+</script>
+</body>
+</html>

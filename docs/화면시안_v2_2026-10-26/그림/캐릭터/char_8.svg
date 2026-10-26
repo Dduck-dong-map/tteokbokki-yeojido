@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="160" viewBox="0 0 200 160">
+<ellipse cx="100" cy="148" rx="50" ry="5" fill="#2A2421" opacity="0.12"/>
+<circle cx="70" cy="46" r="11" fill="#E9C397" stroke="#2A2421" stroke-width="2.6"/>
+<circle cx="130" cy="46" r="11" fill="#E9C397" stroke="#2A2421" stroke-width="2.6"/>
+<circle cx="70" cy="46" r="5" fill="#F4A9A0"/>
+<circle cx="130" cy="46" r="5" fill="#F4A9A0"/>
+<path d="M50 98C50 64 72 42 100 42C128 42 150 64 150 98C150 128 130 146 100 146C70 146 50 128 50 98Z" fill="#E9C397" stroke="#2A2421" stroke-width="3"/>
+<circle cx="62" cy="104" r="22" fill="#FFF7EC" stroke="#2A2421" stroke-width="2.6"/>
+<circle cx="138" cy="104" r="22" fill="#FFF7EC" stroke="#2A2421" stroke-width="2.6"/>
+<rect x="50" y="100" width="16" height="9" rx="4.5" fill="#C8102E" opacity="0.55" transform="rotate(-20 58 104)"/>
+<rect x="134" y="100" width="16" height="9" rx="4.5" fill="#C8102E" opacity="0.55" transform="rotate(20 142 104)"/>
+<ellipse cx="62" cy="114" rx="8" ry="4.5" fill="#F4A9A0" opacity="0.85"/>
+<ellipse cx="138" cy="114" rx="8" ry="4.5" fill="#F4A9A0" opacity="0.85"/>
+<path d="M74 92C78 78 122 78 126 92L126 120C120 132 80 132 74 120Z" fill="#FFF7EC"/>
+<circle cx="88" cy="88" r="4.2" fill="#2A2421"/>
+<circle cx="112" cy="88" r="4.2" fill="#2A2421"/>
+<circle cx="89.5" cy="86.5" r="1.3" fill="#FFFFFF"/>
+<circle cx="113.5" cy="86.5" r="1.3" fill="#FFFFFF"/>
+<path d="M97 97L103 97L100 101Z" fill="#E58A8A"/>
+<path d="M94 104Q97 107 100 104Q103 107 106 104" fill="none" stroke="#2A2421" stroke-width="2" stroke-linecap="round"/>
+<rect x="84" y="114" width="32" height="14" rx="7" fill="#FBF6EC" stroke="#2A2421" stroke-width="2.2"/>
+<path d="M84 120C84 116 88 114 92 114L108 114C112 114 116 116 116 120C113 123 110 122 108 120C104 124 100 123 98 120C94 124 90 123 88 120C86 122 85 122 84 120Z" fill="#C8102E"/>
+<ellipse cx="82" cy="124" rx="7" ry="5" fill="#E9C397" stroke="#2A2421" stroke-width="2.2"/>
+<ellipse cx="118" cy="124" rx="7" ry="5" fill="#E9C397" stroke="#2A2421" stroke-width="2.2"/>
+</svg>
