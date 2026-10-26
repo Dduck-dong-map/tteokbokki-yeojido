@@ -773,11 +773,12 @@ add({ id:'list', code:'N-07', t:'목록 페이지', lane:'F2', col:3, h:1480, v1
   </div>
 </div>` });
 
-// 기존 v1 (사진)
-const V1S = [['v1_01','첫 화면',844,'intro'],['v1_02','지도 홈',844,'home'],['v1_03','취향 필터',844,'filter'],['v1_04','가게 상세',1640,'store'],['v1_05','제보하기',844,'report'],['v1_06','목록 페이지',1480,'list']];
-V1S.forEach(([img, t, h, to], i) => add({ id:img, code:'V1-0' + (i + 1), t, lane:'V1', col:i, h, isV1:true, to,
+// 기존 v1 (사진) — 시안 v1 폴더의 화면 이미지를 그대로 쓴다
+const V1DIR = '../화면시안_v1_2026-10-26/화면_이미지/';
+const V1S = [['v1_01','첫 화면',844,'intro','01_첫화면'],['v1_02','지도 홈',844,'home','02_지도홈'],['v1_03','취향 필터',844,'filter','03_취향필터'],['v1_04','가게 상세',1640,'store','04_가게상세'],['v1_05','제보하기',844,'report','05_제보하기'],['v1_06','목록 페이지',1480,'list','06_목록페이지']];
+V1S.forEach(([img, t, h, to, file], i) => add({ id:img, code:'V1-0' + (i + 1), t, lane:'V1', col:i, h, isV1:true, to,
   spec:['기존 디자인(10-26 시안 v1) 화면 그대로', 'v2 개선판: ' + (to ? to : '')],
-  html:() => `<div class="scr v1img" style="height:${h}px"><img src="img/${img}.png" alt="기존 v1 ${t}" style="height:${h}px"></div>` }));
+  html:() => `<div class="scr v1img" style="height:${h}px"><img src="${V1DIR}${file}.png" alt="기존 v1 ${t}" style="height:${h}px"></div>` }));
 
 // 캐릭터 기획 (문서 판 — 프로토타입 화면이 아님)
 const CRIT = ['핀 크기','맵기 표정','세계관','안 겹침','굿즈'];
