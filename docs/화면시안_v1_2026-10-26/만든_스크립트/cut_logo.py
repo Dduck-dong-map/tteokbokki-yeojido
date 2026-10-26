@@ -1,6 +1,6 @@
 from PIL import Image
 import numpy as np
-src = Image.open(r"C:\Users\jltld\Documents\클로드\떡볶여지도\KakaoTalk_20261025_225207295.png").convert("RGB")
+src = Image.open(r"C:\Users\jltld\Documents\클로드\떡볶여지도\docs\KakaoTalk_20261025_225207295.png").convert("RGB")
 a = np.asarray(src).astype(np.int32)
 R,G,B = a[...,0],a[...,1],a[...,2]
 red = np.clip((R - (G+B)/2 - 25) * 3, 0, 255)          # 붓 빨강 마스크

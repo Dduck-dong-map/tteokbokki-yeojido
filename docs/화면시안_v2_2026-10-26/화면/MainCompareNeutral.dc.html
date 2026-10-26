@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>같은 지도 홈을 중립 팔레트 6가지로</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;family=Song+Myung&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2D5B9A}a:hover{color:#1E3A64}
+</style>
+</helmet>
+<div style="width: 2620px; height: 1010px; box-sizing: border-box; padding: 32px 40px 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0 40px; background: #E9E9E6; font-family: 'Noto Sans KR', sans-serif; color: #1C1C1B">
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 108px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 4px; background: #232323; color: #FFFFFF; font-size: 13px; font-weight: 700">N1</span><b style="font-size: 20px">쌀종이</b><span style="padding: 2px 8px; border-radius: 10px; background: #2D5B9A; color: #FFFFFF; font-size: 12px; font-weight: 700">추천</span></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.55; color: #3D3D3B">A(먹과 쪽빛)에서 누런 기만 뺐다. 버튼은 먹, 제보만 쪽빛.</p>
+<p style="margin: 0; font-size: 12px; color: #62625F">누런 기 +1.4 (v1 한지 +9.9)</p>
+</div>
+<dc-import name="Main" palette="N1 쌀종이" hint-size="390px,844px"></dc-import>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 108px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 4px; background: #161616; color: #FFFFFF; font-size: 13px; font-weight: 700">N2</span><b style="font-size: 20px">먹 회색</b></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.55; color: #3D3D3B">옅은 회색 종이에 먹 한 가지. 도장 말고는 색이 없다.</p>
+<p style="margin: 0; font-size: 12px; color: #62625F">누런 기 +1.0</p>
+</div>
+<dc-import name="Main" palette="N2 먹 회색" hint-size="390px,844px"></dc-import>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 108px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 4px; background: #1F3A5F; color: #FFFFFF; font-size: 13px; font-weight: 700">N3</span><b style="font-size: 20px">쪽빛 종이</b></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.55; color: #3D3D3B">푸른 기 도는 종이에 짙은 쪽빛 버튼. 붉어 보일 일이 없다.</p>
+<p style="margin: 0; font-size: 12px; color: #62625F">누런 기 −2.4 (살짝 푸름)</p>
+</div>
+<dc-import name="Main" palette="N3 쪽빛 종이" hint-size="390px,844px"></dc-import>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 108px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 4px; background: #24574F; color: #FFFFFF; font-size: 13px; font-weight: 700">N4</span><b style="font-size: 20px">옥빛</b></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.55; color: #3D3D3B">옅은 옥색 종이에 짙은 청록. 빨간 도장이 또렷하다.</p>
+<p style="margin: 0; font-size: 12px; color: #62625F">누런 기 +1.1 · 초록 기 조금</p>
+</div>
+<dc-import name="Main" palette="N4 옥빛" hint-size="390px,844px"></dc-import>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 108px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 4px; background: #111111; color: #FFFFFF; font-size: 13px; font-weight: 700">N5</span><b style="font-size: 20px">순백</b></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.55; color: #3D3D3B">흰 바탕에 먹, 링크만 쪽빛. 가장 담백하다.</p>
+<p style="margin: 0; font-size: 12px; color: #62625F">누런 기 0.0</p>
+</div>
+<dc-import name="Main" palette="N5 순백" hint-size="390px,844px"></dc-import>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 108px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 4px; background: #1C1D1F; color: #EDEDED; font-size: 13px; font-weight: 700">N6</span><b style="font-size: 20px">먹밤</b><span style="padding: 2px 8px; border-radius: 10px; background: #2D5B9A; color: #FFFFFF; font-size: 12px; font-weight: 700">밤 모드 짝</span></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.55; color: #3D3D3B">남색 대신 무채색 먹빛 밤. 밤 모드 후보.</p>
+<p style="margin: 0; font-size: 12px; color: #62625F">누런 기 −1.5</p>
+</div>
+<dc-import name="Main" palette="N6 먹밤" hint-size="390px,844px"></dc-import>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2620,"height":1010}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
