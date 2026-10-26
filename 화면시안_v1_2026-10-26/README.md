@@ -4,6 +4,27 @@
 
 이 폴더는 사본이다. `화면/*.dc.html` 의 그림 주소(`/_blob/…`)는 온라인 캔버스 안에서만 열린다. 같은 그림의 원본은 `그림/` 에 있다.
 
+## 화면 이미지 (바로 보기)
+
+`화면_이미지/` 의 PNG 7장. 온라인 캔버스 최신판(version 1792949364-9ca1)을 같은 화면 런타임으로 그려 찍은 것(2배 해상도, 2026-10-26).
+
+<table>
+<tr>
+<td align="center"><img src="화면_이미지/01_첫화면.png" width="200"><br>01 첫 화면</td>
+<td align="center"><img src="화면_이미지/02_지도홈.png" width="200"><br>02 지도 홈</td>
+<td align="center"><img src="화면_이미지/03_취향필터.png" width="200"><br>03 취향 필터</td>
+</tr>
+<tr>
+<td align="center"><img src="화면_이미지/04_가게상세.png" width="200"><br>04 가게 상세</td>
+<td align="center"><img src="화면_이미지/05_제보하기.png" width="200"><br>05 제보하기</td>
+<td align="center"><img src="화면_이미지/06_목록페이지.png" width="200"><br>06 목록 페이지</td>
+</tr>
+</table>
+
+<img src="화면_이미지/07_지도스타일.png" width="640"><br>지도 스타일 (대동여지도 → 떡볶여지도 대응표)
+
+v2 때 고칠 것: 03 취향 필터 아래 버튼이 「가게9곳」으로 붙어 보임(원본은 `가게 {{count}}곳`, 런타임이 빈칸을 지움).
+
 ## 화면 7장
 
 | 판 | 파일 | 내용 |
