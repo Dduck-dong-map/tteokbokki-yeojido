@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* 색은 lib/theme.ts 가 :root 변수로 넣는다(팔레트 프리셋). 여기서는 Tailwind 이름만 붙인다. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-ink3: var(--ink3);
+  --color-primary: var(--primary);
+  --color-onprimary: var(--onprimary);
+  --color-accent: var(--accent);
+  --color-fab: var(--fab);
+  --color-onfab: var(--onfab);
+  --color-bar: var(--bar);
+  --color-line: var(--line);
+  --color-chip: var(--chip);
+  --color-chipline: var(--chipline);
+  --color-spicybg: var(--spicybg);
+  --color-spicytext: var(--spicytext);
+  --color-loc: var(--loc);
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-serif: "Nanum Myeongjo", "Noto Serif KR", Batang, "바탕", AppleMyungjo, serif;
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  word-break: keep-all;
+}
+
+/* 지도 위 오른쪽 아래 출처 표기를 바탕색에 맞춘다 */
+.maplibregl-ctrl-attrib {
+  background: color-mix(in srgb, var(--surface) 80%, transparent) !important;
+  color: var(--ink3) !important;
+  font-size: 10px;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--ink2) !important;
+}
+.maplibregl-ctrl-bottom-left {
+  bottom: var(--attrib-bottom, 0px);
+}
+
+/* 아래에서 올라오는 시트 */
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sheet-up {
+  animation: sheet-up 0.22s ease-out;
+}
