@@ -83,6 +83,7 @@
 로컬 .md 에는 그림이 빠져 있다(기획안 6절 화면 흐름도·12절 로드맵은 자리표시만, 시장조사 포지션 지도는 표로 옮김).
 
 깃허브(팀 조직 Dduck-dong-map, 비공개, 구성원 Luceta·startingg): https://github.com/Dduck-dong-map/tteokbokki-yeojido
+깃허브(내 저장소, 비공개, 10-28부터 · Vercel 배포용): https://github.com/startingg/tteokbokki-yeojido
 
 ## 기록
 
@@ -101,7 +102,10 @@
   - **공유 주소: https://tteokbokki-yeojido.vercel.app/share** · 웹앱 https://tteokbokki-yeojido.vercel.app · 어드민 시안 …/admin
   - 링크를 아는 사람은 누구나 볼 수 있다(로그인 없음 확인, 검색엔진은 막음). 배포 주소에서 허브 탭 5개를 PC·휴대폰 크기로 찍어 지도·보드·v1 사진까지 나오는 것 확인.
   - 깃허브 연결은 실패함(팀 조직 저장소에 Vercel 권한 없음) → 자동 배포 없음. **고친 뒤 다시 올리려면** 같은 명령을 다시 실행: `npx vercel@59.16.0 deploy --prod --yes --scope jltldud-5453s-projects --cwd "<이 폴더>\web"` (이제 `web/.vercel` 에 프로젝트가 연결돼 있어 `--name` 필요 없음).
-- 깃에는 아직 안 올림.
+- **내 깃허브(비공개)에 새로 올림:** 사용자 「공용 깃허브 말고 내 깃허브에 새로, 비공개로」 → https://github.com/startingg/tteokbokki-yeojido (main = 커밋 764ceb1, 지금까지 기록 전부 포함). 이 폴더의 원격 이름은 `personal`(팀 저장소는 그대로 `origin`, PR #1 도 그대로). 올릴 때는 `git push personal HEAD:main`.
+- Vercel 자동 배포 연결은 사용자가 한다(아래 두 명령). 연결하면 **personal 의 main 에 푸시 = 실서비스 배포**가 된다.
+  - `npx vercel@59.16.0 project update tteokbokki-yeojido --root-directory web --yes --scope jltldud-5453s-projects`
+  - `npx vercel@59.16.0 git connect https://github.com/startingg/tteokbokki-yeojido --scope jltldud-5453s-projects --cwd "<이 폴더>\web"`
 
 ### 2026-10-27 (4) 깃허브 올림 (PR #1)
 
