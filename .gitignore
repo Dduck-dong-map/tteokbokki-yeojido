@@ -12,3 +12,44 @@ docs/화면시안_v*/그림/
 
 # 시안 만들 때 쓴 스크립트(지도 그리기·대비 계산 등)
 **/만든_스크립트/
+
+# ---- Next.js 앱 (create-next-app 16.4.3 기본 항목) ----
+# 의존성
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# 테스트
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# 프로덕션
+/build
+
+# 기타
+.DS_Store
+*.pem
+
+# 디버그 로그
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# 환경 변수 파일(필요하면 골라서 커밋)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
