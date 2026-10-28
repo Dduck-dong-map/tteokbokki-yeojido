@@ -88,6 +88,21 @@
 
 > 10-26 (10) 부터 작업물은 전부 `docs/` 안에 있다. 그 전 기록에 나오는 `design/`·`화면시안_v2_…/` 같은 경로는 이제 `docs/` 아래에 있다.
 
+### 2026-10-28 공유 허브 (/share) · Vercel 배포 준비
+
+- 사용자: 「로드맵 · 화면 설계 보드 · localhost:3000 묶어서 웹으로 배포, 다른 사람이랑 공유하게」
+- 웹앱에 **공유 허브 `/share`** 를 붙였다. 한 창에서 탭 5개(소개 · 웹앱 미리보기(큰 화면은 휴대폰 틀) · 화면 설계 보드 · 출시 로드맵 · 운영 어드민)로 넘겨 본다. 주소 뒤 `#app` `#board` `#roadmap` `#admin` 으로 바로 열린다.
+  - 허브 원본 = `docs/share/index.html`, 카드 그림 = `docs/share/img/`(실제 화면을 찍은 것).
+  - `web/scripts/copy-share.mjs` 가 `npm run dev`·`build` 전에 허브 · 보드(`docs/design`) · 기존 v1 사진 · 로드맵(`docs/roadmap`)을 `web/public/share/` 로 복사한다(깃에는 안 올림). Vercel 에서는 `../docs` 가 없어서 건너뛰고, 올라간 복사본을 그대로 쓴다(Vercel 도구는 `.gitignore` 를 보지 않고 올린다).
+  - `web/next.config.ts`: `/share` · `/share/board` · `/share/roadmap` → 각 `index.html` 로 넘김.
+  - 로드맵은 보기용 사본이다(상태 저장은 claude.ai 보드에서만).
+- 확인: 빌드 통과, `next start` 로 띄워 PC(1440×900)·휴대폰(390×844)으로 탭 5개를 찍어 봄.
+- **배포함(사용자가 실행):** Vercel 프로젝트 `jltldud-5453s-projects/tteokbokki-yeojido` (dpl_BURsQNfY9SSLFJSny8gLBhcMYm1k, Ready).
+  - **공유 주소: https://tteokbokki-yeojido.vercel.app/share** · 웹앱 https://tteokbokki-yeojido.vercel.app · 어드민 시안 …/admin
+  - 링크를 아는 사람은 누구나 볼 수 있다(로그인 없음 확인, 검색엔진은 막음). 배포 주소에서 허브 탭 5개를 PC·휴대폰 크기로 찍어 지도·보드·v1 사진까지 나오는 것 확인.
+  - 깃허브 연결은 실패함(팀 조직 저장소에 Vercel 권한 없음) → 자동 배포 없음. **고친 뒤 다시 올리려면** 같은 명령을 다시 실행: `npx vercel@59.16.0 deploy --prod --yes --scope jltldud-5453s-projects --cwd "<이 폴더>\web"` (이제 `web/.vercel` 에 프로젝트가 연결돼 있어 `--name` 필요 없음).
+- 깃에는 아직 안 올림.
+
 ### 2026-10-27 (4) 깃허브 올림 (PR #1)
 
 - 사용자 「같이 작업하던 깃허브에 올려줘」 → 10-27 작업 전부(로드맵 보드 · `web/` · 개발준비 · 어드민기획 · README)를 브랜치 `roadmap-web-m0` 으로 올리고 PR을 열었다: https://github.com/Dduck-dong-map/tteokbokki-yeojido/pull/1
