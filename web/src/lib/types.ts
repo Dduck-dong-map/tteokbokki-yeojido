@@ -27,6 +27,9 @@ export type Store = {
   menu: MenuItem[];
   hours: Hours;
   lastConfirmedAt: string; // YYYY-MM-DD, '아직 있어요'·제보 승인 때 새로 고침
+  // 가게 평점(별 1~5, 식당 자체). 맛은 맵기(고추)로 따로 본다 — 두 축.
+  // 기획안 v4 「별점 없음」은 슬랙 10-28 팀 결정으로 뒤집혔다(irisonestar 제안, ✅).
+  rating?: { avg: number; count: number };
   isSample?: boolean; // 예시 데이터 (실제 가게 아님)
 };
 

@@ -12,6 +12,8 @@
   --color-accent: var(--accent);
   --color-fab: var(--fab);
   --color-onfab: var(--onfab);
+  --color-onaccent: var(--onaccent);
+  --color-stampbg: var(--stampbg);
   --color-bar: var(--bar);
   --color-line: var(--line);
   --color-chip: var(--chip);
@@ -56,3 +58,10 @@ body {
 .sheet-up {
   animation: sheet-up 0.22s ease-out;
 }
+
+/* 가게 상세의 맵기 도장 뒤집기 (슬랙 10-28: 누르면 휙 돌아가며 표정) */
+.flip { perspective: 600px; }
+.flip-inner { position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1.1); }
+.flip.on .flip-inner { transform: rotateY(180deg); }
+.flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }

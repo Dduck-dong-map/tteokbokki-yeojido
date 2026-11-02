@@ -13,6 +13,7 @@ export type ReportInput = {
   style?: Style;
   spice?: Spice;
   price?: number;
+  rating?: number; // 가게 평점 별 1~5 (선택). 슬랙 10-28 팀 결정으로 「별점 없음」을 뒤집음 — 맛은 맵기(고추)로 따로 본다.
 };
 
 export const DAILY_LIMIT = 10; // 기기·IP 기준 하루 10건
@@ -28,6 +29,7 @@ export function checkReport(r: ReportInput): string | null {
   if (!r.style || !(r.style in STYLES)) return "스타일을 골라 주세요";
   if (!r.spice || r.spice < 1 || r.spice > 5) return "맵기를 골라 주세요";
   if (r.price !== undefined && (r.price < 500 || r.price > 50000)) return "1인분 가격을 다시 봐 주세요";
+  if (r.rating !== undefined && (!Number.isInteger(r.rating) || r.rating < 1 || r.rating > 5)) return "가게 평점은 별 1~5개로 골라 주세요";
   return null;
 }
 

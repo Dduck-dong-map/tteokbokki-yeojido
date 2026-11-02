@@ -22,5 +22,8 @@ cpSync(`${DOCS}/design/img`, `${OUT}/board/img`, { recursive: true });
 cpSync(`${DOCS}/화면시안_v1_2026-10-26/화면_이미지`, `${OUT}/화면시안_v1_2026-10-26/화면_이미지`, { recursive: true });
 // 출시 로드맵: 온라인 보드(claude.ai) 밖에서는 「처음 상태」 보기용으로 열린다
 cpSync(`${DOCS}/roadmap/index.html`, `${OUT}/roadmap/index.html`);
+// 진행 현황(팀 공유용 한 장) + 거기서 보여 주는 M1 화면 그림. 그림은 ../M1_화면_이미지_… 상대 경로 그대로
+cpSync(`${DOCS}/진행현황/index.html`, `${OUT}/status/index.html`);
+cpSync(`${DOCS}/M1_화면_이미지_2026-10-31`, `${OUT}/M1_화면_이미지_2026-10-31`, { recursive: true });
 
 console.log("copy-share: docs → public/share 복사함");

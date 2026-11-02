@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { won } from "@/lib/filters";
+import { addMyReport } from "@/lib/mine";
 import { PRICE_HINTS, checkReport, type ReportInput, type ReportKind } from "@/lib/report";
 import { RICE_CAKES, SPICE_LEVELS, STYLES, keysOf, type RiceCake, type Spice } from "@/lib/taxonomy";
 import { SpiceStamp } from "../ui";
@@ -55,6 +56,8 @@ export default function ReportForm({ stores }: { stores: StoreRef[] }) {
     const res = await fetch("/api/reports", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(r) }).catch(() => null);
     setSending(false);
     if (!res?.ok) return setError((await res?.json().catch(() => null))?.error ?? "보내지 못했어요. 잠시 뒤 다시 해 주세요");
+    // 내 맛지도 「내 제보」 칸에 이 기기 기준으로 남긴다 (서버 저장은 M2)
+    addMyReport({ kind: r.kind, storeId: r.storeId, name: r.name?.trim() || target?.name || "가게" });
     setDone(true);
   };
 
@@ -73,8 +76,11 @@ export default function ReportForm({ stores }: { stores: StoreRef[] }) {
         <h2 className="mt-3 text-[20px] font-bold">서비스 어묵 하나 올려 드렸어요</h2>
         <p className="mt-2 text-[14px] text-ink2">승인되면 지도에 올라가요. 고마워요!</p>
         <p className="mt-1 text-[12px] text-ink3">(지금은 시험판이라 제보가 저장되지 않아요)</p>
-        <Link href="/" className="mt-8 inline-grid h-12 w-full place-items-center rounded-xl bg-primary text-[16px] font-bold text-onprimary">
+        <Link href="/" className="mt-8 inline-grid h-12 w-full place-items-center rounded-xl bg-accent text-[16px] font-bold text-onaccent">
           지도로 돌아가기
+        </Link>
+        <Link href="/mine" className="mt-2 inline-grid h-11 w-full place-items-center rounded-xl border border-chipline bg-surface text-[14px] text-ink2">
+          내 맛지도에서 내 제보 보기
         </Link>
       </div>
     );
@@ -85,7 +91,7 @@ export default function ReportForm({ stores }: { stores: StoreRef[] }) {
         <h2 className="text-[18px] font-bold">「{target!.name}」 문을 닫았나요?</h2>
         <p className="mt-2 text-[14px] text-ink2">운영자가 확인한 뒤 지도에서 내려요. 같은 신고가 3건 모이면 먼저 확인해요.</p>
         {error && <p className="mt-3 text-[13px] text-spicytext">{error}</p>}
-        <button type="button" onClick={submit} disabled={sending} className="mt-6 h-12 w-full rounded-xl bg-primary text-[16px] font-bold text-onprimary disabled:opacity-50">
+        <button type="button" onClick={submit} disabled={sending} className="mt-6 h-12 w-full rounded-xl bg-accent text-[16px] font-bold text-onaccent disabled:opacity-50">
           {sending ? "보내는 중…" : "폐업 신고 보내기"}
         </button>
       </div>
@@ -161,7 +167,7 @@ export default function ReportForm({ stores }: { stores: StoreRef[] }) {
               </div>
             </div>
             <div>
-              <h2 className="mb-2 text-[15px] font-bold">맵기 <span className="text-[12px] font-normal text-ink3">신라면 = 3</span></h2>
+              <h2 className="mb-2 text-[15px] font-bold">맵기 <span className="text-[12px] font-normal text-ink3">신라면 = 3 · 맛 평점</span></h2>
               <div className="flex justify-between gap-1">
                 {([1, 2, 3, 4, 5] as Spice[]).map((lv) => (
                   <button key={lv} type="button" onClick={() => setR({ ...r, spice: lv })} aria-pressed={r.spice === lv} className={`flex flex-1 flex-col items-center gap-1 rounded-xl border py-2 ${r.spice === lv ? "border-primary" : "border-transparent"}`}>
@@ -169,6 +175,26 @@ export default function ReportForm({ stores }: { stores: StoreRef[] }) {
                     <span className="text-[11px] leading-tight text-ink3">{SPICE_LEVELS[lv].ref.replace(" 정도", "")}</span>
                   </button>
                 ))}
+              </div>
+            </div>
+            {/* 가게 평점(별) — 맛(맵기 고추)과 따로 받는 두 축 (슬랙 10-28, irisonestar ✅). 기획안 v4 「별점 없음」은 팀 결정으로 뒤집힘. */}
+            <div>
+              <h2 className="mb-2 text-[15px] font-bold">가게는 어땠어요? <span className="text-[12px] font-normal text-ink3">선택 · 가게 평점</span></h2>
+              <div className="flex items-center gap-1" role="radiogroup" aria-label="가게 평점">
+                {([1, 2, 3, 4, 5] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    role="radio"
+                    aria-checked={r.rating === v}
+                    aria-label={`별 ${v}개`}
+                    onClick={() => setR({ ...r, rating: r.rating === v ? undefined : v })}
+                    className={`grid h-11 w-11 place-items-center text-[28px] leading-none ${r.rating && v <= r.rating ? "text-[#D98E04]" : "text-chipline"}`}
+                  >
+                    ★
+                  </button>
+                ))}
+                <span className="ml-2 text-[13px] text-ink3">{r.rating ? ["", "별로", "그저 그래요", "괜찮아요", "맛있어요", "최고예요"][r.rating] : "안 골라도 돼요"}</span>
               </div>
             </div>
           </div>
@@ -207,7 +233,7 @@ export default function ReportForm({ stores }: { stores: StoreRef[] }) {
             이전
           </button>
         )}
-        <button type="button" onClick={next} disabled={sending} className="h-12 flex-1 rounded-xl bg-primary text-[16px] font-bold text-onprimary disabled:opacity-50">
+        <button type="button" onClick={next} disabled={sending} className="h-12 flex-1 rounded-xl bg-accent text-[16px] font-bold text-onaccent disabled:opacity-50">
           {step < STEPS.length - 1 ? "다음" : sending ? "보내는 중…" : "제보 보내기"}
         </button>
       </div>

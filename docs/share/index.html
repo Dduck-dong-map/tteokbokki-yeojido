@@ -97,6 +97,7 @@ a { color: inherit; }
     <button class="tab" role="tab" data-tab="board">화면 설계 보드</button>
     <button class="tab" role="tab" data-tab="roadmap">출시 로드맵</button>
     <button class="tab" role="tab" data-tab="admin">운영 어드민</button>
+    <button class="tab" role="tab" data-tab="status">진행 현황</button>
   </nav>
   <a class="newwin" id="newwin" target="_blank" rel="noopener" hidden><span class="t">새 창으로 </span>↗</a>
 </header>
@@ -116,8 +117,8 @@ a { color: inherit; }
         <article class="card">
           <div class="shot tall" data-go="app" style="background-image:url(img/app.jpg)"></div>
           <div class="body">
-            <h2>웹앱 미리보기 <small>M0 뼈대</small></h2>
-            <p>실제로 돌아가는 모바일 웹앱이에요. 대동여지도 느낌 지도와 맵기 도장, 취향 필터, 가게 카드·상세, 목록, 제보 4단계를 눌러 볼 수 있어요.</p>
+            <h2>웹앱 미리보기 <small>M1 · 팀 피드백 반영</small></h2>
+            <p>실제로 돌아가는 모바일 웹앱이에요. 접속하면 주변 가게 목록이 뜨고, 검색 → 선택 → 상세 → 길찾기로 이어져요. 맵기는 게이지 도장 + 고추 개수, 상세에서 도장을 누르면 표정이 나와요.</p>
             <div class="row"><button class="btn main" data-go="app">보기</button><a class="btn sub" href="/" target="_blank" rel="noopener">새 창</a></div>
           </div>
         </article>
@@ -125,7 +126,7 @@ a { color: inherit; }
           <div class="shot" data-go="board" style="background-image:url(img/board.jpg)"></div>
           <div class="body">
             <h2>화면 설계 보드 <small>시안 v2</small></h2>
-            <p>화면 흐름과 프로토타입이에요. 기존 v1과 나란히 비교하고, 팔레트·맵기 표시 4안·캐릭터 8가지를 왼쪽 칸에서 바꿔 볼 수 있어요. 큰 화면에서 보기 좋아요.</p>
+            <p>화면 흐름과 프로토타입이에요. 기존 v1과 나란히 비교하고, 팔레트·맵기 표시 5안(팀 결정 = 게이지)·캐릭터 8가지를 왼쪽 칸에서 바꿔 볼 수 있어요. 큰 화면에서 보기 좋아요.</p>
             <div class="row"><button class="btn main" data-go="board">보기</button><a class="btn sub" href="board/index.html" target="_blank" rel="noopener">새 창</a></div>
           </div>
         </article>
@@ -145,6 +146,14 @@ a { color: inherit; }
             <div class="row"><button class="btn main" data-go="admin">보기</button><a class="btn sub" href="/admin" target="_blank" rel="noopener">새 창</a></div>
           </div>
         </article>
+        <article class="card">
+          <div class="shot" data-go="status" style="background-image:url(img/status.jpg)"></div>
+          <div class="body">
+            <h2>진행 현황 <small>2026-10-31</small></h2>
+            <p>팀 공유용 한 장 현황판이에요. 누가 지금 무엇을 볼 수 있는지, 영역별 진행, 10-28 팀 피드백이 어디까지 반영됐는지, 로드맵과 실제의 차이, 답이 필요한 것 여섯 가지, 다음 주 제안을 담았어요.</p>
+            <div class="row"><button class="btn main" data-go="status">보기</button><a class="btn sub" href="status/index.html" target="_blank" rel="noopener">새 창</a></div>
+          </div>
+        </article>
       </div>
 
       <div class="note">
@@ -158,9 +167,9 @@ a { color: inherit; }
     <div class="side">
       <h3>이렇게 눌러 보세요</h3>
       <ul>
-        <li>지도의 빨간 도장을 누르면 가게 카드가 떠요. 도장 숫자는 맵기(신라면 = 3)예요.</li>
-        <li>위쪽 취향 칩으로 떡·스타일·맵기를 골라요.</li>
-        <li>아래 「제보」로 새 가게를 알리는 4단계를 볼 수 있어요.</li>
+        <li>도장 핀을 누르면 가게 줄이 떠요. 도장에 찬 높이와 아래 고추 개수가 맵기(신라면 = 3)예요.</li>
+        <li>위쪽 검색창 옆 「필터」 버튼으로 떡·스타일·맵기를 골라요. 0곳이면 「필터 초기화」가 떠요.</li>
+        <li>아래 「제보」로 새 가게를 알리는 4단계(2단계에 가게 별점)를 볼 수 있어요.</li>
       </ul>
       <p>휴대폰으로 열면 더 잘 보여요. <a href="/" target="_blank" rel="noopener">새 창으로 열기</a></p>
     </div>
@@ -169,10 +178,11 @@ a { color: inherit; }
   <section class="pane" id="p-board"><iframe data-src="board/index.html" title="화면 설계 보드"></iframe></section>
   <section class="pane" id="p-roadmap"><iframe data-src="roadmap/index.html" title="출시 로드맵"></iframe></section>
   <section class="pane" id="p-admin"><iframe data-src="/admin" title="운영 어드민 시안"></iframe></section>
+  <section class="pane" id="p-status"><iframe data-src="status/index.html" title="진행 현황"></iframe></section>
 </main>
 
 <script>
-const TABS = ["intro", "app", "board", "roadmap", "admin"];
+const TABS = ["intro", "app", "board", "roadmap", "admin", "status"];
 const newwin = document.getElementById("newwin");
 const phone = document.getElementById("phone");
 

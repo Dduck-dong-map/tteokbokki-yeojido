@@ -1,24 +1,61 @@
 import Link from "next/link";
 import { SPICE_LEVELS, type Spice } from "@/lib/taxonomy";
 
-// 맵기 도장 (지도 핀과 같은 모양을 카드·상세에서도 쓴다)
-export function SpiceStamp({ n, size = 28, faded = false }: { n: Spice; size?: number; faded?: boolean }) {
+// 작은 고추 (알약 속). 지도 핀의 drawChili 와 같은 모양.
+export function Chili({ h = 10 }: { h?: number }) {
+  return (
+    <svg width={h * (10 / 14)} height={h} viewBox="0 0 10 14" aria-hidden="true" className="shrink-0">
+      <path d="M5 3 C8 3 9 7 7 11 C6 13 4 13 3 11 C1 7 2 3 5 3Z" fill="#C8102E" />
+      <path d="M5 3.2 L5.6 .8" stroke="#4F8A3A" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// 맵기 도장 「게이지 도장 + 고추 개수」 (슬랙 10-28 결정) — 지도 핀(components/map/stamps.ts)과 같은 모양.
+// 숫자 없이 맵기만큼 아래에서 색이 차오르고, 아래 알약에 고추 n개.
+export function SpiceStamp({ n, size = 28, faded = false, pill = true }: { n: Spice; size?: number; faded?: boolean; pill?: boolean }) {
+  const pct = n * 20;
+  const border = Math.max(1.5, size * 0.067);
+  const pillH = Math.max(9, size * 0.3);
   return (
     <span
-      className="relative inline-grid shrink-0 place-items-center rounded-[22%] font-extrabold leading-none"
-      style={{
-        width: size,
-        height: size,
-        fontSize: size * 0.56,
-        background: `var(--s${n})`,
-        color: `var(--s${n}f)`,
-        opacity: faded ? 0.45 : 1,
-        transform: "rotate(-3deg)",
-      }}
+      className="inline-flex shrink-0 flex-col items-center"
+      style={{ opacity: faded ? 0.45 : 1 }}
       title={`맵기 ${n} · ${SPICE_LEVELS[n].ref}`}
+      aria-label={`맵기 ${n}`}
     >
-      <span className="absolute inset-[12%] rounded-[14%] border-[1.5px]" style={{ borderColor: `var(--s${n}e)` }} />
-      {n}
+      <span
+        className="block rounded-[20%] shadow-[0_1px_2px_rgba(0,0,0,.2)]"
+        style={{
+          width: size,
+          height: size,
+          background: `linear-gradient(to top, var(--s${n}) ${pct}%, var(--stampbg) ${pct}%)`,
+          boxShadow: `inset 0 0 0 ${border}px var(--s${n})`,
+          transform: "rotate(-3deg)",
+        }}
+      />
+      {pill && (
+        <span
+          className="mt-[2px] inline-flex items-center gap-[1px] rounded-full border border-black/15 bg-surface px-[3px]"
+          style={{ height: pillH }}
+        >
+          {Array.from({ length: n }, (_, i) => (
+            <Chili key={i} h={pillH - 2.5} />
+          ))}
+        </span>
+      )}
+    </span>
+  );
+}
+
+// 가게 평점(별 1~5) — 두 축 중 「가게」 축 (슬랙 10-28). 거지맵처럼 「★ 4.3 · 12개」.
+export function Stars({ rating, size = 13 }: { rating?: { avg: number; count: number }; size?: number }) {
+  if (!rating || !rating.count) return <span className="text-ink3" style={{ fontSize: size }}>평점 아직 없음</span>;
+  return (
+    <span className="inline-flex items-center gap-1 font-semibold text-ink" style={{ fontSize: size }}>
+      <span className="text-[#D98E04]">★</span>
+      {rating.avg.toFixed(1)}
+      <span className="font-normal text-ink3">· {rating.count}개</span>
     </span>
   );
 }
@@ -43,46 +80,38 @@ export function SampleRibbon() {
   );
 }
 
+// 아래 메뉴 셋 (보드 v3, 11-02 사용자 「내 맛지도까지는 있어야」). 떡볶이방은 2차라 아예 안 보인다.
 const NAV = [
   { href: "/", label: "지도", key: "map" },
   { href: "/list", label: "목록", key: "list" },
-  { href: null, label: "떡볶이방", key: "bang" },
-  { href: null, label: "내 떡지도", key: "mine" },
+  { href: "/mine", label: "내 맛지도", key: "mine" },
 ] as const;
 
-export function BottomNav({ active }: { active: "map" | "list" }) {
+export function BottomNav({ active }: { active: "map" | "list" | "mine" }) {
   return (
-    <nav className="grid h-14 shrink-0 grid-cols-4 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px]">
-      {NAV.map((n) =>
-        n.href ? (
-          <Link
-            key={n.key}
-            href={n.href}
-            className={`grid place-items-center font-semibold ${active === n.key ? "text-ink" : "text-ink3"}`}
-            aria-current={active === n.key ? "page" : undefined}
-          >
-            {n.label}
-          </Link>
-        ) : (
-          <span key={n.key} className="grid place-items-center text-ink3/60" title="2차에 열어요">
-            <span>
-              {n.label}
-              <span className="ml-0.5 align-top text-[9px]">2차</span>
-            </span>
-          </span>
-        ),
-      )}
+    <nav className="grid h-14 shrink-0 grid-cols-3 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px]">
+      {NAV.map((n) => (
+        <Link
+          key={n.key}
+          href={n.href}
+          className={`grid place-items-center font-semibold ${active === n.key ? "text-ink" : "text-ink3"}`}
+          aria-current={active === n.key ? "page" : undefined}
+        >
+          {n.label}
+        </Link>
+      ))}
     </nav>
   );
 }
 
-export function BackHeader({ title, href = "/" }: { title: string; href?: string }) {
+export function BackHeader({ title, href = "/", right }: { title: string; href?: string; right?: React.ReactNode }) {
   return (
     <header className="sticky top-0 z-10 flex h-12 items-center gap-2 border-b border-line bg-bar px-2">
       <Link href={href} className="grid h-10 w-10 place-items-center rounded-full text-xl text-ink" aria-label="뒤로">
         ‹
       </Link>
-      <h1 className="truncate text-[16px] font-bold">{title}</h1>
+      <h1 className="min-w-0 flex-1 truncate text-[16px] font-bold">{title}</h1>
+      {right}
     </header>
   );
 }

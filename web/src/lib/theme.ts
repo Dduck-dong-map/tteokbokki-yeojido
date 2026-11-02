@@ -19,11 +19,17 @@ export const PRESETS: Preset[] = [
   { id: "N3", name: "N3 쪽빛 종이", b: { paper: "#E7EBEF", surface: "#FBFCFD", ink: "#141B23", primary: "#1F3A5F", accent: "#2D5B9A", fab: "#1F3A5F", water: "#9FB6CF" } },
   { id: "N4", name: "N4 옥빛", b: { paper: "#E5ECE8", surface: "#FBFCFB", ink: "#14201B", primary: "#24574F", accent: "#2B6259", fab: "#24574F", water: "#A6C6BE" } },
   { id: "N5", name: "N5 순백", b: { paper: "#F7F7F7", surface: "#FFFFFF", ink: "#111111", primary: "#111111", accent: "#2D5B9A", fab: "#111111", water: "#D3DEE9" } },
+  // 슬랙 10-28 결정(기획 팀장): 고추장 레드를 포인트 컬러로, 메뉴·가게 정보·버튼은 쉽게 구분되게. 바탕은 N1 쌀종이.
+  { id: "R", name: "R 고추장 포인트", b: { paper: "#F2F2EF", surface: "#FFFFFF", ink: "#1C1C1B", primary: "#232323", accent: "#B42318", fab: "#B42318", water: "#AFC3D9" } },
+  // 슬랙 10-28 #design(irisonestar): 빨간 버튼은 웹에서 경고색이라 버튼은 다른 색으로 → 옥빛(B 청자·N4 옥빛의 중간 #2A6159, 링크는 팀장 후보 #2F6F70). 빨강은 로고·도장·제보 버튼(포인트)만. 바탕은 한지 미색.
+  { id: "T", name: "T 옥빛 버튼 · 고추장 포인트", b: { paper: "#F3F0E9", surface: "#FDFCF9", ink: "#1C1C1B", primary: "#2A6159", accent: "#2F6F70", fab: "#B42318", water: "#A3C7BC" } },
+  // 슬랙 10-28 #design: 팀장이 tweakcn 으로 만든 「떡볶이 초안 1」(shadcn 변수) 을 그대로 옮김 — 비교용. 주 색이 빨강이라 본인 글과 어긋나서 기본으로 쓰지 않음.
+  { id: "W", name: "W tweakcn 초안 1", b: { paper: "#FAF8F6", surface: "#FEFEFE", ink: "#2D2D2D", primary: "#E63917", accent: "#E63917", fab: "#E63917", water: "#AFC3D9" } },
   { id: "N6", name: "N6 먹밤", b: { paper: "#1C1D1F", surface: "#242628", ink: "#EDEDED", primary: "#EDEDED", accent: "#8FB4E0", fab: "#8FB4E0", water: "#2B3A4C" } },
 ];
 
-// 아직 사용자가 고르지 않았다(README 「▶ 재개」 1번). 고르면 여기만 바꾼다.
-export const DEFAULT_PALETTE = "A";
+// 2026-11-01: 슬랙 #design 10-28 반영 → T (주 버튼 옥빛, 빨강은 포인트만). 이전 기본 R 은 ?pal=R 로 비교. 바꾸려면 여기만 고친다.
+export const DEFAULT_PALETTE = "T";
 
 // 맵기 도장 1~5: [바탕, 숫자, 안쪽 테두리]
 const RAMP_LIGHT = [["#F2B78C", "#3A1408", "rgba(58,20,8,.38)"], ["#E3814D", "#2E0F05", "rgba(46,15,5,.38)"], ["#C8102E", "#FFF4E6", "rgba(255,244,230,.75)"], ["#8E0B1F", "#FFF4E6", "rgba(255,244,230,.75)"], ["#4A0710", "#FFF4E6", "rgba(255,244,230,.75)"]];
@@ -64,7 +70,9 @@ export function derive(p: Preset) {
       bar, line: mix(bar, B.ink, 0.14),
       chip: mix(B.surface, B.ink, dark ? 0.1 : 0.055), chipline: mix(B.surface, B.ink, 0.2),
       ink2: mix(B.ink, B.surface, 0.2), ink3,
-      onprimary: onColor(B.primary), onfab: onColor(B.fab),
+      onprimary: onColor(B.primary), onfab: onColor(B.fab), onaccent: onColor(B.accent),
+      // 게이지 도장의 안 찬 부분(종이 톤) — 슬랙 10-28 결정
+      stampbg: mix(B.surface, B.ink, dark ? 0.14 : 0.07),
       spicybg: p.v1 ? "#F6E2DC" : dark ? "#4A1E22" : "#F6DCD9",
       spicytext: p.v1 ? "#8E0000" : dark ? "#FFB4AE" : "#9A0F25",
       loc: dark ? "#8FB4E0" : "#2D5B9A",
@@ -82,6 +90,7 @@ export function derive(p: Preset) {
       mMinor: mix(B.ink, B.paper, dark ? 0.6 : 0.72),
       seam: mix(B.paper, B.ink, dark ? 0.2 : 0.12),
       block: mix(B.paper, B.ink, dark ? 0.07 : 0.05),
+      stampbg: mix(B.surface, B.ink, dark ? 0.14 : 0.07),
       park: mix(B.paper, "#7FA87F", 0.18),
       ramp: ramp.map(([bg, fg, e]) => ({ bg, fg, edge: e })),
     },

@@ -7,16 +7,20 @@ import { freshness } from "@/lib/freshness";
 import { derive, findPreset } from "@/lib/theme";
 import type { Store } from "@/lib/types";
 import { dongyeoStyle } from "./dongyeoStyle";
-import { provideStamps } from "./stamps";
+import { STAMP_ICON_OFFSET, provideStamps } from "./stamps";
 
 type LatLng = { lat: number; lng: number };
+
+export type Bounds = { w: number; s: number; e: number; n: number };
+export type Focus = { n: number } & ({ lat: number; lng: number; zoom?: number } | { bounds: Bounds });
 
 type Props = {
   stores: Store[];
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   me: LatLng | null;
-  focus: (LatLng & { zoom?: number; n: number }) | null; // n 이 바뀔 때마다 그곳으로 옮긴다
+  focus: Focus | null; // n 이 바뀔 때마다 그곳으로 옮긴다
+  onBoundsChange?: (b: Bounds) => void; // 지도를 움직일 때마다 보이는 범위 (「현재 지도에서 찾은 가게」)
 };
 
 // 첫 화면 중심: 예시 데이터가 있는 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
@@ -37,13 +41,13 @@ function toGeoJSON(stores: Store[]): GeoJSON.FeatureCollection {
   };
 }
 
-export default function TteokMap({ stores, selectedId, onSelect, me, focus }: Props) {
+export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const ready = useRef(false);
-  const latest = useRef({ stores, selectedId, me, onSelect });
+  const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange });
   useEffect(() => {
-    latest.current = { stores, selectedId, me, onSelect };
+    latest.current = { stores, selectedId, me, onSelect, onBoundsChange };
   });
 
   useEffect(() => {
@@ -72,7 +76,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus }: Pr
       m.touchZoomRotate.disableRotation();
       mapRef.current = m;
       if (process.env.NODE_ENV === "development") Object.assign(window, { __tteokMap: m }); // 개발 중 콘솔에서 지도 살펴보기
-      provideStamps(m, t.map.ramp);
+      provideStamps(m, t.map, t.css.surface);
 
       m.on("load", () => {
         const { stores, selectedId, me } = latest.current;
@@ -104,6 +108,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus }: Pr
             "icon-image": ["concat", "stamp-", ["to-string", ["get", "spice"]]],
             "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.68, 1],
             "icon-rotate": ["get", "rot"],
+            "icon-offset": [0, STAMP_ICON_OFFSET], // 도장 중심이 가게 위치에 오게(아래 고추 알약만큼 올림)
             "icon-allow-overlap": true,
             "icon-ignore-placement": true,
             "symbol-sort-key": ["get", "spice"],
@@ -128,6 +133,12 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus }: Pr
           m.on("mouseenter", id, () => (m.getCanvas().style.cursor = "pointer"));
           m.on("mouseleave", id, () => (m.getCanvas().style.cursor = ""));
         }
+        const report = () => {
+          const b = m.getBounds();
+          latest.current.onBoundsChange?.({ w: b.getWest(), s: b.getSouth(), e: b.getEast(), n: b.getNorth() });
+        };
+        m.on("moveend", report);
+        report();
         ready.current = true;
       });
     })();
@@ -152,7 +163,10 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus }: Pr
   }, [me]);
 
   useEffect(() => {
-    if (focus) mapRef.current?.easeTo({ center: [focus.lng, focus.lat], zoom: focus.zoom ?? Math.max(mapRef.current.getZoom(), 15), duration: 600 });
+    const m = mapRef.current;
+    if (!focus || !m) return;
+    if ("bounds" in focus) m.fitBounds([[focus.bounds.w, focus.bounds.s], [focus.bounds.e, focus.bounds.n]], { padding: 48, maxZoom: 15, duration: 600 });
+    else m.easeTo({ center: [focus.lng, focus.lat], zoom: focus.zoom ?? Math.max(m.getZoom(), 15), duration: 600 });
   }, [focus]);
 
   // maplibre 가 지도 상자에 position: relative 를 붙이므로, 바깥 상자로 자리를 잡는다

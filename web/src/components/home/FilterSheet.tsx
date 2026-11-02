@@ -53,7 +53,7 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
   return (
     <div className="absolute inset-0 z-30 flex flex-col justify-end bg-black/30" onClick={onClose}>
       <div
-        className="sheet-up max-h-[86%] overflow-y-auto rounded-t-2xl bg-surface px-5 pb-[calc(env(safe-area-inset-bottom)+16px)]"
+        className="sheet-up max-h-[86%] overflow-y-auto rounded-t-2xl bg-surface px-5 pb-3"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="취향 필터"
@@ -124,14 +124,21 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
           </Chip>
         </Section>
 
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={n === 0}
-          className="mt-2 h-12 w-full rounded-xl bg-primary text-[16px] font-bold text-onprimary disabled:opacity-40"
-        >
-          {n === 0 ? "조건에 맞는 가게가 없어요" : `가게 ${n}곳 보기`}
-        </button>
+        {/* 0곳이면 초기화 버튼 (슬랙 10-28, 기획 팀장: 결과가 없을 때 초기화할 수 있게). 버튼은 항상 아래에 붙어 보인다 */}
+        <div className="sticky bottom-0 -mx-5 bg-surface px-5 pt-2 pb-[calc(env(safe-area-inset-bottom)+4px)]">
+        {n === 0 ? (
+          <div className="flex gap-2">
+            <p className="grid h-12 flex-1 place-items-center rounded-xl bg-chip text-[14px] text-ink2">조건에 맞는 가게가 없어요</p>
+            <button type="button" onClick={() => onChange(DEFAULT_FILTERS)} className="h-12 rounded-xl bg-accent px-5 text-[15px] font-bold text-onaccent">
+              필터 초기화
+            </button>
+          </div>
+        ) : (
+          <button type="button" onClick={onClose} className="h-12 w-full rounded-xl bg-accent text-[16px] font-bold text-onaccent">
+            가게 {n}곳 보기
+          </button>
+        )}
+        </div>
       </div>
     </div>
   );

@@ -26,6 +26,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "국물떡볶이", price: 4000 }, { name: "모둠튀김", price: 3500 }, { name: "어묵 2개", price: 1500 }],
     hours: { days: noSun, open: "10:30", close: "20:30" },
     lastConfirmedAt: "2026-10-20", isSample: true,
+    rating: { avg: 4.3, count: 12 },
   },
   {
     id: "mangwon-market-oil",
@@ -39,6 +40,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "기름떡볶이", price: 3500 }, { name: "순대", price: 4000 }],
     hours: { days: allWeek, open: "11:00", close: "21:00" },
     lastConfirmedAt: "2026-09-02", isSample: true,
+    rating: { avg: 3.9, count: 7 },
   },
   {
     id: "hapjeong-rose",
@@ -52,6 +54,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "로제떡볶이", price: 6500 }, { name: "치즈 추가", price: 1500 }],
     hours: { days: allWeek, open: "11:30", close: "22:00" },
     lastConfirmedAt: "2026-10-18", isSample: true,
+    rating: { avg: 4.6, count: 31 },
   },
   {
     id: "sangsu-instant",
@@ -65,6 +68,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "즉석떡볶이 (2인)", price: 11000 }, { name: "라면사리", price: 1000 }, { name: "볶음밥", price: 2500 }],
     hours: { days: noSun, open: "11:00", close: "21:30" },
     lastConfirmedAt: "2026-08-19", isSample: true,
+    rating: { avg: 4.1, count: 18 },
   },
   {
     id: "seogyo-hell",
@@ -78,6 +82,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "떡볶이 (1인)", price: 5000 }, { name: "주먹밥", price: 2000 }],
     hours: { days: allWeek, open: "11:00", close: "02:00" },
     lastConfirmedAt: "2026-10-25", isSample: true,
+    rating: { avg: 3.6, count: 4 },
   },
   {
     id: "hongdae-school",
@@ -91,6 +96,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "컵떡볶이", price: 3000 }, { name: "어묵", price: 1000 }],
     hours: { days: allWeek, open: "15:00", close: "23:30" },
     lastConfirmedAt: "2026-06-11", isSample: true,
+    rating: { avg: 4.8, count: 40 },
   },
   {
     id: "yeonnam-mala",
@@ -104,6 +110,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "마라떡볶이", price: 7000 }, { name: "분모자 추가", price: 2000 }],
     hours: { days: allWeek, open: "12:00", close: "22:00" },
     lastConfirmedAt: "2026-10-02", isSample: true,
+    rating: { avg: 4.0, count: 9 },
   },
   {
     id: "yeonnam-jjajang",
@@ -116,7 +123,8 @@ export const SAMPLE_STORES: Store[] = [
     price: 4500, priceCheckedAt: "2026-03-14",
     menu: [{ name: "짜장떡볶이", price: 4500 }, { name: "김밥", price: 3000 }],
     hours: { days: noSun, open: "10:00", close: "20:00" },
-    lastConfirmedAt: "2026-03-14", isSample: true, // 180일 넘음 → 흐린 도장
+    lastConfirmedAt: "2026-03-14", isSample: true,
+    rating: { avg: 4.4, count: 22 }, // 180일 넘음 → 흐린 도장
   },
   {
     id: "gongdeok-royal",
@@ -130,6 +138,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "궁중떡볶이", price: 9000 }, { name: "전 모둠", price: 15000 }],
     hours: { days: weekdays, open: "17:00", close: "23:00" },
     lastConfirmedAt: "2026-07-30", isSample: true,
+    rating: { avg: 3.8, count: 5 },
   },
   {
     id: "daeheung-market",
@@ -143,6 +152,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "떡볶이", price: 4000 }, { name: "순대", price: 4000 }, { name: "김밥", price: 3000 }],
     hours: { days: noSun, open: "09:30", close: "20:00" },
     lastConfirmedAt: "2026-10-23", isSample: true,
+    rating: { avg: 4.2, count: 15 },
   },
   {
     id: "ahyeon-old",
@@ -155,7 +165,8 @@ export const SAMPLE_STORES: Store[] = [
     price: 4000, priceCheckedAt: "2025-08-03",
     menu: [{ name: "쌀떡볶이", price: 4000 }],
     hours: { days: noSun, open: "11:00", close: "19:00" },
-    lastConfirmedAt: "2025-08-03", isSample: true, // 365일 넘음 → 목록·지도에서 내림
+    lastConfirmedAt: "2025-08-03", isSample: true,
+    rating: { avg: 4.5, count: 27 }, // 365일 넘음 → 목록·지도에서 내림
   },
   {
     id: "sinchon-cheese",
@@ -169,6 +180,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "치즈떡볶이", price: 5500 }, { name: "참치김밥", price: 4000 }],
     hours: { days: allWeek, open: "11:00", close: "23:00" },
     lastConfirmedAt: "2026-10-21", isSample: true,
+    rating: { avg: 3.7, count: 3 },
   },
   {
     id: "ewha-rose",
@@ -182,6 +194,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "로제 즉석떡볶이 (1인)", price: 6000 }, { name: "볶음밥", price: 2500 }],
     hours: { days: allWeek, open: "11:00", close: "21:00" },
     lastConfirmedAt: "2026-09-18", isSample: true,
+    rating: { avg: 4.1, count: 11 },
   },
   {
     id: "yeonhui-gimbap",
@@ -195,6 +208,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "떡볶이", price: 4500 }, { name: "야채김밥", price: 3500 }],
     hours: { days: noSun, open: "08:00", close: "20:00" },
     lastConfirmedAt: "2026-10-03", isSample: true,
+    rating: { avg: 4.7, count: 36 },
   },
   {
     id: "gajwa-pojang",
@@ -207,7 +221,8 @@ export const SAMPLE_STORES: Store[] = [
     price: 3500, priceCheckedAt: "2026-02-20",
     menu: [{ name: "떡볶이", price: 3500 }, { name: "순대", price: 3500 }],
     hours: { days: allWeek, open: "16:00", close: "01:00" },
-    lastConfirmedAt: "2026-02-20", isSample: true, // 180일 넘음 → 흐린 도장
+    lastConfirmedAt: "2026-02-20", isSample: true,
+    rating: { avg: 3.9, count: 6 }, // 180일 넘음 → 흐린 도장
   },
   {
     id: "sinchon-noodle",
@@ -221,6 +236,7 @@ export const SAMPLE_STORES: Store[] = [
     menu: [{ name: "누들 국물떡볶이", price: 5000 }, { name: "어묵탕", price: 9000 }],
     hours: { days: [2, 3, 4, 5, 6], open: "18:00", close: "02:00" },
     lastConfirmedAt: "2026-10-10", isSample: true,
+    rating: { avg: 4.0, count: 2 },
   },
 ];
 

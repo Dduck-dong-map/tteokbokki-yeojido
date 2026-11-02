@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>떡볶여지도 진행 현황</title>
+<meta name="description" content="2026-10-31 기준 떡볶여지도 전체 진행 현황 · 팀 공유용">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Song+Myung&display=swap">
+<style>
+/* 팀 공유용 한 장 현황판. 원본 = docs/진행현황/index.html, 허브(/share) 「진행 현황」 탭에 그대로 들어간다. */
+:root{
+  --paper:#F2F2EF; --surface:#FFFFFF; --sunk:#EDEDE8; --line:#DDDDD6; --line2:#C9C9C0;
+  --ink:#1C1C1B; --ink2:#4A4A47; --ink3:#6F6F6A;
+  --red:#B42318; --red-bg:#FBEAE7; --ok:#2B6259; --ok-bg:#DFEDE8; --warn:#8A5D0A; --warn-bg:#F6EBCF; --blue:#2D5B9A; --blue-bg:#E4EBF4;
+  --display:"Song Myung","Noto Serif KR",serif; --body:"Noto Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.65}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 16px 64px;display:flex;flex-direction:column;gap:30px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.25}
+h1{font-size:30px}
+h2{font-size:22px}
+h3{font-size:16px}
+p{margin:0}
+.muted{color:var(--ink3)}
+.head{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.mark{width:46px;height:46px;flex:none;display:grid;place-items:center;background:var(--red);color:#fff;font-family:var(--display);font-size:26px;border-radius:6px;box-shadow:inset 0 0 0 2px var(--red),inset 0 0 0 3px #fff}
+.head .t{flex:1;min-width:260px}
+.head .meta{font-size:12.5px;color:var(--ink3);margin-top:4px}
+.lead{margin-top:10px;font-size:15px;color:var(--ink2);max-width:760px}
+.lead b{color:var(--ink);font-weight:700}
+.blk{display:flex;flex-direction:column;gap:12px}
+.blk-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.blk-head p{font-size:13px;color:var(--ink3)}
+.box{background:var(--surface);border:1px solid var(--line2);border-radius:10px}
+
+/* 숫자 네 칸 */
+.sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.sum>div{padding:14px 16px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:2px;min-width:0}
+.sum>div:first-child{border-left:0}
+.sum .k{font-size:12px;color:var(--ink3)}
+.sum .v{font-family:var(--display);font-size:24px;line-height:1.2}
+.sum .s{font-size:12px;color:var(--ink2)}
+@media (max-width:760px){.sum{grid-template-columns:repeat(2,minmax(0,1fr))}.sum>div:nth-child(3){border-left:0}.sum>div:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* 표 */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;font-size:12px;font-weight:500;color:var(--ink3);background:var(--sunk);white-space:nowrap}
+td b{font-weight:700}
+td small{display:block;color:var(--ink3);font-size:12.5px;line-height:1.5}
+.nw{white-space:nowrap}
+
+/* 칩 */
+.chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;font-size:12px;font-weight:500;white-space:nowrap;vertical-align:middle}
+.c-done{color:var(--ok);background:var(--ok-bg)}
+.c-doing{color:var(--warn);background:var(--warn-bg)}
+.c-todo{color:var(--ink2);box-shadow:inset 0 0 0 1px var(--line2)}
+.c-hold{color:var(--red);background:var(--red-bg)}
+.c-team{color:var(--blue);background:var(--blue-bg)}
+.c-me{color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
+.c-cl{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink3)}
+
+/* 누가 볼 수 있나 */
+.vis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.vis{grid-template-columns:1fr}}
+.vis .box{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.vis h3{display:flex;align-items:center;gap:8px}
+.vis ul{margin:0;padding-left:18px;color:var(--ink2);font-size:13.5px}
+.vis li{padding:2px 0}
+.vis .box.local{border-color:var(--red);background:#FFFDFC}
+
+/* 진행 막대 */
+.bar{display:inline-block;width:92px;height:7px;border-radius:4px;background:var(--sunk);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden;vertical-align:middle;margin-right:6px}
+.bar i{display:block;height:100%;background:var(--ok)}
+.bar.r i{background:var(--red)}
+.bar.w i{background:var(--warn)}
+
+/* 타임라인 */
+.tl{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0;overflow:hidden}
+.tl li{padding:12px 14px;border-left:1px solid var(--line);border-top:1px solid var(--line);margin:-1px 0 0 -1px;display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink2)}
+.tl .d{font-family:var(--display);font-size:16px;color:var(--ink)}
+.tl .who{font-size:11.5px;color:var(--ink3)}
+.tl li.team{background:var(--blue-bg)}
+
+/* 비교 */
+.cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.cmp{grid-template-columns:1fr}}
+.cmp .box{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.cmp ol{margin:0;padding-left:20px;color:var(--ink2);font-size:13.5px}
+.cmp li{padding:3px 0}
+.cmp li b{color:var(--ink)}
+.arrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.arrow span{padding:3px 9px;border-radius:6px;background:var(--sunk);border:1px solid var(--line)}
+.arrow span.x{background:var(--red-bg);border-color:transparent;color:var(--red);text-decoration:line-through}
+.arrow span.n{background:var(--ok-bg);border-color:transparent;color:var(--ok)}
+.arrow i{color:var(--ink3);font-style:normal}
+
+/* 질문 */
+.q{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.q .box{padding:14px 16px;display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--red)}
+.q .no{font-family:var(--display);font-size:18px;color:var(--red)}
+.q p{font-size:13.5px;color:var(--ink2)}
+.q .pro{font-size:12.5px;color:var(--ink3);padding:6px 8px;background:var(--sunk);border-radius:6px}
+
+/* 화면 */
+.shots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.shots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.shots a{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink2);font-size:12px}
+.shots img{width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;border:1px solid var(--line2);border-radius:10px;background:#fff}
+
+/* 다음 주 */
+.week{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:760px){.week{grid-template-columns:1fr}}
+.week>div{padding:12px 14px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink2)}
+.week>div:first-child{border-left:0}
+@media (max-width:760px){.week>div{border-left:0;border-top:1px solid var(--line)}.week>div:first-child{border-top:0}}
+.week .d{font-family:var(--display);font-size:15px;color:var(--ink)}
+.foot{font-size:12.5px;color:var(--ink3);border-top:1px solid var(--line2);padding-top:14px;line-height:1.8}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12px;background:var(--sunk);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <div class="mark" aria-hidden="true">떡</div>
+  <div class="t">
+    <h1>떡볶여지도 전체 진행 현황</h1>
+    <div class="meta">2026-10-31 (토) 기준 · 정리 Claude · 팀 공유용 · 다음 갱신은 1차 UI/UX 판을 다시 올린 뒤</div>
+    <p class="lead"><b>기획 · 화면 설계 · 웹앱 1차 판(M1)은 내 컴퓨터에서 완성됐고, 10-28 슬랙 팀 피드백은 전부 반영했습니다.</b> 다만 팀이 지금 볼 수 있는 사이트와 저장소는 아직 10-27~28 판입니다. 결정 몇 가지(일정 · 첫 지역 · 어묵 용도)만 정하면 다음 주 초에 새 판을 올릴 수 있습니다.</p>
+  </div>
+</header>
+
+<div class="box sum">
+  <div><span class="k">지금 단계</span><span class="v">D0 → M1</span><span class="s">결정 주간 끝 · 디자인 반영은 앞당겨 거의 끝</span></div>
+  <div><span class="k">로드맵 할 일</span><span class="v">12 / 82</span><span class="s">보드엔 10개 기록, 실제로는 M1 둘 더 끝남</span></div>
+  <div><span class="k">결정 13개</span><span class="v">3 끝 · 5 남음</span><span class="s">4개(어드민)는 팀 뜻대로 「추후」 보류 · 1개 진행 중</span></div>
+  <div><span class="k">팀이 보는 판</span><span class="v">11-02</span><span class="s">공유 사이트 · 팀 저장소(PR #1) 둘 다 11-02 재배포·갱신</span></div>
+</div>
+
+<!-- 1. 누가 무엇을 볼 수 있나 -->
+<section class="blk">
+  <div class="blk-head"><h2>1. 누가 지금 무엇을 볼 수 있나</h2><p>협업에서 제일 먼저 맞춰야 할 것. 「내 컴퓨터에만」 칸이 다음에 올릴 것들입니다.</p></div>
+  <div class="vis">
+    <div class="box">
+      <h3><span class="chip c-team">팀 전원</span> 공유 사이트 · 11-02 판</h3>
+      <p class="muted" style="font-size:12.5px">tteokbokki-yeojido.vercel.app/share</p>
+      <ul>
+        <li>웹앱 M1(예시 가게 16곳, <b>게이지 도장 + 고추</b> 핀, 검색 + 가게 목록, 평점 두 축, 옥빛 버튼·고추장 포인트) + 아래 메뉴 셋째 탭 <b>「내 맛지도」</b>(♡ 저장 · 다녀옴 · 내 제보, 이 기기에만)</li>
+        <li>화면 설계 보드(맵기 표시 <b>5안</b> + 도장 스튜디오·모양 비교, v3 초기판 줄, 한지 바탕 세부, 캐릭터 시안 v1·v2·한반도 호랑이)</li>
+        <li>출시 로드맵 보기용 사본 · 운영 어드민 시안 10화면</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3><span class="chip c-team">팀</span> 팀 저장소 · 10-27 판</h3>
+      <p class="muted" style="font-size:12.5px">github.com/Dduck-dong-map/tteokbokki-yeojido · PR #1 (브랜치 roadmap-web-m0)</p>
+      <ul>
+        <li>기획안 v4 · 시장조사 · 개발 준비 · 어드민 기획 · 보드 · 웹앱 M0 코드</li>
+        <li>11-02 에 10-28~11-02 작업 전부 올림(PR #1 이어서)</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3><span class="chip c-team">링크 가진 사람</span> 출시 로드맵 보드(온라인) · 10-31 상태</h3>
+      <ul>
+        <li>할 일 82개 상태와 메모가 저장되는 원본. 팀 결정(색 · 맵기 · 핀) 끝 표시, 어드민 4개 「추후」, 일정 재조정 중</li>
+        <li>슬랙 #stand-meeting: 10-28 팀 피드백 원문(irisonestar · 기획 팀장)</li>
+      </ul>
+    </div>
+    <div class="box local">
+      <h3><span class="chip c-me">내 컴퓨터에만</span> 11-02 기준 남은 것</h3>
+      <ul>
+        <li><b>웹앱 M1</b>: 게이지 도장, 검색 + 가게 목록 시트, 정보 순서, 상세 도장 회전 표정, 평점 두 축, 고추장 레드 팔레트 (빌드 통과, 화면 10장)</li>
+        <li><b>기획안 v5</b> · <b>팀 피드백 정리 v1</b>(결정 9 · 질문 6) · 보드 맵기 표시 <b>마) 게이지</b> 안 · 이 현황판</li>
+        <li>위 작업은 11-02 전부 커밋 · 푸시 · 재배포함. 남은 것 = 시안 고르기(떡순이 · 호랑이 · 도장 모양)와 M2(Supabase 저장)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 2. 영역별 -->
+<section class="blk">
+  <div class="blk-head"><h2>2. 영역별 현황</h2><p>끝난 것 · 지금 · 다음 한 걸음 · 누가</p></div>
+  <div class="box tbl"><table>
+    <thead><tr><th>영역</th><th>진행</th><th>끝난 것</th><th>지금 · 다음 한 걸음</th><th>누가</th></tr></thead>
+    <tbody>
+      <tr><td class="nw"><b>기획</b></td><td class="nw"><span class="bar"><i style="width:90%"></i></span>v5</td>
+        <td>기획안 v1→v5(10-25~31) · 시장조사(거지맵 등) · 태그 체계 · 개발 준비 문서 · 어드민 기획<small>v5 = 팀 결정 반영: 목적·목표, 1차 범위, 평점 두 축, 메인 흐름, 정보 순서</small></td>
+        <td>1절 목표 문장의 「3청」 뜻 · 어묵 용도 채우기 → v5 확정<small>그 뒤 로드맵 지표(월 3만 명 등)를 팀 목표에 맞게 고침</small></td>
+        <td><span class="chip c-team">팀 답</span> <span class="chip c-cl">Claude</span></td></tr>
+      <tr><td class="nw"><b>디자인 · 화면 설계</b></td><td class="nw"><span class="bar"><i style="width:85%"></i></span>보드 v2+</td>
+        <td>와이어프레임 v1 7장 · 보드 v2(프로토타입 · 팔레트 · 캐릭터) · 맵기 표시 5안(팀 결정 = 마 게이지) · 로고 · 슬로건<small>색 = 고추장 레드 포인트(팔레트 R) · 핀엔 숫자·얼굴 없음</small></td>
+        <td>1차 배포엔 더 필요 없음. 로고 · 앱 아이콘 · 손글씨 글꼴은 1차 뒤<small>팀이 새 화면을 쓰고 준 피드백으로 다음 시안</small></td>
+        <td><span class="chip c-cl">Claude</span></td></tr>
+      <tr><td class="nw"><b>웹앱(코드)</b></td><td class="nw"><span class="bar"><i style="width:60%"></i></span>M1</td>
+        <td>M0 뼈대(지도 · 필터 · 상세 · 목록 · 제보 4단계) → M1(10-31): 팀 피드백 7가지 반영, 빌드·린트 통과<small>Next.js 16 · MapLibre + 오픈 지도 · 예시 데이터 16곳</small></td>
+        <td>휴대폰으로 사용자 확인 → Vercel 재배포 → 팀이 써 봄<small>남은 M1: 동네 이름 얹기(선택) · 로고</small></td>
+        <td><span class="chip c-me">사용자</span> <span class="chip c-cl">Claude</span></td></tr>
+      <tr><td class="nw"><b>데이터 · DB</b></td><td class="nw"><span class="bar w"><i style="width:15%"></i></span>M2 전</td>
+        <td>DB 설계 SQL 2개(서비스 · 어드민) 작성. 아직 적용 안 함 · 가게는 전부 예시</td>
+        <td>M2(11/9~): Supabase 가입 · 키 넣기(사용자) → 제보 · 평점 · 「아직 있어요」 저장<small>위치 처리 방식(서버가 좌표 받을지) 결정 필요</small></td>
+        <td><span class="chip c-me">사용자 계정</span> <span class="chip c-cl">Claude</span></td></tr>
+      <tr><td class="nw"><b>운영 어드민</b></td><td class="nw"><span class="bar r"><i style="width:30%"></i></span>보류</td>
+        <td>기획 문서 + /admin 시안 10화면(저장 안 됨)</td>
+        <td><b>팀 결정 「추후 확장」</b> → 1차 범위 밖. 제보 처리는 당분간 Supabase 관리 화면으로<small>결정 4개(크루 반영 · 기록 보관 · 사장님 연락처 · 운영 인원)도 보류</small></td>
+        <td><span class="chip c-hold">추후</span></td></tr>
+      <tr><td class="nw"><b>첫 가게 채우기</b></td><td class="nw"><span class="bar"><i style="width:0%"></i></span>M4 전</td>
+        <td>공공데이터 → 크루 확인 → 등록 흐름 설계(로드맵 흐름 2) · 크루 확인 기준표 초안 항목</td>
+        <td>첫 지역이 「3청」인지 마포·서대문인지 정해져야 시작<small>크루 2~3명은 팀에서 나올 수 있음</small></td>
+        <td><span class="chip c-team">팀</span></td></tr>
+      <tr><td class="nw"><b>저장소 · 배포</b></td><td class="nw"><span class="bar w"><i style="width:70%"></i></span>11-02</td>
+        <td>팀 저장소 PR #1 갱신(11-02) · Vercel 공유 사이트 재배포(11-02) · 공유 허브 /share · 웹 /mine</td>
+        <td>PR #1 main 합치기 · 자동 배포 연결은 아직 없음(손으로 올림)<small>팀 저장소(Luceta)를 계속 쓸지 답 대기</small></td>
+        <td><span class="chip c-me">사용자</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 3. 타임라인 -->
+<section class="blk">
+  <div class="blk-head"><h2>3. 지난 일주일</h2><p>파란 칸 = 팀이 한 일</p></div>
+  <ul class="box tl">
+    <li><span class="d">10/25 (일)</span>기획안 v1~v3 · 시장조사 · 콘셉트(대동여지도 · 도장 핀)<span class="who">Claude + 사용자</span></li>
+    <li><span class="d">10/26 (월)</span>기획안 v4 · 와이어프레임 v1 · 보드 v2(프로토타입 · 팔레트 · 캐릭터 · 맵기 4안) · 깃허브 올림<span class="who">Claude + 사용자</span></li>
+    <li><span class="d">10/27 (화)</span>개발 준비 문서 · 웹앱 M0 뼈대 · 어드민 기획 + 시안 · 출시 로드맵 보드 · 팀 저장소 PR #1<span class="who">Claude + 사용자</span></li>
+    <li><span class="d">10/28 (수)</span>공유 허브 /share · Vercel 배포(팀이 볼 수 있게)<span class="who">Claude + 사용자</span></li>
+    <li class="team"><span class="d">10/28 (수) 저녁</span>슬랙 #stand-meeting 피드백: 맵기 게이지 · 리뷰 필요 · 기획 팀장 전문(색 · 메인 흐름 · 1차 범위 · 어묵?)<span class="who">irisonestar · 기획 팀장</span></li>
+    <li class="team"><span class="d">10/29 (목)</span>확인 체크 요청<span class="who">irisonestar → 이시영</span></li>
+    <li><span class="d">10/31 (토)</span>피드백 정리 v1 · 기획안 v5 · 보드 게이지 안 · 로드맵 상태 갱신 · 웹앱 M1 · 이 현황판<span class="who">Claude + 사용자</span></li>
+  </ul>
+</section>
+
+<!-- 4. 팀 결정 반영 -->
+<section class="blk">
+  <div class="blk-head"><h2>4. 10-28 팀 피드백 → 어디까지 반영됐나</h2><p>결정 9개 전부 반영. 팀이 눈으로 확인하는 건 재배포 뒤</p></div>
+  <div class="box tbl"><table>
+    <thead><tr><th>#</th><th>팀 결정</th><th>반영한 곳</th><th>상태</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>맵기 = <b>게이지 도장 + 고추 개수</b>, 숫자 없음, 1~5 색 유지</td><td>웹앱 핀 · 카드 · 상세 / 보드 마) 안(기본값) / 기획안 8절</td><td><span class="chip c-done">끝</span></td></tr>
+      <tr><td>2</td><td>도장 회전 표정은 <b>상세 화면에서만</b>, 지도 핀 탭 = 상세</td><td>웹앱 상세 도장 뒤집기 / 기획안 6절</td><td><span class="chip c-done">끝</span></td></tr>
+      <tr><td>3</td><td>메인 = <b>주변 가게 → 검색 → 선택 → 상세 → 길찾기</b>, 필터는 원할 때만, 0곳이면 초기화</td><td>웹앱 홈(검색창 · 필터 버튼 하나 · 가게 목록 시트 · 「필터 초기화」) / 기획안 6절</td><td><span class="chip c-done">끝</span></td></tr>
+      <tr><td>4</td><td>가게 정보 순서 = 이름 · 위치 · 종류 · 맵기 · 대표 가격 · 길찾기</td><td>웹앱 가게 줄 · 상세 첫 카드</td><td><span class="chip c-done">끝</span></td></tr>
+      <tr><td>5</td><td><b>평점 두 축</b>: 별점 = 가게, 고추 = 맛</td><td>웹앱 예시 데이터 · 제보 2단계 별점 / 기획안 5절(규칙: 제보와 함께만 · 하루 1회)</td><td><span class="chip c-doing">화면만</span> 저장은 M2</td></tr>
+      <tr><td>6</td><td>색 = <b>고추장 레드 포인트</b>, 배경 장식 단순</td><td>웹앱 팔레트 R 기본값 / 보드 규칙 갱신</td><td><span class="chip c-done">끝</span></td></tr>
+      <tr><td>7</td><td>1차 = 탐색 · 상세 · 길찾기 · 제보. 캐릭터 · 자동화 · 통계 · <b>어드민은 추후</b></td><td>로드맵 D-09~12 보류 · 기획안 5절 1차 범위</td><td><span class="chip c-done">끝</span></td></tr>
+      <tr><td>8</td><td>취향 필터 확장은 2~3차</td><td>기획안 5절 · 웹앱은 있는 필터를 버튼 뒤로</td><td><span class="chip c-done">끝</span></td></tr>
+      <tr><td>9</td><td>목적 = 팀장 추천 · 1차 = 「3청」의 미식 지도 · 2차 = 애호가 지도</td><td>기획안 1절</td><td><span class="chip c-doing">「3청」 뜻 확인 중</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 5. 로드맵 vs 실제 -->
+<section class="blk">
+  <div class="blk-head"><h2>5. 10-27 로드맵과 지금 실제</h2><p>주차는 맞는데 순서와 목표가 다릅니다</p></div>
+  <div class="cmp">
+    <div class="box">
+      <h3>로드맵(10-27, 사용자 1명 + Claude 가정)</h3>
+      <div class="arrow"><span>D0 결정 ~11/1</span><i>→</i><span>M1 디자인 11/2~8</span><i>→</i><span>M2 데이터 ~11/22</span><i>→</i><span>M3 어드민 ~12/6</span><i>→</i><span>M4 가게 300곳</span><i>→</i><span>M5 베타 12/14</span><i>→</i><span>출시 1/11 주</span></div>
+      <ol>
+        <li>실서비스 배포는 <b>M5(12/7 주)</b>에</li>
+        <li>기준 지표 <b>「필터 → 길찾기」 15%</b>, 필터 사용률 40%</li>
+        <li>목표 <b>6개월 1,500곳 · 월 3만 명</b>, 첫 지역 <b>마포·서대문</b></li>
+        <li>제보 흐름에 「별점은 없고 태그만」</li>
+        <li>M3 어드민 9개 할 일 + 관문 G4(하루 20분 운영)</li>
+      </ol>
+    </div>
+    <div class="box">
+      <h3>팀이 원하는 것(10-28) + 지금 상태</h3>
+      <div class="arrow"><span class="n">D0 결정 ~11/1</span><i>→</i><span class="n">M1 1차 UI/UX → 바로 배포 11/2~8</span><i>→</i><span>팀 피드백</span><i>→</i><span>M2 데이터(+평점 저장)</span><i>→</i><span class="x">M3 어드민</span><i>→</i><span>M4 가게</span><i>→</i><span>베타 · 출시(다시 계산)</span></div>
+      <ol>
+        <li>배포를 <b>M1 끝(11/8)</b>으로 당김. 관문 G2 = 「팀이 써 보고 슬랙 피드백」</li>
+        <li>기준 지표를 <b>「상세 → 길찾기」</b>로. 필터는 보조</li>
+        <li>목표를 <b>「3청의 미식 지도」</b>에 맞게 다시. 첫 지역이 바뀌면 M4 범위도</li>
+        <li>M2에 <b>평점 저장 + 하루 1회 제한</b> 추가</li>
+        <li>M3 어드민은 「추후」 칸으로. 빈 2주는 가게 채우기나 베타 앞당기기에</li>
+      </ol>
+      <p class="muted" style="font-size:12.5px">맞는 곳: M1 주차 = 팀장 「다음 주」 · 색 · 맵기 · 핀 결정은 D0 항목 그대로 · M2 Supabase는 팀이 말한 「추가」의 첫 항목.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. 답 필요 -->
+<section class="blk">
+  <div class="blk-head"><h2>6. 지금 답이 필요한 것</h2><p>이게 정해져야 로드맵을 다시 짜고 새 판을 올립니다</p></div>
+  <div class="q">
+    <div class="box"><span class="no">①</span><h3>일정 — 「다음 주 완성」의 뜻</h3><p>11/2~11/8에 1차 UI/UX 판을 배포해 팀이 써 보는 것으로 읽었습니다. 맞으면 로드맵 주차 · 관문 · 지표를 그에 맞게 고칩니다.</p><div class="pro">답할 사람: 팀 전체(슬랙) · 반영: Claude</div></div>
+    <div class="box"><span class="no">②</span><h3>「3청」의 뜻</h3><p>1차 목표 「3청의 미식 지도」. 동아리 · 조직 이름인지, 삼청동처럼 동네인지에 따라 첫 지역(마포·서대문 제안)과 가게 목표 수가 바뀝니다.</p><div class="pro">답할 사람: 기획 팀장 · irisonestar</div></div>
+    <div class="box"><span class="no">③</span><h3>어묵의 용도 (팀장 질문)</h3><p>제안: 제보 보상으로 쌓이는 포인트. 2차 「내 맛지도」에서 도장 · 배지로 바꾸거나 월간 제보 순위에 씀.</p><div class="pro">답할 사람: 사용자 → 슬랙 답글 (초안 필요하면 Claude)</div></div>
+    <div class="box"><span class="no">④</span><h3>지도 엔진 확정 (D-01)</h3><p>M0 · M1 모두 오픈 지도(OpenStreetMap + MapLibre)로 돌아가고 있어 사실상 ②안. 확정만 하면 관문 G1을 넘습니다.</p><div class="pro">답할 사람: 사용자</div></div>
+    <div class="box"><span class="no">⑤</span><h3>팀 저장소 · 재배포</h3><p>팀 저장소(Dduck-dong-map)에 PR #1 이어서 올릴지, 그리고 Vercel 재배포 시점. 둘 다 사용자가 직접 합니다.</p><div class="pro">답할 사람: 사용자 (+ Luceta)</div></div>
+    <div class="box"><span class="no">⑥</span><h3>별점 운영 규칙</h3><p>별점을 넣으면서 「사장님 항의 → 별점 없음」 대응이 사라짐. 제안 = 제보(방문)와 함께만, 가게당 하루 1회(기기 기준), 3개 미만이면 숫자 숨김.</p><div class="pro">답할 사람: 팀</div></div>
+  </div>
+</section>
+
+<!-- 7. 다음 주 -->
+<section class="blk">
+  <div class="blk-head"><h2>7. 다음 주 제안 (11/2~11/8)</h2><p>①~⑤가 월요일에 정해진다고 보고</p></div>
+  <div class="box week">
+    <div><span class="d">월 11/2</span>결정 ①~⑤ 받기 → 로드맵 보드 다시 짜기 · 기획안 v5 확정<span class="muted">사용자 · 팀 · Claude</span></div>
+    <div><span class="d">화 11/3</span>M1 마무리 → 커밋 → Vercel 재배포 <b>(11/2 에 앞당겨 끝남 · 내 맛지도 탭까지)</b><span class="muted">Claude → 사용자</span></div>
+    <div><span class="d">수~목</span>팀이 새 판을 휴대폰으로 써 보고 슬랙에 피드백<span class="muted">팀</span></div>
+    <div><span class="d">금 11/6</span>피드백 반영 · 관문 G2(팀 확인) 통과 여부<span class="muted">Claude · 팀</span></div>
+    <div><span class="d">주말</span>M2 준비: Supabase 가입 · 키(사용자) · SQL 적용 순서(Claude)<span class="muted">사용자 · Claude</span></div>
+  </div>
+</section>
+
+<!-- 8. 화면 -->
+<section class="blk">
+  <div class="blk-head"><h2>8. 웹앱 M1 화면 (10-31, 아직 내 컴퓨터)</h2><p>누르면 크게 · 390×844</p></div>
+  <div class="shots">
+    <a href="../M1_화면_이미지_2026-10-31/01_홈_목록반.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/01_홈_목록반.png" alt="홈 · 목록 반" loading="lazy">홈 · 지도 + 가게 목록</a>
+    <a href="../M1_화면_이미지_2026-10-31/04_홈_검색_합정.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/04_홈_검색_합정.png" alt="검색" loading="lazy">검색</a>
+    <a href="../M1_화면_이미지_2026-10-31/05_홈_필터0곳.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/05_홈_필터0곳.png" alt="0곳 초기화" loading="lazy">0곳 → 초기화</a>
+    <a href="../M1_화면_이미지_2026-10-31/07_상세_도장앞.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/07_상세_도장앞.png" alt="상세" loading="lazy">상세 · 정보 순서</a>
+    <a href="../M1_화면_이미지_2026-10-31/08_상세_도장뒤_표정.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/08_상세_도장뒤_표정.png" alt="도장 표정" loading="lazy">도장 회전 → 표정</a>
+    <a href="../M1_화면_이미지_2026-10-31/02_홈_목록전체.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/02_홈_목록전체.png" alt="목록 전체" loading="lazy">목록 전체</a>
+    <a href="../M1_화면_이미지_2026-10-31/03_홈_가게선택.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/03_홈_가게선택.png" alt="가게 선택" loading="lazy">핀 선택</a>
+    <a href="../M1_화면_이미지_2026-10-31/06_필터시트_0곳.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/06_필터시트_0곳.png" alt="필터 시트" loading="lazy">필터 시트</a>
+    <a href="../M1_화면_이미지_2026-10-31/09_제보_2단계_평점.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/09_제보_2단계_평점.png" alt="제보 평점" loading="lazy">제보 · 별점</a>
+    <a href="../M1_화면_이미지_2026-10-31/10_목록탭.png" target="_blank"><img src="../M1_화면_이미지_2026-10-31/10_목록탭.png" alt="목록 탭" loading="lazy">목록 탭</a>
+  </div>
+</section>
+
+<p class="foot">
+  근거: <code>docs/팀피드백_v1_2026-10-31.md</code> · <code>docs/기획안_v5_2026-10-31.md</code> · 출시 로드맵 보드(claude.ai, db status) · <code>README.md</code> 기록 「⏸ 2026-10-31 마감」. 숫자는 2026-10-31 기준이고, 로드맵 주차 · 지표는 ①②가 정해진 뒤 다시 씁니다.<br>
+  가게는 전부 예시(가짜) 데이터이고, 제보 · 평점은 아직 저장되지 않습니다(M2).
+</p>
+
+</div>
+</body>
+</html>

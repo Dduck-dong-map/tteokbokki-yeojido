@@ -15,6 +15,7 @@ npm run dev
 - http://localhost:3000/admin : 운영 어드민 시안(기획: `../docs/어드민기획_v1_2026-10-27.md`). 디자인은 Admin Navy(`src/app/admin/admin-navy.css`, `.admin-root` 안에서만 듣게 바꾼 사본)
 - `?pal=H1`: 팔레트 바꾸기(화면 설계 보드와 같은 이름: V1 A B C D E H1 H2 N1~N6)
 - `?rice=rice&style=soup&spice=2-4&price=5000&open=1&solo=1&menu=0`: 필터가 걸린 채로 열기
+- http://localhost:3000/mine : **내 맛지도**(아래 메뉴 셋째 탭). 가게 상세 머리칸 오른쪽 ♡ 로 저장한 가게 · 다녀옴 · 내 제보. 로그인 없이 이 기기(localStorage `ddy-mine`)에만 두고, 계정이 생기면 `src/lib/mine.ts` 안만 바꾼다. 아래 메뉴는 지도 · 목록 · 내 맛지도 셋(떡볶이방은 2차라 안 보임)
 
 키나 계정이 없어도 돈다. 나중에 쓸 값은 `.env.example` 에 적어 두었다.
 

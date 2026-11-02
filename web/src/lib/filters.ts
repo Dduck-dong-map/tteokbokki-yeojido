@@ -85,6 +85,13 @@ export function applyFilters(stores: Store[], f: Filters, now: Date): Store[] {
   );
 }
 
+// 검색창: 가게 이름·동·주소로 바로 거른다 (슬랙 10-28: 접속 즉시 주변 가게 → 검색 → 선택 → 상세 → 길찾기)
+export function matchQuery(s: Store, q: string) {
+  const k = q.replace(/\s+/g, "").toLowerCase();
+  if (!k) return true;
+  return [s.name, s.dong, s.address, s.gu].some((v) => v.replace(/\s+/g, "").toLowerCase().includes(k));
+}
+
 // 최근 확인된 가게를 위에 (가슴속 3천원 방식)
 export const byRecentlyConfirmed = (a: Store, b: Store) => b.lastConfirmedAt.localeCompare(a.lastConfirmedAt);
 

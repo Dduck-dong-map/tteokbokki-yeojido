@@ -19,6 +19,7 @@ export async function POST(req: Request) {
     style: body.style,
     spice: body.spice,
     price: typeof body.price === "number" ? body.price : undefined,
+    rating: typeof body.rating === "number" ? body.rating : undefined, // 가게 평점(별), 선택
   };
   const error = checkReport(input);
   if (error) return Response.json({ ok: false, error }, { status: 422 });
