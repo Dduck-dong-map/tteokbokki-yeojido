@@ -1,0 +1,98 @@
+# 깃 푸시와 PR 이벤트를 슬랙 채널로 알린다.
+# 준비: 슬랙 수신 웹훅 주소를 저장소 시크릿 SLACK_WEBHOOK_URL 로 등록한다.
+# 시크릿이 없으면 경고만 남기고 건너뛴다(워크플로가 실패하지 않음).
+name: 슬랙 알림
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    types: [opened, reopened, ready_for_review, closed]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: 슬랙으로 보내기
+        # 사용자가 쓴 값(커밋 메시지·PR 제목)은 전부 env 로 받아 스크립트 주입을 막는다
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          EVENT_NAME: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          # 푸시
+          REF_NAME: ${{ github.ref_name }}
+          COMPARE_URL: ${{ github.event.compare }}
+          COMMITS_JSON: ${{ toJSON(github.event.commits) }}
+          FORCED: ${{ github.event.forced }}
+          DELETED: ${{ github.event.deleted }}
+          # PR
+          PR_ACTION: ${{ github.event.action }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
+            echo "::warning::SLACK_WEBHOOK_URL 시크릿이 없어 슬랙 알림을 건너뜁니다."
+            exit 0
+          fi
+
+          # 슬랙 mrkdwn 특수문자(& < >) 이스케이프
+          esc() { sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'; }
+          NL=$'\n'
+
+          if [ "$EVENT_NAME" = "push" ]; then
+            if [ "$DELETED" = "true" ]; then
+              echo "브랜치 삭제는 알리지 않습니다."
+              exit 0
+            fi
+
+            COUNT=$(jq 'length' <<<"$COMMITS_JSON")
+            FORCE_LABEL=""
+            [ "$FORCED" = "true" ] && FORCE_LABEL=" ⚠️ *강제 푸시*"
+
+            if [ "$COUNT" -eq 0 ]; then
+              TEXT="🌱 *${ACTOR}* 님이 \`${REF_NAME}\` 브랜치를 만들었습니다${FORCE_LABEL}"
+            else
+              # 최근 커밋 5개까지 첫 줄만 보여준다
+              LIST=$(jq -r '.[-5:][] | "• <\(.url)|`\(.id[0:7])`> \(.message | split("\n")[0] | gsub("&";"&amp;") | gsub("<";"&lt;") | gsub(">";"&gt;")) _(\(.author.name))_"' <<<"$COMMITS_JSON")
+              TEXT="🚀 *${ACTOR}* 님이 \`${REF_NAME}\` 에 커밋 ${COUNT}개를 올렸습니다${FORCE_LABEL}${NL}${LIST}"
+              if [ "$COUNT" -gt 5 ]; then
+                TEXT="${TEXT}${NL}… 외 $((COUNT - 5))개"
+              fi
+              TEXT="${TEXT}${NL}<${COMPARE_URL}|변경 내용 보기> · ${REPO}"
+            fi
+
+          elif [ "$EVENT_NAME" = "pull_request" ]; then
+            case "$PR_ACTION" in
+              opened)           ICON="🆕"; LABEL="새 PR" ;;
+              reopened)         ICON="🔄"; LABEL="PR 다시 열림" ;;
+              ready_for_review) ICON="👀"; LABEL="PR 리뷰 준비 완료" ;;
+              closed)
+                if [ "$PR_MERGED" = "true" ]; then ICON="✅"; LABEL="PR 병합됨"
+                else ICON="❌"; LABEL="PR 닫힘"; fi ;;
+              *) echo "알리지 않는 동작: $PR_ACTION"; exit 0 ;;
+            esac
+            DRAFT_LABEL=""
+            [ "$PR_DRAFT" = "true" ] && DRAFT_LABEL=" _(초안)_"
+            TITLE=$(printf '%s' "$PR_TITLE" | esc)
+            TEXT="${ICON} *${LABEL}* #${PR_NUMBER}${DRAFT_LABEL}${NL}<${PR_URL}|${TITLE}>${NL}\`${PR_HEAD}\` → \`${PR_BASE}\` · *${ACTOR}* · ${REPO}"
+          else
+            echo "처리하지 않는 이벤트: $EVENT_NAME"
+            exit 0
+          fi
+
+          PAYLOAD=$(jq -n --arg text "$TEXT" '{text: $text, unfurl_links: false, unfurl_media: false}')
+          curl -fsS -X POST -H 'Content-Type: application/json' --data "$PAYLOAD" "$SLACK_WEBHOOK_URL"
+          echo
+          echo "슬랙 알림 전송 완료"
