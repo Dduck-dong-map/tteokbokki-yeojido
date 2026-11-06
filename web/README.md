@@ -32,6 +32,7 @@ npm run dev
 - 데이터: `src/lib/data/db.ts` (지금 서버 파일. Vercel 에서는 API 와 페이지가 임시 폴더를 함께 쓰지 못해 **저장이 화면에 안 나타난다 → 공개 전에 Supabase 로 교체**) · 규칙: `src/lib/wiki.ts`
 - DB 설계: `supabase/migrations/` (`…_init.sql` 서비스, `…_admin.sql` 운영 어드민. 아직 적용 안 함)
 - 이용자 화면: `src/app/(site)/`. 지도 홈과 가게 상세는 `(map)/` 묶음이라 PC에서 상세를 열어도 큰 지도가 끊기지 않는다(`src/components/home/MapShell.tsx`)
+- 로딩 화면: `src/components/loading/`(떡 문 호랑이). 첫 진입 때 지도가 준비될 때까지 덮는다(폰은 화면 전체, 768px 이상은 지도 칸만)
 - 어드민: `src/app/admin/`(화면) · `src/components/admin/`(부품) · `src/lib/admin/sample.ts`(예시 제보·신고·기록)
 
 ## 알아 둘 것
