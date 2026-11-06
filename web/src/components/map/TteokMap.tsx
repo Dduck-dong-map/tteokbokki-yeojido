@@ -24,6 +24,7 @@ type Props = {
   me: LatLng | null;
   focus: Focus | null; // n 이 바뀔 때마다 그곳으로 옮긴다
   onBoundsChange?: (b: Bounds) => void; // 지도를 움직일 때마다 보이는 범위 (「현재 지도에서 찾은 가게」)
+  onSettled?: () => void; // 지도가 떴거나, 실패했거나, 8초가 지났을 때 (로딩 화면을 걷는다)
   start?: { lat: number; lng: number; zoom: number }; // 처음 보여 줄 곳. 없으면 마포·서대문 13배
   interactive?: boolean; // false = 움직이지 않는 작은 지도 (가게 상세, 위에서 밀어도 페이지가 스크롤된다)
   showName?: boolean; // 도장 밑 글자를 가격 대신 가게 이름으로
@@ -58,7 +59,9 @@ function toGeoJSON(stores: Store[], showName = false): GeoJSON.FeatureCollection
   };
 }
 
-export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange, start, interactive = true, showName = false }: Props) {
+const SLOW_MS = 8000; // 이만큼 지나도 안 뜨면 로딩 화면을 걷는다
+
+export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange, onSettled, start, interactive = true, showName = false }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const startAt = useRef(start);
   const under = useRef<HTMLDivElement>(null);
@@ -67,9 +70,9 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   const initial = useRef({ interactive, showName });
   const mapRef = useRef<MlMap | null>(null);
   const ready = useRef(false);
-  const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange });
+  const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange, onSettled });
   useEffect(() => {
-    latest.current = { stores, selectedId, me, onSelect, onBoundsChange };
+    latest.current = { stores, selectedId, me, onSelect, onBoundsChange, onSettled };
   });
 
   useEffect(() => {
@@ -77,10 +80,16 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
     let real: RealMap | undefined;
     let cancelled = false;
     let resize: ResizeObserver | undefined;
+    let sawTile = false; // 실제 지도 타일(omt)이 하나도 안 오면 안내를 띄우고, 하나라도 오면 내린다
+    const fail = () => {
+      setFailed(true);
+      latest.current.onSettled?.();
+    };
+    const slow = setTimeout(() => (sawTile ? latest.current.onSettled?.() : fail()), SLOW_MS);
     (async () => {
       const ml = await import("maplibre-gl").catch(() => null);
       if (cancelled || !box.current) return;
-      if (!ml) return setFailed(true);
+      if (!ml) return fail();
       ml.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs"); // scripts/copy-maplibre-worker.mjs 가 복사해 둔 파일
       const t = derive(findPreset(document.documentElement.dataset.pal));
       const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "real" ? "real" : "names";
@@ -103,16 +112,15 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         localIdeographFontFamily: KOREAN_SERIF,
         });
       } catch {
-        return setFailed(true); // WebGL 을 못 쓰는 기기
+        return fail(); // WebGL 을 못 쓰는 기기
       }
       map = m;
-      // 타일이 하나도 안 오면 안내를 띄우고, 하나라도 오면 내린다
-      let sawTile = false;
       m.on("error", () => {
-        if (!sawTile) setFailed(true);
+        if (!sawTile) fail();
       });
       m.on("data", (e) => {
-        if (!sawTile && e.dataType === "source" && "tile" in e && e.tile) {
+        // seam · 가게 · 내 위치 층은 우리가 넣은 자료라 지도와 상관없이 타일을 낸다. 세지 않는다.
+        if (!sawTile && e.dataType === "source" && e.sourceId === "omt" && "tile" in e && e.tile) {
           sawTile = true;
           setFailed(false);
         }
@@ -225,10 +233,13 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         m.on("moveend", report);
         report();
         ready.current = true;
+        clearTimeout(slow);
+        latest.current.onSettled?.();
       });
     })();
     return () => {
       cancelled = true;
+      clearTimeout(slow);
       ready.current = false;
       resize?.disconnect();
       real?.remove();

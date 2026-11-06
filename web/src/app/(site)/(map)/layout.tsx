@@ -1,13 +1,20 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import MapShell from "@/components/home/MapShell";
+import TigerLoader from "@/components/loading/TigerLoader";
 import { USING_SAMPLE_DATA, getRecentReportCount, getStores } from "@/lib/data";
 
 // 지도 홈(/)과 가게 상세(/store/[id])가 함께 쓰는 틀.
 // PC에서는 상세를 열어도 큰 지도가 끊기지 않고 옆에 남아 있어야 해서, 지도를 레이아웃에 둔다.
 export default function MapLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<div className="h-dvh bg-paper md:h-[calc(100dvh-56px)]" />}>
+    <Suspense
+      fallback={
+        <div className="relative h-dvh bg-paper md:h-[calc(100dvh-56px)]">
+          <TigerLoader />
+        </div>
+      }
+    >
       <Loader>{children}</Loader>
     </Suspense>
   );

@@ -143,6 +143,62 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
   animation: sheet-up 0.22s ease-out;
 }
 
+/* 로딩 화면: 떡 문 호랑이 (components/loading). 한지 바탕은 바로 깔아 덜 된 화면을 가리고, 호랑이는 0.3초 뒤에 나타난다.
+   스크립트가 죽어도 9초 뒤에는 저절로 걷힌다. 폰에서 max-md:fixed 가 이기도록 components 층에 둔다 */
+@layer components {
+  .tiger-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    overflow: hidden;
+    background: var(--paper);
+    animation: tiger-stop 0.2s linear 9s forwards;
+  }
+  .tiger-loader > * { animation: tiger-in 0.2s ease-out 0.3s both; }
+  .tiger-leaving { animation: tiger-leave 0.2s linear forwards; }
+  .tiger-art { position: relative; width: 220px; height: 220px; }
+  .tiger-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
+    mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
+    transform-origin: 50% 90%;
+    animation: tiger-tilt 1.6s ease-in-out infinite;
+  }
+  .tiger-ho {
+    position: absolute;
+    left: 2px;
+    top: 92px;
+    font: 700 22px var(--font-serif);
+    color: var(--ink3);
+    opacity: 0;
+    animation: tiger-ho 1.6s ease-out infinite;
+  }
+  .tiger-ho-2 { left: -10px; top: 128px; animation-delay: 0.8s; }
+}
+@keyframes tiger-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tiger-stop { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+@keyframes tiger-leave { to { opacity: 0; } }
+@keyframes tiger-tilt {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50% { transform: rotate(3deg) scale(1.03); }
+}
+@keyframes tiger-ho {
+  0% { opacity: 0; transform: translate(14px, 10px) scale(0.8); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-8px, -26px) scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tiger-art img { animation: none; }
+  .tiger-ho { animation: none; opacity: 0.7; }
+}
+
 /* 가게 상세의 맵기 도장 뒤집기 (슬랙 10-28: 누르면 휙 돌아가며 표정) */
 .flip { perspective: 600px; }
 .flip-inner { position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1.1); }

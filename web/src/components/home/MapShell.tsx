@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import MapLoading from "@/components/loading/MapLoading";
 import TteokMap, { type Bounds, type Focus } from "@/components/map/TteokMap";
 import SearchBox from "@/components/SearchBox";
 import { DEFAULT_FILTERS, activeFilterCount, applyFilters, byRecentlyConfirmed, distanceM, matchQuery, parseFilters, serializeFilters, type Filters } from "@/lib/filters";
@@ -67,6 +68,7 @@ export default function MapShell({ stores, recentReports, sample, children }: { 
   const wantMap = wide || !routeId;
   const [mapOn, setMapOn] = useState(wantMap);
   if (wantMap && !mapOn) setMapOn(true);
+  const [mapSettled, setMapSettled] = useState(false); // 로딩 화면을 걷을 때
 
   // 다른 가게로 옮기면 지도가 따라간다: PC 상세 · 뒤로 가기 · 「지도 크게 보기」
   const [seen, setSeen] = useState({ routeId, askedStore });
@@ -244,7 +246,8 @@ export default function MapShell({ stores, recentReports, sample, children }: { 
         <div className="relative flex-1 md:contents">
           {/* 큰 지도 */}
           <div className="absolute inset-0 [--attrib-bottom:calc(var(--sheet-h)-4px)] md:relative md:inset-auto md:order-3 md:min-w-0 md:flex-1 md:[--attrib-bottom:0px]">
-            {mapOn && <TteokMap stores={shown} selectedId={selected} onSelect={selectFromMap} me={me} focus={focus} onBoundsChange={setBounds} start={start} />}
+            {mapOn && <TteokMap stores={shown} selectedId={selected} onSelect={selectFromMap} me={me} focus={focus} onBoundsChange={setBounds} onSettled={() => setMapSettled(true)} start={start} />}
+            <MapLoading settled={mapSettled} />
 
             <div className="pointer-events-none absolute inset-x-0 top-2 z-10 flex flex-col items-center gap-1.5">
               {sample && <SampleRibbon />}
