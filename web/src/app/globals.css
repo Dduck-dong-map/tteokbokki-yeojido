@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+/* 색은 lib/theme.ts 가 :root 변수로 넣는다(팔레트 프리셋). 여기서는 Tailwind 이름만 붙인다. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-ink3: var(--ink3);
+  --color-primary: var(--primary);
+  --color-onprimary: var(--onprimary);
+  --color-accent: var(--accent);
+  --color-fab: var(--fab);
+  --color-onfab: var(--onfab);
+  --color-onaccent: var(--onaccent);
+  --color-stampbg: var(--stampbg);
+  --color-bar: var(--bar);
+  --color-line: var(--line);
+  --color-chip: var(--chip);
+  --color-chipline: var(--chipline);
+  --color-spicybg: var(--spicybg);
+  --color-spicytext: var(--spicytext);
+  --color-loc: var(--loc);
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-serif: "Nanum Myeongjo", "Noto Serif KR", Batang, "바탕", AppleMyungjo, serif;
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  word-break: keep-all;
+  /* 띄어쓰기 없는 긴 글도 칸 안에서 줄을 바꾼다. 없으면 폰 화면 전체가 옆으로 밀린다 */
+  overflow-wrap: anywhere;
+}
+.admin-root {
+  overflow-wrap: normal;
+}
+
+/* 글꼴 시험 (lib/fonts.ts): ?logo= 는 로고 그림을 글자로, ?head= 는 화면 제목·가게 이름 글꼴을 바꾼다. 본문은 그대로. */
+.logo-text {
+  display: none;
+  font-family: var(--font-logo);
+  font-size: 28px;
+  line-height: 32px;
+  color: #c00000;
+  filter: var(--logo-filter);
+  white-space: nowrap;
+}
+html[data-logo] .logo-png {
+  display: none;
+}
+html[data-logo] .logo-text {
+  display: block;
+}
+html[data-head] :is(h1, h2, h3):not(.admin-root *) {
+  font-family: var(--font-head);
+  font-weight: 400;
+}
+
+/* 페이지 폭 (웹 1차 기획 3.2): 폰은 화면 가득, 768 이상은 위 헤더 56px 아래 가운데 정렬 */
+@layer components {
+  /* 폰에서 작은 글자 링크·단추도 손가락 44px 로 눌리게 한다 (REQ-W10). 모양은 그대로, 누르는 범위만 넓힌다 */
+  @media (pointer: coarse) {
+    .hit {
+      position: relative;
+    }
+    .hit::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
+  }
+  .page-wide,
+  .page-narrow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100dvh;
+    margin-inline: auto;
+    background: var(--paper);
+  }
+  .page-narrow {
+    max-width: 640px;
+  }
+  @media (min-width: 768px) {
+    .page-wide,
+    .page-narrow {
+      min-height: calc(100dvh - 56px);
+      padding-inline: 24px;
+      padding-bottom: 40px;
+    }
+    .page-wide {
+      max-width: 1168px;
+    }
+    .page-narrow {
+      max-width: 688px;
+    }
+  }
+}
+
+/* 도장에 마우스를 올리면 나오는 이름·가격 */
+.stamp-tip .maplibregl-popup-content {
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 700 13px var(--font-sans);
+  white-space: nowrap;
+}
+.stamp-tip .maplibregl-popup-tip {
+  display: none;
+}
+
+/* 지도 위 오른쪽 아래 출처 표기를 바탕색에 맞춘다 */
+.maplibregl-ctrl-attrib {
+  background: color-mix(in srgb, var(--surface) 80%, transparent) !important;
+  color: var(--ink3) !important;
+  font-size: 10px;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--ink2) !important;
+}
+.maplibregl-ctrl-bottom-left {
+  bottom: var(--attrib-bottom, 0px);
+}
+
+/* 아래에서 올라오는 시트 */
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sheet-up {
+  animation: sheet-up 0.22s ease-out;
+}
+
+/* 가게 상세의 맵기 도장 뒤집기 (슬랙 10-28: 누르면 휙 돌아가며 표정) */
+.flip { perspective: 600px; }
+.flip-inner { position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1.1); }
+.flip.on .flip-inner { transform: rotateY(180deg); }
+.flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }
+/* 3D 뒷면 숨기기가 안 먹는 브라우저에서도 앞뒤가 겹치지 않게, 돌아가는 중간에 한 면씩만 보인다 */
+.flip-face { transition: opacity 0s linear 0.2s; }
+.flip-back { opacity: 0; }
+.flip.on .flip-back { opacity: 1; }
+.flip.on .flip-face:not(.flip-back) { opacity: 0; }
