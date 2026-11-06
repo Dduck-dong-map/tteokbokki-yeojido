@@ -46,7 +46,7 @@ function Head({ name, right }: { name?: string; right?: React.ReactNode }) {
     <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-line bg-bar px-1.5">
       <CloseStore />
       <p className="text-[16px] font-bold">{name ? "가게 위치" : ""}</p>
-      <div className="flex min-w-10 justify-end">{right}</div>
+      <div className="flex min-w-11 justify-end">{right}</div>
     </header>
   );
 }
@@ -135,8 +135,8 @@ async function StoreDetail({ id }: { id: string }) {
         {/* 대표 가격 · 맵기 */}
         <div>
           <p className="flex items-baseline justify-between gap-3">
-            <span className="text-[14px] text-ink2">{s.menu[0].name}</span>
-            <b className="text-[19px]">{won(s.price)}</b>
+            <span className="min-w-0 text-[14px] text-ink2">{s.menu[0].name}</span>
+            <b className="shrink-0 text-[19px]">{won(s.price)}</b>
           </p>
           <p className="mt-0.5 text-[12.5px] text-ink3">
             맵기 {s.spice} · {SPICE_LEVELS[s.spice].ref} · 대표 메뉴 기준 · {confirmedAgo(s.priceCheckedAt, now)} 확인
@@ -176,11 +176,11 @@ async function StoreDetail({ id }: { id: string }) {
               <p className="text-[12px] text-ink3">
                 {s.introBy && `처음 쓴 사람 ${s.introBy} · `}
                 {s.introAt && `${confirmedAgo(s.introAt, now)} 고침 · `}
-                <Link href={`/store/${s.id}/history`} className="underline underline-offset-2">
+                <Link href={`/store/${s.id}/history`} className="hit underline underline-offset-2">
                   이력
                 </Link>
                 {" · "}
-                <Link href={`/store/${s.id}/edit#intro`} className="underline underline-offset-2">
+                <Link href={`/store/${s.id}/edit#intro`} className="hit underline underline-offset-2">
                   고치기
                 </Link>
               </p>
@@ -215,8 +215,8 @@ async function StoreDetail({ id }: { id: string }) {
           <ul className="flex flex-col gap-1.5">
             {s.menu.map((m) => (
               <li key={m.name} className="flex justify-between gap-3 text-[14px]">
-                <span>{m.name}</span>
-                <b>{won(m.price)}</b>
+                <span className="min-w-0">{m.name}</span>
+                <b className="shrink-0">{won(m.price)}</b>
               </li>
             ))}
           </ul>

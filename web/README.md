@@ -29,7 +29,7 @@ npm run dev
 - 지도: MapLibre 6 + OpenFreeMap 타일(OpenStreetMap). 대동여지도 느낌 바탕은 `src/components/map/dongyeoStyle.ts`
 - 태그 체계: `src/lib/taxonomy.ts` (기획안 7절, 화면·서버·DB 공통)
 - 팔레트: `src/lib/theme.ts` (보드의 프리셋과 색 계산 그대로, 기본값은 `DEFAULT_PALETTE`)
-- 데이터: `src/lib/data/db.ts` (지금 서버 파일. Vercel 에서는 오래 남지 않으므로 **공개 전에 Supabase 로 교체**) · 규칙: `src/lib/wiki.ts`
+- 데이터: `src/lib/data/db.ts` (지금 서버 파일. Vercel 에서는 API 와 페이지가 임시 폴더를 함께 쓰지 못해 **저장이 화면에 안 나타난다 → 공개 전에 Supabase 로 교체**) · 규칙: `src/lib/wiki.ts`
 - DB 설계: `supabase/migrations/` (`…_init.sql` 서비스, `…_admin.sql` 운영 어드민. 아직 적용 안 함)
 - 이용자 화면: `src/app/(site)/`. 지도 홈과 가게 상세는 `(map)/` 묶음이라 PC에서 상세를 열어도 큰 지도가 끊기지 않는다(`src/components/home/MapShell.tsx`)
 - 어드민: `src/app/admin/`(화면) · `src/components/admin/`(부품) · `src/lib/admin/sample.ts`(예시 제보·신고·기록)
@@ -38,4 +38,5 @@ npm run dev
 
 - MapLibre 6은 지도 그리기 일꾼 파일을 따로 불러온다. `npm run dev`·`build` 전에 `scripts/copy-maplibre-worker.mjs` 가 그 파일을 `public/maplibre/` 에 복사한다. 이 복사본은 깃에 올리지 않는다.
 - 예시 데이터로 돌 때는 `robots` 가 검색엔진을 막는다(`src/lib/data/index.ts` 의 `USING_SAMPLE_DATA`).
+- `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 `.next` 를 지우고 켠다.
 - `AGENTS.md` 는 `next dev` 가 저절로 만드는 파일이다.

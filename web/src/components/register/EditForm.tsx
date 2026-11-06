@@ -63,7 +63,7 @@ export default function EditForm({ store, stores }: { store: Store; stores: Stor
   return (
     <div className="flex flex-col gap-6 px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+20px)] md:px-0">
       <p className="rounded-xl bg-chip px-3 py-2 text-[13px] leading-relaxed text-ink2">
-        고치면 바로 반영되고 <Link href={`/store/${store.id}/history`} className="font-semibold underline underline-offset-2">변경 이력</Link>에 남아요.
+        고치면 바로 반영되고 <Link href={`/store/${store.id}/history`} className="hit font-semibold underline underline-offset-2">변경 이력</Link>에 남아요.
       </p>
 
       <Section title="메뉴와 가격" sub="가장 자주 바뀌어요">
@@ -133,7 +133,7 @@ export default function EditForm({ store, stores }: { store: Store; stores: Stor
           {moveOpen ? (
             <MapPicker stores={stores} start={store} onChange={setPos} />
           ) : (
-            <button type="button" onClick={() => setMoveOpen(true)} className="h-10 rounded-xl border border-dashed border-chipline text-[13px] text-ink2">
+            <button type="button" onClick={() => setMoveOpen(true)} className="h-11 rounded-xl border border-dashed border-chipline text-[13px] text-ink2">
               지도 위치도 고치기
             </button>
           )}

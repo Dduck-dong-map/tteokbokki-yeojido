@@ -9,7 +9,7 @@ import { SAMPLE_HISTORY, SAMPLE_NEW, SAMPLE_REVIEWS, SAMPLE_STORES } from "./sam
 
 // 저장소: 지금은 서버 폴더의 JSON 파일 하나다 (web/.data/db.json · 깃에 안 올라간다).
 // 계정 없이 흐름 전체를 시험하려고 이렇게 뒀고, Supabase 키를 받으면 이 파일 안만 바꾼다.
-// 주의: Vercel 에서는 파일이 오래 남지 않는다 → 공개 출시 전에 반드시 바꿔야 한다.
+// 주의: Vercel 에서는 API 와 페이지가 임시 폴더를 함께 쓰지 못해 저장이 화면에 안 나타난다 (11-06 확인) → 공개 전에 반드시 바꿔야 한다.
 // 파일을 지우면 예시 데이터로 다시 시작한다.
 
 export const DATA_DIR = process.env.DATA_DIR ?? (process.env.VERCEL ? "/tmp/ddy-data" : path.join(process.cwd(), ".data"));

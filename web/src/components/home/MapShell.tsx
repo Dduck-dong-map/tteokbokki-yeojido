@@ -80,7 +80,9 @@ export default function MapShell({ stores, recentReports, sample, children }: { 
 
   const filtered = useMemo(() => applyFilters(stores, filters, now), [stores, filters, now]);
   const shown = useMemo(() => filtered.filter((s) => matchQuery(s, q)), [filtered, q]);
-  const inView = useMemo(() => (bounds ? shown.filter((s) => s.lng >= bounds.w && s.lng <= bounds.e && s.lat >= bounds.s && s.lat <= bounds.n) : shown), [shown, bounds]);
+  // 검색할 때는 지도 범위와 상관없이 찾는다. 지도를 확대해 둔 채 다른 동네를 찾아도 나와야 한다
+  const searching = q.trim().length > 0;
+  const inView = useMemo(() => (bounds && !searching ? shown.filter((s) => s.lng >= bounds.w && s.lng <= bounds.e && s.lat >= bounds.s && s.lat <= bounds.n) : shown), [shown, bounds, searching]);
   const effSort = sort ?? (me ? "near" : "recent");
   const list = useMemo(() => {
     const arr = [...inView];
@@ -232,7 +234,7 @@ export default function MapShell({ stores, recentReports, sample, children }: { 
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
-            className={`relative h-10 shrink-0 rounded-xl border px-3 text-[13px] font-bold ${nFilters ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink"}`}
+            className={`relative h-11 shrink-0 rounded-xl border px-3 text-[13px] font-bold ${nFilters ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink"}`}
           >
             필터
             {nFilters > 0 && <span className="ml-1 rounded-full bg-accent px-1.5 text-[11px] text-onaccent">{nFilters}</span>}
@@ -295,7 +297,7 @@ export default function MapShell({ stores, recentReports, sample, children }: { 
                   <span className="mx-auto mb-2 block h-1 w-10 rounded-full bg-chipline md:hidden" />
                   <div className="flex items-center justify-between gap-2">
                     <h2 className="min-w-0 text-[14px] font-bold">
-                      {inView.length ? `현재 지도에서 찾은 가게 ${inView.length}곳` : shown.length ? "이 지도 안에는 가게가 없어요" : "조건에 맞는 가게가 없어요"}
+                      {inView.length ? `${searching ? "검색으로" : "현재 지도에서"} 찾은 가게 ${inView.length}곳` : shown.length ? "이 지도 안에는 가게가 없어요" : "조건에 맞는 가게가 없어요"}
                     </h2>
                     <div className="flex shrink-0 gap-1 text-[12px]" onPointerDown={(e) => e.stopPropagation()}>
                       {(["near", "recent"] as const).map((k) => (
@@ -305,7 +307,7 @@ export default function MapShell({ stores, recentReports, sample, children }: { 
                           disabled={k === "near" && !me}
                           onClick={() => setSort(k)}
                           aria-pressed={effSort === k}
-                          className={`rounded-full px-2.5 py-1 whitespace-nowrap ${effSort === k ? "bg-ink text-paper" : "text-ink3 disabled:opacity-40"}`}
+                          className={`hit rounded-full px-2.5 py-1 whitespace-nowrap ${effSort === k ? "bg-ink text-paper" : "text-ink3 disabled:opacity-40"}`}
                         >
                           {k === "near" ? "가까운순" : "최근 확인순"}
                         </button>

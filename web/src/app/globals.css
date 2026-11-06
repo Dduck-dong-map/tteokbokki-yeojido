@@ -35,6 +35,11 @@ body {
   font-family: var(--font-sans);
   -webkit-tap-highlight-color: transparent;
   word-break: keep-all;
+  /* 띄어쓰기 없는 긴 글도 칸 안에서 줄을 바꾼다. 없으면 폰 화면 전체가 옆으로 밀린다 */
+  overflow-wrap: anywhere;
+}
+.admin-root {
+  overflow-wrap: normal;
 }
 
 /* 글꼴 시험 (lib/fonts.ts): ?logo= 는 로고 그림을 글자로, ?head= 는 화면 제목·가게 이름 글꼴을 바꾼다. 본문은 그대로. */
@@ -60,6 +65,21 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
 
 /* 페이지 폭 (웹 1차 기획 3.2): 폰은 화면 가득, 768 이상은 위 헤더 56px 아래 가운데 정렬 */
 @layer components {
+  /* 폰에서 작은 글자 링크·단추도 손가락 44px 로 눌리게 한다 (REQ-W10). 모양은 그대로, 누르는 범위만 넓힌다 */
+  @media (pointer: coarse) {
+    .hit {
+      position: relative;
+    }
+    .hit::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
+  }
   .page-wide,
   .page-narrow {
     display: flex;
@@ -129,3 +149,8 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
 .flip.on .flip-inner { transform: rotateY(180deg); }
 .flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .flip-back { transform: rotateY(180deg); }
+/* 3D 뒷면 숨기기가 안 먹는 브라우저에서도 앞뒤가 겹치지 않게, 돌아가는 중간에 한 면씩만 보인다 */
+.flip-face { transition: opacity 0s linear 0.2s; }
+.flip-back { opacity: 0; }
+.flip.on .flip-back { opacity: 1; }
+.flip.on .flip-face:not(.flip-back) { opacity: 0; }

@@ -171,10 +171,10 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
       <p>{error}</p>
       {dup && (
         <div className="mt-2 flex gap-2">
-          <Link href={`/store/${dup}`} className="grid h-10 flex-1 place-items-center rounded-xl border border-ink2 bg-surface text-[14px] font-bold text-ink">
+          <Link href={`/store/${dup}`} className="grid h-11 flex-1 place-items-center rounded-xl border border-ink2 bg-surface text-[14px] font-bold text-ink md:h-10">
             그 가게 보기
           </Link>
-          <button type="button" onClick={() => submit(true)} disabled={sending} className="h-10 flex-1 rounded-xl border border-chipline bg-surface text-[14px] text-ink2 disabled:opacity-50">
+          <button type="button" onClick={() => submit(true)} disabled={sending} className="h-11 flex-1 rounded-xl border border-chipline bg-surface text-[14px] text-ink2 disabled:opacity-50 md:h-10">
             다른 가게예요
           </button>
         </div>
@@ -189,7 +189,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
           <span className="min-w-0 flex-1">쓰다 만 등록이 있어요.</span>
           <button
             type="button"
-            className="h-9 rounded-lg bg-primary px-3 font-bold text-onprimary"
+            className="h-11 rounded-lg bg-primary px-3 font-bold text-onprimary md:h-9"
             onClick={() => {
               const d = JSON.parse(saved) as { r: Draft; step: number };
               setR({ ...EMPTY, ...d.r });
@@ -202,7 +202,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
           </button>
           <button
             type="button"
-            className="h-9 rounded-lg border border-chipline bg-surface px-3"
+            className="h-11 rounded-lg border border-chipline bg-surface px-3 md:h-9"
             onClick={() => {
               writeDraft(null);
               setDraftClosed(true);

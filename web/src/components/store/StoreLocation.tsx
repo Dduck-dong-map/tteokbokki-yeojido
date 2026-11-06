@@ -22,7 +22,7 @@ export function StoreMiniMap({ store }: { store: Store }) {
     <>
       <div className="flex items-center justify-between md:hidden">
         <h2 className="text-[16px] font-bold">위치</h2>
-        <Link href={href} className="text-[13px] font-bold text-accent">
+        <Link href={href} className="hit text-[13px] font-bold text-accent">
           지도 크게 보기
         </Link>
       </div>
@@ -52,7 +52,7 @@ export function CloseStore() {
         router.push(`/${window.location.search}`);
       }}
       aria-label="지도로 돌아가기"
-      className="grid h-10 w-10 place-items-center rounded-full text-xl text-ink hover:bg-chip"
+      className="grid h-11 w-11 place-items-center rounded-full text-xl text-ink hover:bg-chip"
     >
       <span className="md:hidden">‹</span>
       <span className="hidden text-[20px] md:inline">×</span>
@@ -77,7 +77,7 @@ export function ShareButton({ name }: { name: string }) {
     }
   };
   return (
-    <button type="button" onClick={share} aria-label={`${name} 공유`} title={done ? "주소를 복사했어요" : "공유"} className="grid h-10 w-10 place-items-center rounded-full text-ink hover:bg-chip">
+    <button type="button" onClick={share} aria-label={`${name} 공유`} title={done ? "주소를 복사했어요" : "공유"} className="grid h-11 w-11 place-items-center rounded-full text-ink hover:bg-chip">
       {done ? (
         <span className="text-[16px]">✓</span>
       ) : (

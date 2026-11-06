@@ -33,6 +33,7 @@ type Props = {
 const START: [number, number] = [126.928, 37.5555];
 const KOREAN_SERIF = "'Nanum Myeongjo', 'Noto Serif KR', Batang, '바탕', AppleMyungjo, serif";
 
+const clip = (name: string) => (name.length > 20 ? `${name.slice(0, 20)}…` : name);
 const rot = (id: string) => ([...id].reduce((a, c) => a + c.charCodeAt(0), 0) % 9) - 4; // 도장을 살짝 비뚤게
 
 function toGeoJSON(stores: Store[], showName = false): GeoJSON.FeatureCollection {
@@ -43,14 +44,14 @@ function toGeoJSON(stores: Store[], showName = false): GeoJSON.FeatureCollection
       type: "Feature",
       properties: {
         id: s.id,
-        name: s.name,
+        name: clip(s.name),
         price: won(s.price),
         spice: s.spice,
         grade: s.grade,
         stale: freshness(s, now) === "stale",
         rot: rot(s.id),
         // 도장 밑 글자: 대표 가격 + 별점 (확인 중인 가게는 그렇게 적는다)
-        label: showName ? s.name : `${won(s.price)}${isPending(s, now) ? " · 확인 중" : s.rating?.count ? ` · ${s.rating.avg.toFixed(1)}점` : ""}`,
+        label: showName ? clip(s.name) : `${won(s.price)}${isPending(s, now) ? " · 확인 중" : s.rating?.count ? ` · ${s.rating.avg.toFixed(1)}점` : ""}`,
       },
       geometry: { type: "Point", coordinates: [s.lng, s.lat] },
     })),

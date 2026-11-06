@@ -104,11 +104,11 @@ export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; 
                         type="button"
                         onClick={() => toggleVisited(s.id)}
                         aria-pressed={!!v.visited}
-                        className={`h-8 shrink-0 rounded-full border px-2.5 text-[12px] ${v.visited ? "border-ink bg-surface font-semibold text-ink" : "border-chipline bg-surface text-ink3"}`}
+                        className={`hit h-8 shrink-0 rounded-full border px-2.5 text-[12px] ${v.visited ? "border-ink bg-surface font-semibold text-ink" : "border-chipline bg-surface text-ink3"}`}
                       >
                         {v.visited ? "다녀옴 ✓" : "다녀옴"}
                       </button>
-                      <button type="button" onClick={() => toggleSave(s.id)} aria-label={`${s.name} 저장 취소`} className="grid h-8 w-8 shrink-0 place-items-center text-[18px] text-fab">
+                      <button type="button" onClick={() => toggleSave(s.id)} aria-label={`${s.name} 저장 취소`} className="grid h-11 w-11 shrink-0 place-items-center text-[18px] text-fab md:h-8 md:w-8">
                         ♥
                       </button>
                     </li>

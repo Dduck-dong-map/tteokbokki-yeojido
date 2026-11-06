@@ -21,7 +21,7 @@ export default function SaveButton({ id, name }: { id: string; name: string }) {
         onClick={press}
         aria-pressed={on}
         aria-label={on ? `${name} 저장 취소` : `${name} 내 맛지도에 저장`}
-        className={`grid h-10 w-10 place-items-center rounded-full text-[22px] leading-none transition-transform active:scale-90 ${on ? "text-fab" : "text-ink3"}`}
+        className={`grid h-11 w-11 place-items-center rounded-full text-[22px] leading-none transition-transform active:scale-90 ${on ? "text-fab" : "text-ink3"}`}
       >
         {on ? "♥" : "♡"}
       </button>

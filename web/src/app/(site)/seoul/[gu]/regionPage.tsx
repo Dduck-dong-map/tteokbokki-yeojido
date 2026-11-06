@@ -39,14 +39,14 @@ export function RegionList({ region, stores, taste, now }: { region: Region; sto
         {region.name}의 {taste ? taste.label : "떡볶이"} 가게 {shown.length}곳 · 최근 확인된 곳부터 보여요.
       </p>
       <nav className="flex gap-1.5 overflow-x-auto px-4 py-3 [scrollbar-width:none] md:flex-wrap md:overflow-visible md:px-0">
-        <Link href={`/seoul/${region.gu}`} className={`h-8 shrink-0 rounded-full border px-3 text-[13px] leading-8 ${!taste ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}>
+        <Link href={`/seoul/${region.gu}`} className={`hit h-8 shrink-0 rounded-full border px-3 text-[13px] leading-8 ${!taste ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}>
           전체
         </Link>
         {links.map((t) => (
           <Link
             key={t.slug}
             href={`/seoul/${region.gu}/${t.slug}`}
-            className={`h-8 shrink-0 rounded-full border px-3 text-[13px] leading-8 ${taste?.slug === t.slug ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}
+            className={`hit h-8 shrink-0 rounded-full border px-3 text-[13px] leading-8 ${taste?.slug === t.slug ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}
           >
             {t.label}
           </Link>

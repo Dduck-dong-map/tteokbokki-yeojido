@@ -1689,7 +1689,7 @@ add({ id:'wb_admin', code:'WB-04', t:'어드민 · 무엇을 통제하나 · v1 
 /* W1 구현 결과 (11-06). 사진은 실제 웹을 예시 데이터로 찍은 것 */
 const W1_SHOT = (file, w, h, k, label, dir = 'w1') => `<div>${WB_LB(label)}<div style="width:${Math.round(w * k)}px;height:${Math.round(h * k)}px;overflow:hidden;border-radius:10px;border:1px solid #CFCFC9;background:#fff"><img src="img/${dir}/${file}" alt="${label}" style="display:block;width:100%;height:100%;object-fit:cover;object-position:top"></div></div>`;
 add({ id:'wb_w1', code:'WB-05', t:'W1 구현 결과 · 왼쪽 기존 → 오른쪽 지금 웹', lane:'WB', w:1760, h:2056, isDoc:true,
-  spec:['기획 W1 범위: 반응형 틀 · 상세 N-05 + 지도 · 등록 + 소개글 · 맵기 투표 빼기 · 제보 → 등록','코드: web/ (브랜치 web-w1) · 주소 /register, 옛 /report 는 넘겨 줌','시험: 저장 흐름 75개 (배포 방식으로 3번) · 화면 57개 (폭 7개 가로 스크롤 포함) · tsc · eslint · build 통과'],
+  spec:['기획 W1 범위: 반응형 틀 · 상세 N-05 + 지도 · 등록 + 소개글 · 맵기 투표 빼기 · 제보 → 등록','코드: web/ (브랜치 web-w1) · 주소 /register, 옛 /report 는 넘겨 줌','시험: 실제 입력 개발 서버 178개 · 배포 방식 132개 · WebKit 27개 · 저장 흐름 75개 · tsc · eslint · build 통과. 찾아서 고친 것 4 = 문서 4.1절'],
   next:['사용자 PC·폰 확인. <b>실제 폰 시험은 아직 안 함</b> (키보드 · 작은 지도 스크롤 · 길찾기 앱 열림)','W2 어드민 연결 (승인 스위치 · 금칙어 · 신고 4종은 여기서)'],
   rel:['wb_all', 'wb_store', 'wb_reg', 'wb_resp'],
   html:() => WB_DOC(1760, 2056, `${WB_H('W1 구현 결과', '왼쪽은 W1 전 화면, 오른쪽은 지금 웹을 찍은 사진이다. 같은 주소가 폭에 따라 세 가지로 짜인다.')}

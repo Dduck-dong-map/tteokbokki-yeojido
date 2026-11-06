@@ -34,7 +34,7 @@ async function Loader() {
         <h1 className="text-[18px] font-bold md:text-[20px]">목록</h1>
         <div className="mt-2 flex gap-2">
           {regions.map((r) => (
-            <Link key={r.gu} href={`/seoul/${r.gu}`} className="h-8 rounded-full border border-chipline bg-surface px-3 text-[13px] leading-8 text-ink2">
+            <Link key={r.gu} href={`/seoul/${r.gu}`} className="hit h-8 rounded-full border border-chipline bg-surface px-3 text-[13px] leading-8 text-ink2">
               {r.name} {stores.filter((s) => s.gu === r.gu).length}곳
             </Link>
           ))}

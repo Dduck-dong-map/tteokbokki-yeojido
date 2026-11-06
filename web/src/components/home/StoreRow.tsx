@@ -45,7 +45,7 @@ export default function StoreRow({ store: s, me, now, selected, onPick }: Props)
           <SpiceStamp n={s.spice} size={26} faded={stale} />
           <div className="text-right">
             <b className="block text-[15px] leading-tight">{won(s.price)}</b>
-            <span className="text-[11px] text-ink3">{s.menu[0].name}</span>
+            <span className="block max-w-[96px] truncate text-[11px] text-ink3">{s.menu[0].name}</span>
           </div>
         </div>
       </div>

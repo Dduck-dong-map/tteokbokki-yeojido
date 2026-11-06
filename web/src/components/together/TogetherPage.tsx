@@ -118,7 +118,7 @@ export default function TogetherPage({ stores, sample, nowIso }: { stores: Store
                         </p>
                       </div>
                     </Link>
-                    <Link href={`/store/${s.id}/edit`} className="grid h-9 shrink-0 place-items-center rounded-xl border border-ink2 bg-surface px-3 text-[13px] font-bold">
+                    <Link href={`/store/${s.id}/edit`} className="grid h-11 shrink-0 place-items-center rounded-xl border border-ink2 bg-surface px-3 text-[13px] font-bold md:h-9">
                       고치기
                     </Link>
                   </li>

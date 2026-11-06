@@ -42,7 +42,7 @@ export function StillHere({ id, lat, lng }: { id: string; lat: number; lng: numb
 
   return (
     <div className="text-right">
-      <button type="button" onClick={press} disabled={busy} className="h-10 rounded-xl border border-ink2 bg-surface px-4 text-[14px] font-bold disabled:opacity-50">
+      <button type="button" onClick={press} disabled={busy} className="h-11 rounded-xl border border-ink2 bg-surface px-4 text-[14px] font-bold disabled:opacity-50">
         {busy ? "위치 확인 중…" : "아직 있어요"}
       </button>
       {msg && <p className="mt-1.5 text-[12px] text-ink3">{msg}</p>}
@@ -55,7 +55,7 @@ export function CopyAddress({ address }: { address: string }) {
   return (
     <button
       type="button"
-      className="h-8 shrink-0 rounded-full border border-chipline bg-chip px-3 text-[12px] text-ink2"
+      className="hit h-8 shrink-0 rounded-full border border-chipline bg-chip px-3 text-[12px] text-ink2"
       onClick={() =>
         navigator.clipboard?.writeText(address).then(() => {
           setDone(true);
@@ -85,10 +85,10 @@ export function VerifyButtons({ id, compact = false }: { id: string; compact?: b
   return (
     <div>
       <div className="flex gap-2">
-        <button type="button" disabled={busy} onClick={() => vote(true)} className={`flex-1 rounded-xl bg-accent font-bold text-onaccent disabled:opacity-50 ${compact ? "h-9 text-[13px]" : "h-11 text-[14px]"}`}>
+        <button type="button" disabled={busy} onClick={() => vote(true)} className={`flex-1 rounded-xl bg-accent font-bold text-onaccent disabled:opacity-50 ${compact ? "h-11 text-[13px] md:h-9" : "h-11 text-[14px]"}`}>
           맞아요
         </button>
-        <button type="button" disabled={busy} onClick={() => vote(false)} className={`flex-1 rounded-xl border border-ink2 bg-surface font-bold disabled:opacity-50 ${compact ? "h-9 text-[13px]" : "h-11 text-[14px]"}`}>
+        <button type="button" disabled={busy} onClick={() => vote(false)} className={`flex-1 rounded-xl border border-ink2 bg-surface font-bold disabled:opacity-50 ${compact ? "h-11 text-[13px] md:h-9" : "h-11 text-[14px]"}`}>
           달라요
         </button>
       </div>
@@ -206,7 +206,7 @@ export function FlagReviewButton({ storeId, reviewId }: { storeId: string; revie
   return (
     <button
       type="button"
-      className="text-[11px] text-ink3 underline underline-offset-2"
+      className="hit text-[11px] text-ink3 underline underline-offset-2"
       onClick={async () => {
         const res = await send(`/api/stores/${storeId}`, { action: "flag-review", reviewId });
         setMsg(res.ok ? "신고했어요" : (res.error ?? "보내지 못했어요"));

@@ -137,7 +137,7 @@ export function BottomNav({ active }: { active: (typeof NAV)[number]["key"] }) {
 export function BackHeader({ title, href = "/", right }: { title: string; href?: string; right?: React.ReactNode }) {
   return (
     <header className="z-10 flex h-12 items-center gap-2 border-b border-line bg-bar px-2 max-md:sticky max-md:top-0 md:h-14 md:border-0 md:bg-transparent md:px-0">
-      <Link href={href} className="grid h-10 w-10 place-items-center rounded-full text-xl text-ink hover:bg-chip" aria-label="뒤로">
+      <Link href={href} className="grid h-11 w-11 place-items-center rounded-full text-xl text-ink hover:bg-chip" aria-label="뒤로">
         ‹
       </Link>
       <h1 className="min-w-0 flex-1 truncate text-[16px] font-bold md:text-[20px]">{title}</h1>

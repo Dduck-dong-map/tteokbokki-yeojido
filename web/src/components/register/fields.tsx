@@ -20,7 +20,7 @@ export function Choice({ on, onClick, children }: { on: boolean; onClick: () => 
       type="button"
       onClick={onClick}
       aria-pressed={on}
-      className={`h-10 rounded-full border px-4 text-[14px] font-medium ${on ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}
+      className={`h-11 rounded-full border px-4 text-[14px] font-medium md:h-10 ${on ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}
     >
       {children}
     </button>
@@ -88,7 +88,7 @@ export function MenuEditor({ menu, onChange }: { menu: MenuItem[]; onChange: (m:
               className="h-11 w-24 rounded-xl border border-chipline bg-surface px-3 text-right text-[16px] text-ink"
             />
             {i > 0 && (
-              <button type="button" onClick={() => onChange(menu.filter((_, k) => k !== i))} aria-label="이 메뉴 빼기" className="grid h-11 w-7 place-items-center text-[18px] text-ink3">
+              <button type="button" onClick={() => onChange(menu.filter((_, k) => k !== i))} aria-label="이 메뉴 빼기" className="grid h-11 w-11 shrink-0 place-items-center text-[18px] text-ink3 md:w-7">
                 ×
               </button>
             )}
@@ -96,7 +96,7 @@ export function MenuEditor({ menu, onChange }: { menu: MenuItem[]; onChange: (m:
           {i === 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
               {PRICE_HINTS.map((p) => (
-                <button key={p} type="button" onClick={() => set(0, { price: p })} aria-pressed={m.price === p} className={`h-8 rounded-full border px-2.5 text-[12px] ${m.price === p ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}>
+                <button key={p} type="button" onClick={() => set(0, { price: p })} aria-pressed={m.price === p} className={`hit h-10 rounded-full border px-2.5 text-[12px] md:h-8 ${m.price === p ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}>
                   {won(p)}
                 </button>
               ))}
@@ -105,7 +105,7 @@ export function MenuEditor({ menu, onChange }: { menu: MenuItem[]; onChange: (m:
         </div>
       ))}
       {menu.length < MAX_MENU && (
-        <button type="button" onClick={() => onChange([...menu, { name: "", price: 0 }])} className="h-10 rounded-xl border border-dashed border-chipline text-[13px] text-ink2">
+        <button type="button" onClick={() => onChange([...menu, { name: "", price: 0 }])} className="h-11 rounded-xl border border-dashed border-chipline text-[13px] text-ink2">
           + 다른 메뉴 더하기
         </button>
       )}
@@ -141,7 +141,7 @@ export function PhotoPicker({ ids, onChange, hint }: { ids: string[]; onChange: 
           <div key={id} className="relative aspect-square overflow-hidden rounded-xl border border-line">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`/api/photos/${id}`} alt="올린 사진" className="h-full w-full object-cover" />
-            <button type="button" onClick={() => onChange(ids.filter((x) => x !== id))} aria-label="이 사진 빼기" className="absolute top-1 right-1 grid h-6 w-6 place-items-center rounded-full bg-ink/70 text-[14px] text-paper">
+            <button type="button" onClick={() => onChange(ids.filter((x) => x !== id))} aria-label="이 사진 빼기" className="hit absolute top-1 right-1 grid h-6 w-6 place-items-center rounded-full bg-ink/70 text-[14px] text-paper">
               ×
             </button>
           </div>
@@ -208,7 +208,7 @@ export function IntroField({ id, value, onChange }: { id: string; value: string;
               onChange(`${value}${value && !value.endsWith("\n") ? "\n" : ""}${t} `.slice(0, MAX_INTRO));
               box.current?.focus();
             }}
-            className="h-9 rounded-full border border-chipline bg-surface px-3 text-[13px] text-ink2"
+            className="h-11 rounded-full border border-chipline bg-surface px-3 text-[13px] text-ink2 md:h-9"
           >
             {t}
           </button>
@@ -260,7 +260,7 @@ export function MapPicker({ stores, start, onChange, tall = false }: { stores: S
           <path d="M14 37C14 37 27 22 27 13.5a13 13 0 1 0-26 0C1 22 14 37 14 37Z" fill="var(--fab)" stroke="#fff" strokeWidth="2" />
           <circle cx="14" cy="13.5" r="4.5" fill="#fff" />
         </svg>
-        <button type="button" onClick={locate} className="absolute top-2 right-2 z-10 h-9 rounded-full border border-chipline bg-surface px-3 text-[12px] font-semibold text-ink shadow-sm">
+        <button type="button" onClick={locate} className="absolute top-2 right-2 z-10 h-11 rounded-full md:h-9 border border-chipline bg-surface px-3 text-[12px] font-semibold text-ink shadow-sm">
           내 위치로
         </button>
       </div>
@@ -283,7 +283,7 @@ export function HoursField({ value, onChange }: { value: Hours | null; onChange:
     <div className="flex flex-col gap-2">
       <div className="flex justify-between gap-1">
         {DAY_NAMES.map((n, d) => (
-          <button key={n} type="button" onClick={() => toggle(d)} aria-pressed={value.days.includes(d)} className={`h-9 flex-1 rounded-lg border text-[13px] ${value.days.includes(d) ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink3"}`}>
+          <button key={n} type="button" onClick={() => toggle(d)} aria-pressed={value.days.includes(d)} className={`h-11 flex-1 rounded-lg border text-[13px] md:h-9 ${value.days.includes(d) ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink3"}`}>
             {n}
           </button>
         ))}
@@ -292,7 +292,7 @@ export function HoursField({ value, onChange }: { value: Hours | null; onChange:
         <input type="time" value={value.open} onChange={(e) => onChange({ ...value, open: e.target.value })} aria-label="여는 시간" className="h-11 min-w-0 flex-1 rounded-xl border border-chipline bg-surface px-3 text-[16px] text-ink" />
         <span className="text-ink3">~</span>
         <input type="time" value={value.close} onChange={(e) => onChange({ ...value, close: e.target.value })} aria-label="닫는 시간" className="h-11 min-w-0 flex-1 rounded-xl border border-chipline bg-surface px-3 text-[16px] text-ink" />
-        <button type="button" onClick={() => onChange(null)} className="shrink-0 px-1 text-[12px] text-ink3 underline underline-offset-2">
+        <button type="button" onClick={() => onChange(null)} className="hit shrink-0 px-1 text-[12px] text-ink3 underline underline-offset-2">
           모름
         </button>
       </div>

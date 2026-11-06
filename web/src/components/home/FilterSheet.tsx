@@ -20,7 +20,7 @@ function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; chi
       type="button"
       onClick={onClick}
       aria-pressed={on}
-      className={`h-9 rounded-full border px-3.5 text-[14px] font-medium transition-colors ${
+      className={`h-11 rounded-full border px-3.5 text-[14px] font-medium transition-colors md:h-9 ${
         on ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"
       }`}
     >
@@ -66,7 +66,7 @@ export default function FilterSheet({ value: f, count, onChange, onClose, inline
         )}
         <div className="flex items-baseline justify-between">
           <h2 className="text-[18px] font-bold">오늘은 어떤 떡?</h2>
-          <button type="button" className="text-[13px] text-ink3 underline" onClick={() => onChange(DEFAULT_FILTERS)}>
+          <button type="button" className="hit text-[13px] text-ink3 underline" onClick={() => onChange(DEFAULT_FILTERS)}>
             처음으로
           </button>
         </div>

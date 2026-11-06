@@ -6,7 +6,7 @@ import { setSearch, useSearch } from "@/lib/search";
 export default function SearchBox() {
   const q = useSearch();
   return (
-    <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-xl border border-chipline bg-surface px-3">
+    <label className="flex h-11 min-w-0 flex-1 md:h-10 items-center gap-2 rounded-xl border border-chipline bg-surface px-3">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="shrink-0 text-ink3" aria-hidden="true">
         <circle cx="11" cy="11" r="7" />
         <path d="m20 20-3.5-3.5" />
@@ -19,7 +19,7 @@ export default function SearchBox() {
         aria-label="가게 검색"
       />
       {q && (
-        <button type="button" onClick={() => setSearch("")} aria-label="검색어 지우기" className="text-ink3">
+        <button type="button" onClick={() => setSearch("")} aria-label="검색어 지우기" className="hit text-ink3">
           ×
         </button>
       )}
