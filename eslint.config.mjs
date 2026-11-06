@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // web/ 은 따로 설치·빌드하는 앱이다
+    "web/**",
   ]),
 ]);
 
