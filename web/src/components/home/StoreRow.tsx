@@ -22,7 +22,7 @@ export default function StoreRow({ store: s, me, now, selected, onPick }: Props)
   const stale = freshness(s, now) === "stale";
   return (
     <li id={`row-${s.id}`} className={selected ? "bg-chip" : ""}>
-      <div className="flex gap-3 px-4 py-3" onClick={onPick} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && onPick()}>
+      <div className="flex cursor-pointer gap-3 px-4 py-3 md:hover:bg-chip" onClick={onPick} role="button" tabIndex={0} aria-current={selected ? "true" : undefined} onKeyDown={(e) => e.key === "Enter" && onPick()}>
         <StoreThumb photo={s.photos?.[0]} />
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-1.5 text-[15px] font-bold">
@@ -50,7 +50,7 @@ export default function StoreRow({ store: s, me, now, selected, onPick }: Props)
         </div>
       </div>
       {selected && (
-        <div className="flex gap-2 px-4 pb-3">
+        <div className="flex gap-2 px-4 pb-3 md:hidden">
           <Link href={`/store/${s.id}`} className="grid h-10 flex-1 place-items-center rounded-xl bg-accent text-[14px] font-bold text-onaccent">
             자세히 · 길찾기
           </Link>

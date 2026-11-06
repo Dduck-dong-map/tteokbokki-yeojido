@@ -27,6 +27,9 @@ export const SAMPLE_STORES: Store[] = [
     hours: { days: noSun, open: "10:30", close: "20:30" },
     lastConfirmedAt: "2026-10-20", isSample: true,
     rating: { avg: 4.3, count: 12 },
+    memo: "시장 입구에서 오래 하신 집이에요. 밀떡이 쫄깃하고 국물이 달달해요.\n튀김을 국물에 찍어 먹으면 더 맛있어요. 저녁에는 줄이 길어요. (예시 소개글)",
+    introBy: "쫀득한 밀떡 412",
+    introAt: "2026-10-20",
   },
   {
     id: "mangwon-market-oil",

@@ -48,7 +48,7 @@ export function SpiceStamp({ n, size = 28, faded = false, pill = true }: { n: Sp
   );
 }
 
-// 가게 평점(별 1~5) — 두 축 중 「가게」 축 (슬랙 10-28). 거지맵처럼 「★ 4.3 · 12개」.
+// 가게 평점(별 1~5) — 거지맵처럼 「★ 4.3 · 12개」.
 export function Stars({ rating, size = 13 }: { rating?: { avg: number; count: number }; size?: number }) {
   if (!rating || !rating.count) return <span className="text-ink3" style={{ fontSize: size }}>평점 아직 없음</span>;
   return (
@@ -83,9 +83,9 @@ export function Logo() {
   );
 }
 
-// 일주일 안에 제보돼 아직 확인 중인 가게 표시
+// 일주일 안에 등록돼 아직 확인 중인 가게 표시
 export function PendingTag() {
-  return <span className="inline-flex h-5 items-center rounded-full border border-dashed border-ink3 px-2 text-[11px] font-medium text-ink2">확인 중</span>;
+  return <span className="inline-flex h-5 shrink-0 items-center rounded-full border border-dashed border-ink3 px-2 text-[11px] font-medium whitespace-nowrap text-ink2">확인 중</span>;
 }
 
 // 목록의 사진 자리. 사진이 없으면 어묵 그림.
@@ -108,8 +108,8 @@ export function SampleRibbon() {
   );
 }
 
-// 아래 메뉴 넷 (보드 v3 셋 + 「함께 고치기」, 11-04). 떡볶이방은 2차라 아예 안 보인다.
-const NAV = [
+// 메뉴 넷: 폰은 아래 메뉴, 768 이상은 위 헤더 (보드 v3 셋 + 「함께 고치기」, 11-04). 떡볶이방은 2차라 아예 안 보인다.
+export const NAV = [
   { href: "/", label: "지도", key: "map" },
   { href: "/list", label: "목록", key: "list" },
   { href: "/together", label: "함께 고치기", key: "together" },
@@ -118,7 +118,7 @@ const NAV = [
 
 export function BottomNav({ active }: { active: (typeof NAV)[number]["key"] }) {
   return (
-    <nav className="grid h-14 shrink-0 grid-cols-4 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px]">
+    <nav aria-label="메뉴" className="grid h-14 shrink-0 grid-cols-4 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px] md:hidden">
       {NAV.map((n) => (
         <Link
           key={n.key}
@@ -133,14 +133,19 @@ export function BottomNav({ active }: { active: (typeof NAV)[number]["key"] }) {
   );
 }
 
+// 하위 화면 머리칸. 폰에서는 위에 붙어 따라오고, 768 이상에서는 위 헤더 아래 제목 줄이 된다.
 export function BackHeader({ title, href = "/", right }: { title: string; href?: string; right?: React.ReactNode }) {
   return (
-    <header className="sticky top-0 z-10 flex h-12 items-center gap-2 border-b border-line bg-bar px-2">
-      <Link href={href} className="grid h-10 w-10 place-items-center rounded-full text-xl text-ink" aria-label="뒤로">
+    <header className="z-10 flex h-12 items-center gap-2 border-b border-line bg-bar px-2 max-md:sticky max-md:top-0 md:h-14 md:border-0 md:bg-transparent md:px-0">
+      <Link href={href} className="grid h-10 w-10 place-items-center rounded-full text-xl text-ink hover:bg-chip" aria-label="뒤로">
         ‹
       </Link>
-      <h1 className="min-w-0 flex-1 truncate text-[16px] font-bold">{title}</h1>
+      <h1 className="min-w-0 flex-1 truncate text-[16px] font-bold md:text-[20px]">{title}</h1>
       {right}
     </header>
   );
 }
+
+// 가게 줄 목록: 폰은 한 줄씩, 768 이상은 2열, 1280 이상은 3열 (웹 1차 기획 3.2)
+export const GRID_UL = "divide-y divide-line md:grid md:grid-cols-2 md:gap-3 md:divide-y-0 xl:grid-cols-3";
+export const GRID_LI = "md:rounded-2xl md:border md:border-line md:bg-surface md:transition-shadow md:hover:shadow-[0_2px_12px_var(--cardshadow)]";

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { NickField, SpiceInput, StarInput } from "@/components/report/fields";
+import { NickField, StarInput } from "@/components/register/fields";
 import { distanceM } from "@/lib/filters";
 import { send, uploadPhoto } from "@/lib/me";
 import { FLAG_REASONS, HIDE_AT, VERIFY_YES, type FlagReason } from "@/lib/wiki";
@@ -99,10 +99,10 @@ export function VerifyButtons({ id, compact = false }: { id: string; compact?: b
 
 export function VerifyBar({ id, by, yes, no }: { id: string; by?: string; yes: number; no: number }) {
   return (
-    <section className="mx-4 mt-3 rounded-2xl border border-dashed border-ink3 bg-surface p-4">
+    <section className="rounded-2xl border border-dashed border-ink3 bg-surface p-4">
       <h3 className="text-[15px] font-bold">아직 확인 중인 가게예요</h3>
       <p className="mt-1 text-[13px] leading-relaxed text-ink2">
-        {by ? `${by} 님이 제보했어요. ` : ""}가 보신 적 있으면 알려 주세요. 「맞아요」 {VERIFY_YES}명이면 확인이 끝나고, 「달라요」 {HIDE_AT}명이면 지도에서 내려요.
+        {by ? `${by} 님이 등록했어요. ` : ""}가 보신 적 있으면 알려 주세요. 「맞아요」 {VERIFY_YES}명이면 확인이 끝나고, 「달라요」 {HIDE_AT}명이면 지도에서 내려요.
       </p>
       <p className="mt-2 text-[13px] font-semibold">
         맞아요 {yes} · 달라요 {no}
@@ -149,27 +149,26 @@ export function AddPhoto({ id, large = false }: { id: string; large?: boolean })
   );
 }
 
-// 평가 남기기: 가게 별점 + 내가 느낀 맵기 + 한 줄 (기기마다 하나, 다시 쓰면 바뀐다)
+// 평가 남기기: 별점(필수) + 한 줄 후기 (기기마다 하나, 다시 쓰면 바뀐다). 맵기는 정보 고치기에서 고친다.
 export function ReviewForm({ id }: { id: string }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [stars, setStars] = useState<number | undefined>();
-  const [spice, setSpice] = useState<number | undefined>();
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   if (!open)
     return (
-      <button type="button" onClick={() => setOpen(true)} className="mt-3 h-11 w-full rounded-xl bg-accent text-[14px] font-bold text-onaccent">
-        평가 남기기
+      <button type="button" onClick={() => setOpen(true)} className="h-11 w-full rounded-xl border border-chipline bg-surface text-[14px] font-bold">
+        별점과 한 줄 후기 남기기
       </button>
     );
 
   const submit = async () => {
-    if (!stars && !spice) return setError("별점이나 맵기를 하나는 골라 주세요");
+    if (!stars) return setError("별점을 골라 주세요");
     setBusy(true);
-    const res = await send(`/api/stores/${id}`, { action: "review", stars, spice, text });
+    const res = await send(`/api/stores/${id}`, { action: "review", stars, text });
     setBusy(false);
     if (!res.ok) return setError(res.error ?? "보내지 못했어요");
     setOpen(false);
@@ -178,20 +177,14 @@ export function ReviewForm({ id }: { id: string }) {
   };
 
   return (
-    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-line p-3">
+    <div className="flex flex-col gap-3 rounded-xl border border-line p-3">
       <div>
         <p className="mb-1 text-[13px] font-bold">가게는 어땠어요?</p>
-        <StarInput value={stars} onChange={setStars} />
-      </div>
-      <div>
-        <p className="mb-1 text-[13px] font-bold">
-          얼마나 매웠어요? <span className="font-normal text-ink3">신라면 = 3</span>
-        </p>
-        <SpiceInput value={spice} onChange={setSpice} />
+        <StarInput value={stars} onChange={setStars} hint="골라 주세요" />
       </div>
       <label className="text-[13px] font-bold">
         한 줄 후기 <span className="font-normal text-ink3">선택</span>
-        <input value={text} onChange={(e) => setText(e.target.value)} maxLength={80} placeholder="예: 어묵 국물이 진해요" className="mt-1 h-11 w-full rounded-xl border border-chipline bg-surface px-3 text-[15px] font-normal text-ink" />
+        <input value={text} onChange={(e) => setText(e.target.value)} maxLength={80} placeholder="예: 어묵 국물이 진해요" className="mt-1 h-11 w-full rounded-xl border border-chipline bg-surface px-3 text-[16px] font-normal text-ink" />
       </label>
       <NickField />
       {error && <p className="text-[13px] text-spicytext">{error}</p>}
@@ -252,8 +245,8 @@ export function MoreActions({ id, name }: { id: string; name: string }) {
 
   const cell = "grid h-11 place-items-center rounded-xl border border-chipline bg-surface text-[13px] text-ink2";
   return (
-    <section className="mx-4 mt-4">
-      <div className="grid grid-cols-4 gap-2">
+    <section>
+      <div className="grid grid-cols-4 gap-1.5">
         <Link href={`/store/${id}/edit`} className={`${cell} font-bold text-ink`}>
           정보 고치기
         </Link>

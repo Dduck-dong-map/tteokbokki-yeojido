@@ -42,6 +42,16 @@ export function isOpenNow(hours: Hours | undefined, now: Date) {
   return (hours.days.includes(day) && mins >= open) || (hours.days.includes(yesterday) && mins < close);
 }
 
+// 가게 상세 머리글의 오늘 영업 한 줄 (N-05). 영업시간을 모르면 null.
+export function todayHoursText(hours: Hours | undefined, now: Date) {
+  if (!hours) return null;
+  if (isOpenNow(hours, now)) return hours.close < hours.open ? `새벽 ${hours.close}까지` : `오늘 ${hours.close}까지`;
+  const kst = new Date(now.getTime() + 9 * 3_600_000);
+  if (!hours.days.includes(kst.getUTCDay())) return "오늘 쉼";
+  const nowText = `${String(kst.getUTCHours()).padStart(2, "0")}:${String(kst.getUTCMinutes()).padStart(2, "0")}`;
+  return nowText < hours.open ? `오늘 ${hours.open}부터` : "오늘 영업 끝";
+}
+
 export const DAY_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
 
 export function hoursText(hours: Hours | undefined) {

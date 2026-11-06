@@ -58,6 +58,49 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
   font-weight: 400;
 }
 
+/* 페이지 폭 (웹 1차 기획 3.2): 폰은 화면 가득, 768 이상은 위 헤더 56px 아래 가운데 정렬 */
+@layer components {
+  .page-wide,
+  .page-narrow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100dvh;
+    margin-inline: auto;
+    background: var(--paper);
+  }
+  .page-narrow {
+    max-width: 640px;
+  }
+  @media (min-width: 768px) {
+    .page-wide,
+    .page-narrow {
+      min-height: calc(100dvh - 56px);
+      padding-inline: 24px;
+      padding-bottom: 40px;
+    }
+    .page-wide {
+      max-width: 1168px;
+    }
+    .page-narrow {
+      max-width: 688px;
+    }
+  }
+}
+
+/* 도장에 마우스를 올리면 나오는 이름·가격 */
+.stamp-tip .maplibregl-popup-content {
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 700 13px var(--font-sans);
+  white-space: nowrap;
+}
+.stamp-tip .maplibregl-popup-tip {
+  display: none;
+}
+
 /* 지도 위 오른쪽 아래 출처 표기를 바탕색에 맞춘다 */
 .maplibregl-ctrl-attrib {
   background: color-mix(in srgb, var(--surface) 80%, transparent) !important;

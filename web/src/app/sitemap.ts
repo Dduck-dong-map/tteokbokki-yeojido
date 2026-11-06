@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getRegions, getStores } from "@/lib/data";
-import { tastes } from "./seoul/[gu]/regionPage";
+import { tastes } from "./(site)/seoul/[gu]/regionPage";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 

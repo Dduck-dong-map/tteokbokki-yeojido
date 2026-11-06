@@ -7,5 +7,5 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export default function robots(): MetadataRoute.Robots {
   return USING_SAMPLE_DATA
     ? { rules: { userAgent: "*", disallow: "/" } }
-    : { rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/report", "/admin"] }, sitemap: `${SITE}/sitemap.xml` };
+    : { rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/register", "/admin"] }, sitemap: `${SITE}/sitemap.xml` };
 }

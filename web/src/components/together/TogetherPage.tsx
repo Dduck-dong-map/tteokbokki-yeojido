@@ -1,34 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { VerifyButtons } from "@/components/store/StoreActions";
 import { distanceM, distanceText, won } from "@/lib/filters";
 import { confirmedAgo } from "@/lib/freshness";
+import { useGrantedLocation } from "@/lib/screen";
 import type { Store } from "@/lib/types";
 import { HIDE_AT, VERIFY_YES, isPending, updateReasons } from "@/lib/wiki";
-import { BottomNav, SampleRibbon, SpiceStamp, StoreThumb } from "../ui";
+import { BottomNav, GRID_LI, GRID_UL, SampleRibbon, SpiceStamp, StoreThumb } from "../ui";
 
 type Tab = "new" | "update";
 
 // 함께 고치기: ① 새로 온 가게를 확인하고 ② 오래됐거나 비어 있는 정보를 채운다.
-// 포인트 같은 보상은 넣지 않았다 (MVP). 내 제보는 내 맛지도에 모인다.
+// 포인트 같은 보상은 넣지 않았다 (MVP). 내 등록은 내 맛지도에 모인다.
 export default function TogetherPage({ stores, sample, nowIso }: { stores: Store[]; sample: boolean; nowIso: string }) {
   const [tab, setTab] = useState<Tab>("new");
-  const [me, setMe] = useState<{ lat: number; lng: number } | null>(null);
+  const me = useGrantedLocation();
   const now = new Date(nowIso);
-
-  // 위치는 이미 허용한 기기에서만 조용히 받는다 (여기서 새로 묻지 않음)
-  useEffect(() => {
-    if (!navigator.permissions || !navigator.geolocation) return;
-    navigator.permissions
-      .query({ name: "geolocation" })
-      .then((p) => {
-        if (p.state !== "granted") return;
-        navigator.geolocation.getCurrentPosition((pos) => setMe({ lat: pos.coords.latitude, lng: pos.coords.longitude }), () => undefined, { timeout: 6000 });
-      })
-      .catch(() => undefined);
-  }, []);
 
   const near = (a: Store, b: Store) => (me ? distanceM(me, a) - distanceM(me, b) : 0);
   const fresh = stores.filter((s) => isPending(s, now)).sort((a, b) => (me ? near(a, b) : (b.createdAt ?? "").localeCompare(a.createdAt ?? "")));
@@ -39,9 +28,9 @@ export default function TogetherPage({ stores, sample, nowIso }: { stores: Store
     .sort((a, b) => (me ? near(a.s, b.s) : a.s.lastConfirmedAt.localeCompare(b.s.lastConfirmedAt)));
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col bg-paper">
-      <header className="sticky top-0 z-10 border-b border-line bg-bar px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-3">
-        <h1 className="text-[18px] font-bold">함께 고치기</h1>
+    <div className="page-wide">
+      <header className="z-10 border-b border-line bg-bar px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-3 max-md:sticky max-md:top-0 md:border-0 md:bg-transparent md:px-0 md:pt-5">
+        <h1 className="text-[18px] font-bold md:text-[20px]">함께 고치기</h1>
         <p className="mt-0.5 text-[12px] text-ink3">이 지도는 먹어 본 사람들이 같이 만들어요 · 가입 없이</p>
       </header>
       {sample && (
@@ -50,8 +39,8 @@ export default function TogetherPage({ stores, sample, nowIso }: { stores: Store
         </div>
       )}
 
-      <main className="flex-1 px-4 pt-3 pb-6">
-        <div className="flex gap-2">
+      <main className="flex-1 px-4 pt-3 pb-6 md:px-0">
+        <div className="flex gap-2 md:max-w-[480px]">
           {(
             [
               ["new", "새로 온 가게", fresh.length],
@@ -68,12 +57,12 @@ export default function TogetherPage({ stores, sample, nowIso }: { stores: Store
         {tab === "new" ? (
           <>
             <p className="mt-3 text-[13px] leading-relaxed text-ink2">
-              제보는 바로 지도에 올라가요. 가 보신 곳이면 알려 주세요. 「맞아요」 {VERIFY_YES}명이면 확인이 끝나고, 「달라요」 {HIDE_AT}명이면 내려요.
+              새 가게는 바로 지도에 올라가요. 가 보신 곳이면 알려 주세요. 「맞아요」 {VERIFY_YES}명이면 확인이 끝나고, 「달라요」 {HIDE_AT}명이면 내려요.
             </p>
             {fresh.length ? (
-              <ul className="mt-2 divide-y divide-line">
+              <ul className={`mt-2 ${GRID_UL}`}>
                 {fresh.map((s) => (
-                  <li key={s.id} className="py-3">
+                  <li key={s.id} className={`py-3 md:p-3 ${GRID_LI}`}>
                     <Link href={`/store/${s.id}`} className="flex gap-3">
                       <StoreThumb photo={s.photos?.[0]} />
                       <div className="min-w-0 flex-1">
@@ -109,9 +98,9 @@ export default function TogetherPage({ stores, sample, nowIso }: { stores: Store
           <>
             <p className="mt-3 text-[13px] leading-relaxed text-ink2">오래됐거나 비어 있는 가게예요. 지나가다 보시면 사진 한 장, 가격 한 줄만 고쳐 주세요.</p>
             {todo.length ? (
-              <ul className="mt-2 divide-y divide-line">
+              <ul className={`mt-2 ${GRID_UL}`}>
                 {todo.map(({ s, why }) => (
-                  <li key={s.id} className="flex items-center gap-3 py-3">
+                  <li key={s.id} className={`flex items-center gap-3 py-3 md:p-3 ${GRID_LI}`}>
                     <Link href={`/store/${s.id}`} className="flex min-w-0 flex-1 items-center gap-3">
                       <StoreThumb photo={s.photos?.[0]} />
                       <div className="min-w-0 flex-1">
@@ -141,12 +130,12 @@ export default function TogetherPage({ stores, sample, nowIso }: { stores: Store
           </>
         )}
 
-        <Link href="/report" className="mt-5 grid h-12 place-items-center rounded-xl bg-accent text-[15px] font-bold text-onaccent">
-          새 가게 제보하기
+        <Link href="/register" className="mt-5 grid h-12 place-items-center rounded-xl bg-accent text-[15px] font-bold text-onaccent md:hidden">
+          맛집 등록하기
         </Link>
       </main>
 
-      <div className="sticky bottom-0">
+      <div className="sticky bottom-0 md:hidden">
         <BottomNav active="together" />
       </div>
     </div>

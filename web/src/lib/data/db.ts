@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { distanceM, won } from "../filters";
-import { GRADES, RICE_CAKES, STYLES, USAGES, type Spice } from "../taxonomy";
+import { GRADES, RICE_CAKES, SPICE_LEVELS, STYLES, USAGES } from "../taxonomy";
 import type { Change, HistoryItem, HistoryKind, Review, Store } from "../types";
 import { DAILY_LIMIT, DUP_RADIUS_M, HIDE_AT, MAX_PHOTOS, VERIFY_YES, isPending, parseAddress, type FlagReason, type NewStoreInput, type StorePatch } from "../wiki";
 import { SAMPLE_HISTORY, SAMPLE_NEW, SAMPLE_REVIEWS, SAMPLE_STORES } from "./sample-stores";
@@ -65,7 +65,7 @@ async function save(db: Db) {
     try {
       return await rename(tmp, DB_FILE);
     } catch (e) {
-      if (i >= 5) throw e;
+      if (i >= 12) throw e;
       await new Promise((r) => setTimeout(r, 40 * (i + 1)));
     }
   }
@@ -98,7 +98,7 @@ function overDailyLimit(db: Db, m: Mark) {
   return db.logs.filter((l) => (l.kind === "new" || l.kind === "edit") && same(l, m) && new Date(l.at).getTime() > from).length >= DAILY_LIMIT;
 }
 
-const LIMIT_MSG = "오늘은 제보를 많이 보내 주셨어요. 내일 다시 부탁드려요";
+const LIMIT_MSG = "오늘은 등록·수정을 많이 해 주셨어요. 내일 다시 부탁드려요";
 
 // ───────── 읽기 ─────────
 
@@ -144,13 +144,16 @@ export function addStore(input: NewStoreInput, who: Who) {
     const m = mark(who);
     if (overDailyLimit(db, m)) return fail(LIMIT_MSG, 429);
     const name = input.name.trim();
-    const dup = db.stores.find((s) => s.status !== "hidden" && distanceM(s, input) <= DUP_RADIUS_M && (norm(s.name).includes(norm(name)) || norm(name).includes(norm(s.name))));
-    if (dup) return fail(`이미 지도에 있는 가게 같아요: ${dup.name}`, 409, dup.id);
+    if (!input.notDuplicate) {
+      const dup = db.stores.find((s) => s.status !== "hidden" && distanceM(s, input) <= DUP_RADIUS_M && (norm(s.name).includes(norm(name)) || norm(name).includes(norm(s.name))));
+      if (dup) return fail(`이미 지도에 있는 가게 같아요: ${dup.name}`, 409, dup.id);
+    }
 
     const today = isoDay();
     const id = slugFor(db);
     const address = input.address.trim();
     const menu = input.menu.map((x) => ({ name: x.name.trim(), price: x.price }));
+    const intro = input.memo?.trim();
     const store: Store = {
       id,
       name,
@@ -162,13 +165,13 @@ export function addStore(input: NewStoreInput, who: Who) {
       rice: input.rice,
       style: input.style,
       spice: input.spice,
-      spiceVotes: { sum: input.spice, count: 1 },
       taste: [],
       sides: [],
       usage: [],
       price: menu[0].price,
       priceCheckedAt: today,
       menu,
+      hours: input.hours,
       lastConfirmedAt: today,
       rating: input.stars ? { avg: input.stars, count: 1 } : undefined,
       status: "active",
@@ -176,10 +179,11 @@ export function addStore(input: NewStoreInput, who: Who) {
       by: who.nick,
       verify: { yes: 0, no: 0 },
       photos: input.photos,
+      ...(intro ? { memo: intro, introBy: who.nick, introAt: today } : {}),
     };
     db.stores.push(store);
     log(db, id, { nick: who.nick, ...m }, "new");
-    if (input.stars) db.reviews.push({ ...m, id: randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars, spice: input.spice });
+    if (input.stars) db.reviews.push({ ...m, id: randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars });
     return { ok: true, id };
   });
 }
@@ -224,6 +228,10 @@ export function editStore(id: string, patch: StorePatch, who: Who) {
       note("스타일", STYLES[s.style], STYLES[patch.style]);
       s.style = patch.style;
     }
+    if (patch.spice !== undefined) {
+      note("맵기", `${s.spice} · ${SPICE_LEVELS[s.spice].ref}`, `${patch.spice} · ${SPICE_LEVELS[patch.spice].ref}`);
+      s.spice = patch.spice;
+    }
     if (patch.menu !== undefined) {
       const menu = patch.menu.map((x) => ({ name: x.name.trim(), price: x.price }));
       if (menuText(s.menu) !== menuText(menu)) {
@@ -247,8 +255,11 @@ export function editStore(id: string, patch: StorePatch, who: Who) {
       s.usage = patch.usage;
     }
     if (patch.memo !== undefined && patch.memo.trim() !== (s.memo ?? "")) {
-      note("메모", s.memo || "없음", patch.memo.trim() || "없음");
+      note("소개글", s.memo || "없음", patch.memo.trim() || "없음");
+      if (!s.memo) s.introBy = who.nick;
       s.memo = patch.memo.trim() || undefined;
+      s.introAt = isoDay();
+      if (!s.memo) s.introBy = undefined;
     }
     if (patch.addPhotos?.length) {
       const photos = [...(s.photos ?? []), ...patch.addPhotos].slice(0, MAX_PHOTOS * 4);
@@ -300,7 +311,7 @@ export function verifyStore(id: string, ok: boolean, who: Who) {
   });
 }
 
-export function reviewStore(id: string, input: { stars?: number; spice?: number; text?: string }, who: Who) {
+export function reviewStore(id: string, input: { stars: number; text?: string }, who: Who) {
   return mutate((db): { ok: true } | Fail => {
     const s = db.stores.find((x) => x.id === id);
     if (!s) return fail("가게를 찾지 못했어요", 404);
@@ -313,27 +324,12 @@ export function reviewStore(id: string, input: { stars?: number; spice?: number;
       rating.total -= old.stars;
       rating.count -= 1;
     }
-    if (input.stars) {
-      rating.total += input.stars;
-      rating.count += 1;
-    }
+    rating.total += input.stars;
+    rating.count += 1;
     s.rating = rating.count ? { avg: Math.round((rating.total / rating.count) * 10) / 10, count: rating.count } : undefined;
 
-    // 맵기: 처음 값을 한 표로 치고 평균을 낸다
-    const votes = s.spiceVotes ?? { sum: s.spice, count: 1 };
-    if (old?.spice) {
-      votes.sum -= old.spice;
-      votes.count -= 1;
-    }
-    if (input.spice) {
-      votes.sum += input.spice;
-      votes.count += 1;
-    }
-    s.spiceVotes = votes;
-    if (votes.count) s.spice = Math.min(5, Math.max(1, Math.round(votes.sum / votes.count))) as Spice;
-
     const text = input.text?.trim() || undefined;
-    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars, spice: input.spice, text };
+    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars, spice: old?.spice, text }; // 예전 맵기 표는 그대로 남긴다
     if (old) db.reviews[db.reviews.indexOf(old)] = row;
     else db.reviews.push(row);
     return { ok: true };

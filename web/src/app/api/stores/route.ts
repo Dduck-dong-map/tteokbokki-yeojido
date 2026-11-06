@@ -2,7 +2,7 @@ import { addStore } from "@/lib/data/db";
 import { PHOTO_ID, bad, readJson, whoFrom } from "@/lib/request";
 import { checkNewStore, type NewStoreInput } from "@/lib/wiki";
 
-// 새 가게 제보: 사전 승인 없이 바로 지도에 올라가고, 일주일 동안 「확인 중」으로 보인다.
+// 새 가게 등록: 사전 승인 없이 바로 지도에 올라가고, 일주일 동안 「확인 중」으로 보인다.
 export async function POST(req: Request) {
   const body = await readJson(req);
   if (!body) return bad("내용을 읽지 못했어요");

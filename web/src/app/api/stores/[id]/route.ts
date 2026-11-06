@@ -26,10 +26,10 @@ export async function POST(req: Request, ctx: RouteContext<"/api/stores/[id]">) 
     case "verify":
       return reply(await verifyStore(id, body.ok === true, who));
     case "review": {
-      const input = { stars: body.stars as number | undefined, spice: body.spice as number | undefined, text: typeof body.text === "string" ? body.text : undefined };
+      const input = { stars: body.stars as number | undefined, text: typeof body.text === "string" ? body.text : undefined };
       const error = checkReview(input);
       if (error) return bad(error, 422);
-      return reply(await reviewStore(id, input, who));
+      return reply(await reviewStore(id, { stars: input.stars!, text: input.text }, who));
     }
     case "flag": {
       const reason = body.reason as FlagReason;

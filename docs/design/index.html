@@ -1564,9 +1564,9 @@ const WB_NOTE = (t, c = '#F4F4F2') => `<div style="padding:12px 14px;border-radi
 const WB_TBL = (head, rows, widths = []) => `<table style="width:100%;border-collapse:collapse;font-size:13px;line-height:1.5;color:#3D3D3B"><thead><tr style="text-align:left;color:#1C1C1B">${head.map((h, i) => `<th style="${widths[i] ? `width:${widths[i]};` : ''}padding:7px 10px;border-bottom:2px solid #1C1C1B">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td style="padding:8px 10px;border-bottom:1px solid #E8E8E3;vertical-align:top;${i === 0 ? 'font-weight:700;color:#1C1C1B' : ''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 
 add({ id:'wb_all', code:'WB-00', t:'웹 1차 기획 · 한 장 요약 (11-06)', lane:'WB', w:1500, h:690, isDoc:true,
-  spec:['사용자 11-06 요청을 기획으로 정리. 웹 코드는 아직 안 고침','문서: docs/웹1차기획_v1_2026-11-06.md (ADR · 정책표 · 흐름 · 인수 기준 · 화면 상세)','목표 숫자는 모두 가정치. 베타 4주 수치로 다시 정한다'],
-  next:['결정 넷 답 받기 → W1 시작','Supabase · 도로명주소 · 캡차 키 = 사용자·팀원 (계정 일)','팀 공유: 어드민 앞당김 · 맵기 투표 보류 · 상세 순서'],
-  rel:['wb_store', 'wb_reg', 'wb_resp', 'wb_admin', 'mv_all'],
+  spec:['사용자 11-06 요청을 기획으로 정리. W1 구현 완료 (WB-05, 브랜치 web-w1). W2 어드민부터 남음','문서: docs/웹1차기획_v1_2026-11-06.md (ADR · 정책표 · 흐름 · 인수 기준 · 화면 상세)','목표 숫자는 모두 가정치. 베타 4주 수치로 다시 정한다'],
+  next:['W1 사용자 PC·폰 확인 (폰 실기 시험은 아직 안 함)','W2 어드민을 실제 데이터에 연결','Supabase · 도로명주소 · 캡차 키 = 사용자·팀원 (계정 일)','팀 공유: 어드민 앞당김 · 맵기 투표 보류 · 상세 순서'],
+  rel:['wb_w1', 'wb_store', 'wb_reg', 'wb_resp', 'wb_admin', 'mv_all'],
   html:() => WB_DOC(1500, 690, `${WB_H('웹 1차 기획', '같은 주소 하나로 PC와 모바일을 모두 받는다. <b>찾기 → 등록 → 검증 → 갱신</b> 고리는 MVP 그대로 두고, 그 위에 반응형 · 소개글 · 위치 지도 · 어드민을 얹는다.')}
   ${WB_TBL(['요청 (11-06)', '기획', '지금', '보는 곳'], [
     ['가게 등록 + 소개글', '등록을 다섯 단계로: 가게·위치 → 떡·맛 → 메뉴·가격 → <b>소개글</b> → 사진. 소개글은 가게당 한 편, 누구나 고치고 이력에 남음. PC는 한 화면 + 오른쪽 지도', '네 단계 · 소개글 칸 없음 (메모는 등록 뒤 고치기에만)', 'WB-02'],
@@ -1577,7 +1577,7 @@ add({ id:'wb_all', code:'WB-00', t:'웹 1차 기획 · 한 장 요약 (11-06)', 
     ['웹, PC·모바일 둘 다', '모바일 &lt; 768 = 지도 + 시트 + 아래 메뉴 / 768~1279 = 패널 + 지도 / ≥ 1280 = 목록 + 상세 + 지도. 입력 글자 16px 등 모바일 규칙', '전 화면 480px 고정 · PC에서 가운데 띠', 'WB-03']
   ], ['220px', '', '300px', '110px'])}
   <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:14px;font-size:13.5px;line-height:1.6;color:#3D3D3B">
-    <div style="border:1px solid #B42318;border-radius:12px;padding:14px"><b style="font-size:15px;color:#B42318">정해 주실 것</b><br>① 등록 공개: <b>바로 공개 + 스위치</b>(제안) / 처음부터 승인제<br>② 소개글: <b>선택</b>(제안) / 필수<br>③ 이용자 로그인: <b>1차는 없음</b>(제안) / 등록만 로그인<br>④ W1 시작 허락</div>
+    <div style="border:1px solid #2A6159;border-radius:12px;padding:14px"><b style="font-size:15px;color:#2A6159">정해진 것 (사용자 답 11-06)</b><br>① 등록 공개: <b>바로 공개 + 스위치</b><br>② 소개글: <b>선택</b><br>③ 이용자 로그인: <b>1차는 없음</b><br>④ W1 시작 → <b>구현 완료, WB-05 에서 확인</b></div>
     <div style="border:1px solid #DEDED9;border-radius:12px;padding:14px"><b style="font-size:15px;color:#1C1C1B">순서</b><br><b>W1</b> 반응형 · 상세 · 등록 · 맵기 빼기 (키 불필요)<br><b>W2</b> 어드민을 실제 데이터에 연결<br><b>W3</b> Supabase · 어드민 로그인 · 주소 검색 (키 필요)<br><b>W4</b> 첫 300곳 · 약관 · 캡차 · 폰 실기<br><b>W5</b> 비공개 베타 → 공개</div>
     <div style="border:1px solid #DEDED9;border-radius:12px;padding:14px"><b style="font-size:15px;color:#1C1C1B">알려 둘 것</b><br>· 팀 10-28 「어드민은 추후」를 바꾼다<br>· 맵기를 평가에서 빼므로 「맵기 + 별 두 축」의 평가 부분이 바뀐다<br>· 상세 첫 칸 순서가 팀 순서와 조금 달라진다<br>· 걷는 길 점선은 뺐다: 실제 길이 아니라 건물을 가로지른다. 역 표시와 어림 시간만 둔다<br>· 지표 목표는 모두 가정치</div>
   </div>`) });
@@ -1625,7 +1625,7 @@ add({ id:'wb_reg', code:'WB-02', t:'가게 등록 + 소개글 · 맵기 투표 �
       <div style="display:flex;flex-direction:column;gap:14px"><div style="position:relative;height:330px;overflow:hidden;border-radius:12px;border:1px solid var(--line)"><svg viewBox="52.5 403 179 118" preserveAspectRatio="xMidYMid slice" style="position:absolute;left:0;top:0;width:100%;height:100%" aria-hidden="true"><use href="#map-street" width="390" height="844"/></svg><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);font-size:30px;color:var(--fab)">📍</span></div><div style="height:112px;border-radius:12px;border:1.5px dashed var(--chipline);display:grid;place-items:center;color:var(--ink3);font-size:14px">사진을 끌어다 놓거나 눌러서 고르기</div><div class="btn pri">지도에 올리기</div></div>
     </div>`, .6, 1280, 800, '개선안 · PC 1280 (왼쪽 진행 표시 · 가운데 입력 · 오른쪽 지도와 사진)')}
     <div style="flex:1;display:flex;flex-direction:column;gap:12px">
-      ${WB_NOTE(`<b>소개글 규칙</b> · 가게당 한 편 · 0~500자 · 글자만 · 누구나 고치고 이력에 남음. 개인 의견은 한 줄 후기로.<br>전화번호·링크·금칙어는 올리기 전에 안내. 신고 3명이면 소개글만 가리고 가게는 지도에 남는다.<br><b>필수로 할지는 답 대기</b> · 제안은 선택. 안 쓰면 상세에 「이 집 소개글 쓰기」 칸이 뜬다.`)}
+      ${WB_NOTE(`<b>소개글 규칙</b> · 가게당 한 편 · 0~500자 · 글자만 · 누구나 고치고 이력에 남음. 개인 의견은 한 줄 후기로.<br>전화번호·링크·금칙어는 올리기 전에 안내. 신고 3명이면 소개글만 가리고 가게는 지도에 남는다.<br><b>선택으로 확정 (11-06)</b> · 안 쓰면 상세에 「이 집 소개글 쓰기」 칸이 뜬다.`)}
       ${WB_NOTE(`<b>맵기 투표를 빼면 바뀌는 곳</b><br>· 평가 = 별 + 한 줄 후기 (별 필수)<br>· 상세의 「N명 투표」 문구 삭제<br>· <b>정보 고치기에 맵기를 연다.</b> 지금은 「맵기는 투표라 여기서 안 고친다」여서 안 열면 고칠 길이 없다<br>· 도장·맵기 필터는 그대로<br>· 메뉴별 맵기로 넘어갈 때 뜻이 안 바뀌게 「대표 메뉴 기준」이라고 적는다`, '#FFF4E6')}
       ${WB_NOTE(`<b>폰에서 어색하지 않게</b> · 입력 글자 16px(지금 14px 는 아이폰이 저절로 확대) · 키보드가 올라와도 다음 버튼이 보임 · 나갔다 와도 입력이 기기에 남음(이어서 쓰기) · 사진은 카메라·앨범.<br><b>PC</b> · 사진은 끌어다 놓기 · Tab 으로 칸 이동.`)}
       ${WB_NOTE(`<b>주소</b> · 도로명주소 키 전에는 지금처럼 직접 입력 + 핀. 상호 검색(이름 치면 주소 채움)은 거지맵 방식이지만 약관 확인이 먼저라 베타 뒤로 미뤘다.`)}
@@ -1685,6 +1685,36 @@ add({ id:'wb_admin', code:'WB-04', t:'어드민 · 무엇을 통제하나 · v1 
     ['글·사진 관리', '없음', '신설'],
     ['로그인·역할 · 운영 기록 · 신선도', '이메일 링크 + 2단계 인증 · 고칠 수 없는 기록 · 180·365일', '그대로']
   ], ['250px', '', ''])}`) });
+
+/* W1 구현 결과 (11-06). 사진은 실제 웹을 예시 데이터로 찍은 것 */
+const W1_SHOT = (file, w, h, k, label, dir = 'w1') => `<div>${WB_LB(label)}<div style="width:${Math.round(w * k)}px;height:${Math.round(h * k)}px;overflow:hidden;border-radius:10px;border:1px solid #CFCFC9;background:#fff"><img src="img/${dir}/${file}" alt="${label}" style="display:block;width:100%;height:100%;object-fit:cover;object-position:top"></div></div>`;
+add({ id:'wb_w1', code:'WB-05', t:'W1 구현 결과 · 왼쪽 기존 → 오른쪽 지금 웹', lane:'WB', w:1760, h:2056, isDoc:true,
+  spec:['기획 W1 범위: 반응형 틀 · 상세 N-05 + 지도 · 등록 + 소개글 · 맵기 투표 빼기 · 제보 → 등록','코드: web/ (브랜치 web-w1) · 주소 /register, 옛 /report 는 넘겨 줌','시험: 저장 흐름 75개 (배포 방식으로 3번) · 화면 57개 (폭 7개 가로 스크롤 포함) · tsc · eslint · build 통과'],
+  next:['사용자 PC·폰 확인. <b>실제 폰 시험은 아직 안 함</b> (키보드 · 작은 지도 스크롤 · 길찾기 앱 열림)','W2 어드민 연결 (승인 스위치 · 금칙어 · 신고 4종은 여기서)'],
+  rel:['wb_all', 'wb_store', 'wb_reg', 'wb_resp'],
+  html:() => WB_DOC(1760, 2056, `${WB_H('W1 구현 결과', '왼쪽은 W1 전 화면, 오른쪽은 지금 웹을 찍은 사진이다. 같은 주소가 폭에 따라 세 가지로 짜인다.')}
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    ${W1_SHOT('mv_detail.png', 390, 844, .55, '기존 · 상세 (지도 없음)', 'mvp_flow')}
+    ${W1_SHOT('w1_m_store.jpg', 390, 1841, .55, '지금 · 폰 상세 (N-05 + 작은 지도)')}
+    ${W1_SHOT('mv_r1.png', 390, 844, .55, '기존 · 제보 1/4', 'mvp_flow')}
+    ${W1_SHOT('w1_m_reg1.jpg', 390, 844, .55, '지금 · 등록 1/5')}
+    ${W1_SHOT('w1_m_reg4.jpg', 390, 844, .55, '지금 · 등록 4/5 소개글')}
+    <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+      ${WB_NOTE(`<b>바뀐 것</b><br>· PC · 태블릿: 가운데 480px 띠 → 위 헤더 + 왼쪽 패널 + 큰 지도<br>· 상세를 열어도 큰 지도가 끊기지 않음. 주소로 바로 들어와도 그 가게 중심<br>· 평가 = 별 + 한 줄 후기. 맵기는 정보 고치기에서 고치고 이력에 남음<br>· 등록 다섯 단계 + 소개글. 나갔다 오면 이어서 쓰기<br>· 입력 글자 16px (아이폰 자동 확대 방지)<br>· 「제보」 → 「등록」`)}
+      ${WB_NOTE(`<b>기획에 없던 것을 더함</b><br>· 비슷한 이름이 있을 때 「다른 가게예요」로 그대로 올리기<br>· 상세 머리에 떡·스타일 태그 유지 (팀 순서의 「종류」라서 N-05 에 없어도 남김)`, '#FFF4E6')}
+      ${WB_NOTE(`<b>W1 에서 안 한 것</b><br>· 승인 후 공개 스위치 · 금칙어 · 신고 대상 4종 → W2 어드민<br>· 주소 검색 (키 필요) → W3<br>· 역에서 몇 분 · 캡차 → W4`)}
+    </div>
+  </div>
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    ${W1_SHOT('w1_d_home.jpg', 1280, 800, .44, '지금 · PC 1280 지도 홈')}
+    ${W1_SHOT('w1_d_store.jpg', 1280, 800, .44, '지금 · PC 1280 목록 + 상세 + 지도')}
+    ${W1_SHOT('w1_d_register.jpg', 1280, 800, .44, '지금 · PC 1280 등록 (한 화면)')}
+  </div>
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    ${W1_SHOT('w1_d_list.jpg', 1280, 800, .44, '지금 · PC 1280 목록 3열')}
+    ${W1_SHOT('w1_t_store.jpg', 820, 1000, .44, '지금 · 태블릿 820 상세 + 지도')}
+    ${W1_SHOT('w1_m_home.jpg', 390, 844, .52, '지금 · 폰 지도 홈 (구조 유지)')}
+  </div>`) });
 
 /* ═════════ 글꼴 고르기 (11-04) ═════════ */
 const FT_CARD = f => { const b = (r, t) => `<button class="ftb ${PAL.font[r] === f.id ? 'on' : ''}" data-fset="${r}:${f.id}">${t}</button>`;

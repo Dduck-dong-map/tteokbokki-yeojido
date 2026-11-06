@@ -1,41 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { distanceM, distanceText } from "@/lib/filters";
 import { confirmedAgo, freshness } from "@/lib/freshness";
 import { toggleSave, toggleVisited, useMine, type SavedStore } from "@/lib/mine";
+import { useGrantedLocation } from "@/lib/screen";
 import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
-import { BottomNav, SampleRibbon, SpiceStamp } from "../ui";
+import { BottomNav, GRID_LI, GRID_UL, SampleRibbon, SpiceStamp } from "../ui";
 
-// 내 맛지도 (보드 N3-05, 11-02): 위 칸 셋(저장 · 다녀옴 · 내 제보) → 저장한 가게 목록.
+// 내 맛지도 (보드 N3-05, 11-02): 위 칸 셋(저장 · 다녀옴 · 내 등록) → 저장한 가게 목록.
 // 줄 하나 = 도장 + 이름 + 동·거리 + 떡 종류 (정보 순서는 목록과 같다). 누르면 가게 상세.
 type Tab = "saved" | "visited" | "reports";
 const TABS: { key: Tab; label: string }[] = [
   { key: "saved", label: "저장" },
   { key: "visited", label: "다녀옴" },
-  { key: "reports", label: "내 제보" },
+  { key: "reports", label: "내 등록" },
 ];
 const KIND = { new: "새 가게", edit: "정보 수정", closed: "문 닫음" } as const;
 
 export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; sample: boolean; nowIso: string }) {
   const mine = useMine();
   const [tab, setTab] = useState<Tab>("saved");
-  const [me, setMe] = useState<{ lat: number; lng: number } | null>(null);
+  const me = useGrantedLocation();
   const now = new Date(nowIso); // 「며칠 전」 계산용. 요청 때 서버에서 받는다
-
-  // 위치는 이미 허용한 기기에서만 조용히 받는다 (여기서 새로 묻지 않음)
-  useEffect(() => {
-    if (!navigator.permissions || !navigator.geolocation) return;
-    navigator.permissions
-      .query({ name: "geolocation" })
-      .then((p) => {
-        if (p.state !== "granted") return;
-        navigator.geolocation.getCurrentPosition((pos) => setMe({ lat: pos.coords.latitude, lng: pos.coords.longitude }), () => undefined, { timeout: 6000 });
-      })
-      .catch(() => undefined);
-  }, []);
 
   // 저장한 가게 줄: 위치가 있으면 가까운순, 없으면 최근 저장순 (메모이즈는 React 컴파일러가 한다)
   const byId = new Map(stores.map((s) => [s.id, s]));
@@ -51,10 +40,10 @@ export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; 
   const list = tab === "visited" ? visited : saved;
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col bg-paper">
-      <header className="sticky top-0 z-10 border-b border-line bg-bar px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-3">
+    <div className="page-wide">
+      <header className="z-10 border-b border-line bg-bar px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-3 max-md:sticky max-md:top-0 md:border-0 md:bg-transparent md:px-0 md:pt-5">
         <div className="flex items-baseline gap-2">
-          <h1 className="text-[18px] font-bold">내 맛지도</h1>
+          <h1 className="text-[18px] font-bold md:text-[20px]">내 맛지도</h1>
           <span className="text-[12px] text-ink3">이 기기에 저장 · 로그인 없음</span>
         </div>
       </header>
@@ -64,8 +53,8 @@ export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; 
         </div>
       )}
 
-      <main className="flex-1 px-4 pb-6 pt-3">
-        <div className="flex gap-2">
+      <main className="flex-1 px-4 pb-6 pt-3 md:px-0">
+        <div className="flex gap-2 md:max-w-[480px]">
           {TABS.map((t) => {
             const on = tab === t.key;
             return (
@@ -92,11 +81,11 @@ export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; 
               <span className="text-ink3">{me ? "가까운순" : "최근 저장순"}</span>
             </div>
             {list.length ? (
-              <ul className="mt-1 divide-y divide-line">
+              <ul className={`mt-1 ${GRID_UL}`}>
                 {list.map(({ s, v }) => {
                   const stale = freshness(s, now) === "stale";
                   return (
-                    <li key={s.id} className="flex items-center gap-3 py-3">
+                    <li key={s.id} className={`flex items-center gap-3 py-3 md:p-3 ${GRID_LI}`}>
                       <Link href={`/store/${s.id}`} className="flex min-w-0 flex-1 items-center gap-3">
                         <SpiceStamp n={s.spice} size={30} faded={stale} />
                         <div className="min-w-0 flex-1">
@@ -145,11 +134,11 @@ export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; 
         ) : (
           <>
             <div className="mt-4 flex items-center justify-between text-[13px]">
-              <b>내가 보낸 제보 {mine.reports.length}건</b>
+              <b>내가 올린 등록·수정 {mine.reports.length}건</b>
               <span className="text-ink3">최근순</span>
             </div>
             {mine.reports.length ? (
-              <ul className="mt-1 divide-y divide-line">
+              <ul className={`mt-1 ${GRID_UL}`}>
                 {mine.reports.map((r, i) => {
                   const inner = (
                     <>
@@ -159,7 +148,7 @@ export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; 
                     </>
                   );
                   return (
-                    <li key={i} className="py-3">
+                    <li key={i} className={`py-3 md:p-3 ${GRID_LI}`}>
                       {r.storeId ? (
                         <Link href={`/store/${r.storeId}`} className="flex items-center gap-2">
                           {inner}
@@ -173,19 +162,19 @@ export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; 
               </ul>
             ) : (
               <p className="mt-10 text-center text-[13px] leading-relaxed text-ink3">
-                아직 보낸 제보가 없어요.
+                아직 올린 가게가 없어요.
                 <br />
-                <Link href="/report" className="mt-3 inline-block font-semibold text-ink underline underline-offset-4">
-                  가게 제보하기
+                <Link href="/register" className="mt-3 inline-block font-semibold text-ink underline underline-offset-4">
+                  맛집 등록하기
                 </Link>
               </p>
             )}
-            <p className="mt-6 text-center text-[12px] text-ink3">내 제보는 바로 지도에 올라가요 · 이 기기에서 보낸 것만 보여요</p>
+            <p className="mt-6 text-center text-[12px] text-ink3">등록은 바로 지도에 올라가요 · 이 기기에서 올린 것만 보여요</p>
           </>
         )}
       </main>
 
-      <div className="sticky bottom-0">
+      <div className="sticky bottom-0 md:hidden">
         <BottomNav active="mine" />
       </div>
     </div>

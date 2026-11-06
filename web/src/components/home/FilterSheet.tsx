@@ -9,6 +9,7 @@ type Props = {
   count: (f: Filters) => number; // 고를 때마다 "가게 N곳"을 바로 보여 준다
   onChange: (f: Filters) => void;
   onClose: () => void;
+  inline?: boolean; // 768 이상: 패널 안에 펼치는 칸 (웹 1차 기획 3.2)
 };
 
 const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -28,9 +29,9 @@ function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; chi
   );
 }
 
-function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+function Section({ id, title, hint, children }: { id?: string; title: string; hint?: string; children: React.ReactNode }) {
   return (
-    <section className="border-b border-line py-4 last:border-0">
+    <section id={id} className="scroll-mt-2 border-b border-line py-4 last:border-0">
       <h3 className="mb-2.5 text-[14px] font-bold">
         {title}
         {hint && <span className="ml-2 text-[12px] font-normal text-ink3">{hint}</span>}
@@ -40,7 +41,7 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   );
 }
 
-export default function FilterSheet({ value: f, count, onChange, onClose }: Props) {
+export default function FilterSheet({ value: f, count, onChange, onClose, inline = false }: Props) {
   const n = count(f);
   const setSpice = (lv: Spice) => {
     // 한 번 누르면 그 단계만, 이어서 누르면 그 사이 범위
@@ -51,16 +52,18 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
   };
 
   return (
-    <div className="absolute inset-0 z-30 flex flex-col justify-end bg-black/30" onClick={onClose}>
+    <div className={inline ? "min-h-0 flex-1 overflow-y-auto" : "absolute inset-0 z-30 flex flex-col justify-end bg-black/30"} onClick={inline ? undefined : onClose}>
       <div
-        className="sheet-up max-h-[86%] overflow-y-auto rounded-t-2xl bg-surface px-5 pb-3"
+        className={inline ? "bg-surface px-4 pb-3 pt-3" : "sheet-up max-h-[86%] overflow-y-auto rounded-t-2xl bg-surface px-5 pb-3"}
         onClick={(e) => e.stopPropagation()}
-        role="dialog"
+        role={inline ? "region" : "dialog"}
         aria-label="취향 필터"
       >
-        <div className="sticky top-0 -mx-5 flex items-center justify-between bg-surface px-5 pt-3 pb-2">
-          <span className="mx-auto mb-1 block h-1 w-10 rounded-full bg-chipline" />
-        </div>
+        {!inline && (
+          <div className="sticky top-0 -mx-5 flex items-center justify-between bg-surface px-5 pt-3 pb-2">
+            <span className="mx-auto mb-1 block h-1 w-10 rounded-full bg-chipline" />
+          </div>
+        )}
         <div className="flex items-baseline justify-between">
           <h2 className="text-[18px] font-bold">오늘은 어떤 떡?</h2>
           <button type="button" className="text-[13px] text-ink3 underline" onClick={() => onChange(DEFAULT_FILTERS)}>
@@ -68,7 +71,7 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
           </button>
         </div>
 
-        <Section title="떡" hint="여러 개">
+        <Section id="filter-rice" title="떡" hint="여러 개">
           {keysOf(RICE_CAKES).map((k) => (
             <Chip key={k} on={f.rice.includes(k)} onClick={() => onChange({ ...f, rice: toggle(f.rice, k) })}>
               {RICE_CAKES[k]}
@@ -76,7 +79,7 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
           ))}
         </Section>
 
-        <Section title="스타일" hint="여러 개">
+        <Section id="filter-style" title="스타일" hint="여러 개">
           {keysOf(STYLES).map((k) => (
             <Chip key={k} on={f.style.includes(k)} onClick={() => onChange({ ...f, style: toggle(f.style, k) })}>
               {STYLES[k]}
@@ -84,7 +87,7 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
           ))}
         </Section>
 
-        <Section title="맵기" hint="신라면 = 3 · 두 번 누르면 범위">
+        <Section id="filter-spice" title="맵기" hint="신라면 = 3 · 두 번 누르면 범위">
           <div className="flex w-full items-end justify-between gap-1">
             {([1, 2, 3, 4, 5] as Spice[]).map((lv) => {
               const on = lv >= f.spice[0] && lv <= f.spice[1] && !(f.spice[0] === 1 && f.spice[1] === 5);
@@ -104,7 +107,7 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
           </div>
         </Section>
 
-        <Section title="1인분 가격">
+        <Section id="filter-price" title="1인분 가격">
           {PRICE_STEPS.map((p) => (
             <Chip key={p} on={f.priceMax === p} onClick={() => onChange({ ...f, priceMax: f.priceMax === p ? null : p })}>
               {(p / 1000).toLocaleString()}천 원 이하
@@ -125,7 +128,7 @@ export default function FilterSheet({ value: f, count, onChange, onClose }: Prop
         </Section>
 
         {/* 0곳이면 초기화 버튼 (슬랙 10-28, 기획 팀장: 결과가 없을 때 초기화할 수 있게). 버튼은 항상 아래에 붙어 보인다 */}
-        <div className="sticky bottom-0 -mx-5 bg-surface px-5 pt-2 pb-[calc(env(safe-area-inset-bottom)+4px)]">
+        <div className={`sticky bottom-0 bg-surface pt-2 pb-[calc(env(safe-area-inset-bottom)+4px)] ${inline ? "-mx-4 px-4" : "-mx-5 px-5"}`}>
         {n === 0 ? (
           <div className="flex gap-2">
             <p className="grid h-12 flex-1 place-items-center rounded-xl bg-chip text-[14px] text-ink2">조건에 맞는 가게가 없어요</p>

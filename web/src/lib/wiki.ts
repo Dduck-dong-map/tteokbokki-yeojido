@@ -3,17 +3,18 @@ import { GRADES, RICE_CAKES, STYLES, USAGES, type Grade, type RiceCake, type Spi
 import type { Hours, MenuItem, Store } from "./types";
 
 // 「모두가 고치는 지도」 규칙 (거지맵 구도를 추린 MVP, 11-04 · docs/MVP_거지맵구도_2026-11-04.md)
-// 제보는 사전 승인 없이 바로 올라가고, 이용자들이 뒤에서 걸러 낸다.
+// 등록은 사전 승인 없이 바로 올라가고, 이용자들이 뒤에서 걸러 낸다.
 // 화면과 서버가 같은 규칙으로 검사한다.
 
 export const VERIFY_DAYS = 7; // 새 가게는 일주일 동안 「확인 중」으로 보인다
 export const VERIFY_YES = 3; // 「맞아요」 3명이면 확인 완료
 export const HIDE_AT = 3; // 「달라요」 또는 신고가 3명 쌓이면 지도에서 내린다
-export const MIN_PHOTOS = 1; // 새 가게 제보에 필요한 사진 (간판이나 메뉴판) — 값만 바꾸면 2장으로 올릴 수 있다
+export const MIN_PHOTOS = 1; // 새 가게 등록에 필요한 사진 (간판이나 메뉴판) — 값만 바꾸면 2장으로 올릴 수 있다
 export const MAX_PHOTOS = 5;
 export const MAX_MENU = 5;
-export const DAILY_LIMIT = 10; // 기기·접속 위치 기준 하루 제보·수정 10건
+export const DAILY_LIMIT = 10; // 기기·접속 위치 기준 하루 등록·수정 10건
 export const DUP_RADIUS_M = 80; // 이 거리 안에 같은 이름이 있으면 이미 있는 가게로 본다
+export const MAX_INTRO = 500; // 소개글 글자 수
 export const OLD_DAYS = 60; // 마지막 확인이 이보다 오래되면 「확인이 필요해요」
 
 export const FLAG_REASONS = {
@@ -39,9 +40,12 @@ export type NewStoreInput = {
   stars?: number;
   menu: MenuItem[]; // 첫 줄 = 대표 메뉴. 대표 메뉴 가격이 지도에 나온다
   photos: string[];
+  memo?: string; // 소개글 (선택)
+  hours?: Hours; // 영업시간 (선택)
+  notDuplicate?: boolean; // 「다른 가게예요」를 눌러 이름이 비슷해도 올린다
 };
 
-// 정보 고치기: 맵기는 여기서 안 고친다(평가에서 투표). 사진은 더하기만 한다.
+// 정보 고치기: 맵기(대표 메뉴 기준)도 여기서 고친다. 사진은 더하기만 한다.
 export type StorePatch = {
   name?: string;
   address?: string;
@@ -50,6 +54,7 @@ export type StorePatch = {
   grade?: Grade;
   rice?: RiceCake[];
   style?: Style;
+  spice?: Spice;
   menu?: MenuItem[];
   hours?: Hours | null;
   usage?: Usage[];
@@ -69,6 +74,24 @@ function checkMenu(menu: MenuItem[] | undefined): string | null {
   return null;
 }
 
+// 소개글: 글자만. 전화번호·링크는 올리기 전에 막는다 (금칙어는 어드민에서 관리할 때 더한다, W2)
+export function checkIntro(text: unknown): string | null {
+  if (typeof text !== "string") return "소개글을 다시 봐 주세요";
+  if (text.length > MAX_INTRO) return `소개글은 ${MAX_INTRO}자까지예요`;
+  if (/(^|[^\d])0\d{1,2}[-.\s]?\d{3,4}[-.\s]?\d{4}(?!\d)/.test(text)) return "소개글에는 전화번호를 넣을 수 없어요";
+  if (/https?:\/\/|www\.|[a-z0-9-]+\.(com|net|org|kr|me|io|co)(\/|\b)/i.test(text)) return "소개글에는 링크를 넣을 수 없어요";
+  return null;
+}
+
+function checkHours(h: Hours): string | null {
+  const time = /^([01]\d|2[0-3]):[0-5]\d$/;
+  if (!time.test(h.open) || !time.test(h.close)) return "영업시간을 다시 봐 주세요";
+  if (!Array.isArray(h.days) || !h.days.length || h.days.some((d) => !Number.isInteger(d) || d < 0 || d > 6)) return "여는 요일을 하나 이상 골라 주세요";
+  return null;
+}
+
+const badSpice = (v: unknown) => !Number.isInteger(v) || (v as number) < 1 || (v as number) > 5;
+
 export function checkNewStore(r: Partial<NewStoreInput>): string | null {
   if (!r.name?.trim() || r.name.length > 60) return "가게 이름을 넣어 주세요";
   if (!r.address?.trim() || r.address.length > 120) return "주소를 넣어 주세요";
@@ -76,12 +99,20 @@ export function checkNewStore(r: Partial<NewStoreInput>): string | null {
   if (!r.grade || !(r.grade in GRADES)) return "어떤 가게인지 골라 주세요";
   if (!r.rice?.length || r.rice.some((x) => !(x in RICE_CAKES))) return "떡을 하나 이상 골라 주세요";
   if (!r.style || !(r.style in STYLES)) return "스타일을 골라 주세요";
-  if (!r.spice || !Number.isInteger(r.spice) || r.spice < 1 || r.spice > 5) return "맵기를 골라 주세요";
+  if (badSpice(r.spice)) return "맵기를 골라 주세요";
   if (r.stars !== undefined && (!Number.isInteger(r.stars) || r.stars < 1 || r.stars > 5)) return "별점을 다시 골라 주세요";
   const menuError = checkMenu(r.menu);
   if (menuError) return menuError;
   if ((r.photos?.length ?? 0) < MIN_PHOTOS) return `간판이나 메뉴판 사진을 ${MIN_PHOTOS}장 이상 올려 주세요`;
   if (r.photos!.length > MAX_PHOTOS) return `사진은 ${MAX_PHOTOS}장까지 올릴 수 있어요`;
+  if (r.memo !== undefined) {
+    const e = checkIntro(r.memo);
+    if (e) return e;
+  }
+  if (r.hours) {
+    const e = checkHours(r.hours);
+    if (e) return e;
+  }
   return null;
 }
 
@@ -92,25 +123,28 @@ export function checkPatch(p: StorePatch): string | null {
   if (p.grade !== undefined && !(p.grade in GRADES)) return "어떤 가게인지 골라 주세요";
   if (p.rice !== undefined && (!p.rice.length || p.rice.some((x) => !(x in RICE_CAKES)))) return "떡을 하나 이상 골라 주세요";
   if (p.style !== undefined && !(p.style in STYLES)) return "스타일을 골라 주세요";
+  if (p.spice !== undefined && badSpice(p.spice)) return "맵기를 다시 골라 주세요";
   if (p.menu !== undefined) {
     const e = checkMenu(p.menu);
     if (e) return e;
   }
   if (p.usage !== undefined && p.usage.some((x) => !(x in USAGES))) return "이용 정보를 다시 골라 주세요";
-  if (p.memo !== undefined && p.memo.length > 200) return "메모는 200자까지예요";
+  if (p.memo !== undefined) {
+    const e = checkIntro(p.memo);
+    if (e) return e;
+  }
   if (p.hours) {
-    const time = /^([01]\d|2[0-3]):[0-5]\d$/;
-    if (!time.test(p.hours.open) || !time.test(p.hours.close)) return "영업시간을 다시 봐 주세요";
-    if (!Array.isArray(p.hours.days) || !p.hours.days.length || p.hours.days.some((d) => !Number.isInteger(d) || d < 0 || d > 6)) return "여는 요일을 하나 이상 골라 주세요";
+    const e = checkHours(p.hours);
+    if (e) return e;
   }
   if (p.addPhotos !== undefined && p.addPhotos.length > MAX_PHOTOS) return `사진은 ${MAX_PHOTOS}장까지 올릴 수 있어요`;
   return null;
 }
 
-export function checkReview(r: { stars?: number; spice?: number; text?: string }): string | null {
-  if (r.stars === undefined && r.spice === undefined) return "별점이나 맵기를 하나는 골라 주세요";
-  if (r.stars !== undefined && (!Number.isInteger(r.stars) || r.stars < 1 || r.stars > 5)) return "별점을 다시 골라 주세요";
-  if (r.spice !== undefined && (!Number.isInteger(r.spice) || r.spice < 1 || r.spice > 5)) return "맵기를 다시 골라 주세요";
+// 평가 = 별(필수) + 한 줄 후기. 맵기 투표는 메뉴별 구조와 함께 나중에 (웹 1차 기획 ADR-W06)
+export function checkReview(r: { stars?: number; text?: string }): string | null {
+  if (r.stars === undefined) return "별점을 골라 주세요";
+  if (!Number.isInteger(r.stars) || r.stars < 1 || r.stars > 5) return "별점을 다시 골라 주세요";
   if ((r.text?.length ?? 0) > 80) return "한 줄 후기는 80자까지예요";
   return null;
 }
@@ -125,7 +159,7 @@ export function parseAddress(address: string): { gu: string; dong: string } {
   return { gu: (guWord && GU_SLUGS[guWord]) ?? "etc", dong: dongWord ?? guWord ?? words[0] ?? "" };
 }
 
-// 일주일 안에 제보됐고 아직 「맞아요」가 모자란 가게
+// 일주일 안에 등록됐고 아직 「맞아요」가 모자란 가게
 export function isPending(s: Pick<Store, "createdAt" | "verify">, now: Date) {
   return !!s.createdAt && daysSince(s.createdAt, now) <= VERIFY_DAYS && (s.verify?.yes ?? 0) < VERIFY_YES;
 }

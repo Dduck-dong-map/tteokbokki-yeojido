@@ -4,7 +4,7 @@ import { confirmedAgo, freshness } from "@/lib/freshness";
 import { RICE_CAKES, SPICE_LEVELS, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
 import { isPending } from "@/lib/wiki";
-import { PendingTag, SpiceStamp, Stars, Tag } from "./ui";
+import { GRID_LI, GRID_UL, PendingTag, SpiceStamp, Stars, Tag } from "./ui";
 
 // 목록: 지도 없이도 읽히는 글 목록 (검색엔진·지도 API 한도 대비, 기획안 13절)
 // 365일 넘은 가게는 내리고, 최근 확인된 가게를 위에 둔다.
@@ -13,15 +13,15 @@ export function visibleStores(stores: Store[], now: Date) {
 }
 
 export default function StoreList({ stores, now }: { stores: Store[]; now: Date }) {
-  if (!stores.length) return <p className="px-4 py-10 text-center text-[14px] text-ink3">아직 등록된 가게가 없어요. 제보해 주세요!</p>;
+  if (!stores.length) return <p className="px-4 py-10 text-center text-[14px] text-ink3">아직 등록된 가게가 없어요. 아는 집을 등록해 주세요!</p>;
   return (
-    <ul className="divide-y divide-line">
+    <ul className={GRID_UL}>
       {stores.map((s) => {
         const stale = freshness(s, now) === "stale";
         return (
-          <li key={s.id}>
+          <li key={s.id} className={GRID_LI}>
             {/* 정보 순서(슬랙 10-28): 이름 → 위치 → 떡볶이 종류 → 맵기 → 대표 가격 */}
-            <Link href={`/store/${s.id}`} className="flex gap-3 px-4 py-3.5">
+            <Link href={`/store/${s.id}`} className="flex h-full gap-3 px-4 py-3.5">
               <div className="min-w-0 flex-1">
                 <h3 className="flex items-center gap-1.5 text-[15px] font-bold">
                   <span className="truncate">{s.name}</span>
