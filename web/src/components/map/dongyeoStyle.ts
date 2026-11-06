@@ -1,4 +1,4 @@
-import type { ExpressionSpecification, FilterSpecification, StyleSpecification } from "maplibre-gl";
+import type { ExpressionSpecification, FilterSpecification, LayerSpecification, StyleSpecification } from "maplibre-gl";
 import type { Tokens } from "@/lib/theme";
 
 // 대동여지도 느낌 바탕 지도 (기획안 8절)
@@ -7,9 +7,15 @@ import type { Tokens } from "@/lib/theme";
 // 지도 엔진을 네이버로 정하면 이 파일 대신 네이버 스타일 편집기 스타일을 쓴다.
 
 const OFM = "https://tiles.openfreemap.org";
+export const MAP_CREDIT = '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>';
 const FONT = ["Noto Sans Regular"];
 const FONT_BOLD = ["Noto Sans Bold"];
 const name: ExpressionSpecification = ["coalesce", ["get", "name:ko"], ["get", "name"]];
+
+// 지도에서 길 찾을 때 기준으로 삼기 좋은 곳. 조금 일찍, 조금 진하게 보인다.
+const LANDMARK = ["school", "college", "park", "library", "hospital", "post", "police", "bank", "attraction", "theatre", "town_hall", "fire_station", "stadium", "museum", "place_of_worship", "grocery"];
+// 이름이 붙어 있어도 위치 찾기에 도움이 안 되는 것 (역은 station 층에 따로 있다)
+const POI_SKIP = ["bus", "railway", "hairdresser", "parking", "bicycle", "bicycle_rental", "car", "laundry", "toilets", "waste_basket", "shelter", "gate", "atm"];
 
 // 대동여지도의 첩(책 한 권 크기) 이음선처럼 옅은 격자를 깐다. 서울 둘레만.
 function seamGrid(): GeoJSON.FeatureCollection {
@@ -27,15 +33,70 @@ const roadClass = (...c: string[]): FilterSpecification => [
   ["!=", ["get", "brunnel"], "tunnel"],
 ];
 
-export function dongyeoStyle(t: Tokens["map"]): StyleSpecification {
+// 확대 방식 (팀 피드백 v2 정-2, 시안 비교 중). 주소 ?zoom=real 이면 ①, 아니면 ②.
+// ② names: 같은 지도에 이름을 더한다. ① real: 그림 지도가 사라지며 아래 실제 지도(realMap.ts)가 드러난다.
+export type ZoomMode = "names" | "real";
+export const REAL_FADE: [number, number] = [15, 15.8]; // ① 그림 지도가 사라지는 구간
+
+// 확대했을 때 위치를 짚는 이름. 멀리서는 그림 지도 그대로, 가까이 갈수록 길 → 큰 건물 → 상호 순으로 나온다.
+// 층은 아래일수록 먼저 밀려난다: 상호 < 큰 건물 < 길 < 역·동네.
+function nameLayers(t: Tokens["map"]): LayerSpecification[] {
+  return [
+    {
+      id: "poi-name", type: "symbol", source: "omt", "source-layer": "poi", minzoom: 16.5,
+      filter: ["all", ["match", ["get", "class"], [...LANDMARK, ...POI_SKIP], false, true], ["<=", ["length", ["get", "name"]], 14]],
+      layout: {
+        "text-field": name, "text-font": FONT,
+        "text-size": ["interpolate", ["linear"], ["zoom"], 16.5, 10.5, 18, 12],
+        "text-padding": 4, "text-max-width": 7, "symbol-sort-key": ["get", "rank"],
+      },
+      paint: { "text-color": t.label, "text-opacity": 0.72, "text-halo-color": t.paper, "text-halo-width": 1.3 },
+    },
+    {
+      id: "poi-landmark", type: "symbol", source: "omt", "source-layer": "poi", minzoom: 15.5,
+      filter: ["match", ["get", "class"], LANDMARK, true, false],
+      layout: {
+        "text-field": name, "text-font": FONT,
+        "text-size": ["interpolate", ["linear"], ["zoom"], 15.5, 11, 18, 13],
+        "text-padding": 6, "text-max-width": 7, "symbol-sort-key": ["get", "rank"],
+      },
+      paint: { "text-color": t.mInk, "text-opacity": 0.88, "text-halo-color": t.paper, "text-halo-width": 1.5 },
+    },
+    {
+      id: "road-name", type: "symbol", source: "omt", "source-layer": "transportation_name", minzoom: 15,
+      layout: {
+        "symbol-placement": "line", "text-field": name, "text-font": FONT,
+        "text-size": ["interpolate", ["linear"], ["zoom"], 15, 10.5, 18, 13],
+        "text-letter-spacing": 0.12, "symbol-spacing": 240, "text-max-angle": 30,
+      },
+      paint: { "text-color": t.mInk, "text-halo-color": t.paper, "text-halo-width": 2 },
+    },
+  ];
+}
+
+// ① 그림 지도 층을 REAL_FADE 구간에서 투명하게 지운다. 다 지워진 뒤엔 층을 꺼서 타일도 안 받는다.
+const OPACITY_KEY: Partial<Record<LayerSpecification["type"], string>> = { background: "background-opacity", fill: "fill-opacity", line: "line-opacity", symbol: "text-opacity" };
+function fadeOut(layer: LayerSpecification): LayerSpecification {
+  const key = OPACITY_KEY[layer.type];
+  if (!key) return layer;
+  const paint = (layer as { paint?: Record<string, unknown> }).paint ?? {};
+  const from = typeof paint[key] === "number" ? paint[key] : 1;
+  return {
+    ...layer,
+    maxzoom: layer.maxzoom ?? REAL_FADE[1],
+    paint: { ...paint, [key]: ["interpolate", ["linear"], ["zoom"], REAL_FADE[0], from, REAL_FADE[1], 0] },
+  } as LayerSpecification;
+}
+
+export function dongyeoStyle(t: Tokens["map"], mode: ZoomMode = "names"): StyleSpecification {
   return {
     version: 8,
     glyphs: `${OFM}/fonts/{fontstack}/{range}.pbf`,
     sources: {
-      omt: { type: "vector", url: `${OFM}/planet`, attribution: '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>' },
+      omt: { type: "vector", url: `${OFM}/planet`, attribution: MAP_CREDIT },
       seam: { type: "geojson", data: seamGrid() },
     },
-    layers: [
+    layers: ((layers: LayerSpecification[]) => (mode === "real" ? layers.map(fadeOut) : layers))([
       { id: "paper", type: "background", paint: { "background-color": t.paper } },
       { id: "park", type: "fill", source: "omt", "source-layer": "park", paint: { "fill-color": t.park, "fill-opacity": 0.5 } },
       {
@@ -90,6 +151,7 @@ export function dongyeoStyle(t: Tokens["map"]): StyleSpecification {
         filter: ["all", ["==", ["get", "class"], "rail"], ["!=", ["get", "brunnel"], "tunnel"]],
         paint: { "line-color": t.mRoad, "line-width": 1, "line-dasharray": [4, 3] },
       },
+      ...(mode === "names" ? nameLayers(t) : []),
       // 지명: 목판 명조 느낌 (한글은 지도 생성 시 localIdeographFontFamily 로 명조를 쓴다)
       {
         id: "water-name", type: "symbol", source: "omt", "source-layer": "water_name", minzoom: 11,
@@ -119,6 +181,6 @@ export function dongyeoStyle(t: Tokens["map"]): StyleSpecification {
         layout: { "text-field": name, "text-font": FONT_BOLD, "text-size": ["interpolate", ["linear"], ["zoom"], 10, 13, 14, 17], "text-letter-spacing": 0.3 },
         paint: { "text-color": t.label, "text-halo-color": t.paper, "text-halo-width": 2 },
       },
-    ],
+    ]),
   };
 }

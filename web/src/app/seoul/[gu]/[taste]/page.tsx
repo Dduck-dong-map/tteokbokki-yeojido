@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { getRegion, getRegions, getStores } from "@/lib/data";
 import { Suspense } from "react";
 import { ListSkeleton, RegionList, findTaste, tastes } from "../regionPage";
@@ -32,14 +32,12 @@ export default function TastePage({ params }: PageProps<"/seoul/[gu]/[taste]">) 
 }
 
 async function TasteLoader({ params }: Pick<PageProps<"/seoul/[gu]/[taste]">, "params">) {
+  await connection();
   const { gu, taste } = await params;
   return <TasteList gu={gu} taste={taste} />;
 }
 
 async function TasteList({ gu, taste }: { gu: string; taste: string }) {
-  "use cache";
-  cacheLife("hours");
-
   const region = getRegion(gu);
   const t = findTaste(taste);
   if (!region || !t) notFound();

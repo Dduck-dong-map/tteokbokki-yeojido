@@ -186,6 +186,16 @@ body.light .proto{background:#e4e6ec}
 .st.g em{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);display:flex;align-items:center;gap:0;height:12px;padding:0 3px;border-radius:7px;background:var(--surface);border:1px solid var(--c);color:#D12F2A;line-height:0;font-style:normal;white-space:nowrap;box-shadow:var(--pin-shadow)}
 .st.g.m em{height:9px;bottom:-6px;padding:0 2px;border-width:1px}
 .st.g.big em{height:15px;bottom:-11px;padding:0 4px}
+/* ── 11-04 글꼴 고르기: 왼쪽 칸 · FT-00 비교판에서 누르면 로고·슬로건·손글씨 제목이 바로 바뀐다 ── */
+.fchips{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
+.fchip{display:block;min-width:0;padding:5px 7px;text-align:left;border:1px solid var(--t-line);border-radius:8px;background:none;color:var(--t-ink);cursor:pointer;overflow:hidden}
+.fchip.on{border-color:var(--t-sel);box-shadow:inset 0 0 0 1px var(--t-sel)}
+.fchip b{display:block;height:25px;font-weight:400;font-size:19px;line-height:25px;white-space:nowrap}
+.fchip img{display:block;height:25px;max-width:100%;object-fit:contain;object-position:left}
+body:not(.light) .fchip img.ink{filter:invert(.9)}
+.fchip small{display:block;font-size:10.5px;color:var(--t-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ftb{flex:1;height:32px;font-size:12px;border:1px solid #C9C9C3;border-radius:7px;background:#fff;color:#1C1C1B;cursor:pointer;font-family:inherit}
+.ftb.on{background:#1C1C1B;border-color:#1C1C1B;color:#fff}
 /* ── 11-02 맵기 도장 스튜디오: 왼쪽 칸 「맵기 도장 스튜디오」의 값이 body 클래스·CSS 변수로 들어와 모든 화면의 도장·고추가 한 번에 바뀐다 ── */
 .st.g i{border-radius:var(--st-r,2px);border-width:var(--st-bw,1px)}
 .st.g{border-radius:calc(var(--st-r,2px) + 1px)}
@@ -282,7 +292,7 @@ body.edge-frame .real svg{left:-12px;top:-112px}
 .btn.out{border:1px solid var(--chipline);background:var(--surface);color:var(--ink)}
 .sec{font-size:15px;font-weight:700}
 .sec small{margin-left:6px;font-size:12px;font-weight:400;color:var(--ink3)}
-.pen{font-family:"Nanum Pen Script",cursive;font-size:32px;line-height:1.1}
+.pen{font-family:var(--f-pen,"Nanum Pen Script"),cursive;font-size:32px;line-height:1.1}
 .mp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .mp a{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;line-height:1.35;color:var(--ink2);text-align:center}
 .mp a .sq{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:4px;font-family:"Song Myung",serif;font-size:22px;opacity:.38}
@@ -297,6 +307,12 @@ body.edge-frame .real svg{left:-12px;top:-112px}
 .doc{height:844px;padding:28px 30px;background:#FFFFFF;color:#1C1C1B;font-family:"Noto Sans KR",system-ui,sans-serif;font-size:14px;line-height:1.45;display:flex;flex-direction:column;gap:16px;overflow:hidden}
 .dlg-wrap{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50}
 .dlg{width:300px;padding:20px;border-radius:16px;background:var(--surface);color:var(--ink);text-align:center}
+/* v3 내 맛지도 (11-02 웹 /mine 과 같게): ♡ 저장 토스트 · 다녀옴 토글 */
+.toast3{position:absolute;left:0;right:0;bottom:96px;display:flex;justify-content:center;z-index:40;pointer-events:none}
+.toast3 span{padding:8px 16px;border-radius:999px;background:color-mix(in srgb,var(--ink) 85%,transparent);color:var(--paper);font-size:13px;font-weight:600}
+.svh{color:var(--ink3);font-size:21px;line-height:1;cursor:pointer}.svh.on{color:var(--fab)}
+.vbtn{flex:none;height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink3);font-size:12px;display:inline-flex;align-items:center;cursor:pointer}
+.vbtn.on{border-color:var(--ink);color:var(--ink);font-weight:700}
 .dlg b{font-size:16px}
 .dlg p{margin:8px 0 14px;color:var(--ink2);font-size:13.5px;line-height:1.55}
 .dlg button{width:100%;height:44px;border:0;border-radius:10px;background:var(--primary);color:var(--onprimary);font-weight:700;cursor:pointer}
@@ -434,6 +450,9 @@ body.edge-frame .real svg{left:-12px;top:-112px}
     <button class="tb-btn" id="tChar" title="캐릭터 기획 줄로 이동">캐릭터 기획</button>
     <button class="tb-btn" id="tV3" title="v3 초기판(단순 흐름) 줄로 이동">v3 초기판</button>
     <button class="tb-btn" id="tTiger" title="호랑이 이미지 기획(로딩·중간 화면)으로 이동">호랑이</button>
+    <button class="tb-btn" id="tMvp" title="거지맵 구도로 추린 MVP 줄로 이동">MVP</button>
+    <button class="tb-btn" id="tWeb" title="웹 1차 기획(반응형 · 등록 · 위치 · 어드민)으로 이동">웹 1차</button>
+    <button class="tb-btn" id="tFont" title="글꼴 비교판으로 이동 · 왼쪽 칸 「글꼴 고르기」 열기">글꼴</button>
     <button class="tb-btn" id="tTheme" title="라이트 / 다크 모드 바꾸기">☀ 라이트</button>
   </div>
 </div>
@@ -548,6 +567,98 @@ let PAL = { preset:'T', base:{ ...PRESETS.find(p => p.id === 'T').b }, custom:fa
 try { const s = JSON.parse(localStorage.getItem('ddb-board') || 'null'); if (s && s.base) PAL = { ...PAL, ...s }; } catch (e) {}
 PAL.stamp = { ...DEF_STAMP, ...(PAL.stamp || {}) };
 const STM = () => PAL.stamp;
+
+/* ═════════ 11-04 글꼴 고르기 ═════════
+   사용자 사진(붓 로고 · 슬로건 손글씨 · 굵은 붓 「떡동여지도·떡볶여지도」)과 닮은 무료 글꼴. 쓰일 때만 인터넷에서 받는다.
+   라이선스 글은 눈누·구글 폰트 페이지 요약(11-04 확인). 정하기 전에 원문을 다시 본다. 웹 web/src/lib/fonts.ts 와 같은 목록. */
+const NN = 'https://cdn.jsdelivr.net/gh/projectnoonnu/';
+const FONTS = [
+  // 사용자 사진의 두 줄: 글자별로 겹쳐 잰 결과 (굵게 한 정도까지 맞추면 0.947). 굵게 = 획 덧칠 stroke em
+  { id:'chosun', g:'사진', n:'조선100년체', by:'방일영문화재단', fam:'Joseon100Years', url:NN + 'noonfonts_2206-02@1.0/ChosunCentennial.woff2', stroke:.02, lic:'웹사이트·인쇄·서버 탑재 가능 · 수정 금지', warn:'로고·브랜드명·슬로건에는 사용 금지', note:'사진 아래 줄 「떡볶여지도」 · 겹침 0.95' },
+  { id:'galmat', g:'사진', n:'갈맷글', by:'네이버', fam:'Galmat', url:NN + 'naverfont_04@1.0/Galmetgol.woff', stroke:.02, lic:'로고 가능 · 웹 탑재 가능 · 수정 가능 · 글꼴 판매만 금지 · 출처 표기 권장', note:'사진 위 줄 「떡동여지도」 · 겹침 0.95' },
+  { id:'euljiro', g:'굵은 붓', n:'을지로체', by:'우아한형제들', fam:'Euljiro', url:NN + 'noonfonts_twelve@1.0/BMEULJIRO.woff', lic:'OFL · 로고 가능 · 수정 가능 · 출처 표기 권장' },
+  { id:'euljiro10', g:'굵은 붓', n:'을지로10년후체', by:'우아한형제들', fam:'Euljiro10YearsLater', url:NN + 'noonfonts_20-10-21@1.0/BMEuljiro10yearslater.woff', lic:'OFL · 로고 가능 · 수정 가능 · 출처 표기 권장', note:'을지로체에 낡은 붓 자국' },
+  { id:'sumunjang', g:'굵은 붓', n:'경복궁 수문장 제목체', by:'국가유산진흥원', fam:'GyeongbokgungSumunjangTitle', url:NN + '2511-3@1.0/Sumunjang_TitleB.woff2', lic:'공공누리 1유형 · 로고 가능 · 변형 가능 · 출처 표시 필수' },
+  { id:'hanseokbong', g:'굵은 붓', n:'가평 한석봉 큰붓', by:'가평군', fam:'GapyeongHanseokbongBigBrush', url:NN + 'noonfonts_2312-1@1.1/GapyeongHanseokbong-Bold.woff2', lic:'무료 · 글자 변형 금지 · 저작권자 표시 안내 · 로고는 원문 확인' },
+  { id:'chungju', g:'굵은 붓', n:'충주김생체', by:'충주시', fam:'ChungjuKimsaeng', url:NN + 'noonfonts_2312-1@1.1/ChungjuKimSaengTTF.woff2', lic:'로고 가능 · 왜곡·변형 금지' },
+  { id:'police', g:'굵은 붓', n:'그리운 경찰감성체', by:'서울경찰청 × 그리운', fam:'NostalgicPoliceVibe', url:NN + '2601-6@1.0/Griun_PolSensibility-Rg.woff2', lic:'로고 가능 · 파일 수정 금지' },
+  { id:'shilla', g:'굵은 붓', n:'신라문화체', by:'경주시', fam:'Shilla', url:NN + 'noonfonts_2206-02@1.0/Shilla_CultureB-Bold.woff2', lic:'로고 가능 · 변형 금지 · 출처 표기 권장' },
+  { id:'dokrip', g:'굵은 붓', n:'독립체', by:'윤디자인', fam:'Independent', url:NN + 'noonfonts_twelve@1.1/Dokrip.woff', lic:'로고 가능 · 디자인 수정 금지' },
+  { id:'arirang', g:'얇은 붓', n:'정선아리랑체', by:'정선군', fam:'JeongseonArirang', url:NN + 'noonfonts_2001@1.1/JSArirang-RegularA1.woff', lic:'로고 가능 · 수정·재배포 금지', note:'지금 붓 로고와 결이 비슷' },
+  { id:'flower', g:'얇은 붓', n:'꽃길', by:'상상토끼', fam:'FlowerRoad', url:NN + 'noonfonts_three@1.0/SangSangFlowerRoad.woff', lic:'로고 가능 · 파일 수정 금지 (디자인 변형은 가능)', note:'슬로건 손글씨와 결이 비슷' },
+  { id:'nanumbrush', g:'얇은 붓', n:'나눔손글씨 붓', by:'네이버', gf:'Nanum Brush Script', lic:'OFL (구글 폰트)', note:'슬로건 손글씨와 결이 비슷' },
+  { id:'yeongwol', g:'얇은 붓', n:'영월체', by:'영월군', fam:'Yeongwol', url:NN + '2507-2@1.0/YeongwolTTF-Regular.woff2', lic:'로고 가능 · 누구나 자유 사용 · 수정 조건은 원문 확인' },
+  { id:'rock', g:'얇은 붓', n:'정묵바위체', by:'상상토끼', fam:'Jeongmeokbawi', url:NN + 'noonfonts_2001@1.1/SangSangRockOTF.woff', lic:'로고 가능 · 파일 수정 금지 (디자인 변형은 가능)' },
+  { id:'sunsin', g:'얇은 붓', n:'이순신체', by:'아산시', fam:'LeeSunShin', url:NN + 'noonfonts_two@1.0/YiSunShinRegular.woff', lic:'로고 가능 · 수정 조건은 원문 확인' },
+  { id:'yeonsung', g:'얇은 붓', n:'Yeon Sung', by:'구글 폰트', gf:'Yeon Sung', lic:'OFL (구글 폰트)' },
+  { id:'eastsea', g:'얇은 붓', n:'East Sea Dokdo', by:'구글 폰트', gf:'East Sea Dokdo', lic:'OFL (구글 폰트)' },
+  { id:'dokdo', g:'얇은 붓', n:'Dokdo', by:'구글 폰트', gf:'Dokdo', lic:'OFL (구글 폰트)' },
+  { id:'nanumpen', g:'얇은 붓', n:'나눔손글씨 펜', by:'네이버', gf:'Nanum Pen Script', lic:'OFL (구글 폰트)', note:'지금 보드 손글씨 제목' },
+  { id:'songmyung', g:'얇은 붓', n:'Song Myung', by:'구글 폰트', gf:'Song Myung', lic:'OFL (구글 폰트)', note:'지금 보드 지명·큰 제목' }
+];
+const FONT = id => FONTS.find(f => f.id === id);
+const fontFam = f => f.gf || f.fam;
+const FDEF = { logo:'png', slogan:'png', pen:'nanumpen', bold:true };
+// 사진처럼 굵게: 갈맷글·조선100년체에만 든다 (왼쪽 칸에서 끌 수 있음)
+const FSTROKE = (f, css = '#C00000') => f.stroke && PAL.font.bold !== false ? `-webkit-text-stroke:${f.stroke}em ${css};paint-order:stroke fill;` : '';
+PAL.font = { ...FDEF, ...(PAL.font || {}) };
+const fontsLoaded = new Set();
+function loadFont(id) {
+  const f = FONT(id); if (!f || fontsLoaded.has(id)) return; fontsLoaded.add(id);
+  if (f.gf) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(f.gf)}&display=swap`; document.head.appendChild(l); }
+  else { const s = document.createElement('style'); s.textContent = `@font-face{font-family:'${f.fam}';src:url('${f.url}');font-display:swap}`; document.head.appendChild(s); }
+}
+// 비교판·왼쪽 칸은 글꼴이 많아 볼 때만 받는다 (data-ff 에 글꼴을 입힌다)
+let fontsAllOn = false;
+function hydrateFonts() { if (!fontsAllOn) return; document.querySelectorAll('[data-ff]').forEach(el => { const f = FONT(el.dataset.ff); if (f && !el.style.fontFamily) el.style.fontFamily = `'${fontFam(f)}'`; }); }
+function showAllFonts() { if (!fontsAllOn) { fontsAllOn = true; FONTS.forEach(f => loadFont(f.id)); } hydrateFonts(); }
+function applyFonts() {
+  ['logo', 'slogan', 'pen'].forEach(r => loadFont(PAL.font[r]));
+  const p = FONT(PAL.font.pen); document.body.style.setProperty('--f-pen', p ? `'${fontFam(p)}'` : '"Nanum Pen Script"');
+}
+function setFont(role, id) { PAL.font[role] = id; applyPalette(); rerenderAll(); }
+const LOGO = () => { const f = FONT(PAL.font.logo);
+  return f ? `<div style="height:89px;font-family:'${fontFam(f)}';font-size:62px;line-height:89px;color:#C00000;white-space:nowrap;filter:var(--logo-filter);${FSTROKE(f)}">떡볶여지도</div>`
+    : `<img src="img/logo_red.png" alt="떡볶여지도" style="display:block;width:300px;height:89px;filter:var(--logo-filter)">`; };
+const SLOGAN = () => { const f = FONT(PAL.font.slogan);
+  return f ? `<div style="height:87px;margin-top:34px;font-family:'${fontFam(f)}';font-size:21px;line-height:29px;color:var(--ink);white-space:nowrap"><div>떡볶이를 사랑하는 사람에 의한,</div><div style="padding-left:18px">떡볶이를 사랑하는 사람을 위한,</div><div style="padding-left:48px">떡볶이를 사랑하는 사람들의 지도</div></div>`
+    : `<img src="img/slogan_ink.png" alt="떡볶이를 사랑하는 사람에 의한, 떡볶이를 사랑하는 사람을 위한, 떡볶이를 사랑하는 사람들의 지도" style="display:block;width:342px;height:87px;margin-top:34px;filter:var(--slogan-filter)">`; };
+const SIGN = () => { const f = FONT(PAL.font.logo);
+  return f ? `<div class="sign" style="font-family:'${fontFam(f)}';font-size:21px;line-height:31px;color:#C00000;white-space:nowrap;${FSTROKE(f)}">떡볶여지도</div>`
+    : `<img class="sign" src="img/sign_red.png" alt="떡볶여지도">`; };
+const SIGN2 = pos => { const f = FONT(PAL.font.logo);
+  return f ? `<div style="${pos}font-family:'${fontFam(f)}';font-size:26px;line-height:38px;color:#C00000;white-space:nowrap;${FSTROKE(f)}">떡볶여지도</div>`
+    : `<img src="img/sign_red.png" alt="" style="${pos}width:118px;height:38px;filter:var(--logo-filter)">`; };
+const FONT_WEB = () => `http://localhost:3100/?logo=${FONT(PAL.font.logo) ? PAL.font.logo : 'png'}&head=base`;
+function fontPanel() {
+  const on = (r, id) => PAL.font[r] === id ? 'on' : '';
+  const chip = (r, f) => `<button class="fchip ${on(r, f.id)}" data-fset="${r}:${f.id}" title="${f.n} · ${f.warn ? f.warn + ' · ' : ''}${f.lic}"><b data-ff="${f.id}">떡볶여지도</b><small>${f.warn && r !== 'pen' ? '⚠ 시험만 · ' : ''}${f.n}</small></button>`;
+  const chips = (r, ids) => ids.map(id => chip(r, FONT(id))).join('');
+  const LOGO_IDS = ['galmat', 'chosun', 'euljiro', 'euljiro10', 'sumunjang', 'hanseokbong', 'chungju', 'police', 'shilla', 'dokrip', 'arirang', 'yeongwol', 'rock', 'sunsin', 'flower', 'nanumbrush', 'yeonsung', 'eastsea'];
+  const SLOGAN_IDS = ['galmat', 'chosun', 'flower', 'nanumbrush', 'arirang', 'yeongwol', 'rock', 'eastsea', 'dokdo', 'nanumpen'];
+  const PEN_IDS = ['chosun', 'galmat', 'nanumpen', 'nanumbrush', 'flower', 'arirang', 'yeongwol', 'euljiro', 'yeonsung', 'songmyung'];
+  return `<details class="studio" id="ftStudio" ${PAL.fontOpen ? 'open' : ''}><summary>글꼴 고르기 <small>누르면 바로 바뀌어요 · 로고 · 슬로건 · 손글씨 제목</small></summary>
+    <div class="pgroup">로고 <small style="font-weight:400">· N-01 첫 화면에서 확인</small></div>
+    <div class="fchips"><button class="fchip ${on('logo', 'png')}" data-fset="logo:png" title="지금 쓰는 붓글씨 그림"><img src="img/logo_red.png" alt=""><small>지금 붓 로고 (그림)</small></button>${chips('logo', LOGO_IDS)}</div>
+    <div class="pgroup">슬로건</div>
+    <div class="fchips"><button class="fchip ${on('slogan', 'png')}" data-fset="slogan:png" title="지금 쓰는 손글씨 그림"><img class="ink" src="img/slogan_ink.png" alt=""><small>지금 손글씨 (그림)</small></button>${chips('slogan', SLOGAN_IDS)}</div>
+    <div class="pgroup">손글씨 제목 <small style="font-weight:400">· 「오늘은 어떤 떡?」 자리</small></div>
+    <div class="fchips">${chips('pen', PEN_IDS)}</div>
+    <label class="pk"><span>로고 굵게 <small style="color:var(--t-sub)">사진처럼 · 갈맷글·조선100년체</small></span><button class="tog ${PAL.font.bold !== false ? 'on' : ''}" id="ftBold">${PAL.font.bold !== false ? '켬' : '끔'}</button></label>
+    <div class="pbtns"><button id="ftReset">원래대로</button><button id="ftGo">비교판으로</button><button id="ftWeb">실제 웹에서 보기</button></div></details>`;
+}
+function bindFontPanel(box) {
+  const det = box.querySelector('#ftStudio');
+  det.ontoggle = () => { PAL.fontOpen = det.open; save(); if (det.open) showAllFonts(); };
+  if (det.open) showAllFonts();
+  box.querySelector('#ftBold').onclick = () => { PAL.font.bold = PAL.font.bold === false; applyPalette(); rerenderAll(); };
+  box.querySelector('#ftReset').onclick = () => { PAL.font = { ...FDEF }; applyPalette(); rerenderAll(); };
+  box.querySelector('#ftGo').onclick = () => { if (mode === 'proto') closeProto(); showAllFonts(); focus('ft_all'); };
+  box.querySelector('#ftWeb').onclick = () => window.open(FONT_WEB(), '_blank');
+}
+// 왼쪽 칸과 비교판의 글꼴 버튼 (버튼은 그릴 때마다 바뀌므로 한 곳에서 받는다)
+addEventListener('click', e => { const b = e.target.closest('[data-fset]'); if (!b) return; const [r, id] = b.dataset.fset.split(':'); setFont(r, id); }, true);
+
 // 팔레트 변수 글 — 스튜디오의 단계 색 덮어쓰기 · 종이 결 · 도장 모양 변수까지 한 번에
 function palcssText(T) {
   const s = STM(), T2 = { ...T };
@@ -568,7 +679,7 @@ function parseStampQS(q) {
 }
 const presetOf = id => PRESETS.find(p => p.id === id) || PRESETS[6];
 const palName = () => PAL.custom ? `직접 만든 팔레트 (${presetOf(PAL.preset).name} 바탕)` : presetOf(PAL.preset).name;
-const lab2Text = () => { try { return mode === 'proto' && cur && byId[cur] && byId[cur].lane === 'F3' ? 'v3 초기판' : '개선안'; } catch (e) { return '개선안'; } };
+const lab2Text = () => { try { return (mode === 'proto' && cur && byId[cur] && ({ F3:'v3 초기판', F4:'② 이름 넣기', F5:'① 네이버 전환', F6:'MVP', F7:'MVP' })[byId[cur].lane]) || '개선안'; } catch (e) { return '개선안'; } };
 const save = () => { try { localStorage.setItem('ddb-board', JSON.stringify(PAL)); } catch (e) {} };
 
 function applyPalette() {
@@ -576,8 +687,8 @@ function applyPalette() {
   document.getElementById('palcss').textContent = palcssText(T);
   document.body.classList.remove('edge-fade', 'edge-blur', 'edge-frame');
   document.body.classList.add('edge-' + PAL.edge);
-  applyStampClasses();
-  renderPal(T); save();
+  applyStampClasses(); applyFonts();
+  renderPal(T); save(); hydrateFonts();
   const l2 = document.getElementById('lab2'); if (l2) l2.innerHTML = `${lab2Text()}<small>${palName()}</small>`;
 }
 const fmtB = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(1);
@@ -624,6 +735,7 @@ function renderPal(T) {
       <div class="pgroup">단계 색 1~5 <small style="font-weight:400">· 「기본」이면 팔레트 램프</small></div>
       <div style="display:flex;gap:4px;align-items:center">${[1, 2, 3, 4, 5].map(i => `<input type="color" data-ramp="${i}" value="${(s.ramp || [])[i - 1] || T['s' + i]}" style="width:34px;height:26px;padding:0;border:1px solid var(--t-line);border-radius:6px;background:none">`).join('')}<button class="tog" id="stRampReset">기본</button></div>
       <div class="pbtns"><button id="stReset">스튜디오 기본값</button><button id="stGo">미리보기 판으로</button></div></details>`; })()}
+    ${fontPanel()}
     <div class="pbtns"><button id="pReset">프리셋 값으로</button><button id="pCopy">색 값 보기·복사</button><button id="pLink">공유 주소 복사</button></div>
     <textarea class="pout" id="pOut" readonly></textarea>`;
   box.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => { const p = presetOf(b.dataset.pre); PAL.preset = p.id; PAL.base = { ...p.b }; PAL.custom = false; applyPalette(); });
@@ -649,7 +761,7 @@ function renderPal(T) {
   box.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { delete SLOTS[b.dataset.del]; saveSlots(); applyPalette(); });
   box.querySelector('#pLink').onclick = () => { // 지금 색 그대로 열리는 주소 (?cust=바탕-면-글자-주버튼-강조-제보-물&grain=…)
     const u = new URL(location.href); u.search = ''; u.hash = '';
-    u.searchParams.set('pal', PAL.preset); u.searchParams.set('cust', PKEYS.map(([k]) => PAL.base[k].replace('#', '')).join('-')); if (PAL.grain) u.searchParams.set('grain', PAL.grain); u.searchParams.set('sp', SPK()); u.searchParams.set('st', stampQS());
+    u.searchParams.set('pal', PAL.preset); u.searchParams.set('cust', PKEYS.map(([k]) => PAL.base[k].replace('#', '')).join('-')); if (PAL.grain) u.searchParams.set('grain', PAL.grain); u.searchParams.set('sp', SPK()); u.searchParams.set('st', stampQS()); u.searchParams.set('font', [PAL.font.logo, PAL.font.slogan, PAL.font.pen].join('-'));
     const out = box.querySelector('#pOut'); out.style.display = 'block'; out.value = u.href + '\n\n이 주소를 열면 같은 색으로 보드가 떠요. 로컬 파일 주소라 같은 폴더를 받은 사람에게만 통해요.'; out.select();
     try { navigator.clipboard.writeText(u.href); } catch (e) {} };
   // ── 맵기 도장 스튜디오 ──
@@ -662,6 +774,7 @@ function renderPal(T) {
   box.querySelector('#stRampReset').onclick = () => { PAL.stamp.ramp = null; applyPalette(); };
   box.querySelector('#stReset').onclick = () => { PAL.stamp = { ...DEF_STAMP }; applyPalette(); rerenderAll(); };
   box.querySelector('#stGo').onclick = () => { if (mode === 'proto') closeProto(); focus('sp_studio'); };
+  bindFontPanel(box);
   box.querySelector('#pReset').onclick = () => { PAL.base = { ...presetOf(PAL.preset).b }; PAL.custom = false; applyPalette(); };
   box.querySelector('#pCopy').onclick = () => {
     const B = PAL.base, out = box.querySelector('#pOut'), txt = palName() + '\n' + PKEYS.map(([k, t]) => `${t}: ${B[k]}`).join('\n') + (PAL.grain ? `\n종이 결: ${PAL.grain} (웹에는 아직 없음)` : '') + '\n\nweb/src/lib/theme.ts 에 붙일 프리셋 한 줄:\n' + `{ id: "X", name: "X 내 팔레트", b: { paper: "${B.paper}", surface: "${B.surface}", ink: "${B.ink}", primary: "${B.primary}", accent: "${B.accent}", fab: "${B.fab}", water: "${B.water}" } },`;
@@ -772,7 +885,7 @@ const MP = (on, extra = '', m) => {
     return `<a class="${on === n ? 'on' : ''}" data-act="pickmp">${inner}${t}</a>`;
   }).join('')}</div>${extra}`;
 };
-const TBAR = () => `<div class="tbar"><div class="r1"><img class="sign" src="img/sign_red.png" alt="떡볶여지도"><div class="search">${IC.search}동네, 가게 이름</div></div>
+const TBAR = () => `<div class="tbar"><div class="r1">${SIGN()}<div class="search">${IC.search}동네, 가게 이름</div></div>
   <div class="chips"><span class="chip on" data-go="filter">${IC.filter}취향</span><span class="chip" data-go="filter">떡</span><span class="chip" data-go="filter">스타일</span><span class="chip" data-go="filter">맵기</span><span class="chip" data-go="filter">1인분 가격</span><span class="chip" data-go="filter">영업 중</span></div></div>`;
 const NAV = on => `<nav class="nav"><a class="${on === 0 ? 'on' : ''}" data-go="home">${IC.map}지도</a><a class="${on === 1 ? 'on' : ''}" data-go="list">${IC.list}목록</a><a data-alert="soon">${IC.chat}떡볶이방</a><a data-alert="soon">${IC.book}내 맛지도</a></nav>`;
 const LBLS = `<div class="lbls"><span style="left:340px;top:124px">안산</span><span style="left:240px;top:150px">연희</span><span style="left:116px;top:214px;font-size:16px;letter-spacing:6px;color:var(--district)">연남</span><span style="left:14px;top:200px">성미산</span><span style="left:156px;top:132px;writing-mode:vertical-rl;color:var(--river);letter-spacing:3px">홍제천</span><span style="left:198px;top:336px">홍대입구</span><span style="left:268px;top:306px">신촌</span><span style="left:336px;top:296px">이대</span><span style="left:252px;top:410px">와우산</span><span style="left:326px;top:384px">노고산</span><span style="left:12px;top:410px">망원</span><span style="left:134px;top:476px">합정</span><span style="left:214px;top:526px">상수</span><span style="left:306px;top:554px">서강</span><span style="left:96px;top:572px;font-size:19px;letter-spacing:10px;color:var(--hangang);text-shadow:none">한강</span></div>`;
@@ -790,7 +903,8 @@ const ALERTS = {
   soon:['준비 중','떡볶이방 · 내 맛지도는 다음 시안에서 그려요.','확인'],
   soon3:['목록 탭 = 시트 전체 펼침','초기판에서 목록은 지도 아래 가게 시트를 끝까지 올린 것과 같아요. 검색엔진용 목록 페이지는 v2 N-07 그대로 둬요.','확인'],
   more3:['더 보기는 2차','메뉴판 · 영업시간 · 맛 결 · 사진은 2차에서 붙여요. 초기판 상세는 여섯 가지만.','확인'],
-  done3:['제보 완료','확인되면 지도에 도장이 찍혀요. 이름 없이 올라가요.','확인']
+  done3:['제보 완료','확인되면 지도에 도장이 찍혀요. 이름 없이 올라가요. 보낸 제보는 「내 맛지도 → 내 제보」에 남아요.','확인'],
+  visited3:['다녀옴만 보기','다녀옴 표시한 가게만 남겨요. 저장한 가게 줄 오른쪽 「다녀옴」 을 눌러 표시해요.','확인']
 };
 
 /* ═════════ 화면 ═════════ */
@@ -798,9 +912,17 @@ const LANES = [
   { id:'F1', t:'v2 개선안 · 찾고 찾아가기', s:'첫 화면 → 지도 홈(그림 지도) → ＋ 확대하면 실제 지도(네이버) → 가게 위치·길찾기' },
   { id:'F2', t:'v2 개선안 · 고르고 참여하기', s:'지도 홈에서 들어가는 화면: 취향 필터 · 제보하기 · 목록 페이지' },
   { id:'F3', t:'v3 초기판 · 단순 (11-02)', s:'사용자 11-02 「초기 버전은 최대한 직관적이고 단순하게」. 첫 화면 없이 바로 지도 홈 → 가게 → 상세는 이름·위치·떡볶이 종류·맵기·대표 가격·길찾기 여섯 가지만 → 제보 한 장. 프로토타입 「나란히」를 켜면 왼쪽에 v2 개선안이 떠서 비교돼요. v2 는 그대로 두고 새 줄로 더했어요' },
+  { id:'F4', t:'확대 흐름 ② 이름 넣기 (11-04)', s:'v3 지도 홈에서 확대. 같은 지도에 길 → 큰 건물 → 상호 이름이 더해져요. 전부 실제 웹 사진 · 프로토타입 「나란히」를 켜면 옆에 ① 같은 단계가 떠요. 웹 주소 localhost:3100' },
+  { id:'F5', t:'확대 흐름 ① 네이버 전환 (11-04)', s:'v3 지도 홈에서 확대. 그림 지도가 사라지며 실제 지도로 넘어가요. 전환은 웹에 구현했고, 네이버 키 전이라 실제 지도 자리는 임시 지도(OpenFreeMap)예요. 웹 주소 localhost:3100/?zoom=real' },
+  { id:'ZM', t:'확대 지도 비교 (11-04)', s:'팀원 아젠다 2(11-02): 「대동여지도로는 가게 위치가 잘 안 보인다, 확대 전 디자인은 지키고 확대하면 네이버로?」 → 세 방식을 사진과 표로 나란히', flow:true },
+  { id:'MV', t:'MVP · 거지맵 구도 추리기 (11-04)', s:'사용자 「거지맵의 서비스 구도를 추려서 여기 맞춰서 MVP」 → 찾기 → 제보 → 검증 → 갱신. 표 MV-00 과 아래 두 줄 · 전부 실제 웹에서 눌러 가며 찍은 사진', flow:true },
+  { id:'F6', t:'MVP 흐름 ① 찾기 · 평가 · 고치기 (11-04)', s:'지도 → 확대하면 도장 밑 가격·별점 → 상세 → 평가 → 정보 고치기 → 변경 이력. 웹 localhost:3100 에서 그대로 돌아가요 · 프로토타입 「나란히」는 v3 와 비교' },
+  { id:'F7', t:'MVP 흐름 ② 제보 · 검증 · 갱신 (11-04)', s:'제보 네 단계 → 바로 지도에 「확인 중」 → 맞아요·달라요 → 함께 고치기(새로 온 가게 · 확인이 필요해요). 시험 사진은 예시' },
+  { id:'WB', t:'웹 1차 기획 (11-06)', s:'사용자 「첫 버전은 웹, PC·모바일 둘 다」 · 가게 등록 + 소개글 · 위치·길찾기는 기존 디자인 + 지도 · 맵기 투표는 나중에 · 어드민. 기획 단계의 와이어이고 웹은 아직 안 고쳤어요. 문서 docs/웹1차기획_v1_2026-11-06.md', flow:true },
+  { id:'FT', t:'글꼴 고르기 (11-04)', s:'사용자 사진의 붓 로고 · 슬로건 · 굵은 붓과 닮은 무료 글꼴. 왼쪽 칸 「글꼴 고르기」나 이 판의 버튼을 누르면 N-01 첫 화면의 로고·슬로건과 손글씨 제목이 바로 바뀌어요', flow:true },
   { id:'V1', t:'기존 디자인 v1 (비교용)', s:'10-26 시안 v1 화면 그대로. 프로토타입에서 「기존과 나란히」를 켜면 같은 자리의 v1이 옆 폰에 떠요' },
   { id:'SP', t:'맵기 표시 시안 (팀 결정 10-28 = 마 게이지 도장 + 고추) · 도장 스튜디오 (11-02)', s:'SP-00 다섯 방식 비교 · SP-01 도장 스튜디오 미리보기 — 왼쪽 칸 「맵기 도장 스튜디오」에서 고추 위치·모양·채움·색을 바꾸면 모든 화면이 같이 바뀌어요 · 도장 모양 네모·고추·떡순이 비교(11-02)', flow:true },
-  { id:'CH', t:'캐릭터 기획 · 시안 v1 (11-01) · 호랑이 기획 · 시안 v2 (11-02)', s:'방향 8가지 → 팀이 1·2 선택 → 시안 v1(CH-09) → 호랑이 기획(CH-10) → 시안 v2 떡순이 4 + 호랑이 3(CH-11, 고르는 중)', flow:true }
+  { id:'CH', t:'캐릭터 기획 · 시안 v1 (11-01) · 호랑이 기획 · 시안 v2 (11-02) · 시안 v3 (11-05)', s:'방향 8가지 → 팀이 1·2 선택 → 시안 v1(CH-09) → 호랑이 기획(CH-10) → 시안 v2 떡순이 4 + 호랑이 3(CH-11, 고르는 중)', flow:true }
 ];
 const S = [];
 const add = o => S.push(o);
@@ -809,8 +931,8 @@ add({ id:'intro', code:'N-01', t:'첫 화면', lane:'F1', col:0, v1:'v1_01',
   spec:['붓글씨 로고 · 세 줄 슬로건 · 작은 지도 한 칸 → 「내 위치로 지도 열기」','가입 없이 바로 쓴다 (거지맵처럼)'],
   diff:['버튼 색: 붓 빨강 → 팔레트 주 버튼 색','작은 지도의 도장도 새 도장 색(맵기 오를수록 진하게)'],
   html:() => `<div class="scr v2" style="padding:72px 24px 28px;display:flex;flex-direction:column">
-  <img src="img/logo_red.png" alt="떡볶여지도" style="display:block;width:300px;height:89px;filter:var(--logo-filter)">
-  <img src="img/slogan_ink.png" alt="떡볶이를 사랑하는 사람에 의한, 떡볶이를 사랑하는 사람을 위한, 떡볶이를 사랑하는 사람들의 지도" style="display:block;width:342px;height:87px;margin-top:34px;filter:var(--slogan-filter)">
+  ${LOGO()}
+  ${SLOGAN()}
   <div style="position:relative;margin-top:34px;width:342px;height:236px;overflow:hidden;border:1px solid var(--chipline);box-shadow:0 0 0 4px var(--paper),0 0 0 5px var(--chipline);transform:rotate(-1.5deg)">
     <svg viewBox="24 228 342 236" width="342" height="236" aria-hidden="true"><use href="#map-draw" width="390" height="844"/></svg>
     ${ST(3, 100, 196, -3)}${ST(2, 136, 28, 2)}${ST(5, 266, 14, -2)}${ST(4, 134, 132, -4)}${ST(1, 20, 116, 3)}
@@ -822,7 +944,7 @@ add({ id:'intro', code:'N-01', t:'첫 화면', lane:'F1', col:0, v1:'v1_01',
     <div data-go="home" style="text-align:center;height:44px;line-height:44px;font-size:14px;text-decoration:underline;text-underline-offset:3px" class="sub">위치 없이 둘러보기</div>
     <div style="text-align:center;font-size:12px" class="mute">가입 없이 바로 써요</div>
   </div>
-  <img src="img/sign_red.png" alt="" style="position:absolute;right:22px;bottom:22px;width:118px;height:38px;filter:var(--logo-filter)">
+  ${SIGN2('position:absolute;right:22px;bottom:22px;')}
 </div>` });
 
 add({ id:'home', code:'N-02', t:'지도 홈 · 그림 지도', lane:'F1', col:1, v1:'v1_02',
@@ -923,7 +1045,7 @@ add({ id:'list', code:'N-07', t:'목록 페이지', lane:'F2', col:3, h:1480, v1
   spec:['지역 × 떡 종류 목록 (검색으로 들어오는 페이지)','정렬: 최근 확인순 · 가까운 순 · 맵기 순','노출 순서는 팔지 않는다'],
   diff:['제목 숫자 「38곳」: 빨강 → 강조 색','정렬 칩·「제보하기」 링크: 팔레트 색','오래된 정보 경고만 맵기 태그 색'],
   html:() => `<div class="scr v2 tall" style="background:var(--paper)">
-  <div class="hd" style="padding:0 12px"><img class="sign" src="img/sign_red.png" alt="떡볶여지도"><span class="sub" style="font-size:14px;display:flex;align-items:center;gap:6px" data-go="home"><span style="width:18px;height:18px;display:inline-flex">${IC.map}</span>지도로 보기</span></div>
+  <div class="hd" style="padding:0 12px">${SIGN()}<span class="sub" style="font-size:14px;display:flex;align-items:center;gap:6px" data-go="home"><span style="width:18px;height:18px;display:inline-flex">${IC.map}</span>지도로 보기</span></div>
   <div class="bd">
     <div class="mute" style="font-size:13px"><u>서울</u> › <u>마포구</u> › 쌀떡볶이</div>
     <div class="pen" style="font-size:34px">마포구 쌀떡볶이 <span style="color:var(--accent)">38곳</span></div>
@@ -940,7 +1062,7 @@ add({ id:'list', code:'N-07', t:'목록 페이지', lane:'F2', col:3, h:1480, v1
   </div>
   <div style="position:absolute;left:0;right:0;bottom:0;padding:22px 16px 26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-end">
     <div><div class="acc" style="font-size:15px;text-decoration:underline;text-underline-offset:3px" data-go="report">빠진 가게가 있나요? 제보하기</div><div class="mute" style="font-size:13px;margin-top:6px">노출 순서는 팔지 않아요</div></div>
-    <img src="img/sign_red.png" alt="" style="width:118px;height:38px;filter:var(--logo-filter)">
+    ${SIGN2('')}
   </div>
 </div>` });
 
@@ -953,10 +1075,10 @@ const NAV3 = on => `<nav class="nav" style="grid-template-columns:repeat(3,1fr)"
 const CMP3 = (id, code, t) => ({ v1:id, cmpT:`v2 개선안<small>${code} ${t}</small>`, cmpShort:'v2', diffT:'v2 개선안에서 덜어낸 것' });
 
 add({ id:'v3_home', code:'N3-01', t:'지도 홈 · 바로 시작', lane:'F3', col:0, ...CMP3('home', 'N-02', '지도 홈'),
-  spec:['첫 화면(로고·슬로건) 없이 앱을 열면 바로 지도 — 위치 허용만 묻는다','위: 검색창 + 필터 버튼 하나. 취향 칩 줄은 뺌','아래: 가게 시트가 반쯤 올라와 있어 「현재 지도에서 찾은 가게 N곳」이 바로 보임 (M1 웹과 같음)','탭은 지도·목록·내 맛지도 셋 (사용자 11-02 「내 떡지도까지는 있어야」). 떡볶이방만 2차라 안 보임','제보는 오른쪽 아래 동그란 버튼 하나'],
+  spec:['첫 화면(로고·슬로건) 없이 앱을 열면 바로 지도 — 위치 허용만 묻는다','위: 검색창 + 필터 버튼 하나. 취향 칩 줄은 뺌','아래: 가게 시트가 반쯤 올라와 있어 「현재 지도에서 찾은 가게 N곳」이 바로 보임 (M1 웹과 같음)','탭은 지도·목록·내 맛지도 셋 (사용자 11-02 「내 떡지도까지는 있어야」). 떡볶이방만 2차라 안 보임','제보는 오른쪽 아래 동그란 버튼 하나','확대 방식 결정 대기 (11-04): ② 이름 넣기(F4 줄) / ① 네이버 전환(F5 줄) · 비교표 ZM-00. 14배까지는 어느 쪽이든 그대로'],
   diff:['첫 화면 N-01 삭제 (로고는 검색창 왼쪽 작은 서명으로)','취향 칩 6개 → 필터 버튼 1개','가게 카드 1장 → 가게 시트(여러 곳, 가까운순)','하단 탭 4개 → 3개 (떡볶이방 뺌)','확대 ＋− 버튼 삭제 (손가락 확대만)'],
   html:() => `<div class="scr v2">${MAP}${LBLS}
-  <div class="tbar" style="gap:0"><div class="r1"><img class="sign" src="img/sign_red.png" alt="떡볶여지도"><div class="search">${IC.search}동네, 가게 이름</div><span class="chip" data-go="v3_filter" style="height:40px;border-radius:20px;padding:0 12px">${IC.filter}필터</span></div></div>
+  <div class="tbar" style="gap:0"><div class="r1">${SIGN()}<div class="search">${IC.search}동네, 가게 이름</div><span class="chip" data-go="v3_filter" style="height:40px;border-radius:20px;padding:0 12px">${IC.filter}필터</span></div></div>
   <div class="loc" style="left:136px;top:396px"></div>
   ${ST(1, 33, 335, -3)}${STm(3, 86, 290, 4)}${ST(2, 145, 255, 2)}${STm(2, 252, 196, -4)}${ST(5, 273, 243, -2)}${ST(3, 323, 235, 3)}${ST(4, 161, 373, -4)}${ST(4, 225, 471, 2)}
   <span class="cl" style="left:300px;top:154px">8곳</span>
@@ -985,10 +1107,10 @@ add({ id:'v3_filter', code:'N3-02', t:'필터 · 세 가지만', lane:'F3', col:
   </div></div>` });
 
 add({ id:'v3_store', code:'N3-03', t:'가게 상세 · 여섯 가지', lane:'F3', col:2, ...CMP3('store', 'N-05', '가게 위치 · 길찾기'),
-  spec:['머리칸 오른쪽 ♡ = 내 맛지도에 저장 (11-02, 셋째 탭이 생기며 추가 · 여섯 가지 정보엔 안 들어감)','위에서부터 ① 이름 ② 위치(동·거리·작은 지도·주소 복사) ③ 떡볶이 종류(쌀떡·밀떡 둘 다 쓰면 둘 다 표기) ④ 맵기(게이지 도장, 고추 개수는 그림 아래 따로 — 사용자 11-02) ⑤ 대표 가격 ⑥ 길찾기 — 이 여섯 가지만 (사용자 11-02)','길찾기는 네이버가 크게, 카카오맵은 보조 (v5 그대로)','메뉴판·영업시간·맛 결·사진·별점은 「더 보기」로 접고 2차에','M1 웹 상세(/store/[id])도 이미 이 순서 — 거기선 그 아래에 메뉴판 등이 더 붙어 있음'],
+  spec:['머리칸 오른쪽 ♡ = 내 맛지도에 저장 (11-02, 셋째 탭이 생기며 추가 · 여섯 가지 정보엔 안 들어감). 누르면 ♥ + 아래 토스트 「내 맛지도에 담았어요」 1.4초, 다시 누르면 ♡ 「내 맛지도에서 뺐어요」 — 프로토타입에서 눌러 볼 수 있음 (웹 /store/[id] 와 같음)','위에서부터 ① 이름 ② 위치(동·거리·작은 지도·주소 복사) ③ 떡볶이 종류(쌀떡·밀떡 둘 다 쓰면 둘 다 표기) ④ 맵기(게이지 도장, 고추 개수는 그림 아래 따로 — 사용자 11-02) ⑤ 대표 가격 ⑥ 길찾기 — 이 여섯 가지만 (사용자 11-02)','길찾기는 네이버가 크게, 카카오맵은 보조 (v5 그대로)','메뉴판·영업시간·맛 결·사진·별점은 「더 보기」로 접고 2차에','M1 웹 상세(/store/[id])도 이미 이 순서 — 거기선 그 아래에 메뉴판 등이 더 붙어 있음'],
   diff:['영업시간·이용·같이 먹기 칸 삭제 → 「더 보기」 한 줄','위치 카드 안 지도를 작게(150px)','번호 ①~⑥으로 순서를 보여 줌 — 가게마다 같은 자리에 같은 정보'],
   html:() => `<div class="scr v2" style="background:var(--surface)">
-  <div class="hd"><span class="ib" data-go="back">${IC.back}</span><b>가게</b><span style="display:flex;gap:2px"><span class="ib" data-go="v3_mine" title="내 맛지도에 저장" style="color:var(--fab);font-size:20px;line-height:1">♥</span><span class="ib" data-alert="share">${IC.share}</span></span></div>
+  <div class="hd"><span class="ib" data-go="back">${IC.back}</span><b>가게</b><span style="display:flex;gap:2px"><span class="ib svh" data-act="save3" title="내 맛지도에 저장">♡</span><span class="ib" data-alert="share">${IC.share}</span></span></div>
   <div class="bd" style="gap:0;padding-top:6px">
     ${ROW3(1, '이름', `<div style="display:flex;align-items:center;gap:8px"><b style="font-size:22px">합정 쌀떡집</b><span class="kind">떡볶이 전문</span></div>`)}
     ${ROW3(2, '위치', `<span style="font-size:14px">마포구 합정동 · <b>350m</b> · 합정역 3번 출구에서 걸어서 3분</span><div style="position:relative;width:100%;height:150px;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:var(--paper)" data-go="v3_home"><svg viewBox="52.5 403 179 118" width="358" height="236" aria-hidden="true" style="position:absolute;left:-16px;top:-43px"><use href="#map-street" width="390" height="844"/></svg>${PINbig(3, 144, 53, -3, 36)}<span class="attr" style="left:8px;bottom:8px">네이버 지도 자리</span></div><div style="display:flex;align-items:center;gap:8px;font-size:13px"><span class="sub" style="flex:1">[예시 주소] 서울 마포구 합정동 ○○-○</span><span class="chip" style="height:30px;font-size:12px" data-alert="copy">주소 복사</span></div>`)}
@@ -1015,17 +1137,34 @@ add({ id:'v3_report', code:'N3-04', t:'제보 · 한 장', lane:'F3', col:3, ...
 </div>` });
 
 // 11-02 사용자 「네비게이션 바에 내 맛지도까지는 있어야」 → 셋째 탭의 화면. 저장한 가게가 모이는 곳, 초기판은 목록 한 장.
-add({ id:'v3_mine', code:'N3-05', t:'내 맛지도 · 저장한 가게 (웹 /mine 구현)', lane:'F3', col:4, ...CMP3('home', 'N-02', '지도 홈 (v2 는 탭만 있고 알림)'),
-  spec:['셋째 탭. 가게 상세 머리칸 오른쪽 ♡ 로 저장한 곳이 가까운순으로 모임 — 초기판은 목록 한 장, 로그인 없이 이 기기에 저장','이름은 「내 맛지도」(사용자 11-02, 「내 떡지도」 에서 바꿈) · 웹앱 /mine 에 만들어짐(11-02)','위 칸 세 개: 저장 · 다녀옴 · 내 제보 (숫자만, 눌러서 거름)','줄 하나 = 도장 + 이름 + 동·거리 + 떡 종류. 누르면 가게 상세(N3-03)','비어 있으면 「지도에서 가게를 열고 ♡ 를 누르면 여기 모여요」 한 줄','떡볶이방·프로필·뱃지는 2차'],
+const MINE3_CARDS = on => `<div style="display:flex;gap:8px">${[['저장', 3, 'v3_mine', ''], ['다녀옴', 1, '', 'visited3'], ['내 제보', 2, 'v3_myreports', '']].map(([t, n, go, al], i) => `<div ${go ? `data-go="${go}"` : `data-alert="${al}"`} style="flex:1;padding:10px 0;border-radius:12px;text-align:center;cursor:pointer;border:1px solid ${on === i ? 'var(--ink)' : 'var(--line)'};background:${on === i ? 'var(--surface)' : 'var(--paper)'}"><div style="font-family:'Song Myung',serif;font-size:22px;line-height:1">${n}</div><div class="mute" style="font-size:12px;margin-top:4px">${t}</div></div>`).join('')}</div>`;
+const MINE3_HD = `<div class="hd" style="padding:0 16px;justify-content:flex-start;gap:8px"><b style="font-size:18px">내 맛지도</b><span class="mute" style="font-size:12px">이 기기에 저장 · 로그인 없음</span></div>`;
+// 11-02 사용자 「네비게이션 바에 내 떡지도까지는 있어야」 → 셋째 탭. 같은 날 「내 맛지도」 로 이름 바꿈 · 웹 /mine 구현 뒤 보드를 웹과 같게 다시 그림
+add({ id:'v3_mine', code:'N3-05', t:'내 맛지도 · 저장한 가게 (웹 /mine)', lane:'F3', col:4, ...CMP3('home', 'N-02', '지도 홈 (v2 는 탭만 있고 알림)'),
+  spec:['셋째 탭. 가게 상세(N3-03) 머리칸 ♡ 로 저장한 가게가 모임. 로그인 없이 이 기기에만 저장 (웹 localStorage)','이름 「내 맛지도」(사용자 11-02, 「내 떡지도」 에서 바꿈) · 웹앱 /mine 과 같은 화면','위 칸 셋: 저장 · 다녀옴 · 내 제보 — 숫자, 눌러서 거름 (내 제보 → N3-06)','줄 하나 = 도장 + 이름 + 동·거리·종류 + 「저장 ○ · 확인 ○」. 누르면 가게 상세','줄 오른쪽 「다녀옴」 토글(누르면 다녀옴 ✓) · ♥ 누르면 저장 빼기 — 프로토타입에서 눌러 볼 수 있음','정렬: 위치를 이미 허용한 기기면 가까운순, 아니면 최근 저장순 (여기서 위치를 새로 묻지 않음)','비었을 때: 「지도에서 가게를 열고 ♡ 를 누르면 여기 모여요」 + 지도로 가기','떡볶이방 · 프로필 · 뱃지는 2차'],
   diff:['v2 는 「내 맛지도」 탭을 누르면 「준비 중」 알림 → 초기판은 진짜 화면으로','떡볶이방 탭은 뺌 (탭 3개)'],
-  html:() => `<div class="scr v2" style="background:var(--surface)">
-  <div class="hd" style="padding:0 16px;justify-content:flex-start;gap:8px"><b style="font-size:18px">내 맛지도</b><span class="mute" style="font-size:12px">이 기기에 저장 · 로그인 없음</span></div>
+  html:() => `<div class="scr v2" style="background:var(--paper)">
+  ${MINE3_HD}
   <div class="bd" style="gap:10px;padding-top:12px;padding-bottom:84px">
-    <div style="display:flex;gap:8px">${[['저장', 3, true], ['다녀옴', 1, false], ['내 제보', 2, false]].map(([t, n, on]) => `<div style="flex:1;padding:10px 0;border-radius:12px;text-align:center;border:1px solid ${on ? 'var(--ink)' : 'var(--line)'};background:${on ? 'var(--paper)' : 'var(--surface)'}"><div style="font-family:'Song Myung',serif;font-size:22px;line-height:1">${n}</div><div class="mute" style="font-size:12px;margin-top:4px">${t}</div></div>`).join('')}</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:4px"><b>저장한 가게 3곳</b><span class="mute">가까운순 ▾</span></div>
-    ${[[3, '합정 쌀떡집', '합정동 · 350m', '쌀떡·밀떡 · 국물', '다녀옴'], [1, '망원시장 기름떡볶이', '망원동 · 1.1km', '쌀떡 · 기름', ''], [4, '상수 떡볶이', '상수동 · 700m', '밀떡 · 즉석', '']].map(([n, t, w, k, tag]) => `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)" data-go="v3_store">${INL(n, 34)}<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><b style="font-size:15px">${t}</b>${tag ? `<span class="tg" style="font-size:11px;padding:2px 7px">${tag}</span>` : ''}</div><div class="sub" style="font-size:13px;margin-top:2px">${w} · ${k}</div></div><span style="color:var(--fab);font-size:18px">♥</span></div>`).join('')}
+    ${MINE3_CARDS(0)}
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:4px"><b>저장한 가게 3곳</b><span class="mute">가까운순</span></div>
+    ${[[3, '합정 쌀떡집', '합정동 · 350m · 국물 · 쌀떡·밀떡', '저장 오늘 · 확인 3일 전', true], [1, '망원시장 기름떡볶이', '망원동 · 1.1km · 기름 · 쌀떡', '저장 오늘 · 확인 2달 전', false], [4, '상수 떡볶이', '상수동 · 700m · 즉석 · 밀떡', '저장 1일 전 · 확인 1주 전', false]].map(([n, t, w, d, v]) => `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)"><div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0" data-go="v3_store">${INL(n, 30)}<div style="flex:1;min-width:0"><b style="font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t}</b><div class="sub" style="font-size:12.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${w}</div><div class="mute" style="font-size:11px;margin-top:1px">${d}</div></div></div><span class="vbtn${v ? ' on' : ''}" data-act="visit">${v ? '다녀옴 ✓' : '다녀옴'}</span><span data-act="unsave" style="flex:none;width:26px;text-align:center;color:var(--fab);font-size:18px;cursor:pointer">♥</span></div>`).join('')}
+    <div style="margin-top:14px;padding:14px 12px;border:1px dashed var(--line);border-radius:12px;text-align:center"><div class="mute" style="font-size:11px;margin-bottom:6px">비었을 때</div><div class="mute" style="font-size:12.5px;line-height:1.6">지도에서 가게를 열고 ♡ 를 누르면 여기 모여요.</div><div data-go="v3_home" style="margin-top:6px;font-size:12.5px;font-weight:700;text-decoration:underline;text-underline-offset:4px;cursor:pointer">지도로 가기</div></div>
+  </div>
+  ${NAV3(2)}
+</div>` });
+add({ id:'v3_myreports', code:'N3-06', t:'내 맛지도 · 내 제보 (웹 /mine)', lane:'F3', col:5, ...CMP3('home', 'N-02', '지도 홈 (v2 는 내 제보 기록 없음)'),
+  spec:['내 맛지도 위 칸 「내 제보」 를 누른 상태. 이 기기에서 보낸 제보가 최근순으로 남음 (제보 보내기 성공 때 기록)','줄 하나 = 종류(새 가게 · 정보 수정 · 문 닫음) + 가게 이름 + 날짜. 있는 가게면 누르면 가게 상세','비었을 때: 「아직 보낸 제보가 없어요」 + 가게 제보하기','승인 결과 알림 · 어묵 포인트(제보 보상)는 2차','제보 완료 뒤(N3-04 「제보 올리기」) 안내에 「내 맛지도 → 내 제보에 남아요」 — 웹은 완료 화면에 「내 맛지도에서 내 제보 보기」 버튼'],
+  diff:['v2 에는 내가 보낸 제보를 다시 보는 곳이 없음 → 초기판은 이 기기 기록만 먼저'],
+  html:() => `<div class="scr v2" style="background:var(--paper)">
+  ${MINE3_HD}
+  <div class="bd" style="gap:10px;padding-top:12px;padding-bottom:84px">
+    ${MINE3_CARDS(2)}
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:4px"><b>내가 보낸 제보 2건</b><span class="mute">최근순</span></div>
+    ${[['새 가게', '연남동 떡볶이', '오늘', ''], ['정보 수정', '합정 쌀떡집', '3일 전', 'v3_store']].map(([k, t, d, go]) => `<div style="display:flex;align-items:center;gap:8px;padding:12px 0;border-top:1px solid var(--line)"${go ? ` data-go="${go}"` : ''}><span class="tg" style="font-size:11px;padding:2px 8px;flex:none">${k}</span><b style="flex:1;min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t}</b><span class="mute" style="font-size:12px;flex:none">${d}</span></div>`).join('')}
     <div style="border-top:1px solid var(--line)"></div>
-    <div class="mute" style="font-size:12.5px;line-height:1.6;text-align:center;padding:14px 10px">지도에서 가게를 열고 ♡ 를 누르면 여기 모여요.<br>떡볶이방 · 뱃지는 2차에서.</div>
+    <div class="mute" style="font-size:12px;text-align:center;padding:10px 0">승인 결과 알림 · 어묵 포인트는 2차에서</div>
+    <div style="margin-top:4px;padding:14px 12px;border:1px dashed var(--line);border-radius:12px;text-align:center"><div class="mute" style="font-size:11px;margin-bottom:6px">비었을 때</div><div class="mute" style="font-size:12.5px">아직 보낸 제보가 없어요.</div><div data-go="v3_report" style="margin-top:6px;font-size:12.5px;font-weight:700;text-decoration:underline;text-underline-offset:4px;cursor:pointer">가게 제보하기</div></div>
   </div>
   ${NAV3(2)}
 </div>` });
@@ -1158,6 +1297,45 @@ add({ id:'ch_v2', code:'CH-11', t:'캐릭터 시안 v2 (11-02) · 떡순이 4 + 
     <div style="flex:1"><b>비용</b> · 떡순이 60 + 호랑이 45 = 105 → 잔액 12,623 · 이어서 한반도 호랑이 80 → 12,543(모두 생성 뒤 확인). 다음: 고른 것만 포즈·고화질 — 후보 나노 바나나 프로 2k 75 · GPT 2.5 중간 2k 65, 그때 다시 허락.</div>
   </div>
 </div>` });
+// 11-05 시안 v3 — 표지 지도 1 · 떡 문 호랑이 표정 2 · 도장이 맵기 1~5 한 장. 원본 docs/표지지도_v1_2026-11-05 · docs/캐릭터시안_v3_2026-11-05
+add({ id:'ch_v3', code:'CH-12', t:'시안 v3 (11-05) · 앱 표지 지도 + 호랑이 표정 2 + 도장이 맵기 1~5', lane:'CH', w:1000, h:2620, isDoc:true,
+  spec:['사용자 11-05: 첫 화면용 대동여지도풍 지도 · 떡 문 호랑이 매운/맛있는 표정(꼬치에 떡 하나) · 도장이 맵기 1~5 표정','사용자 답: 앱 여는 표지 · 한반도 전체 · 떡 끝을 콕 찍어 물기 · 도장이 시안 a + 몸 색 단계별','표지 지도 = 나노 바나나 2.1 1k 50 · 호랑이 2장 = GPT 2.5 저화질 30 · 도장이 = GPT 2.5 저화질 15 → 합계 95. 잔액 12,418 → 12,323(확인)','사용자 11-05: 호랑이 떡을 세로가 아니라 가로로 꽂을 것 → 리서치 docs/떡볶이리서치_v1, 구도 참고 그림을 넣어 v02 2장 생성(30). 잔액 12,323 → 12,293(확인)','사용자 11-06: 윙크 버전도 떡 하나로 → 나노 바나나 2.1 부분 수정(50). 잔액 12,293 → 12,243(확인). 도장이 이마 고추 제거 v02(크레딧 0)','🔴 호랑이 v02·윙크 방향 확인 · 표지 지도 다시(65). 도장이 색 맞춤은 크레딧 0. 고화질 마무리는 고른 뒤 다시 허락'],
+  html:() => `<div class="doc" style="width:1000px;height:2620px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">시안 v3 <span style="font-size:14px;color:#62625F;margin-left:8px">11-05~06 · 7장 · 175 크레딧 · 잔액 12,243</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 기존 · 오른쪽 = 이번 시안. 모두 저해상도 시안이라 고른 것만 고화질로 마무리한다.</div></div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:5px;background:#1C1C1B;color:#fff;font-weight:700">1</span><b style="font-size:22px">앱 표지 지도</b><span style="font-size:12.5px;color:#62625F">참고 원본 → 시안 → 로고를 얹은 표지 (로고 글꼴은 미정, 지금 붓 로고로 표시)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9;background:#F2F2EF;display:flex;align-items:center;justify-content:center"><span style="position:absolute;left:10px;top:8px;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.88);color:#1C1C1B">참고 · 대동여지도 원본</span><img src="../참고_대동여지도.jpg" alt="대동여지도 원본" style="width:100%;display:block"></div>
+      <div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.88);color:#1C1C1B">시안 · 나노 바나나 2.1 (50)</span><img src="img/cover_map_v1.jpg" alt="표지 지도 시안" style="width:100%;display:block"></div>
+      <div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><img src="img/cover_map_v1.jpg" alt="표지 모의" style="width:100%;display:block"><img src="img/logo_red.png" alt="떡볶여지도" style="position:absolute;left:14px;top:18px;width:96px"></div>
+    </div>
+    <div style="padding:12px 14px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.6;color:#3D3D3B"><b>맞게 나온 것</b> · 해안선·서남해 섬·제주가 참고와 매우 가깝고, 깨진 글자·흰 조각·붉은 인장이 없다.<br><b>고칠 것</b> · ① <b>울릉도·독도가 없다</b>(동해 쪽 먹선 0). 한국 지도 서비스라 넣는 쪽을 권한다. ② 북동쪽 끝이 오른쪽 가장자리에 닿아 살짝 잘렸다. ③ 위쪽 5분의 1을 비우라는 지시를 안 따랐다 → 땅이 맨 위 2.9%부터 시작해 로고는 왼쪽 위(폭 약 35%)에만 들어가 작다. ④ 1k 라 확대하면 땅의 잔선이 뭉개진다.<br><b>제안</b> · 참고 그림을 표지 비율 판에 미리 앉히고(위 여백 + 울릉도·독도 자리, 크레딧 0) 나노 바나나 2.1 2k 로 다시 1장 = 65.</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:5px;background:#1C1C1B;color:#fff;font-weight:700">2</span><b style="font-size:22px">떡 문 호랑이</b><span style="font-size:12.5px;color:#62625F">기존 시안 「나」 → 매운 표정 · 맛있는 표정 (꼬치에 떡 하나)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      ${[['기존 · 떡 네 개, 윙크','char_v2_tg_b.jpg'],['매운 표정 · GPT 2.5 저화질 (15)','char_v3_tiger_spicy.jpg'],['맛있는 표정 · GPT 2.5 저화질 (15)','char_v3_tiger_tasty.jpg']].map(([t, f]) => `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.88);color:#1C1C1B">${t}</span><img src="img/${f}" alt="${t}" style="width:100%;display:block"></div>`).join('')}
+    </div>
+    <div style="padding:12px 14px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.6;color:#3D3D3B"><b>사용자 11-05</b> · 「떡을 세로로 꽂는 게 아니라 가로로. 누가 떡볶이를 세로로 꽂아 먹냐?」 → 세로 꽂기는 프롬프트에 그렇게 쓴 잘못이다. 시안 「나」의 떡은 꼬치와 직각이었다.<br><b>맞게 나온 것</b> · 떡 한 개 · 두 표정 · 원본 그림체.<br><b>고칠 것</b> · <b>꽂는 방향이 틀렸다.</b> 떡이 길고 짙은 빨강으로 덮여 핫바·소시지처럼 보인다.</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px"><b style="font-size:17px">떡 가로로 고친 시안 v02</b><span style="font-size:12.5px;color:#62625F">왼쪽 = 기존 · 오른쪽 = 이번 · GPT 2.5 저화질 2장 30</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      ${[['기존 · 세로로 꽂음','char_v3_tiger_spicy.jpg'],['매운 표정 v02 · 가로 (15)','char_v3_tiger_spicy_v02.jpg'],['맛있는 표정 v02 · 가로 (15)','char_v3_tiger_tasty_v02.jpg']].map(([t, f]) => `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.88);color:#1C1C1B">${t}</span><img src="img/${f}" alt="${t}" style="width:100%;display:block"></div>`).join('')}
+    </div>
+    <div style="padding:12px 14px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.6;color:#3D3D3B"><b>맞게 나온 것</b> · 떡 한 개가 입에 가로로 물렸고, 꼬치가 떡 가운데에 직각으로 들어가 앞발까지 이어진다. 표정과 그림체는 v01 그대로다.<br><b>아직 남은 것</b> · ① 떡 끝이 평평한 흰 단면이라 통나무처럼 보인다. 사진 속 떡은 끝이 둥글다. ② 떡이 아직 진한 빨강이고 흰 떡은 양 끝에서만 보인다. ③ 꼬치가 굵어 망치 모양에 가깝다(매운 쪽이 더 굵다). ④ 매운 표정은 떡 아래 입 둘레가 뭉개졌다. ⑤ 맛있는 표정은 아랫입이 없어 떡이 턱 앞에 붙은 듯하고, 소스 방울이 입꼬리가 아니라 떡 끝에 달렸다.<br><b>조사 규칙</b> · docs/떡볶이리서치_v1</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px"><b style="font-size:17px">윙크 버전도 떡 하나로 (11-06)</b><span style="font-size:12.5px;color:#62625F">왼쪽 = 기존 · 오른쪽 = 이번 · 나노 바나나 2.1 부분 수정 50</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      ${[['기존 · 떡 네 개, 윙크','char_v2_tg_b.jpg'],['이번 · 떡 하나, 윙크 (50)','char_v3_tiger_wink.jpg']].map(([t, f]) => `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.88);color:#1C1C1B">${t}</span><img src="img/${f}" alt="${t}" style="width:100%;display:block"></div>`).join('')}
+      <div style="padding:12px 14px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.6;color:#3D3D3B"><b>맞게 나온 것</b> · 입에 물린 맨 위 떡만 남겼고, 꼬치가 가늘게 떡 옆면 가운데쯤에 거의 직각으로 들어간다. 눈·코 등 얼굴 윗부분은 원본과 픽셀 차이 0.<br><b>아직 남은 것</b> · ① 떡이 조금 짧고 둥글어 원기둥보다 덩어리에 가깝다. ② 꼬치 끝이 앞발에 쥐었다기보다 발 가장자리에 닿아 있다. ③ 턱 왼쪽 털 점선이 원본보다 조금 많다.</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:5px;background:#1C1C1B;color:#fff;font-weight:700">3</span><b style="font-size:22px">도장이 맵기 1~5</b><span style="font-size:12.5px;color:#62625F">1 미소 · 2 살짝 땀 · 3 화끈 · 4 눈물과 김 · 5 불 뿜기 · 11-06 이마 고추 제거</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      ${[['기존 · v01 (이마 고추 있음)','char_v3_dojang.jpg'],['이번 · v02 이마 고추 제거 (크레딧 0)','char_v3_dojang_v02.jpg']].map(([t, f]) => `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.88);color:#1C1C1B">${t}</span><img src="img/${f}" alt="${t}" style="width:100%;display:block"></div>`).join('')}
+    </div>
+    <div style="padding:12px 14px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.6;color:#3D3D3B"><b>맞게 나온 것</b> · 다섯 단계 표정과 몸 색이 차례로 오르고, 시안 a 의 모양을 유지했다. 사용자 요청대로 이마 고추를 뺐다(v02, 고추 자리 픽셀만 바꿈). 맵기 단계의 나머지는 v01 그대로.<br><b>고칠 것</b> · 1·2단계 몸이 지도 도장보다 진하다(1 #F49C5F ↔ #F2B78C · 2 #E2682B ↔ #E3814D, 3~5 는 가까움). 2단계 땀방울이 크림색이라 잘 안 보이고, 4단계 눈물이 회색이다. 48px 로 줄이면 1·2 표정 차이는 색으로만 구분된다.<br><b>제안</b> · 고른 뒤 다섯 칸으로 자르고 몸 색·땀방울·눈물 색은 직접 보정(크레딧 0).</div>
+  </div>
+</div>` });
 CHARS.forEach(c => add({ id:'ch_' + c.n, code:'CH-0' + c.n, t:c.name, lane:'CH', w:520, isDoc:true,
   spec:[c.line, '쓰는 곳: ' + c.use, '+ ' + c.good, '− ' + c.bad],
   html:() => `<div class="doc" style="width:520px">
@@ -1241,6 +1419,341 @@ add({ id:'sp_all', code:'SP-00', t:'맵기 표시 5안 비교', lane:'SP', w:158
   </div>`).join('')}</div>
 </div>` });
 
+/* ═════════ 확대 흐름 ①·② (11-04) ═════════ */
+// 화면 = 웹 localhost 를 390×844 로 찍은 사진(img/zoom_flow). 사진이라 왼쪽 팔레트로는 안 바뀐다.
+// ＋− 는 보드 시연용(실제는 두 손가락 확대). 도장·「자세히 · 길찾기」 자리는 사진 위에 누를 곳만 얹었다.
+const ZF_ZOOM = (inTo, outTo) => `<div class="zoomc" style="left:12px;top:368px;outline:2px dashed var(--ink3);outline-offset:2px">${inTo ? `<b data-go="${inTo}" title="확대">＋</b>` : '<b style="opacity:.25">＋</b>'}${outTo ? `<b data-go="${outTo}" title="축소">−</b>` : '<b style="opacity:.25">−</b>'}</div><span style="position:absolute;left:8px;top:464px;padding:0 4px;font-size:10px;line-height:14px;color:var(--ink2);background:var(--surface);border-radius:4px;z-index:2">시연용</span>`;
+const ZF_HOT = (to, label, css) => `<span data-go="${to}" title="${label}" style="position:absolute;font-size:0;border-radius:12px;z-index:2;${css}">${label}</span>`;
+const ZF_SCR = (z) => `<div class="scr v2"><img src="img/zoom_flow/${z.img}.png" alt="${z.t}" style="position:absolute;left:0;top:0;width:390px;height:844px;display:block">${z.hot || ''}${ZF_ZOOM(z.in, z.out)}</div>`;
+const ZF_SIDE = {
+  F4: { other:'① 네이버 전환', short:'①', diffT:'① 과 다른 점' },
+  F5: { other:'② 이름 넣기', short:'②', diffT:'② 와 다른 점' }
+};
+const ZF_COMMON = '왼쪽 ＋− 는 보드 시연용 — 실제 앱은 두 손가락 확대. 화면은 웹 실제 사진이라 팔레트로는 안 바뀜';
+const ZF_STAMP = to => ZF_HOT(to, '도장 누르기', 'left:163px;top:278px;width:64px;height:76px');
+const ZF_GO_DETAIL = ZF_HOT('v3_store', '자세히 · 길찾기', 'left:16px;top:651px;width:358px;height:40px');
+[
+  { id:'zf_n1', pair:'zf_r1', code:'N4-01', lane:'F4', col:0, t:'② 13배 · 멀리서', img:'zf_n1_z13', in:'zf_n2',
+    spec:['v3 지도 홈과 같은 지도 — 서교동, 도장은 예시 가게', ZF_COMMON], diff:['이 단계는 ① 과 똑같음. 둘 다 대동여지도 그림 지도'] },
+  { id:'zf_n2', pair:'zf_r2', code:'N4-02', lane:'F4', col:1, t:'② 15.5배 · 길과 큰 건물', img:'zf_n2_z155', in:'zf_n3', out:'zf_n1',
+    spec:['같은 지도에 길 이름(15배~)과 큰 건물 이름(15.5배~)이 더해짐', '지도 그림은 안 바뀜', ZF_COMMON], diff:['① 은 이 구간에서 실제 지도로 겹쳐 넘어감. ② 는 지도가 그대로'] },
+  { id:'zf_n3', pair:'zf_r3', code:'N4-03', lane:'F4', col:2, t:'② 17배 · 상호까지', img:'zf_n3_z17', out:'zf_n2', hot:ZF_STAMP('zf_n4'),
+    spec:['상호 이름까지 나옴(16.5배~). 도장 둘레의 이름은 비켜 남', '상호는 OpenStreetMap 자료 — 실제 가게와 대조는 아직 안 함', ZF_COMMON], diff:['① 보다 이름이 듬성함', '대동여지도 느낌이 끝까지 이어짐', '글자가 도장 밑에 깔리지 않음'] },
+  { id:'zf_n4', pair:'zf_r4', code:'N4-04', lane:'F4', col:3, t:'② 도장 누름 → 상세로', img:'zf_n4_sel', out:'zf_n3', hot:ZF_GO_DETAIL,
+    spec:['도장을 누르면 테두리가 생기고 목록이 그 가게로 좁혀짐', '「자세히 · 길찾기」 → 가게 상세(N3-03)', ZF_COMMON], diff:['누르는 동작은 ① 과 같음'] },
+  { id:'zf_r1', pair:'zf_n1', code:'N5-01', lane:'F5', col:0, t:'① 13배 · 멀리서', img:'zf_r1_z13', in:'zf_r2',
+    spec:['v3 지도 홈과 같은 지도 — 서교동, 도장은 예시 가게', ZF_COMMON], diff:['이 단계는 ② 와 똑같음. 둘 다 대동여지도 그림 지도'] },
+  { id:'zf_r2', pair:'zf_n2', code:'N5-02', lane:'F5', col:1, t:'① 15.4배 · 넘어가는 중', img:'zf_r2_z154', in:'zf_r3', out:'zf_r1',
+    spec:['15~15.8배 구간에서 그림 지도가 서서히 투명해지고 아래 실제 지도가 드러남 (웹 구현)', '실제 지도 자리는 키 전이라 임시 지도(OpenFreeMap). 네이버로 바꾸면 그림은 달라짐', ZF_COMMON], diff:['확대하는 동안 두 지도의 글자가 잠깐 겹쳐 보임', '② 는 이 구간에서 지도가 안 바뀜'] },
+  { id:'zf_r3', pair:'zf_n3', code:'N5-03', lane:'F5', col:2, t:'① 17배 · 실제 지도', img:'zf_r3_z17', out:'zf_r2', hot:ZF_STAMP('zf_r4'),
+    spec:['상세 지도 위에 도장. 그림 지도는 완전히 사라짐', '위쪽 알림 = 「실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도」', ZF_COMMON], diff:['아이콘·상호가 더 많음 (임시 지도 기준, 네이버는 다를 수 있음)', '지도 글자를 우리가 못 옮겨서 「배영유치원」처럼 도장 밑에 깔릴 수 있음', '대동여지도 느낌은 여기서 끝남'] },
+  { id:'zf_r4', pair:'zf_n4', code:'N5-04', lane:'F5', col:3, t:'① 도장 누름 → 상세로', img:'zf_r4_sel', out:'zf_r3', hot:ZF_GO_DETAIL,
+    spec:['도장을 누르면 테두리가 생기고 목록이 그 가게로 좁혀짐', '「자세히 · 길찾기」 → 가게 상세(N3-03)', ZF_COMMON], diff:['누르는 동작은 ② 와 같음'] }
+].forEach(z => { const c = ZF_SIDE[z.lane]; add({ id:z.id, code:z.code, t:z.t, lane:z.lane, col:z.col, v1:z.pair, cmpT:`${c.other}<small>같은 단계</small>`, cmpShort:c.short, cmpName:c.other, diffT:c.diffT, spec:z.spec, diff:z.diff, html:() => ZF_SCR(z) }); });
+
+/* ═════════ MVP · 거지맵 구도 (11-04) ═════════ */
+// 사진은 전부 localhost:3100 에서 실제로 눌러 가며 찍은 것(scratchpad mvp_shots.cjs). 가게는 예시 데이터, 메뉴판 사진도 시험용.
+const MV_SCR = z => `<div class="scr v2"><img src="img/mvp_flow/${z.img}.png" alt="${z.t}" style="position:absolute;left:0;top:0;width:390px;height:844px;display:block">${z.hot || ''}</div>`;
+const MV_BOX = (to, label, x, y, w, h) => ZF_HOT(to, label, `left:${x}px;top:${y}px;width:${w}px;height:${h}px`);
+const MV_NAV = (map, list, tog, mine) => [[map, '지도', 0], [list, '목록', 98], [tog, '함께 고치기', 195], [mine, '내 맛지도', 293]].filter(x => x[0]).map(([to, l, x]) => MV_BOX(to, l, x, 789, 97, 55)).join('');
+const MV_BACK = to => MV_BOX(to, '뒤로', 8, 4, 40, 40);
+const MV_NEXT = (to, back) => MV_BOX(to, '다음', back ? 108 : 20, 780, back ? 262 : 350, 48) + (back ? MV_BOX(back, '이전', 20, 780, 80, 48) : '');
+[
+  { id:'mv_home', code:'N6-01', lane:'F6', col:0, t:'지도 홈 · 아래 메뉴 넷', img:'mv_home', v1:'v3_home',
+    hot:ZF_ZOOM('mv_z16') + MV_BOX('mv_r1', '제보', 322, 418, 56, 56) + MV_NAV(null, null, 'mv_t1', 'v3_mine'),
+    spec:['거지맵처럼 접속 즉시 지도 + 주변 가게 목록. 가입 없음','새로 제보된 가게는 목록에 「확인 중」 표시','아래 메뉴에 「함께 고치기」 추가 (넷)','머리칸 「최근 7일 제보·수정」은 이제 실제 기록을 센다'],
+    diff:['메뉴 3개 → 4개','확인 중 표시 추가'] },
+  { id:'mv_z16', code:'N6-02', lane:'F6', col:1, t:'확대 · 도장 밑 가격·별점', img:'mv_z16', v1:'zf_n3',
+    hot:ZF_ZOOM(null, 'mv_home') + MV_BOX('mv_sel', '도장 누르기', 163, 395, 64, 80),
+    spec:['거지맵은 핀에 가격·별점을 쓴다 → 우리는 맵기 도장은 그대로 두고 14.5배부터 도장 밑에 「5,000원 · 3.6점」','자리가 모자라면 글자만 빠지고 도장은 남는다','확인 중인 가게는 「5,000원 · 확인 중」','지도는 ② 이름 넣기 방식 (정-2 미정, 기본값)'],
+    diff:['도장 밑 글자 추가'] },
+  { id:'mv_sel', code:'N6-03', lane:'F6', col:2, t:'도장 누름 → 목록 줄 선택', img:'mv_sel', v1:'zf_n4',
+    hot:MV_BOX('mv_detail', '자세히 · 길찾기', 16, 651, 358, 40),
+    spec:['지금과 같음: 도장을 누르면 시트의 그 줄이 선택되고 「자세히 · 길찾기」'], diff:['사진이 있으면 줄 왼쪽 그림 자리에 나옴'] },
+  { id:'mv_detail', code:'N6-04', lane:'F6', col:3, t:'가게 상세 · 위', img:'mv_detail', v1:'v3_store',
+    hot:MV_BACK('mv_sel') + MV_BOX('mv_detail2', '아래로 넘기기', 0, 420, 390, 424),
+    spec:['첫 칸은 팀 순서 그대로: 이름 → 위치 → 종류 → 맵기 → 대표 가격 → 길찾기','그 아래로 사진 · 메뉴판 · 영업 · 메모 · 평가 · 고치기가 이어진다 (거지맵 상세 구성)','사진 칸을 누르면 그 자리에서 바로 올린다'],
+    diff:['여섯 가지만 → 여섯 가지 + 아래 내용','사진 올리기가 실제로 저장됨'] },
+  { id:'mv_detail2', code:'N6-05', lane:'F6', col:4, t:'가게 상세 · 평가', img:'mv_detail2', v1:'v3_store',
+    hot:MV_BACK('mv_detail') + MV_BOX('mv_review', '평가 남기기', 33, 519, 324, 44) + MV_BOX('mv_detail3', '아래로 넘기기', 0, 690, 390, 154),
+    spec:['평가는 팀 결정 두 축: 가게 = 별, 맛 = 맵기','거지맵의 별점 + 댓글을 「평가 + 한 줄 후기」 하나로 합쳐 줄였다','다른 사람 맵기 투표가 쌓이면 도장 맵기가 바뀐다 (평균 반올림)','후기마다 신고 · 3명이면 숨김'], diff:['한 줄 후기를 1차로 앞당김'] },
+  { id:'mv_review', code:'N6-06', lane:'F6', col:5, t:'평가 남기기', img:'mv_review', v1:'v3_store',
+    hot:MV_BACK('mv_detail') + MV_BOX('mv_detail3', '별 고르기', 30, 150, 240, 60),
+    spec:['가입 없이 자동 닉네임 (바꿀 수 있음)','별 · 맵기 중 하나만 골라도 된다','같은 기기에서 다시 쓰면 이전 평가를 고친다'], diff:['새 화면'] },
+  { id:'mv_detail3', code:'N6-07', lane:'F6', col:6, t:'맨 아래 · 고치기 넷', img:'mv_detail3', v1:'v3_store',
+    hot:MV_BACK('mv_detail') + MV_BOX('mv_edit', '정보 고치기', 16, 760, 84, 44) + MV_BOX('mv_history', '변경 이력', 108, 760, 84, 44),
+    spec:['정보 고치기 · 변경 이력 · 공유 · 신고','신고 이유: 문 닫음 · 떡볶이 안 팖 · 광고 · 엉뚱한 곳 · 부적절','3명이 신고하면 지도에서 내림 (대부분 폐업이면 「문 닫음」)','「아직 있어요」는 200m 안에서만, 거리는 기기 안에서 잰다 (위치를 서버로 안 보냄)'], diff:['「정보가 달라요」「문 닫았어요」 → 넷으로 정리'] },
+  { id:'mv_edit', code:'N6-08', lane:'F6', col:7, t:'정보 고치기', img:'mv_edit', v1:'v3_report',
+    hot:MV_BACK('mv_detail3') + MV_BOX('mv_history', '고친 내용 올리기 → 이력', 0, 700, 390, 144),
+    spec:['누구나 고치면 바로 반영 (위키). 거지맵과 같은 방식','메뉴·가격을 맨 위에 (가장 자주 바뀜)','맵기는 투표라 여기서 안 고친다','기기·접속 위치 기준 하루 10건 제한'], diff:['「다른 2명 동의 후 반영」 → 바로 반영 + 이력'] },
+  { id:'mv_history', code:'N6-09', lane:'F6', col:8, t:'변경 이력', img:'mv_history', v1:'v3_store',
+    hot:MV_BACK('mv_detail3') + MV_BOX('mv_edit', '잘못된 곳이 있으면 고치기', 16, 198, 358, 46),
+    spec:['누가(닉네임) · 언제 · 무엇을 → 누구나 본다','잘못 고쳐졌으면 다른 사람이 다시 고친다'], diff:['새 화면'] },
+  { id:'mv_r1', code:'N7-01', lane:'F7', col:0, t:'제보 1 · 가게와 위치', img:'mv_r1', v1:'v3_report',
+    hot:MV_BACK('mv_home') + MV_NEXT('mv_r2'),
+    spec:['가게 이름 · 어떻게 파나요(전문·분식집·메뉴에 있음) · 지도에서 핀 맞추기 · 주소','위치를 실제로 받는다 (전에는 주소 글자만)','주소 검색은 도로명주소 키를 받은 뒤. 지금은 직접 입력','근처 80m 안에 같은 이름이 있으면 「이미 있는 가게」로 안내'], diff:['지도 핀 추가'] },
+  { id:'mv_r2', code:'N7-02', lane:'F7', col:1, t:'제보 2 · 떡·맛', img:'mv_r2', v1:'v3_report', hot:MV_NEXT('mv_r3', 'mv_r1'),
+    spec:['떡 · 스타일 · 맵기는 필수, 별점은 선택'], diff:['변경 없음'] },
+  { id:'mv_r3', code:'N7-03', lane:'F7', col:2, t:'제보 3 · 메뉴와 가격', img:'mv_r3', v1:'v3_report', hot:MV_NEXT('mv_r4', 'mv_r2'),
+    spec:['대표 메뉴 이름·가격은 필수 (지도에 나온다)','자주 쓰는 가격은 누르기만 · 메뉴는 5개까지'], diff:['가격 건너뛰기 없앰','메뉴 여러 개'] },
+  { id:'mv_r4', code:'N7-04', lane:'F7', col:3, t:'제보 4 · 사진 · 닉네임', img:'mv_r4', v1:'v3_report', hot:MV_NEXT('mv_done', 'mv_r3'),
+    spec:['간판이나 메뉴판 사진 1장 이상 필수 (거지맵은 2장). 숫자는 코드 한 곳에서 바꿈','사진은 줄여서 다시 만들어 올린다 → 찍은 위치 정보가 지워짐','닉네임은 자동, 바꿔도 됨'], diff:['사진 선택 → 필수','실제 저장'] },
+  { id:'mv_done', code:'N7-05', lane:'F7', col:4, t:'제보 끝', img:'mv_done', v1:'v3_report', hot:MV_BOX('mv_new', '올린 가게 보기', 24, 300, 342, 48) + MV_BOX('mv_home', '지도로 돌아가기', 24, 356, 342, 44),
+    spec:['승인 없이 바로 지도에 올라간다 (거지맵의 사후 검증)','내 맛지도 「내 제보」에도 남는다'], diff:['「승인되면 올라가요」 → 바로 올라감'] },
+  { id:'mv_new', code:'N7-06', lane:'F7', col:5, t:'올라간 가게 · 확인 중', img:'mv_new', v1:'v3_store', hot:MV_BACK('mv_home') + MV_BOX('mv_t1', '맞아요', 33, 503, 157, 44) + MV_BOX('mv_t1', '달라요', 198, 503, 159, 44),
+    spec:['일주일 동안 「확인 중」','맞아요 3명 → 확인 끝 · 달라요 3명 → 지도에서 내림','같은 기기·같은 접속 위치는 한 표'], diff:['새 칸'] },
+  { id:'mv_t1', code:'N7-07', lane:'F7', col:6, t:'함께 고치기 · 새로 온 가게', img:'mv_t1', v1:'v3_home', hot:MV_BOX('mv_t2', '확인이 필요해요', 199, 121, 175, 66) + MV_BOX('mv_r1', '새 가게 제보하기', 16, 705, 358, 48) + MV_NAV('mv_home', null, null, 'v3_mine'),
+    spec:['거지맵 「심판하기」 자리. 목록에서 바로 맞아요·달라요','이름과 말투는 우리 것 · 재판 느낌 대신 「함께 고치기」'], diff:['새 탭'] },
+  { id:'mv_t2', code:'N7-08', lane:'F7', col:7, t:'함께 고치기 · 확인이 필요해요', img:'mv_t2', v1:'v3_home', hot:MV_BOX('mv_t1', '새로 온 가게', 16, 121, 175, 66) + MV_BOX('mv_edit', '고치기', 314, 275, 60, 36) + MV_NAV('mv_home', null, null, 'v3_mine'),
+    spec:['거지맵 「가게 업데이트」 자리: 사진 없음 · 영업시간 없음 · 두 달 넘게 확인 안 된 가게','위치를 이미 허용한 기기면 가까운순','포인트 보상은 넣지 않았다'], diff:['새 탭'] }
+].forEach(z => add({ id:z.id, code:z.code, t:z.t, lane:z.lane, col:z.col, v1:z.v1, cmpT:'v3 · 이전 안<small>비슷한 자리</small>', cmpShort:'v3', cmpName:'v3 · 이전 안', diffT:'이전 안과 다른 점', spec:z.spec, diff:z.diff, html:() => MV_SCR(z) }));
+
+const MV_ROWS = [
+  ['찾기', '지도 + 주변 가게 목록 · 핀에 대표 가격과 별점 · 필터(가격 · 음식 종류)', '지도 + 주변 목록 · 도장 밑 가격·별점 · 필터(떡 · 스타일 · 맵기 · 가격)', '걸러 내는 축이 가격 → 취향 · 핀은 맵기 도장 · 대동여지도 지도'],
+  ['상세', '사진 · 메뉴·가격 · 제보일 · 영업시간 · 메모 · 별점(맛·양·값·위생) · 댓글 · 네이버 지도로', '팀 순서 여섯 가지 먼저 → 사진 · 메뉴판 · 영업 · 메모 · 평가 · 한 줄 후기', '평가 = 별 + 맵기 두 축(팀 결정) · 댓글은 한 줄 후기로 합침'],
+  ['제보', '비회원 자동 닉네임 · 상호 검색 · 카테고리 · 메뉴·가격 · 사진 2장 이상 · 승인 없이 등록', '같은 구성 네 단계 · 자동 닉네임 · 지도에서 핀 맞추기 · 사진 1장 이상 · 승인 없이 바로 지도에 · 중복 안내', '주소 검색은 키가 없어 직접 입력'],
+  ['검증', '심판대: 1주 안의 새 가게 평가 · 가성비 투표와 신고로 노출 제한', '함께 고치기 · 새로 온 가게: 7일 「확인 중」 · 맞아요 3명 확인 끝 · 달라요 3명 또는 신고 3명이면 내림', '기준 숫자는 코드 한 곳에서 바꿈'],
+  ['갱신', '가게 업데이트: 사진 없거나 오래된 가게 목록 + 포인트 · 정보 수정 + 변경 이력', '함께 고치기 · 확인이 필요해요 · 누구나 고치기(바로 반영) · 변경 이력 · 아직 있어요', '포인트 없음'],
+  ['검색 유입', '서울 25개 구 · 가격별 · 메뉴별 페이지', '구 · 취향별 페이지 (전에 만든 것 그대로)', '실제 데이터가 들어오면 검색엔진에 연다']
+];
+add({ id:'mv_all', code:'MV-00', t:'MVP · 거지맵 구도 추리기 (11-04)', lane:'MV', w:1500, h:1010, isDoc:true,
+  spec:['거지맵은 11-04 웹에서 직접 둘러본 것 + 기사·앱 설명. 제보·신고는 눌러 보지 않음','구도만 가져오고 이름·문구·모양은 우리 것','코드: web/src/lib/data/db.ts(저장) · lib/wiki.ts(규칙) · app/api/stores · app/together','시험: 저장 흐름 45개 통과 · 화면을 실제로 눌러 제보까지 오류 없음','문서: docs/MVP_거지맵구도_2026-11-04.md'],
+  next:['Supabase 키 받기 (사용자·팀원) → 저장소를 파일에서 DB로 → 그래야 공개 배포 가능','실제 가게 자료 넣기 (지금은 예시 16곳)','운영자 화면 연결: 내려간 가게 되돌리기 (지금은 파일을 직접 고쳐야 함)','휴대폰에서 직접 시험'],
+  rel:['mv_home', 'mv_r1', 'mv_t1', 'zm_all'],
+  html:() => `<div class="doc" style="width:1500px;height:1010px;gap:14px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">거지맵 구도를 추린 MVP</div><div style="color:#62625F;font-size:14px;margin-top:4px">거지맵의 뼈대는 「모두가 고치는 지도」다. <b>찾기 → 제보 → 검증 → 갱신</b> 네 칸이 돌아야 지도가 살아 있다. 전에는 화면만 있고 저장이 안 됐는데, 이제 이 고리가 실제로 돈다.</div></div>
+  <table style="width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.5;color:#3D3D3B">
+    <thead><tr style="text-align:left;color:#1C1C1B"><th style="width:90px;padding:8px 10px;border-bottom:2px solid #1C1C1B"></th><th style="width:30%;padding:8px 10px;border-bottom:2px solid #1C1C1B">거지맵에서 본 것</th><th style="padding:8px 10px;border-bottom:2px solid #1C1C1B">떡볶여지도 MVP (웹에 구현)</th><th style="width:24%;padding:8px 10px;border-bottom:2px solid #1C1C1B">다른 점</th></tr></thead>
+    <tbody>${MV_ROWS.map(r => `<tr><td style="padding:9px 10px;border-bottom:1px solid #E8E8E3;font-weight:700;color:#1C1C1B;vertical-align:top">${r[0]}</td>${r.slice(1).map(c => `<td style="padding:9px 10px;border-bottom:1px solid #E8E8E3;vertical-align:top">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;font-size:13.5px;line-height:1.55;color:#3D3D3B">
+    <div style="border:1px solid #DEDED9;border-radius:12px;padding:14px"><b style="font-size:15px;color:#1C1C1B">뺀 것</b><br>커뮤니티 게시판 · 쿠폰 · 핫딜 · 쇼핑 적립 · 포인트·만보기 · 랭킹 · 회원 가입 · 팝업과 전면 광고.<br>거지맵은 이쪽으로 수익을 내지만 앱 리뷰의 불만도 전면 광고에 몰려 있다. 1차는 지도 고리에만 집중한다.</div>
+    <div style="border:1px solid #DEDED9;border-radius:12px;padding:14px"><b style="font-size:15px;color:#1C1C1B">바뀐 결정 (이전 기획과 다름)</b><br>· 사전 승인 → <b>사후 검증</b> (제보는 바로 올라감)<br>· 다른 2명 동의 후 수정 → <b>바로 반영 + 이력</b><br>· 한 줄 후기 2차 → <b>1차로 앞당김</b><br>· 사진 선택 → <b>1장 이상 필수</b><br>· 아래 메뉴 3개 → <b>4개</b></div>
+    <div style="border:1px solid #B42318;border-radius:12px;padding:14px"><b style="font-size:15px;color:#B42318">아직 출시 못 하는 이유</b><br>· 저장소가 임시 파일 → Supabase 키 필요 (공개 배포 전 필수)<br>· 실제 가게 자료 0 (예시 16곳)<br>· 내려간 가게를 되돌릴 운영자 화면 미연결<br>· 익명 사진·후기 운영 정책, 약관·개인정보 안내 없음<br>· 휴대폰 실기 시험 안 함</div>
+  </div>
+</div>` });
+
+/* ═════════ 웹 1차 기획 (11-06) ═════════ */
+// 전부 기획 와이어. 지도·도장은 보드 부품을 그대로 쓰고, 지금 웹 사진은 img/mvp_flow. 가게 이름은 예시.
+const WB_LB = t => `<div style="font-size:12.5px;font-weight:700;color:#3D3D3B;margin-bottom:6px">${t}</div>`;
+const WB_PHONE = (inner, k, h, label) => `<div>${WB_LB(label)}<div style="width:${Math.round(390 * k)}px;height:${Math.round(h * k)}px;overflow:hidden;border-radius:12px;border:1px solid #CFCFC9;background:#fff"><div style="width:390px;height:${h}px;transform:scale(${k});transform-origin:0 0">${inner}</div></div></div>`;
+const WB_IMG = (img, k, label) => WB_PHONE(`<img src="img/mvp_flow/${img}.png" alt="${label}" style="display:block;width:390px;height:844px">`, k, 844, label);
+const WB_BROWSER = (inner, k, w, h, label) => `<div>${WB_LB(label)}<div style="width:${Math.round(w * k)}px;height:${Math.round((h + 28) * k)}px;overflow:hidden;border-radius:10px;border:1px solid #CFCFC9;background:#fff"><div style="width:${w}px;height:${h + 28}px;transform:scale(${k});transform-origin:0 0"><div style="height:28px;background:#E8E8E3;display:flex;align-items:center;gap:6px;padding:0 12px"><i style="width:10px;height:10px;border-radius:50%;background:#C9C9C2"></i><i style="width:10px;height:10px;border-radius:50%;background:#C9C9C2"></i><i style="width:10px;height:10px;border-radius:50%;background:#C9C9C2"></i></div><div class="scr v2" style="width:${w}px;height:${h}px">${inner}</div></div></div></div>`;
+const WB_MAP = (sym, vb, style, pins = '') => `<div style="position:absolute;overflow:hidden;background:var(--paper);${style}"><svg viewBox="${vb}" preserveAspectRatio="xMidYMid slice" style="position:absolute;left:0;top:0;width:100%;height:100%" aria-hidden="true"><use href="#${sym}" width="390" height="844"/></svg>${pins}</div>`;
+const WB_TOP = (on = 0, w = 320) => `<div style="position:absolute;left:0;top:0;right:0;height:56px;display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--bar);border-bottom:1px solid var(--line);z-index:5">${SIGN()}<div class="search" style="flex:none;width:${w}px">${IC.search}가게 이름이나 동네로 찾기</div><span style="flex:1"></span>${['지도', '목록', '함께 고치기', '내 맛지도'].map((t, i) => `<span style="font-size:14px;${i === on ? 'font-weight:700;color:var(--ink)' : 'color:var(--ink2)'}">${t}</span>`).join('')}<div class="btn" style="height:38px;padding:0 14px;font-size:14px;background:var(--fab);color:var(--onfab,#fff)">＋ 맛집 등록</div></div>`;
+const WB_ROW = (n, name, kind, price, meta, sel) => `<div style="display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);${sel ? 'background:var(--chip)' : ''}">${INL(n, 34)}<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><b style="font-size:15px">${name}</b><span class="kind">${kind}</span></div><div class="mute" style="font-size:12.5px">${meta}</div><b style="font-size:14px">${price}</b></div></div>`;
+const WB_ROWS = sel => [[3, '합정 쌀떡집', '떡볶이 전문', '4,500원', '합정동 · 3일 전 확인 · 3.6점'], [1, '망원 할머니 떡볶이', '분식집', '4,000원', '망원동 · 어제 확인 · 4.2점'], [4, '연남 즉석떡볶이', '즉석', '7,000원', '연남동 · 확인 중'], [5, '신촌 불맛 떡볶이', '떡볶이 전문', '5,000원', '신촌동 · 일주일 전 확인'], [2, '상수 국물떡볶이', '분식집', '4,500원', '상수동 · 2일 전 확인']].map((r, i) => WB_ROW(...r, sel && i === 0)).join('');
+const WB_PINS = (dx = 0, dy = 0) => [[3, 330, 250], [1, 120, 170], [4, 470, 130], [5, 560, 340], [2, 240, 400], [3, 620, 470], [2, 420, 520]].map(([n, x, y], i) => PINbig(n, x + dx, y + dy, i % 2 ? 3 : -3, 36)).join('');
+const WB_LOC = `<div style="position:absolute;right:16px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:3"><span style="display:grid;place-items:center;width:40px;height:40px;border-radius:8px;background:var(--surface);border:1px solid var(--chipline);font-size:18px">＋</span><span style="display:grid;place-items:center;width:40px;height:40px;border-radius:8px;background:var(--surface);border:1px solid var(--chipline);font-size:18px">−</span><span style="display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--surface);border:1px solid var(--chipline);font-size:11px">내 위치</span></div>`;
+// 상세 본문 (N-05 순서). phone = 모바일이면 작은 지도, PC 면 옆 큰 지도가 대신한다
+const WB_DETAIL = phone => `<div style="display:flex;align-items:center;gap:12px">${INL(3, 44)}<div style="min-width:0"><div style="display:flex;align-items:center;gap:6px"><b style="font-size:21px">합정 쌀떡집</b><span class="kind">떡볶이 전문</span></div><div class="mute" style="font-size:13px">마포구 합정동 · 350m · 오늘 21:00까지</div></div></div>
+  <div><div style="display:flex;align-items:baseline;justify-content:space-between"><span class="sub">쌀떡볶이 1인분</span><b style="font-size:19px">4,500원</b></div><div class="mute" style="font-size:12.5px">맵기 3 · 신라면 정도 · 대표 메뉴 기준 · 3일 전 확인</div></div>
+  ${phone ? `<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">위치</b><span class="acc" style="font-size:13px">지도 크게 보기</span></div>
+  <div style="position:relative;width:358px;height:236px;overflow:hidden;border-radius:14px;border:1px solid var(--line);background:var(--paper)"><svg viewBox="52.5 403 179 118" width="358" height="236" aria-hidden="true"><use href="#map-street" width="390" height="844"/></svg><span class="stn" style="left:266px;top:4px"><i>역</i><b>합정역</b></span>${PINbig(3, 160, 96, -3, 36)}<span class="nm" style="left:204px;top:104px;font-size:12px">합정 쌀떡집</span></div>` : ''}
+  <div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:8px"><span class="sub">${IC.pin}</span><span style="flex:1;font-size:14px">[예시 주소] 서울 마포구 합정동</span><span class="chip" style="height:30px;font-size:12px">주소 복사</span></div><span class="mute" style="padding-left:26px;font-size:13px">합정역에서 걸어서 약 3분</span></div>
+  <div style="display:flex;gap:8px"><div class="btn pri" style="flex:2">${IC.route}네이버 지도로 길찾기</div><div class="btn out" style="flex:1;font-size:14px">카카오맵</div></div>
+  <div style="display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line)"><b style="font-size:16px">소개글</b><span style="font-size:14px;line-height:1.55">밀떡이 쫄깃하고 국물이 달달해요. 튀김을 찍어 먹으면 더 맛있어요. 저녁에는 줄이 길어요. [예시]</span><span class="mute" style="font-size:12px">처음 쓴 사람 떡순이 · 3일 전 고침 · <u>이력</u></span></div>
+  ${phone ? `<div style="display:flex;flex-direction:column;gap:6px"><b style="font-size:16px">사진</b><div style="display:flex;gap:8px">${[0, 1, 2].map(() => `<div style="width:112px;height:84px;border-radius:10px;background:var(--chip);border:1px solid var(--line)"></div>`).join('')}</div></div>` : `<div style="display:flex;gap:8px">${[0, 1, 2].map(() => `<div style="flex:1;height:78px;border-radius:10px;background:var(--chip);border:1px solid var(--line)"></div>`).join('')}</div>`}
+  <div style="display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line);font-size:14px"><b style="font-size:16px">메뉴판</b><div style="display:flex;justify-content:space-between"><span>쌀떡볶이 1인분</span><b>4,500원</b></div><div style="display:flex;justify-content:space-between"><span>모둠튀김</span><b>3,000원</b></div></div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--line);font-size:14px"><b style="font-size:16px">가게 정보</b><div style="display:flex;gap:16px"><span class="mute" style="width:64px">영업시간</span>매일 11:00–21:00 · 월요일 쉼</div><div style="display:flex;gap:16px"><span class="mute" style="width:64px">이용</span>혼밥 가능 · 포장 · 카드 가능</div><div style="display:flex;gap:16px"><span class="mute" style="width:64px">같이 먹기</span>순대 · 튀김 · 어묵</div></div>
+  <div style="display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line)"><b style="font-size:16px">가 본 사람들의 평가</b><span style="font-size:14px"><b style="color:#D98E04">★ 3.6</b> · 후기 12개</span><div class="btn out" style="height:44px;font-size:14px">별점과 한 줄 후기 남기기</div></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${['정보 고치기', '변경 이력', '공유', '신고'].map(t => `<div class="btn out" style="height:40px;font-size:12px">${t}</div>`).join('')}</div>`;
+const WB_DOC = (w, h, body) => `<div class="doc" style="width:${w}px;height:${h}px">${body}</div>`;
+const WB_H = (t, s) => `<div><div style="font-family:'Song Myung',serif;font-size:32px">${t}</div><div style="color:#62625F;font-size:14px;margin-top:4px">${s}</div></div>`;
+const WB_NOTE = (t, c = '#F4F4F2') => `<div style="padding:12px 14px;border-radius:12px;background:${c};font-size:13px;line-height:1.6;color:#3D3D3B">${t}</div>`;
+const WB_TBL = (head, rows, widths = []) => `<table style="width:100%;border-collapse:collapse;font-size:13px;line-height:1.5;color:#3D3D3B"><thead><tr style="text-align:left;color:#1C1C1B">${head.map((h, i) => `<th style="${widths[i] ? `width:${widths[i]};` : ''}padding:7px 10px;border-bottom:2px solid #1C1C1B">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td style="padding:8px 10px;border-bottom:1px solid #E8E8E3;vertical-align:top;${i === 0 ? 'font-weight:700;color:#1C1C1B' : ''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+
+add({ id:'wb_all', code:'WB-00', t:'웹 1차 기획 · 한 장 요약 (11-06)', lane:'WB', w:1500, h:690, isDoc:true,
+  spec:['사용자 11-06 요청을 기획으로 정리. 웹 코드는 아직 안 고침','문서: docs/웹1차기획_v1_2026-11-06.md (ADR · 정책표 · 흐름 · 인수 기준 · 화면 상세)','목표 숫자는 모두 가정치. 베타 4주 수치로 다시 정한다'],
+  next:['결정 넷 답 받기 → W1 시작','Supabase · 도로명주소 · 캡차 키 = 사용자·팀원 (계정 일)','팀 공유: 어드민 앞당김 · 맵기 투표 보류 · 상세 순서'],
+  rel:['wb_store', 'wb_reg', 'wb_resp', 'wb_admin', 'mv_all'],
+  html:() => WB_DOC(1500, 690, `${WB_H('웹 1차 기획', '같은 주소 하나로 PC와 모바일을 모두 받는다. <b>찾기 → 등록 → 검증 → 갱신</b> 고리는 MVP 그대로 두고, 그 위에 반응형 · 소개글 · 위치 지도 · 어드민을 얹는다.')}
+  ${WB_TBL(['요청 (11-06)', '기획', '지금', '보는 곳'], [
+    ['가게 등록 + 소개글', '등록을 다섯 단계로: 가게·위치 → 떡·맛 → 메뉴·가격 → <b>소개글</b> → 사진. 소개글은 가게당 한 편, 누구나 고치고 이력에 남음. PC는 한 화면 + 오른쪽 지도', '네 단계 · 소개글 칸 없음 (메모는 등록 뒤 고치기에만)', 'WB-02'],
+    ['위치·길찾기는 기존 디자인 + 지도', 'N-05 순서로 되돌림: 이름·도장 → 가격 → <b>위치 지도</b> → 주소·역 → 길찾기. 그 아래로 소개글·사진·메뉴·평가. PC는 옆 큰 지도가 위치 지도를 맡음', '상세에 지도 없음', 'WB-01'],
+    ['맵기 투표는 나중에', '평가 = 별 + 한 줄 후기. 도장은 값이 있어야 하므로 「대표 메뉴 맵기」 한 값으로 두고, 등록 때 고르고 정보 고치기에서 고침. 메뉴별 구조는 부록 A에 방향만', '평가에 맵기 투표 · 고치기에서 맵기 못 고침', 'WB-02 · 문서 부록 A'],
+    ['유저가 스스로 맛집 등록', '로그인 없이 바로 지도에 + 7일 확인 중 + 맞아요·달라요 (MVP 유지) + 공개 전 캡차', '동작함, 저장소가 임시 파일', 'F7 · WB-02'],
+    ['통제·관리할 어드민', '승인함 → <b>등록 검토함</b>(뒤에서 확인·내림·되돌림) · 수정 감시 · 가게 잠금 · 글·사진 관리 · 규칙 바꾸기 · <b>「승인 후 공개」 스위치</b>', '시안만 · 예시 데이터 · 옛 승인 방식', 'WB-04'],
+    ['웹, PC·모바일 둘 다', '모바일 &lt; 768 = 지도 + 시트 + 아래 메뉴 / 768~1279 = 패널 + 지도 / ≥ 1280 = 목록 + 상세 + 지도. 입력 글자 16px 등 모바일 규칙', '전 화면 480px 고정 · PC에서 가운데 띠', 'WB-03']
+  ], ['220px', '', '300px', '110px'])}
+  <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:14px;font-size:13.5px;line-height:1.6;color:#3D3D3B">
+    <div style="border:1px solid #B42318;border-radius:12px;padding:14px"><b style="font-size:15px;color:#B42318">정해 주실 것</b><br>① 등록 공개: <b>바로 공개 + 스위치</b>(제안) / 처음부터 승인제<br>② 소개글: <b>선택</b>(제안) / 필수<br>③ 이용자 로그인: <b>1차는 없음</b>(제안) / 등록만 로그인<br>④ W1 시작 허락</div>
+    <div style="border:1px solid #DEDED9;border-radius:12px;padding:14px"><b style="font-size:15px;color:#1C1C1B">순서</b><br><b>W1</b> 반응형 · 상세 · 등록 · 맵기 빼기 (키 불필요)<br><b>W2</b> 어드민을 실제 데이터에 연결<br><b>W3</b> Supabase · 어드민 로그인 · 주소 검색 (키 필요)<br><b>W4</b> 첫 300곳 · 약관 · 캡차 · 폰 실기<br><b>W5</b> 비공개 베타 → 공개</div>
+    <div style="border:1px solid #DEDED9;border-radius:12px;padding:14px"><b style="font-size:15px;color:#1C1C1B">알려 둘 것</b><br>· 팀 10-28 「어드민은 추후」를 바꾼다<br>· 맵기를 평가에서 빼므로 「맵기 + 별 두 축」의 평가 부분이 바뀐다<br>· 상세 첫 칸 순서가 팀 순서와 조금 달라진다<br>· 걷는 길 점선은 뺐다: 실제 길이 아니라 건물을 가로지른다. 역 표시와 어림 시간만 둔다<br>· 지표 목표는 모두 가정치</div>
+  </div>`) });
+
+add({ id:'wb_store', code:'WB-01', t:'가게 위치 · 길찾기 · 왼쪽 기존 → 오른쪽 개선안', lane:'WB', w:1660, h:1010, isDoc:true,
+  spec:['사용자 11-06: 기존 디자인이 더 마음에 든다, 지도를 넣자 → N-05 를 기준으로','별도 페이지를 만들지 않고 /store/[id] 하나가 위치·길찾기를 맡는다','작은 지도 = 지금 웹의 대동여지도 지도 부품. 키 불필요','맵기 줄은 「대표 메뉴 기준」 · 평가에 맵기 없음'],
+  rel:['store', 'mv_detail', 'wb_resp'],
+  html:() => WB_DOC(1660, 1010, `${WB_H('가게 위치 · 길찾기', '왼쪽 둘 = 기존 · 오른쪽 둘 = 개선안. 모바일은 N-05 순서에 대표 가격을 더하고, 아래로 지금 웹의 내용을 잇는다. PC는 옆 큰 지도가 위치 지도를 맡는다.')}
+  <div style="display:flex;gap:18px;align-items:flex-start">
+    ${WB_IMG('mv_detail', .62, '기존 ① 지금 웹 · 지도 없음')}
+    ${WB_PHONE(S.find(x => x.id === 'store').html(), .62, 844, '기존 ② N-05 · 마음에 드신 디자인')}
+    ${WB_PHONE(`<div class="scr v2" style="height:1330px;background:var(--surface)"><div class="hd"><span class="ib">${IC.back}</span><b>가게 위치</b><span style="display:flex;gap:2px"><span class="ib svh">♡</span><span class="ib">${IC.share}</span></span></div><div class="bd">${WB_DETAIL(true)}</div></div>`, .62, 1330, '개선안 · 모바일 (아래로 긴 한 페이지)')}
+    <div style="display:flex;flex-direction:column;gap:14px;width:700px">
+      ${WB_BROWSER(`${WB_TOP(0, 280)}${WB_MAP('map-street', '52.5 403 179 118', 'left:780px;top:56px;right:0;bottom:0', `<span class="stn" style="left:330px;top:40px"><i>역</i><b>합정역</b></span>${PINbig(3, 200, 300, -3, 44)}<span class="nm" style="left:256px;top:312px">합정 쌀떡집</span>${WB_LOC}`)}
+        <div style="position:absolute;left:0;top:56px;width:360px;bottom:0;border-right:1px solid var(--line);background:var(--surface);overflow:hidden"><div style="padding:10px 16px;font-size:13px;font-weight:700;border-bottom:1px solid var(--line)">현재 지도에서 찾은 가게 23곳</div>${WB_ROWS(true)}</div>
+        <div style="position:absolute;left:360px;top:56px;width:420px;bottom:0;border-right:1px solid var(--line);background:var(--surface);overflow:hidden;box-shadow:4px 0 16px var(--cardshadow)"><div class="bd" style="gap:12px">${WB_DETAIL(false)}</div></div>`, .545, 1280, 800, '개선안 · PC 1280 (목록 + 상세 + 큰 지도)')}
+      ${WB_NOTE(`<b>N-05 에서 그대로 가져온 것</b> · 도장 옆 이름 · 동·거리·영업 한 줄 · 「위치」 + 지도 크게 보기 · 주소 복사 · 역에서 몇 분 · 네이버 크게 + 카카오맵 보조 · 가게 정보.<br><b>더한 것</b> · 대표 가격 · 소개글 · 사진 · 메뉴판 · 평가 · 고치기 넷 (지금 웹의 아래 내용).<br><b>뺀 것</b> · 걷는 길 점선(실제 길이 아니라서, 길은 길찾기 버튼이 맡음) · 맵기 투표.`)}
+      ${WB_NOTE(`<b>폰에서 어색하지 않게</b> · 작은 지도는 고정이라 그 위에서 밀어도 페이지가 스크롤된다. 누르면 큰 지도가 그 가게에서 열린다.<br><b>PC</b> · 작은 지도를 두지 않고 옆 큰 지도가 그 가게로 간다. 주소로 바로 들어와도 같다. 768~1279 폭은 목록 없이 상세 + 지도.<br><b>예외</b> · 지도를 못 불러와도 주소·길찾기는 그대로 보인다. 위치를 허용하지 않으면 거리는 빠진다. 영업시간이 없으면 「+ 영업시간 채우기」.`)}
+      ${WB_NOTE(`<b>팀에 알릴 것</b> · 팀 순서(이름 → 위치 → 종류 → 맵기 → 가격 → 길찾기)에서 위치 지도가 가격 뒤로 간다. 여섯 가지 정보는 첫 화면에 그대로 있다.`, '#FFF4E6')}
+    </div>
+  </div>`) });
+
+const WB_F = (label, inner, opt) => `<div style="display:flex;flex-direction:column;gap:6px"><b style="font-size:14px">${label}${opt ? ` <span class="mute" style="font-weight:400;font-size:12px">${opt}</span>` : ''}</b>${inner}</div>`;
+const WB_IN = (t, h = 46) => `<div style="height:${h}px;display:flex;align-items:${h > 60 ? 'flex-start' : 'center'};padding:${h > 60 ? '12px' : '0 12px'};border:1px solid var(--chipline);border-radius:10px;background:var(--surface);color:var(--ink3);font-size:16px;line-height:1.5">${t}</div>`;
+const WB_CH = (a, on = []) => `<div class="wrap">${a.map((t, i) => `<span class="chip ${on.includes(i) ? 'on' : ''}">${t}</span>`).join('')}</div>`;
+const WB_MINI = (h = 170) => `<div style="position:relative;height:${h}px;overflow:hidden;border-radius:12px;border:1px solid var(--line)"><svg viewBox="52.5 403 179 118" preserveAspectRatio="xMidYMid slice" style="position:absolute;left:0;top:0;width:100%;height:100%" aria-hidden="true"><use href="#map-street" width="390" height="844"/></svg><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);font-size:28px;color:var(--fab)">📍</span><span class="pill" style="position:absolute;left:8px;bottom:8px">지도를 움직여 핀을 맞춰요</span></div>`;
+const WB_INTRO = `<div style="display:flex;flex-direction:column;gap:6px">${WB_IN('어떤 떡볶이예요? 왜 추천하나요?', 170)}<div style="display:flex;justify-content:space-between;font-size:12px" class="mute"><span>글자만 · 전화번호·링크는 안 돼요</span><span>0 / 500</span></div></div>${WB_CH(['이 집은요', '같이 먹으면 좋은 건', '이럴 때 가면 좋아요'])}`;
+const WB_STEP = (n, title, body, last) => `<div class="scr v2" style="background:var(--surface)"><div class="hd"><span class="ib">${IC.back}</span><b>맛집 등록</b><span class="mute" style="padding-right:10px;font-size:13px">${n}/5</span></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:10px 16px 0">${[1, 2, 3, 4, 5].map(i => `<i style="height:4px;border-radius:2px;background:${i <= n ? 'var(--primary)' : 'var(--chip)'}"></i>`).join('')}</div><div class="bd" style="gap:16px"><b style="font-size:20px">${title}</b>${body}</div><div style="position:absolute;left:16px;right:16px;bottom:24px;display:flex;gap:8px">${n > 1 ? `<div class="btn out" style="flex:1">이전</div>` : ''}${n === 4 ? `<div class="btn out" style="flex:1">건너뛰기</div>` : ''}<div class="btn pri" style="flex:2">${last ? '지도에 올리기' : '다음'}</div></div></div>`;
+add({ id:'wb_reg', code:'WB-02', t:'가게 등록 + 소개글 · 맵기 투표 빼기', lane:'WB', w:1500, h:1185, isDoc:true,
+  spec:['사용자 11-06: 거지맵처럼 가게 등록하고 소개글 쓰는 페이지','「제보」 → 「등록」으로 말을 바꾼다. 주소 /register (옛 /report 는 넘겨 줌)','소개글은 지금 메모 칸을 500자로 넓혀 쓴다. 거지맵 메모와 같은 자리','맵기는 투표 대신 등록자가 고르고 누구나 고침 (대표 메뉴 기준)','입력 글자 16px: 지금 14px 는 iOS 사파리가 저절로 확대한다'],
+  rel:['mv_r1', 'mv_r4', 'wb_all'],
+  html:() => WB_DOC(1500, 1185, `${WB_H('가게 등록 + 소개글', '왼쪽 = 기존 · 오른쪽 = 개선안. 모바일은 한 칸씩 넘기고, PC는 한 화면에 잇는다. 넣는 내용은 같다.')}
+  <div style="display:flex;gap:12px;align-items:flex-start">
+    ${WB_IMG('mv_r1', .54, '기존 · 지금 웹 1/4')}
+    ${WB_PHONE(WB_STEP(1, '어떤 가게인가요?', `${WB_F('가게 이름', WB_IN('간판 그대로 적어 주세요'))}${WB_F('어떻게 파나요', WB_CH(['떡볶이 전문', '분식집', '메뉴에 있음'], [0]))}${WB_F('주소', WB_IN('도로명·동으로 찾기'))}${WB_MINI()}`), .54, 844, '개선 ① 가게 · 위치')}
+    ${WB_PHONE(WB_STEP(2, '떡과 맛', `${WB_F('떡', WB_CH(['쌀떡', '밀떡', '혼합'], [0]))}${WB_F('스타일', WB_CH(['국물', '볶음', '짜장', '즉석', '마라'], [0]))}${WB_F('맵기', MP(3), '대표 메뉴 기준')}${WB_F('별점', `<div style="font-size:26px;color:#D98E04;letter-spacing:4px">★★★★☆</div>`, '선택')}`), .54, 844, '개선 ② 떡·맛')}
+    ${WB_PHONE(WB_STEP(3, '메뉴와 가격', `${WB_F('대표 메뉴', `<div style="display:flex;gap:8px"><div style="flex:2">${WB_IN('쌀떡볶이 1인분')}</div><div style="flex:1">${WB_IN('4,500원')}</div></div>`, '지도에 나와요')}<div class="btn out" style="height:44px;font-size:14px">＋ 메뉴 더하기 (5개까지)</div>${WB_F('영업시간', WB_IN('매일 11:00–21:00'), '선택 · 새로 넣음')}`), .54, 844, '개선 ③ 메뉴·가격')}
+    ${WB_PHONE(WB_STEP(4, '이 집을 소개해 주세요', `${WB_INTRO}<div class="mute" style="font-size:13px;line-height:1.5">소개글은 누구나 고칠 수 있고, 고친 내용은 이력에 남아요.</div>`), .54, 844, '개선 ④ 소개글 (새 칸)')}
+    ${WB_PHONE(WB_STEP(5, '사진을 올려 주세요', `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">${['＋ 카메라', '＋ 앨범', ''].map(t => `<div style="height:100px;border-radius:10px;border:1px dashed var(--chipline);display:grid;place-items:center;color:var(--ink3);font-size:13px">${t}</div>`).join('')}</div><div class="mute" style="font-size:13px;line-height:1.5">간판이나 메뉴판 1장 이상. 찍은 위치 정보는 지워서 올려요.</div>${WB_F('닉네임', WB_IN('쫄깃한 떡순이 12'), '바꿔도 돼요')}`, true), .54, 844, '개선 ⑤ 사진 · 닉네임')}
+  </div>
+  <div style="display:flex;gap:18px;align-items:flex-start">
+    ${WB_BROWSER(`${WB_TOP(-1, 280)}<div style="position:absolute;left:0;right:0;top:56px;bottom:0;display:grid;grid-template-columns:150px 1fr 1fr;gap:28px;padding:22px 60px;background:var(--paper)">
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:14px"><b style="font-size:18px">맛집 등록</b>${['가게 · 위치', '떡 · 맛', '메뉴 · 가격', '소개글', '사진'].map((t, i) => `<span style="${i === 0 ? 'font-weight:700;color:var(--ink)' : 'color:var(--ink3)'}">${i + 1}. ${t}</span>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden">${WB_F('가게 이름', WB_IN('간판 그대로 적어 주세요', 42))}${WB_F('어떻게 파나요', WB_CH(['떡볶이 전문', '분식집', '메뉴에 있음'], [0]))}${WB_F('주소', WB_IN('도로명·동으로 찾기', 42))}${WB_F('떡', WB_CH(['쌀떡', '밀떡', '혼합'], [0]))}${WB_F('소개글', `${WB_IN('어떤 떡볶이예요? 왜 추천하나요?', 130)}<div class="mute" style="font-size:12px;text-align:right">0 / 500</div>`, '선택')}</div>
+      <div style="display:flex;flex-direction:column;gap:14px"><div style="position:relative;height:330px;overflow:hidden;border-radius:12px;border:1px solid var(--line)"><svg viewBox="52.5 403 179 118" preserveAspectRatio="xMidYMid slice" style="position:absolute;left:0;top:0;width:100%;height:100%" aria-hidden="true"><use href="#map-street" width="390" height="844"/></svg><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);font-size:30px;color:var(--fab)">📍</span></div><div style="height:112px;border-radius:12px;border:1.5px dashed var(--chipline);display:grid;place-items:center;color:var(--ink3);font-size:14px">사진을 끌어다 놓거나 눌러서 고르기</div><div class="btn pri">지도에 올리기</div></div>
+    </div>`, .6, 1280, 800, '개선안 · PC 1280 (왼쪽 진행 표시 · 가운데 입력 · 오른쪽 지도와 사진)')}
+    <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+      ${WB_NOTE(`<b>소개글 규칙</b> · 가게당 한 편 · 0~500자 · 글자만 · 누구나 고치고 이력에 남음. 개인 의견은 한 줄 후기로.<br>전화번호·링크·금칙어는 올리기 전에 안내. 신고 3명이면 소개글만 가리고 가게는 지도에 남는다.<br><b>필수로 할지는 답 대기</b> · 제안은 선택. 안 쓰면 상세에 「이 집 소개글 쓰기」 칸이 뜬다.`)}
+      ${WB_NOTE(`<b>맵기 투표를 빼면 바뀌는 곳</b><br>· 평가 = 별 + 한 줄 후기 (별 필수)<br>· 상세의 「N명 투표」 문구 삭제<br>· <b>정보 고치기에 맵기를 연다.</b> 지금은 「맵기는 투표라 여기서 안 고친다」여서 안 열면 고칠 길이 없다<br>· 도장·맵기 필터는 그대로<br>· 메뉴별 맵기로 넘어갈 때 뜻이 안 바뀌게 「대표 메뉴 기준」이라고 적는다`, '#FFF4E6')}
+      ${WB_NOTE(`<b>폰에서 어색하지 않게</b> · 입력 글자 16px(지금 14px 는 아이폰이 저절로 확대) · 키보드가 올라와도 다음 버튼이 보임 · 나갔다 와도 입력이 기기에 남음(이어서 쓰기) · 사진은 카메라·앨범.<br><b>PC</b> · 사진은 끌어다 놓기 · Tab 으로 칸 이동.`)}
+      ${WB_NOTE(`<b>주소</b> · 도로명주소 키 전에는 지금처럼 직접 입력 + 핀. 상호 검색(이름 치면 주소 채움)은 거지맵 방식이지만 약관 확인이 먼저라 베타 뒤로 미뤘다.`)}
+    </div>
+  </div>`) });
+
+const WB_PANEL = (w, list = true) => `<div style="position:absolute;left:0;top:56px;width:${w}px;bottom:0;border-right:1px solid var(--line);background:var(--surface);overflow:hidden;z-index:2"><div style="display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid var(--line)">${['필터', '떡', '스타일', '맵기', '가격'].map((t, i) => `<span class="chip ${i === 0 ? 'on' : ''}" style="height:32px;font-size:12px">${t}</span>`).join('')}</div><div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px"><b>현재 지도에서 찾은 가게 23곳</b><span class="mute">가까운순</span></div>${list ? WB_ROWS(false) : ''}</div>`;
+add({ id:'wb_resp', code:'WB-03', t:'반응형 규칙 · 지도 홈으로 보기', lane:'WB', w:1500, h:1065, isDoc:true,
+  spec:['주소는 폭과 무관하게 같다. PC 링크를 폰에서 열어도 같은 가게','폭 기준 768 · 1280. 시험 폭 360 · 390 · 430 · 768 · 1024 · 1280 · 1920','마우스·터치는 폭이 아니라 입력 장치로 구분한다 (터치 노트북)'],
+  rel:['mv_home', 'wb_store', 'wb_reg'],
+  html:() => WB_DOC(1500, 1065, `${WB_H('반응형 규칙', '같은 화면을 폭에 따라 세 가지로 짠다. 지금은 모든 화면이 480px 폭에 묶여 있어 PC에서 가운데 띠로 보인다.')}
+  <div style="display:flex;gap:18px;align-items:flex-start">
+    ${WB_IMG('mv_home', .56, '모바일 &lt; 768 · 지금 구조 유지')}
+    ${WB_BROWSER(`<div style="position:absolute;left:0;top:0;right:0;height:56px;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--bar);border-bottom:1px solid var(--line);z-index:5">${SIGN()}<span style="flex:1"></span>${['지도', '목록', '함께', '내 맛지도'].map((t, i) => `<span style="font-size:13px;${i === 0 ? 'font-weight:700' : 'color:var(--ink2)'}">${t}</span>`).join('')}<div class="btn" style="height:36px;padding:0 10px;font-size:13px;background:var(--fab);color:var(--onfab,#fff)">＋ 등록</div></div>${WB_MAP('map-draw', '0 0 390 844', 'left:0;top:56px;right:0;bottom:0', `${WB_PINS(300, 60)}${WB_LOC}`)}${WB_PANEL(360)}`, .46, 820, 1000, '패널형 768~1279')}
+    ${WB_BROWSER(`${WB_TOP(0)}${WB_MAP('map-draw', '0 0 390 844', 'left:0;top:56px;right:0;bottom:0', `${WB_PINS(440, 60)}${WB_LOC}`)}${WB_PANEL(400)}`, .56, 1280, 800, '3단 ≥ 1280 · 평소 = 패널 + 지도, 가게를 고르면 상세 패널이 열림 (WB-01)')}
+  </div>
+  ${WB_TBL(['', '모바일 &lt; 768', '패널형 768~1279', '3단 ≥ 1280'], [
+    ['메뉴', '아래 메뉴 넷', '위 헤더 (로고 · 메뉴 넷 · 맛집 등록)', '위 헤더 + 검색창'],
+    ['가게 상세', '페이지 전체 · 작은 지도', '패널이 상세로 바뀜 + 큰 지도', '목록 360 + 상세 420 + 큰 지도'],
+    ['필터', '아래에서 올라오는 시트', '패널 안 접는 칸', '패널 위 칩 + 펼치는 칸'],
+    ['등록', '다섯 단계 한 칸씩', '입력 + 오른쪽 지도', '같음, 폭 1120'],
+    ['목록 · 함께 고치기 · 내 맛지도', '한 줄 목록', '2열', '3열, 폭 1120'],
+    ['어드민', '목록 → 상세 한 화면씩', '레일 + 2단', '레일 + 보조 메뉴 + 2단'],
+    ['위치 묻기', '처음에 한 번 (지금 유지)', '「내 위치」 누를 때만', '「내 위치」 누를 때만'],
+    ['입력 방식', '터치: 누르는 곳 44px · 16px 글자 · 키보드 고려', '폭이 아니라 장치 기준으로 hover 사용', '마우스: 도장에 올리면 이름·가격 · 휠 확대 · 키보드로 목록 이동']
+  ], ['200px'])}
+  ${WB_NOTE(`<b>시험</b> · 폭 일곱 개에서 가로 스크롤 없음 · <b>실제 폰(아이폰 사파리 · 안드로이드 크롬)에서 지도 · 시트 · 키보드 · 사진 올리기 확인은 아직 한 번도 못 했다.</b> W1 끝에 꼭 해야 한다.`, '#FFF4E6')}`) });
+
+const AD_RAIL = `<div style="position:absolute;left:0;top:0;bottom:0;width:60px;background:#16233B;color:#C9D3E3;display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:14px;font-size:11px;z-index:3">${['홈', '검토', '가게', '점검', '신고', '글·사진', '기록', '설정'].map((t, i) => `<span style="${i === 1 ? 'color:#fff;font-weight:700' : ''}">${t}</span>`).join('')}</div>`;
+const AD_BTN = (t, c = '#fff', b = '#CFD6E0', f = '#1F2A3D') => `<span style="display:inline-flex;align-items:center;height:34px;padding:0 12px;border-radius:6px;border:1px solid ${b};background:${c};color:${f};font-size:13px;font-weight:600">${t}</span>`;
+const AD_BAD = (t, c) => `<span style="padding:1px 7px;border-radius:4px;background:${c};color:#fff;font-size:11px;font-weight:700">${t}</span>`;
+const AD_LINE = (bad, name, meta, on) => `<div style="padding:11px 14px;border-bottom:1px solid #E6E9EE;${on ? 'background:#EAF0F8' : ''}"><div style="display:flex;gap:6px;align-items:center">${bad}<b style="font-size:14px;color:#1F2A3D">${name}</b></div><div style="font-size:12px;color:#6B7687;margin-top:2px">${meta}</div></div>`;
+const AD_LIST = [AD_LINE(AD_BAD('자동 내림', '#B42318'), '상수 국물떡볶이', '달라요 3명 · 2시간 전', true), AD_LINE(AD_BAD('신고', '#B4690E'), '연남 즉석떡볶이', '소개글 신고 2명 · 5시간 전'), AD_LINE(AD_BAD('새 등록', '#2D5B9A'), '망원 할머니 떡볶이', '확인 중 · 어제'), AD_LINE(AD_BAD('큰 수정', '#5B6472'), '합정 쌀떡집', '주소 변경 · 어제'), AD_LINE(AD_BAD('도배 의심', '#B42318'), '기기 a31f', '오늘 등록 9건')].join('');
+const AD_DETAIL = `<div style="display:flex;gap:6px;align-items:center">${AD_BAD('자동 내림', '#B42318')}<b style="font-size:18px;color:#1F2A3D">상수 국물떡볶이</b></div><div style="font-size:12.5px;color:#6B7687">달라요 3명 · 지금 지도에서 내려가 있음 · 등록 3일 전 · 기기 c8e2</div><div style="display:flex;gap:8px">${[0, 1, 2].map(() => `<div style="width:92px;height:70px;border-radius:6px;background:#E6E9EE"></div>`).join('')}</div><div style="padding:10px 12px;border:1px solid #E6E9EE;border-radius:8px;font-size:13px;color:#1F2A3D;line-height:1.5"><b>소개글</b><br>국물이 진하고 어묵이 맛있어요. [예시]</div><div style="padding:10px 12px;border-radius:8px;background:#FBF3E4;font-size:13px;color:#7A5416;line-height:1.5">달라요 이유: 「여기 없어요」 2 · 「이름이 달라요」 1. 처음 등록한 기기의 다른 등록 1건.</div>`;
+add({ id:'wb_admin', code:'WB-04', t:'어드민 · 무엇을 통제하나 · v1 대조', lane:'WB', w:1500, h:1065, isDoc:true,
+  spec:['기존 /admin 시안(Admin Navy)을 그대로 키운다. 같은 웹앱','v1 은 사전 승인 기준 → 지금은 바로 공개라 승인함을 등록 검토함으로 바꾼다','W2 = 지금 저장소에 연결 · 로컬 임시 비밀번호. W3 = Supabase 로그인 · 2단계 인증. 키는 사용자·팀원','팀 10-28 「어드민은 추후」를 바꾸는 결정이라 공유 필요'],
+  rel:['wb_all', 'mv_all'],
+  html:() => WB_DOC(1500, 1065, `${WB_H('어드민', '등록은 누구나 바로 올리고, 운영자는 뒤에서 통제한다. 도배가 터지면 스위치 하나로 승인제로 바꾼다.')}
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;font-size:13px;line-height:1.55;color:#3D3D3B">
+    ${[['가게', '확인함 · 고치기 · 내리기 · 폐업 · 되살리기 · 합치기 · <b>잠그기</b>'], ['수정', '큰 변경 표시 · 한 줄 되돌리기 · <b>한 기기 것 한꺼번에 되돌리기</b>'], ['글·사진', '후기 · 소개글 · 사진을 <b>따로</b> 숨기고 되살림. 가게는 안 내림'], ['사람', '기기·접속 위치 차단 7일 / 30일 / 계속. 원문 IP 는 저장 안 함'], ['규칙', '<b>승인 후 공개 스위치</b> · 확인·내림 인원 · 하루 제한 · 금칙어를 화면에서 바꿈']].map(([a, b]) => `<div style="border:1px solid #DEDED9;border-radius:12px;padding:12px"><b style="font-size:15px;color:#1C1C1B">${a}</b><br>${b}</div>`).join('')}
+  </div>
+  <div style="display:flex;gap:18px;align-items:flex-start">
+    ${WB_BROWSER(`<div style="position:absolute;inset:0;background:#F2F4F7;color:#1F2A3D">${AD_RAIL}<div style="position:absolute;left:60px;right:0;top:0;height:50px;background:#1F3050;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:14px"><b>떡볶여지도 운영</b><span style="font-size:12.5px;color:#C9D3E3">등록 공개: <b style="color:#fff">바로 공개</b> · 서비스 보기 · 관리자</span></div>
+      <div style="position:absolute;left:84px;right:24px;top:66px;display:flex;gap:8px;align-items:baseline"><b style="font-size:20px">등록 검토함</b><span style="font-size:13px;color:#6B7687">올라간 것을 뒤에서 확인해요 · J K 이동 · A 확인함 · R 내리기</span></div>
+      <div style="position:absolute;left:84px;top:104px;display:flex;gap:18px;font-size:13.5px;border-bottom:1px solid #DDE2E9;right:24px;padding-bottom:8px"><b style="color:#2D5B9A">내려간 것 3</b><span>새 등록 12</span><span>수정 8</span><span style="color:#9AA3B1">승인 대기 (스위치 꺼짐)</span></div>
+      <div style="position:absolute;left:84px;top:144px;width:340px;bottom:20px;background:#fff;border:1px solid #E6E9EE;border-radius:8px;overflow:hidden">${AD_LIST}</div>
+      <div style="position:absolute;left:440px;right:24px;top:144px;bottom:20px;background:#fff;border:1px solid #E6E9EE;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px">${AD_DETAIL}<div style="margin-top:auto;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">${AD_BTN('기기 차단')}${AD_BTN('합치기')}${AD_BTN('고치기')}${AD_BTN('내림 유지 R')}${AD_BTN('되살리기 A', '#2D5B9A', '#2D5B9A', '#fff')}</div></div></div>`, .62, 1280, 720, '등록 검토함 · PC')}
+    ${WB_PHONE(`<div style="width:390px;height:844px;background:#F2F4F7;font-family:'Noto Sans KR',sans-serif;position:relative"><div style="height:52px;background:#1F3050;color:#fff;display:flex;align-items:center;padding:0 14px;font-size:15px;font-weight:700">← 등록 검토함</div><div style="margin:12px;padding:14px;background:#fff;border:1px solid #E6E9EE;border-radius:8px;display:flex;flex-direction:column;gap:12px">${AD_DETAIL}</div><div style="position:absolute;left:12px;right:12px;bottom:20px;display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="display:grid;place-items:center;height:46px;border-radius:8px;border:1px solid #CFD6E0;background:#fff;font-weight:700;font-size:14px">내림 유지</span><span style="display:grid;place-items:center;height:46px;border-radius:8px;background:#2D5B9A;color:#fff;font-weight:700;font-size:14px">되살리기</span></div></div>`, .55, 844, '폰 · 상세 (목록 → 상세 한 화면씩)')}
+    <div style="flex:1;min-width:0">${WB_NOTE(`<b>문제가 생겼을 때</b><br>① 도배: 스위치를 켠다 → 새 등록은 승인 대기로 → 기기 차단 → 한꺼번에 되돌리기.<br>② 허위 신고: 자동 내림은 숨김일 뿐 지우지 않는다 → 되살리기 → 잠그기.<br>③ 사장님·권리 침해: 요청 창구 → 임시로 가리고 48시간 안에 판단. 절차는 법무 확인 뒤 확정.`)}</div>
+  </div>
+  ${WB_TBL(['화면', 'v1 (사전 승인)', '이번 (사후 검증 + 통제)'], [
+    ['홈', '승인 대기 · 신고 · 확인 필요 · 동의 대기', '자동 내림 · 신고 · 새 등록 · 큰 수정'],
+    ['승인함 → 등록 검토함', '승인해야 지도에 올라감 · 동의 2곳 자동 반영', '이미 올라간 것을 확인·내림. 스위치를 켜면 승인 대기 탭 사용'],
+    ['가게 목록 · 편집', '등급·상태 · 운영자 이력', '확인 중·잠김 거르기 · 이용자 수정 이력 · 소개글 · 잠금 · 표 파일 올리기(첫 300곳)'],
+    ['신고·요청', '신고 3종', '가게·후기·소개글·사진 4종 + 권리 침해 요청'],
+    ['설정', '규칙 읽기만', '공개 방식 · 규칙 숫자 · 금칙어를 관리자가 바꿈'],
+    ['글·사진 관리', '없음', '신설'],
+    ['로그인·역할 · 운영 기록 · 신선도', '이메일 링크 + 2단계 인증 · 고칠 수 없는 기록 · 180·365일', '그대로']
+  ], ['250px', '', ''])}`) });
+
+/* ═════════ 글꼴 고르기 (11-04) ═════════ */
+const FT_CARD = f => { const b = (r, t) => `<button class="ftb ${PAL.font[r] === f.id ? 'on' : ''}" data-fset="${r}:${f.id}">${t}</button>`;
+  return `<div style="display:flex;flex-direction:column;gap:5px;min-width:0;padding:12px 14px;border:1px solid ${f.note && f.note.startsWith('사진') ? '#C00000' : '#DEDED9'};border-radius:12px;background:#fff">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px"><b style="font-size:15px;color:#1C1C1B">${f.n}</b><span style="font-size:11.5px;color:#62625F;white-space:nowrap">${f.by}</span></div>
+    <div style="height:17px;font-size:12px;font-weight:700;color:#B42318">${f.note || ''}</div>
+    <div data-ff="${f.id}" style="height:68px;font-size:52px;line-height:68px;color:#C00000;white-space:nowrap;overflow:hidden;${FSTROKE(f)}">떡볶여지도</div>
+    <div data-ff="${f.id}" style="height:38px;font-size:28px;line-height:38px;color:#C00000;white-space:nowrap;overflow:hidden;${FSTROKE(f)}">떡동여지도</div>
+    <div data-ff="${f.id}" style="height:26px;font-size:17px;line-height:26px;color:#1C1C1B;white-space:nowrap;overflow:hidden">떡볶이를 사랑하는 사람들의 지도</div>
+    <div style="height:34px;font-size:11.5px;line-height:17px;color:#3D3D3B">${f.warn ? `<b style="color:#B42318">⚠ ${f.warn}</b><br>` : ''}${f.lic}</div>
+    <div style="display:flex;gap:4px">${b('logo', f.warn ? '로고로 (시험만)' : '로고로')}${b('slogan', f.warn ? '슬로건으로 (시험만)' : '슬로건으로')}${b('pen', '손글씨 제목으로')}</div>
+  </div>`; };
+add({ id:'ft_all', code:'FT-00', t:'글꼴 비교판 (11-04)', lane:'FT', w:1880, h:2340, isDoc:true,
+  spec:['사진의 글자를 잘라 눈누 글꼴 약 800종과 글자별로 겹쳐 잼 (1 = 완전히 같음)','아래 줄 「떡볶여지도」 = 조선100년체 + 굵게 0.947 · 위 줄 「떡동여지도」 = 갈맷글 + 굵게 0.947. 처음에 말한 을지로체는 0.61로 다른 글꼴','왼쪽 얇은 붓 로고(최고 0.38) · 슬로건(최고 0.14)은 붓·손글씨 글꼴 230종 안에 맞는 것이 없음 → 손글씨나 그림으로 보여 지금 그림을 그대로 둠','조선100년체는 눈누 요약 기준 로고·브랜드명·슬로건 사용 금지. 닮은 다른 글꼴도 최고 0.70이라 대체할 만큼 비슷한 것이 없음','버튼을 누르면 N-01 첫 화면 로고·슬로건, 손글씨 제목이 바로 바뀜. 고른 값은 이 브라우저에 저장','실제 웹: localhost:3100/?logo=galmat (원래대로 ?logo=png). 제목 글꼴은 &head=chosun (원래대로 &head=base)','라이선스는 눈누·구글 폰트 페이지 요약. 정하기 전에 원문 재확인, 상표 등록을 할 거면 별도 확인'],
+  next:['로고·슬로건·제목 글꼴 고르기 (사용자·팀)','조선100년체를 로고로 쓰고 싶다면: 방일영문화재단에 허락을 먼저 받기','고른 뒤: 글꼴 파일을 받아 쓰는 글자만 줄여 우리 서버에 둔다 (지금은 인터넷에서 불러옴)'],
+  rel:['intro', 'v3_home', 'mv_home'],
+  html:() => { const photo = FONTS.filter(f => f.g === '사진'), big = FONTS.filter(f => f.g === '굵은 붓'), thin = FONTS.filter(f => f.g === '얇은 붓'), pick = r => { const f = FONT(PAL.font[r]); return f ? f.n : '지금 그림'; };
+    return `<div class="doc" style="width:1880px;height:2340px;gap:12px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px"><div><div style="font-family:'Song Myung',serif;font-size:34px">글꼴 비교판</div><div style="color:#62625F;font-size:14px;margin-top:4px">누르면 첫 화면에 바로 들어가요. 본문 글자는 읽기 쉬운 지금 글꼴 그대로 두고, 로고·슬로건·손글씨 제목만 바꿔 봅니다.</div></div>
+  <div style="display:flex;align-items:center;gap:14px;padding:8px 14px;border:1px solid #DEDED9;border-radius:12px;font-size:13px;color:#3D3D3B;white-space:nowrap"><span>지금 고른 것</span><b>로고 ${pick('logo')}</b><b>슬로건 ${pick('slogan')}</b><b>손글씨 ${pick('pen')}</b><button class="ftb" style="flex:none;width:92px" data-fset="logo:png">로고 원래대로</button><button class="ftb" style="flex:none;width:102px" data-fset="slogan:png">슬로건 원래대로</button></div></div>
+  <div style="font-size:15px;font-weight:700;color:#1C1C1B">사진의 글꼴 <span style="font-weight:400;color:#62625F;font-size:13px">사진의 글자를 잘라 글꼴과 글자별로 겹쳐 잰 결과. 왼쪽 그림의 ①이 사진, 나머지가 글꼴</span></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start">
+    <div style="grid-column:span 2;border:1px solid #DEDED9;border-radius:12px;overflow:hidden;background:#fff"><img src="img/font_match_proof.png" alt="사진 글자와 조선100년체·갈맷글을 나란히 찍은 비교" style="display:block;width:100%;height:auto"></div>
+    ${photo.map(FT_CARD).join('')}
+  </div>
+  <div style="font-size:15px;font-weight:700;color:#1C1C1B">굵은 붓 <span style="font-weight:400;color:#62625F;font-size:13px">사진 글꼴과 다르지만 굵은 느낌의 무료 글꼴</span></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">${big.map(FT_CARD).join('')}</div>
+  <div style="font-size:15px;font-weight:700;color:#1C1C1B">얇은 붓 · 손글씨 <span style="font-weight:400;color:#62625F;font-size:13px">사진 왼쪽의 붓 로고·슬로건과 같은 글꼴은 못 찾았다. 비슷한 느낌의 후보</span></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">${thin.map(FT_CARD).join('')}</div>
+</div>`; } });
+
+/* ═════════ 확대 지도 비교 (11-04) ═════════ */
+// 사진은 전부 웹 localhost 에서 같은 자리(서교동, 예시 가게 도장)를 찍은 것. 오른쪽 ① 의 실제 지도 자리는 네이버 키 전이라 임시 지도.
+const ZM_SHOT = (src, tag, title, line, on) => `<div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+  <div style="display:flex;align-items:center;gap:6px;min-height:24px"><span style="font-size:12px;padding:2px 9px;border-radius:10px;background:${on ? '#1C1C1B' : '#EFEFEC'};color:${on ? '#fff' : '#3D3D3B'}">${tag}</span><b style="font-size:16px">${title}</b></div>
+  <div style="position:relative;width:340px;height:596px;border-radius:12px;overflow:hidden;border:1px solid #DEDED9;background:#F2F2EF">${src}</div>
+  <div style="font-size:13px;line-height:1.55;color:#3D3D3B">${line}</div>
+</div>`;
+const ZM_IMG = (f, alt) => `<img src="img/${f}" alt="${alt}" style="display:block;width:340px;height:auto">`;
+const ZM_ROWS = [
+  ['위치 찾기', '길 이름 + 큰 건물 + 상호. 네이버보다 듬성함', '가장 자세함', '가장 자세함'],
+  ['대동여지도 느낌', '모든 단계에서 유지', '멀리서만 유지, 확대하면 네이버 그림', '색만 비슷하게. 길 먹선·10리 점·첩 이음선은 확인 필요'],
+  ['상호 자료', 'OpenStreetMap. 이 동네엔 많지만 빠진 곳·옛 상호가 있을 수 있음(실제 대조 아직 안 함)', '네이버', '네이버'],
+  ['넘어갈 때', '끊김 없음 (같은 지도)', '15~15.8배에서 겹쳐 넘어감(웹 구현) · 글자가 잠깐 겹쳐 보임 · 네이버와 위치가 맞는지는 키 받은 뒤 시험', '끊김 없음 (같은 지도)'],
+  ['도장과 글자', '이름이 도장을 비켜 남', '지도 글자를 우리가 못 옮김 → 도장 밑에 깔릴 수 있음', '같음'],
+  ['휴대폰 부담', '지도 하나 · 확인 전', '지도 둘을 같이 띄움 · 확인 전', '지도 하나 + 도장 표시 · 확인 전'],
+  ['키 · 계정', '필요 없음', '네이버 클라우드 Maps 신청·키 발급 (사용자·팀원)', '같음'],
+  ['비용', '0', '무료 이용량·요금 콘솔 확인 필요', '같음'],
+  ['바로 쓸 수 있나', '<b>웹에 구현</b> (기본 주소)', '<b>전환 동작은 웹에 구현</b> (주소 끝 ?zoom=real) · 실제 지도 자리는 임시, 키 받은 뒤 네이버로 교체·시험', '지도 엔진 교체 개발 필요 (MapLibre 코드 대체)']
+];
+add({ id:'zm_all', code:'ZM-00', t:'확대 지도 · 이름 넣기 vs 네이버 전환 (11-04)', lane:'ZM', w:1880, h:1230, isDoc:true,
+  spec:['다섯 장 모두 웹에서 직접 찍은 사진 (지금 → ② 이름 넣기 13·15.5·17배 → ① 네이버 전환 17배). ① 의 실제 지도 자리는 네이버 키 전이라 임시 지도','② 웹 구현: 길 이름 15배~ · 큰 건물(은행·학교·공원 등) 15.5배~ · 상호 16.5배~ · 14배까지는 지금과 같음','도장 둘레는 길·건물·상호 이름이 비켜 남. 역·동네 이름은 전처럼 그대로','버스 정류장·미용실·주차장·ATM 등은 이름을 빼고, 14자 넘는 상호도 뺌 (영어 설명형 이름 정리)','「지금」 사진은 같은 웹에서 새 이름 층만 끄고 찍음','커밋·배포 안 함. 결정 대기: 팀 피드백 v2 정-2'],
+  next:['위 F4·F5 줄을 프로토타입으로 눌러 보고 1차에 쓸 방식을 사용자·팀원이 정하기 (정-2)','정한 뒤 휴대폰에서 확대·이동 속도와 상호가 맞는지 확인 (아직 안 함)','① 로 간다면: 네이버 클라우드 Maps 키 신청 (사용자·팀원) → 임시 지도 자리를 네이버로 교체·시험'],
+  rel:['zf_n1', 'zf_r1', 'street', 'v3_home'],
+  html:() => `<div class="doc" style="width:1880px;height:1230px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">확대 지도 · 위치가 보이게</div><div style="color:#62625F;font-size:14px;margin-top:4px">같은 자리(서교동)를 확대. 초기엔 대동여지도 디자인을 지키면서 「이 가게가 어느 골목인지」 알 수 있어야 한다. 도장·가게는 예시 데이터.</div></div>
+  <div style="display:grid;grid-template-columns:repeat(5,340px);gap:18px;justify-content:space-between">
+    ${ZM_SHOT(ZM_IMG('zm_z17_before.png', '지금 17배: 이름 없음'), '지금', '17배', '길·건물·상호 이름이 없어 가게가 어느 골목인지 알 수 없다. 팀원이 짚은 문제.')}
+    ${ZM_SHOT(ZM_IMG('zm_z13_after.png', '이름 넣기 13배: 지금과 같음'), '② 이름 넣기', '13배 · 멀리서', '<b>지금과 같다.</b> 먹선 길·역 이름·도장만. 대동여지도 느낌을 그대로 둔다.', true)}
+    ${ZM_SHOT(ZM_IMG('zm_z155_after.png', '이름 넣기 15.5배: 길과 큰 건물 이름'), '② 이름 넣기', '15.5배', '길 이름이 길을 따라 나오고, 은행·마트 같은 큰 건물이 더해진다.', true)}
+    ${ZM_SHOT(ZM_IMG('zm_z17_after.png', '이름 넣기 17배: 상호까지'), '② 이름 넣기', '17배 · 골목', '상호까지 나와 「영빈 옆, CU 뒤쪽」처럼 짚을 수 있다. 다른 가게 이름은 도장보다 작고 옅게.', true)}
+    ${ZM_SHOT(ZM_IMG('zoom_flow/zf_r3_z17.png', '네이버 전환 17배: 임시 지도'), '① 네이버 전환', '17배', '확대하면 실제 지도로 넘어간다. <b>지금은 네이버 키 전이라 임시 지도(OpenFreeMap)</b> — 네이버로 바꾸면 그림은 달라진다. 도장 밑에 글자가 깔리는 건 ① 의 한계.', true)}
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.5;color:#3D3D3B">
+    <thead><tr style="text-align:left;color:#1C1C1B"><th style="width:150px;padding:8px 10px;border-bottom:2px solid #1C1C1B"></th><th style="padding:8px 10px;border-bottom:2px solid #1C1C1B">② 지금 지도에 이름 넣기</th><th style="padding:8px 10px;border-bottom:2px solid #1C1C1B">① 확대하면 네이버로 전환</th><th style="padding:8px 10px;border-bottom:2px solid #1C1C1B">③ 처음부터 네이버 + 색만 입히기 (팀 PRD)</th></tr></thead>
+    <tbody>${ZM_ROWS.map(r => `<tr><th style="text-align:left;font-weight:600;color:#1C1C1B;padding:7px 10px;border-bottom:1px solid #E4E4E0;vertical-align:top">${r[0]}</th>${r.slice(1).map(c => `<td style="padding:7px 10px;border-bottom:1px solid #E4E4E0;vertical-align:top">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>
+</div>` });
+
 /* ═════════ 보드 배치 ═════════ */
 const AW = 390, AH = 844, GX = 190, TOP_PAD = 180, LANE_GAP = 220, SUB_GAP = 0;
 const byId = Object.fromEntries(S.map(s => [s.id, s]));
@@ -1311,6 +1824,7 @@ function buildLinks() {
 }
 function rerenderAll() { // 맵기 표시를 바꾸면 화면을 새로 그리고 연결선도 다시 잰다
   S.forEach(s => { if (s.isV1) return; const f = document.querySelector('#ab-' + s.id + ' .frame'); if (f) f.innerHTML = s.html(); });
+  hydrateFonts();
   const k0 = view.k; view.k = 1; apply(); buildLinks(); view.k = k0; apply();
   if (mode === 'proto' && cur) render(cur);
 }
@@ -1367,9 +1881,12 @@ function renderInsp() {
   }
   const s = byId[sel], L = LANES.find(l => l.id === s.lane);
   if (s.isDoc) {
+    const ch = s.lane === 'CH';
+    const next = s.next || (ch ? ['방향을 고르면 그 방향만 그림 생성 (매그니픽 크레딧 · 장수 정해서 승인 후)', '고른 캐릭터를 빈 화면·제보 끝 화면에 넣어 프로토타입에 반영'] : []);
+    const rel = ch ? S.filter(x => x.lane === 'CH' && x.id !== s.id) : (s.rel || []).map(id => byId[id]);
     el.innerHTML = `<div class="code">${s.code}</div><h3>${s.t}</h3><div class="flow">${L.t}</div><h5>기획 메모</h5><ul>${s.spec.map(x => `<li>${x}</li>`).join('')}</ul>
-      <h5>다음 단계</h5><ul><li>방향을 고르면 그 방향만 그림 생성 (매그니픽 크레딧 · 장수 정해서 승인 후)</li><li>고른 캐릭터를 빈 화면·제보 끝 화면에 넣어 프로토타입에 반영</li></ul>
-      <h5>다른 방향</h5><div class="go">${S.filter(x => x.lane === 'CH' && x.id !== s.id).map(x => `<a data-f="${x.id}">${x.code} ${x.t}</a>`).join('')}</div>`;
+      ${next.length ? `<h5>다음 단계</h5><ul>${next.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}
+      ${rel.length ? `<h5>${ch ? '다른 방향' : '관련 화면'}</h5><div class="go">${rel.map(x => `<a data-f="${x.id}">${x.code} ${x.t}</a>`).join('')}</div>` : ''}`;
     el.querySelectorAll('[data-f]').forEach(a => a.onclick = () => focus(a.dataset.f));
     return;
   }
@@ -1389,7 +1906,7 @@ function renderInsp() {
     <h5>${s.diffT || '기존 v1에서 바뀐 것'}</h5><ul>${s.diff.map(x => `<li>${x}</li>`).join('')}</ul>
     ${outs.length ? `<h5>여기서 가는 곳</h5><div class="go">${outs.map(l => `<a data-f="${l.to}">${byId[l.to].t} <em>← “${l.label}”</em></a>`).join('')}</div>` : ''}
     ${ins.length ? `<h5>여기로 오는 곳</h5><div class="go">${ins.map(i => `<a data-f="${i}">${byId[i].t}</a>`).join('')}</div>` : ''}
-    <h5>비교</h5><div class="go"><a data-f="${s.v1}">${s.cmpShort ? 'v2 개선안' : '기존 v1'} 화면 보기 <em>${byId[s.v1].code}</em></a></div>
+    <h5>비교</h5><div class="go"><a data-f="${s.v1}">${s.cmpName || (s.cmpShort ? 'v2 개선안' : '기존 v1')} 화면 보기 <em>${byId[s.v1].code}</em></a></div>
     <button class="play" data-play="${s.id}">▶ 이 화면부터 프로토타입</button>`;
   el.querySelectorAll('[data-f]').forEach(a => a.onclick = () => focus(a.dataset.f));
   el.querySelector('[data-play]').onclick = () => openProto(s.id);
@@ -1404,7 +1921,7 @@ function renderLayers() {
 
 /* 팬·줌 */
 let drag = null;
-stage.addEventListener('pointerdown', e => { if (e.button !== 0) return; drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false }; stage.setPointerCapture(e.pointerId); });
+stage.addEventListener('pointerdown', e => { if (e.button !== 0 || e.target.closest('[data-fset]')) return; drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false }; stage.setPointerCapture(e.pointerId); });
 stage.addEventListener('pointermove', e => {
   if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; stage.classList.add('drag'); }
@@ -1461,13 +1978,13 @@ function render(id, dir) {
     <ul style="padding-left:18px;margin:12px 0 0">${s.spec.map(x => `<li>${x}</li>`).join('')}</ul>
     <div style="margin-top:10px;color:var(--t-ink)">${s.diffT || '기존 v1에서 바뀐 것'}</div><ul style="padding-left:18px;margin:4px 0 0">${s.diff.map(x => `<li>${x}</li>`).join('')}</ul>
     <div class="hint">아무 곳이나 누르면 누를 수 있는 곳이 파랗게 반짝여요.<br>
-    <button class="tb-btn ${PAL.compare ? 'on' : ''}" id="pCmp">${s.cmpShort ? s.cmpShort + ' 개선안' : '기존(v1)'}과 나란히: ${PAL.compare ? '켬' : '끔'}</button><br>
+    <button class="tb-btn ${PAL.compare ? 'on' : ''}" id="pCmp">${s.cmpName ? s.cmpName + ' 같이 보기' : (s.cmpShort ? s.cmpShort + ' 개선안' : '기존(v1)') + '과 나란히'}: ${PAL.compare ? '켬' : '끔'}</button><br>
     <button class="tb-btn ${hotspots ? 'on' : ''}" id="pHs">누를 곳 항상 표시</button><button class="tb-btn" id="pBack">← 뒤로</button><button class="tb-btn" id="pHome">처음부터</button><br>
     <span style="font-size:12px">팔레트는 왼쪽 칸에서 바로 바뀌어요 · Esc = 디자인 모드</span></div>`;
   document.getElementById('pCmp').onclick = () => { PAL.compare = !PAL.compare; save(); render(cur); };
   document.getElementById('pHs').onclick = () => { hotspots = !hotspots; render(cur); };
   document.getElementById('pBack').onclick = () => go('back');
-  document.getElementById('pHome').onclick = () => { hist = []; render(byId[cur] && byId[cur].lane === 'F3' ? 'v3_home' : 'intro', 'l'); };
+  document.getElementById('pHome').onclick = () => { hist = []; render(({ F3:'v3_home', F4:'zf_n1', F5:'zf_r1', F6:'mv_home', F7:'mv_home' })[byId[cur] && byId[cur].lane] || 'intro', 'l'); };
   document.querySelectorAll('#layers a').forEach(a => a.classList.toggle('on', a.dataset.id === id));
 }
 function alertBox(n) {
@@ -1485,6 +2002,14 @@ vp.addEventListener('click', e => {
     if (act === 'chip') a.classList.toggle('on');
     if (act === 'pick') { a.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); a.classList.add('on'); }
     if (act === 'pickmp') { a.parentElement.querySelectorAll('a').forEach(c => c.classList.remove('on')); a.classList.add('on'); }
+    if (act === 'save3') { // 가게 상세 ♡ → ♥ + 토스트 1.4초 (웹 SaveButton 과 같게)
+      const on = a.classList.toggle('on'); a.textContent = on ? '♥' : '♡';
+      const scr = vp.querySelector('.scr'); scr.querySelectorAll('.toast3').forEach(t => t.remove());
+      const t = document.createElement('div'); t.className = 'toast3'; t.innerHTML = `<span>${on ? '내 맛지도에 담았어요' : '내 맛지도에서 뺐어요'}</span>`;
+      scr.appendChild(t); setTimeout(() => t.remove(), 1400);
+    }
+    if (act === 'visit') { const on = a.classList.toggle('on'); a.textContent = on ? '다녀옴 ✓' : '다녀옴'; }
+    if (act === 'unsave') { const on = a.classList.toggle('off'); a.textContent = on ? '♡' : '♥'; a.style.color = on ? 'var(--ink3)' : 'var(--fab)'; }
     return;
   }
   if (al) { alertBox(al.dataset.alert); return; }
@@ -1495,9 +2020,9 @@ vp.addEventListener('click', e => {
 function fitPhone() {
   const r = proto.getBoundingClientRect(), two = PAL.compare;
   const need = two ? 414 * 2 + 28 : 414, side = 250 + 28;
-  const k = Math.min(1, (r.height - 90) / 868, (r.width - side - 40) / need);
+  const k = Math.min(1, (r.height - 130) / 868, (r.width - side - 40) / need);
   phones.style.transform = `scale(${k})`;
-  phones.style.margin = `${-(868 * (1 - k)) / 2 + 20}px ${-(need * (1 - k)) / 2}px 0`;
+  phones.style.margin = `${-(868 * (1 - k)) / 2 + 52}px ${-(need * (1 - k)) / 2}px 0`; // 전화기 위 제목이 잘리지 않게
 }
 
 /* ═════════ 상단 버튼 · 키 ═════════ */
@@ -1506,6 +2031,9 @@ document.getElementById('mProto').onclick = () => mode !== 'proto' && openProto(
 document.getElementById('tChar').onclick = () => { if (mode === 'proto') closeProto(); focus('ch_all'); };
 document.getElementById('tV3').onclick = () => { if (mode === 'proto') closeProto(); focus('v3_home'); };
 document.getElementById('tTiger').onclick = () => { if (mode === 'proto') closeProto(); focus('ch_tiger'); };
+document.getElementById('tMvp').onclick = () => { if (mode === 'proto') closeProto(); focus('mv_all'); };
+document.getElementById('tWeb').onclick = () => { if (mode === 'proto') closeProto(); focus('wb_all'); };
+document.getElementById('tFont').onclick = () => { if (mode === 'proto') closeProto(); PAL.fontOpen = true; applyPalette(); showAllFonts(); focus('ft_all'); };
 document.getElementById('tSpicy').onclick = () => { if (mode === 'proto') closeProto(); focus('sp_all'); };
 document.getElementById('tStudio').onclick = () => { if (mode === 'proto') closeProto(); PAL.studioOpen = true; applyPalette(); focus('sp_studio'); };
 document.getElementById('tFit').onclick = () => mode === 'proto' ? null : fit();
@@ -1542,6 +2070,10 @@ const start = () => {
   if (q.get('edge')) { PAL.edge = q.get('edge'); applyPalette(); }
   if (q.get('cmp')) { PAL.compare = q.get('cmp') === '1'; }
   if (q.get('sp')) { PAL.spicy = q.get('sp'); applyPalette(); rerenderAll(); }
+  if (q.get('font')) { const [a, b, c] = q.get('font').split('-'); PAL.font = { logo:a || 'png', slogan:b || 'png', pen:c || 'nanumpen' }; applyPalette(); rerenderAll(); }
+  // 비교판이 화면에 들어오면 글꼴을 받는다
+  const ftEl = document.getElementById('ab-ft_all');
+  if (ftEl && 'IntersectionObserver' in window) new IntersectionObserver((en, ob) => { if (en.some(x => x.isIntersecting)) { showAllFonts(); ob.disconnect(); } }, { root:stage }).observe(ftEl);
   if (q.get('focus') && byId[q.get('focus')]) focus(q.get('focus'));
   const h = location.hash.slice(1); if (h && byId[h]) openProto(h);
 };

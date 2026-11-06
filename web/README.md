@@ -1,7 +1,7 @@
 # 떡볶여지도 웹앱 (web/)
 
-떡볶여지도 모바일 웹앱(PWA)의 코드다. 지금은 **M0 개발 뼈대**이고, 가게는 예시 데이터(가짜)다.
-왜 이렇게 만들었는지와 다음 단계는 [`../docs/개발준비_v1_2026-10-27.md`](../docs/개발준비_v1_2026-10-27.md) 에 있다.
+떡볶여지도 모바일 웹앱(PWA)의 코드다. 지금은 **거지맵 구도 MVP**(11-04)이고, 가게는 예시 데이터(가짜)다.
+구도와 규칙은 [`../docs/MVP_거지맵구도_2026-11-04.md`](../docs/MVP_거지맵구도_2026-11-04.md), 처음 설계는 [`../docs/개발준비_v1_2026-10-27.md`](../docs/개발준비_v1_2026-10-27.md) 에 있다.
 
 ## 돌려 보기
 
@@ -15,7 +15,10 @@ npm run dev
 - http://localhost:3000/admin : 운영 어드민 시안(기획: `../docs/어드민기획_v1_2026-10-27.md`). 디자인은 Admin Navy(`src/app/admin/admin-navy.css`, `.admin-root` 안에서만 듣게 바꾼 사본)
 - `?pal=H1`: 팔레트 바꾸기(화면 설계 보드와 같은 이름: V1 A B C D E H1 H2 N1~N6)
 - `?rice=rice&style=soup&spice=2-4&price=5000&open=1&solo=1&menu=0`: 필터가 걸린 채로 열기
-- http://localhost:3000/mine : **내 맛지도**(아래 메뉴 셋째 탭). 가게 상세 머리칸 오른쪽 ♡ 로 저장한 가게 · 다녀옴 · 내 제보. 로그인 없이 이 기기(localStorage `ddy-mine`)에만 두고, 계정이 생기면 `src/lib/mine.ts` 안만 바꾼다. 아래 메뉴는 지도 · 목록 · 내 맛지도 셋(떡볶이방은 2차라 안 보임)
+- http://localhost:3000/mine : **내 맛지도**(아래 메뉴 셋째 탭). 가게 상세 머리칸 오른쪽 ♡ 로 저장한 가게 · 다녀옴 · 내 제보. 로그인 없이 이 기기(localStorage `ddy-mine`)에만 두고, 계정이 생기면 `src/lib/mine.ts` 안만 바꾼다. 떡볶이방은 2차라 안 보임
+- http://localhost:3000/together : **함께 고치기**. 새로 온 가게 확인 + 오래됐거나 비어 있는 가게 고치기
+- `?logo=euljiro&head=yeongwol`: 글꼴 시험(`src/lib/fonts.ts`, 이 브라우저에 기억). 원래대로 `?logo=png&head=base`
+- 제보·평가는 `.data/` 폴더에 저장된다. **이 폴더를 지우면 예시 데이터로 다시 시작한다**
 
 키나 계정이 없어도 돈다. 나중에 쓸 값은 `.env.example` 에 적어 두었다.
 
@@ -25,7 +28,7 @@ npm run dev
 - 지도: MapLibre 6 + OpenFreeMap 타일(OpenStreetMap). 대동여지도 느낌 바탕은 `src/components/map/dongyeoStyle.ts`
 - 태그 체계: `src/lib/taxonomy.ts` (기획안 7절, 화면·서버·DB 공통)
 - 팔레트: `src/lib/theme.ts` (보드의 프리셋과 색 계산 그대로, 기본값은 `DEFAULT_PALETTE`)
-- 데이터: `src/lib/data/` (지금 예시 → M2에 Supabase)
+- 데이터: `src/lib/data/db.ts` (지금 서버 파일. Vercel 에서는 오래 남지 않으므로 **공개 전에 Supabase 로 교체**) · 규칙: `src/lib/wiki.ts`
 - DB 설계: `supabase/migrations/` (`…_init.sql` 서비스, `…_admin.sql` 운영 어드민. 아직 적용 안 함)
 - 어드민: `src/app/admin/`(화면) · `src/components/admin/`(부품) · `src/lib/admin/sample.ts`(예시 제보·신고·기록)
 

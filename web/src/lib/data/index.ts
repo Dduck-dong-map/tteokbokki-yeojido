@@ -1,21 +1,22 @@
 import type { Store } from "../types";
-import { REGIONS, SAMPLE_RECENT_REPORTS, SAMPLE_STORES } from "./sample-stores";
+import { readHistory, readRecentCount, readReviews, readStore, readStores } from "./db";
+import { REGIONS } from "./sample-stores";
 
-// 데이터를 꺼내는 곳은 여기 하나로 모은다.
-// 지금은 예시 데이터를 돌려주고, Supabase 를 붙이면(M2) 이 함수들 안만 바꾼다.
-// 화면 쪽 코드는 그대로 둔다.
+// 화면이 데이터를 꺼내는 곳은 여기 하나로 모은다. 저장 방식은 db.ts 안에서만 바꾼다.
 
+const isActive = (s: Store) => (s.status ?? "active") === "active";
+
+// 지도·목록에 보이는 가게 (가려진 가게·문 닫은 가게는 뺀다)
 export async function getStores(): Promise<Store[]> {
-  return SAMPLE_STORES;
+  return (await readStores()).filter(isActive);
 }
 
-export async function getStore(id: string): Promise<Store | undefined> {
-  return SAMPLE_STORES.find((s) => s.id === id);
-}
+// 상세는 가려진 가게도 연다 (주소로 들어온 사람에게 왜 안 보이는지 알려 준다)
+export const getStore = readStore;
+export const getReviews = readReviews;
+export const getHistory = readHistory;
 
-export async function getRecentReportCount(): Promise<number> {
-  return SAMPLE_RECENT_REPORTS;
-}
+export const getRecentReportCount = () => readRecentCount(7);
 
 export function getRegions() {
   return REGIONS;

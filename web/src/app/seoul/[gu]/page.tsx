@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { getRegion, getRegions, getStores } from "@/lib/data";
 import { Suspense } from "react";
 import { ListSkeleton, RegionList } from "./regionPage";
@@ -24,13 +24,11 @@ export default function GuPage({ params }: PageProps<"/seoul/[gu]">) {
 }
 
 async function GuLoader({ params }: Pick<PageProps<"/seoul/[gu]">, "params">) {
+  await connection();
   return <GuList gu={(await params).gu} />;
 }
 
 async function GuList({ gu }: { gu: string }) {
-  "use cache";
-  cacheLife("hours");
-
   const region = getRegion(gu);
   if (!region) notFound();
   return <RegionList region={region} stores={await getStores()} now={new Date()} />;

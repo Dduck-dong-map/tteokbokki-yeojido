@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ADMIN_REPORTS, AUDIT_LOG } from "@/lib/admin/sample";
 import { DAY_NAMES } from "@/lib/freshness";
 import { GRADES, MAX_TASTES, RICE_CAKES, SHOP_TYPES, SIDES, SPICE_LEVELS, STYLES, TASTES, USAGES, keysOf, type Spice } from "@/lib/taxonomy";
-import type { Store } from "@/lib/types";
+import type { Hours, Store } from "@/lib/types";
 import { Stamp } from "./bits";
 import { Icon } from "./Icon";
 
@@ -24,7 +24,9 @@ const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !=
 export default function StoreEditor({ initial }: { initial: Store }) {
   const from = Number(useSearchParams().get("from"));
   const report = ADMIN_REPORTS.find((r) => r.id === from && r.storeId === initial.id);
-  const [s, setS] = useState<Store>(initial);
+  // 제보로 들어온 가게는 영업시간이 비어 있을 수 있다 → 편집 칸에는 기본값을 넣어 준다
+  const start = { ...initial, hours: initial.hours ?? { days: [1, 2, 3, 4, 5, 6], open: "11:00", close: "20:00" } };
+  const [s, setS] = useState<Store & { hours: Hours }>(start);
   const [tab, setTab] = useState<Tab>(report?.fields.hours ? "hours" : "basic");
   const [confirmKind, setConfirmKind] = useState<"hide" | "closed" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -73,7 +75,7 @@ export default function StoreEditor({ initial }: { initial: Store }) {
               </div>
               <div className="field">
                 <label className="field__label">가게 유형</label>
-                <select className="select" value={s.shopType} onChange={(e) => setS({ ...s, shopType: e.target.value as Store["shopType"] })}>
+                <select className="select" value={s.shopType ?? ""} onChange={(e) => setS({ ...s, shopType: e.target.value as Store["shopType"] })}>
                   {keysOf(SHOP_TYPES).map((g) => <option key={g} value={g}>{SHOP_TYPES[g]}</option>)}
                 </select>
               </div>
@@ -215,7 +217,7 @@ export default function StoreEditor({ initial }: { initial: Store }) {
         </div>
         {tab !== "history" && (
           <div className="card__foot">
-            <button type="button" className="btn btn--default" disabled={!dirty} onClick={() => setS(initial)}>되돌리기</button>
+            <button type="button" className="btn btn--default" disabled={!dirty} onClick={() => setS(start)}>되돌리기</button>
             <button type="button" className="btn btn--primary" disabled={!dirty} onClick={() => flash("저장했어요 · 변경 이력과 운영 기록에 남았어요 (시안이라 실제 저장은 안 돼요)")}>저장</button>
           </div>
         )}

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TteokMap, { type Bounds, type Focus } from "@/components/map/TteokMap";
 import { DEFAULT_FILTERS, activeFilterCount, applyFilters, byRecentlyConfirmed, distanceM, matchQuery, parseFilters, serializeFilters, type Filters } from "@/lib/filters";
 import type { Store } from "@/lib/types";
-import { BottomNav, SampleRibbon } from "../ui";
+import { BottomNav, Logo, SampleRibbon } from "../ui";
 import FilterSheet from "./FilterSheet";
 import StoreRow from "./StoreRow";
 
@@ -46,9 +46,12 @@ export default function MapHome({ stores, recentReports, sample }: { stores: Sto
   // 필터는 주소에 담는다 → 주소를 그대로 공유하면 같은 지도가 열린다
   const setFilters = useCallback((f: Filters) => {
     const qs = serializeFilters(f);
-    const pal = new URLSearchParams(window.location.search).get("pal");
+    const cur = new URLSearchParams(window.location.search);
     const u = new URLSearchParams(qs);
-    if (pal) u.set("pal", pal);
+    for (const k of ["pal", "zoom"]) {
+      const v = cur.get(k);
+      if (v) u.set(k, v);
+    }
     window.history.replaceState(null, "", u.size ? `?${u}` : window.location.pathname);
   }, []);
   const resetAll = () => {
@@ -124,8 +127,7 @@ export default function MapHome({ stores, recentReports, sample }: { stores: Sto
   return (
     <div className="relative mx-auto flex h-dvh max-w-[480px] flex-col overflow-hidden bg-paper">
       <header className="z-10 flex items-center justify-between bg-bar px-4 pt-[calc(env(safe-area-inset-top)+8px)] pb-1">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/logo_red.png" alt="떡볶여지도" className="h-8 w-auto [filter:var(--logo-filter)]" />
+        <Logo />
         <span className="text-[12px] text-ink3">
           최근 7일 제보·수정 <b className="text-ink2">{recentReports}건</b>
         </span>

@@ -3,7 +3,8 @@ import { byRecentlyConfirmed, won } from "@/lib/filters";
 import { confirmedAgo, freshness } from "@/lib/freshness";
 import { RICE_CAKES, SPICE_LEVELS, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
-import { SpiceStamp, Stars, Tag } from "./ui";
+import { isPending } from "@/lib/wiki";
+import { PendingTag, SpiceStamp, Stars, Tag } from "./ui";
 
 // 목록: 지도 없이도 읽히는 글 목록 (검색엔진·지도 API 한도 대비, 기획안 13절)
 // 365일 넘은 가게는 내리고, 최근 확인된 가게를 위에 둔다.
@@ -22,7 +23,10 @@ export default function StoreList({ stores, now }: { stores: Store[]; now: Date 
             {/* 정보 순서(슬랙 10-28): 이름 → 위치 → 떡볶이 종류 → 맵기 → 대표 가격 */}
             <Link href={`/store/${s.id}`} className="flex gap-3 px-4 py-3.5">
               <div className="min-w-0 flex-1">
-                <h3 className="truncate text-[15px] font-bold">{s.name}</h3>
+                <h3 className="flex items-center gap-1.5 text-[15px] font-bold">
+                  <span className="truncate">{s.name}</span>
+                  {isPending(s, now) && <PendingTag />}
+                </h3>
                 <p className="text-[12px] text-ink3">
                   {s.dong}
                   <span className={stale ? " text-spicytext" : ""}> · 확인 {confirmedAgo(s.lastConfirmedAt, now)}</span>

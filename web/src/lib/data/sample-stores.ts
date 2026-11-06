@@ -240,5 +240,23 @@ export const SAMPLE_STORES: Store[] = [
   },
 ];
 
-// 첫 화면 「최근 7일 제보·수정」 수 (기획안 5절). 지금은 예시 숫자.
-export const SAMPLE_RECENT_REPORTS = 12;
+// 아래 셋도 예시다: 「함께 고치기」·한 줄 후기·변경 이력이 빈 화면으로 보이지 않게 넣은 가짜 기록.
+// 날짜는 db.json 을 처음 만드는 날을 기준으로 계산한다.
+
+// 최근 제보로 들어온 것처럼 보여 줄 가게 → 「확인 중」
+export const SAMPLE_NEW: Record<string, { daysAgo: number; by: string; verify: { yes: number; no: number } }> = {
+  "yeonnam-mala": { daysAgo: 2, by: "화끈한 쫄면 208", verify: { yes: 1, no: 0 } },
+  "sinchon-noodle": { daysAgo: 1, by: "뜨끈한 어묵 731", verify: { yes: 0, no: 0 } },
+};
+
+export const SAMPLE_REVIEWS: { storeId: string; daysAgo: number; who: string; stars?: number; spice?: number; text?: string }[] = [
+  { storeId: "mangwon-soup", daysAgo: 3, who: "쫀득한 밀떡 412", stars: 5, spice: 2, text: "어묵 국물이 진해요. 튀김 찍어 먹으면 끝. (예시 후기)" },
+  { storeId: "mangwon-soup", daysAgo: 12, who: "달콤한 순대 95", stars: 4, spice: 2, text: "맵찔이도 먹을 만해요. (예시 후기)" },
+  { storeId: "hapjeong-rose", daysAgo: 6, who: "말랑한 가래떡 660", stars: 5, spice: 2, text: "로제 소스가 꾸덕해서 치즈 추가는 안 해도 돼요. (예시 후기)" },
+  { storeId: "seogyo-hell", daysAgo: 9, who: "화끈한 쫄면 208", stars: 4, spice: 5, text: "신라면 생각하고 가면 큰일 납니다. (예시 후기)" },
+];
+
+export const SAMPLE_HISTORY: { storeId: string; daysAgo: number; who: string; changes: { field: string; from: string; to: string }[] }[] = [
+  { storeId: "mangwon-soup", daysAgo: 15, who: "쫀득한 밀떡 412", changes: [{ field: "대표 가격", from: "3,500원", to: "4,000원" }] },
+  { storeId: "hapjeong-rose", daysAgo: 4, who: "말랑한 가래떡 660", changes: [{ field: "영업시간", from: "12:00~21:00 (7일)", to: "11:30~22:00 (7일)" }] },
+];

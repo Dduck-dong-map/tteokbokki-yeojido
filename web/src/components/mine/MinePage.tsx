@@ -19,17 +19,14 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 const KIND = { new: "새 가게", edit: "정보 수정", closed: "문 닫음" } as const;
 
-export default function MinePage({ stores, sample }: { stores: Store[]; sample: boolean }) {
+export default function MinePage({ stores, sample, nowIso }: { stores: Store[]; sample: boolean; nowIso: string }) {
   const mine = useMine();
   const [tab, setTab] = useState<Tab>("saved");
   const [me, setMe] = useState<{ lat: number; lng: number } | null>(null);
-  // 「며칠 전」 계산용 지금 시각. 미리 그릴 때(prerender) 박히지 않게 화면이 뜬 뒤 받는다 — 서버 그림엔 저장 목록이 비어 있어 안 쓰인다
-  const [clock, setClock] = useState<Date | null>(null);
-  const now = clock ?? new Date(0);
+  const now = new Date(nowIso); // 「며칠 전」 계산용. 요청 때 서버에서 받는다
 
   // 위치는 이미 허용한 기기에서만 조용히 받는다 (여기서 새로 묻지 않음)
   useEffect(() => {
-    setClock(new Date());
     if (!navigator.permissions || !navigator.geolocation) return;
     navigator.permissions
       .query({ name: "geolocation" })
@@ -183,7 +180,7 @@ export default function MinePage({ stores, sample }: { stores: Store[]; sample: 
                 </Link>
               </p>
             )}
-            <p className="mt-6 text-center text-[12px] text-ink3">승인 결과 알림 · 어묵 포인트는 2차에서</p>
+            <p className="mt-6 text-center text-[12px] text-ink3">내 제보는 바로 지도에 올라가요 · 이 기기에서 보낸 것만 보여요</p>
           </>
         )}
       </main>

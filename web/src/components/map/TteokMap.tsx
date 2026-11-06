@@ -1,12 +1,15 @@
 "use client";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef } from "react";
-import type { FilterSpecification, GeoJSONSource, Map as MlMap } from "maplibre-gl";
+import { useEffect, useRef, useState } from "react";
+import type { FilterSpecification, GeoJSONSource, Map as MlMap, SymbolLayerSpecification } from "maplibre-gl";
+import { won } from "@/lib/filters";
 import { freshness } from "@/lib/freshness";
 import { derive, findPreset } from "@/lib/theme";
 import type { Store } from "@/lib/types";
-import { dongyeoStyle } from "./dongyeoStyle";
+import { isPending } from "@/lib/wiki";
+import { MAP_CREDIT, REAL_FADE, dongyeoStyle, type ZoomMode } from "./dongyeoStyle";
+import { createRealMap, type RealMap } from "./realMap";
 import { STAMP_ICON_OFFSET, provideStamps } from "./stamps";
 
 type LatLng = { lat: number; lng: number };
@@ -21,6 +24,7 @@ type Props = {
   me: LatLng | null;
   focus: Focus | null; // n 이 바뀔 때마다 그곳으로 옮긴다
   onBoundsChange?: (b: Bounds) => void; // 지도를 움직일 때마다 보이는 범위 (「현재 지도에서 찾은 가게」)
+  start?: { lat: number; lng: number; zoom: number }; // 처음 보여 줄 곳. 없으면 마포·서대문 13배
 };
 
 // 첫 화면 중심: 예시 데이터가 있는 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
@@ -35,14 +39,25 @@ function toGeoJSON(stores: Store[]): GeoJSON.FeatureCollection {
     type: "FeatureCollection",
     features: stores.map((s) => ({
       type: "Feature",
-      properties: { id: s.id, spice: s.spice, grade: s.grade, stale: freshness(s, now) === "stale", rot: rot(s.id) },
+      properties: {
+        id: s.id,
+        spice: s.spice,
+        grade: s.grade,
+        stale: freshness(s, now) === "stale",
+        rot: rot(s.id),
+        // 도장 밑 글자: 대표 가격 + 별점 (확인 중인 가게는 그렇게 적는다)
+        label: `${won(s.price)}${isPending(s, now) ? " · 확인 중" : s.rating?.count ? ` · ${s.rating.avg.toFixed(1)}점` : ""}`,
+      },
       geometry: { type: "Point", coordinates: [s.lng, s.lat] },
     })),
   };
 }
 
-export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange }: Props) {
+export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange, start }: Props) {
   const box = useRef<HTMLDivElement>(null);
+  const startAt = useRef(start);
+  const under = useRef<HTMLDivElement>(null);
+  const [realOn, setRealOn] = useState(false);
   const mapRef = useRef<MlMap | null>(null);
   const ready = useRef(false);
   const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange });
@@ -52,19 +67,23 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
 
   useEffect(() => {
     let map: MlMap | undefined;
+    let real: RealMap | undefined;
     let cancelled = false;
     (async () => {
       const ml = await import("maplibre-gl");
       if (cancelled || !box.current) return;
       ml.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs"); // scripts/copy-maplibre-worker.mjs 가 복사해 둔 파일
       const t = derive(findPreset(document.documentElement.dataset.pal));
+      const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "real" ? "real" : "names";
       const m = new ml.Map({
         container: box.current,
-        style: dongyeoStyle(t.map),
-        center: START,
-        zoom: 13,
+        style: dongyeoStyle(t.map, mode),
+        center: startAt.current ? [startAt.current.lng, startAt.current.lat] : START,
+        zoom: startAt.current?.zoom ?? 13,
         minZoom: 10,
         maxZoom: 18.5,
+        // 기본값 4 면 15단계부터 타일을 그대로 늘리기만 해서, 확대할수록 길 이름이 사라지고 16단계 이상 층은 아예 안 그려진다.
+        zoomLevelsToOverscale: 0,
         dragRotate: false,
         pitchWithRotate: false,
         touchPitch: false,
@@ -72,11 +91,25 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         localIdeographFontFamily: KOREAN_SERIF,
       });
       map = m;
-      m.addControl(new ml.AttributionControl({ compact: true }), "bottom-left"); // 오른쪽 아래는 제보 버튼 자리
+      // 오른쪽 아래는 제보 버튼 자리. ① 은 확대하면 위 지도 층이 꺼지므로 저작권 표시를 고정으로 둔다.
+      m.addControl(new ml.AttributionControl({ compact: true, customAttribution: mode === "real" ? MAP_CREDIT : undefined }), "bottom-left");
       m.touchZoomRotate.disableRotation();
       mapRef.current = m;
       if (process.env.NODE_ENV === "development") Object.assign(window, { __tteokMap: m }); // 개발 중 콘솔에서 지도 살펴보기
       provideStamps(m, t.map, t.css.surface);
+
+      if (mode === "real" && under.current) {
+        const follow = () => {
+          real?.follow(m.getCenter(), m.getZoom());
+          setRealOn(m.getZoom() >= REAL_FADE[1]);
+        };
+        m.on("move", follow);
+        createRealMap(ml, under.current, m.getCenter(), m.getZoom()).then((r) => {
+          if (cancelled) return r.remove();
+          real = r;
+          follow();
+        });
+      }
 
       m.on("load", () => {
         const { stores, selectedId, me } = latest.current;
@@ -102,19 +135,31 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
           id: "stamp-ring", type: "circle", source: "stores", filter: selFilter(selectedId),
           paint: { "circle-radius": 24, "circle-color": "rgba(0,0,0,0)", "circle-stroke-width": 2.5, "circle-stroke-color": t.map.primary },
         });
+        const stampLayout: SymbolLayerSpecification["layout"] = {
+          "icon-image": ["concat", "stamp-", ["to-string", ["get", "spice"]]],
+          "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.68, 1],
+          "icon-rotate": ["get", "rot"],
+          "icon-offset": [0, STAMP_ICON_OFFSET], // 도장 중심이 가게 위치에 오게(아래 고추 알약만큼 올림)
+          "icon-allow-overlap": true,
+        };
+        // 안 보이는 도장: 길·건물·상호 이름만 도장을 비켜 가게 한다. 역·동네 이름은 이 층보다 위라 밀려나지 않는다.
+        if (mode === "names") {
+          m.addLayer(
+            { id: "stamps-block", type: "symbol", source: "stores", minzoom: 15, filter: ["!", ["has", "point_count"]], layout: stampLayout, paint: { "icon-opacity": 0 } },
+            "water-name",
+          );
+        }
         m.addLayer({
           id: "stamps", type: "symbol", source: "stores", filter: ["!", ["has", "point_count"]],
-          layout: {
-            "icon-image": ["concat", "stamp-", ["to-string", ["get", "spice"]]],
-            "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.68, 1],
-            "icon-rotate": ["get", "rot"],
-            "icon-offset": [0, STAMP_ICON_OFFSET], // 도장 중심이 가게 위치에 오게(아래 고추 알약만큼 올림)
-            "icon-allow-overlap": true,
-            "icon-ignore-placement": true,
-            "symbol-sort-key": ["get", "spice"],
-          },
+          layout: { ...stampLayout, "icon-ignore-placement": true, "symbol-sort-key": ["get", "spice"] },
           // 마지막 확인 180일 넘은 가게 = 바랜 도장
           paint: { "icon-opacity": ["case", ["get", "stale"], 0.42, 1] },
+        });
+        // 확대하면 도장 밑에 가격·별점. 지도만 봐도 고를 수 있게 한다. 자리가 없으면 글자만 빠진다.
+        m.addLayer({
+          id: "stamp-label", type: "symbol", source: "stores", minzoom: 14.5, filter: ["!", ["has", "point_count"]],
+          layout: { "text-field": ["get", "label"], "text-font": ["Noto Sans Bold"], "text-size": 11.5, "text-anchor": "top", "text-offset": [0, 2.5], "text-padding": 1 },
+          paint: { "text-color": t.map.mInk, "text-halo-color": t.map.paper, "text-halo-width": 1.8 },
         });
         m.addLayer({ id: "me-halo", type: "circle", source: "me", paint: { "circle-radius": 18, "circle-color": t.css.loc, "circle-opacity": 0.18 } });
         m.addLayer({ id: "me-dot", type: "circle", source: "me", paint: { "circle-radius": 6.5, "circle-color": t.css.loc, "circle-stroke-width": 3, "circle-stroke-color": "#FFFFFF" } });
@@ -145,6 +190,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
     return () => {
       cancelled = true;
       ready.current = false;
+      real?.remove();
       map?.remove();
       mapRef.current = null;
     };
@@ -172,7 +218,17 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   // maplibre 가 지도 상자에 position: relative 를 붙이므로, 바깥 상자로 자리를 잡는다
   return (
     <div className="absolute inset-0">
-      <div ref={box} className="h-full w-full" aria-label="떡볶이 가게 지도" role="region" />
+      <div className="absolute inset-0" aria-hidden="true">
+        <div ref={under} className="h-full w-full" />
+      </div>
+      <div className="absolute inset-0">
+        <div ref={box} className="h-full w-full" aria-label="떡볶이 가게 지도" role="region" />
+      </div>
+      {realOn && (
+        <span className="pointer-events-none absolute top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-chipline bg-surface px-3 py-1 text-[12px] text-ink2 shadow-sm">
+          실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도
+        </span>
+      )}
     </div>
   );
 }

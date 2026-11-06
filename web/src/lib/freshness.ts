@@ -25,7 +25,8 @@ export function confirmedAgo(date: string, now: Date) {
 }
 
 // 한국 시간 기준 지금 영업 중인지
-export function isOpenNow(hours: Hours, now: Date) {
+export function isOpenNow(hours: Hours | undefined, now: Date) {
+  if (!hours) return false; // 영업시간을 모르는 가게는 「지금 영업 중」 필터에 안 넣는다
   const kst = new Date(now.getTime() + 9 * 3_600_000);
   const day = kst.getUTCDay();
   const mins = kst.getUTCHours() * 60 + kst.getUTCMinutes();
@@ -43,7 +44,8 @@ export function isOpenNow(hours: Hours, now: Date) {
 
 export const DAY_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
 
-export function hoursText(hours: Hours) {
+export function hoursText(hours: Hours | undefined) {
+  if (!hours) return "아직 몰라요";
   const off = DAY_NAMES.filter((_, i) => !hours.days.includes(i));
   const time = `${hours.open} ~ ${hours.close}`;
   return off.length ? `${time} · ${off.join("·")} 쉼` : `${time} · 매일`;

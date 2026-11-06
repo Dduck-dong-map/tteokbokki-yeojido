@@ -5,7 +5,8 @@ import { distanceM, distanceText, won } from "@/lib/filters";
 import { confirmedAgo, freshness } from "@/lib/freshness";
 import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
-import { SpiceStamp, Stars } from "../ui";
+import { isPending } from "@/lib/wiki";
+import { PendingTag, SpiceStamp, Stars, StoreThumb } from "../ui";
 
 // 목록 한 줄 (거지맵 목록 참고 · 슬랙 10-28)
 // 정보 순서(기획 팀장): 이름 → 위치(동·거리) → 떡볶이 종류 → 맵기 → 대표 가격 → 길찾기(상세에서)
@@ -22,12 +23,12 @@ export default function StoreRow({ store: s, me, now, selected, onPick }: Props)
   return (
     <li id={`row-${s.id}`} className={selected ? "bg-chip" : ""}>
       <div className="flex gap-3 px-4 py-3" onClick={onPick} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && onPick()}>
-        {/* 사진 자리: 제보 사진이 들어오면 여기 */}
-        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-xl border border-line bg-paper text-[22px]" aria-hidden="true">
-          🍢
-        </div>
+        <StoreThumb photo={s.photos?.[0]} />
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-[15px] font-bold">{s.name}</h3>
+          <h3 className="flex items-center gap-1.5 text-[15px] font-bold">
+            <span className="truncate">{s.name}</span>
+            {isPending(s, now) && <PendingTag />}
+          </h3>
           <p className="truncate text-[12px] text-ink3">
             {s.dong}
             {me && <> · {distanceText(distanceM(me, s))}</>}

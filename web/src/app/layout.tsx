@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
 import { USING_SAMPLE_DATA } from "@/lib/data";
+import { FONT_BOOT } from "@/lib/fonts";
 import { PALETTE_BOOT, paletteCss } from "@/lib/theme";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <style dangerouslySetInnerHTML={{ __html: paletteCss() }} />
         <script dangerouslySetInnerHTML={{ __html: PALETTE_BOOT }} />
+        <script dangerouslySetInnerHTML={{ __html: FONT_BOOT }} />
       </head>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>

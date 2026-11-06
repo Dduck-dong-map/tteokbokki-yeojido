@@ -72,6 +72,34 @@ export function Tag({ children, spicy = false }: { children: React.ReactNode; sp
   );
 }
 
+// 로고: 기본은 붓글씨 그림. ?logo=글꼴 로 시험하면 글자로 바뀐다 (lib/fonts.ts · globals.css)
+export function Logo() {
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/brand/logo_red.png" alt="떡볶여지도" className="logo-png h-8 w-auto [filter:var(--logo-filter)]" />
+      <span className="logo-text">떡볶여지도</span>
+    </>
+  );
+}
+
+// 일주일 안에 제보돼 아직 확인 중인 가게 표시
+export function PendingTag() {
+  return <span className="inline-flex h-5 items-center rounded-full border border-dashed border-ink3 px-2 text-[11px] font-medium text-ink2">확인 중</span>;
+}
+
+// 목록의 사진 자리. 사진이 없으면 어묵 그림.
+export function StoreThumb({ photo, size = 64 }: { photo?: string; size?: number }) {
+  return photo ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={`/api/photos/${photo}`} alt="" loading="lazy" style={{ width: size, height: size }} className="shrink-0 rounded-xl border border-line object-cover" />
+  ) : (
+    <div style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-xl border border-line bg-paper text-[22px]" aria-hidden="true">
+      🍢
+    </div>
+  );
+}
+
 export function SampleRibbon() {
   return (
     <div className="pointer-events-none rounded-full bg-ink/80 px-3 py-1 text-center text-[11px] font-medium text-paper">
@@ -80,16 +108,17 @@ export function SampleRibbon() {
   );
 }
 
-// 아래 메뉴 셋 (보드 v3, 11-02 사용자 「내 맛지도까지는 있어야」). 떡볶이방은 2차라 아예 안 보인다.
+// 아래 메뉴 넷 (보드 v3 셋 + 「함께 고치기」, 11-04). 떡볶이방은 2차라 아예 안 보인다.
 const NAV = [
   { href: "/", label: "지도", key: "map" },
   { href: "/list", label: "목록", key: "list" },
+  { href: "/together", label: "함께 고치기", key: "together" },
   { href: "/mine", label: "내 맛지도", key: "mine" },
 ] as const;
 
-export function BottomNav({ active }: { active: "map" | "list" | "mine" }) {
+export function BottomNav({ active }: { active: (typeof NAV)[number]["key"] }) {
   return (
-    <nav className="grid h-14 shrink-0 grid-cols-3 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px]">
+    <nav className="grid h-14 shrink-0 grid-cols-4 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px]">
       {NAV.map((n) => (
         <Link
           key={n.key}
