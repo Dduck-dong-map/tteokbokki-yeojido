@@ -921,6 +921,7 @@ const LANES = [
   { id:'MV', t:'MVP · 거지맵 구도 추리기 (11-04)', s:'사용자 「거지맵의 서비스 구도를 추려서 여기 맞춰서 MVP」 → 찾기 → 제보 → 검증 → 갱신. 표 MV-00 과 아래 두 줄 · 전부 실제 웹에서 눌러 가며 찍은 사진', flow:true },
   { id:'F6', t:'MVP 흐름 ① 찾기 · 평가 · 고치기 (11-04)', s:'지도 → 확대하면 도장 밑 가격·별점 → 상세 → 평가 → 정보 고치기 → 변경 이력. 웹 localhost:3100 에서 그대로 돌아가요 · 프로토타입 「나란히」는 v3 와 비교' },
   { id:'F7', t:'MVP 흐름 ② 제보 · 검증 · 갱신 (11-04)', s:'제보 네 단계 → 바로 지도에 「확인 중」 → 맞아요·달라요 → 함께 고치기(새로 온 가게 · 확인이 필요해요). 시험 사진은 예시' },
+  { id:'PC', t:'PC 와이어프레임 (11-08) · 지금 웹 web_2 기준', s:'사용자 「PC 화면도 와이어프레임」 → 폭 1280 화면 여덟 장: 지도 홈 · 가게 상세 · 맛집 등록 · 떡볶이방 목록·글·글쓰기 · 내 맛지도 · 맛집 리스트. 회색 상자 = 자리, 빨간 번호 = 오른쪽 설명. 실제 화면은 위쪽 「PC 화면」 스튜디오에서', flow:true },
   { id:'WB', t:'웹 1차 기획 (11-06)', s:'사용자 「첫 버전은 웹, PC·모바일 둘 다」 · 가게 등록 + 소개글 · 위치·길찾기는 기존 디자인 + 지도 · 맵기 투표는 나중에 · 어드민. 기획 단계의 와이어이고 웹은 아직 안 고쳤어요. 문서 docs/웹1차기획_v1_2026-11-06.md', flow:true },
   { id:'FT', t:'글꼴 고르기 (11-04)', s:'사용자 사진의 붓 로고 · 슬로건 · 굵은 붓과 닮은 무료 글꼴. 왼쪽 칸 「글꼴 고르기」나 이 판의 버튼을 누르면 N-01 첫 화면의 로고·슬로건과 손글씨 제목이 바로 바뀌어요', flow:true },
   { id:'V1', t:'기존 디자인 v1 (비교용)', s:'10-26 시안 v1 화면 그대로. 프로토타입에서 「기존과 나란히」를 켜면 같은 자리의 v1이 옆 폰에 떠요' },
@@ -1766,6 +1767,212 @@ add({ id:'wb_head', code:'WB-06', t:'가게 상세 머리칸 · 왼쪽 지금(�
       ${WB_NOTE(`<b>고를 때 볼 것</b><br>· 지도 핀은 지금 「고추 개수」 알약 — 상세 도장 모양과 맞출지<br>· 사진이 생기면 왼쪽 사진 + 오른쪽 도장이 같이 보여 머리칸이 무거워지는지<br>· 맵기는 지금도 가격 아래 「맵기 3 · 신라면 정도」 글자로 보임`, '#FFF4E6')}
     </div>
   </div>`) });
+
+/* ═════════ PC 와이어프레임 (11-08, web_2 기준) ═════════ */
+// 사용자 「pc 화면도 와이어프레임 만들어 줘」 — 지금 웹을 폭 1280 으로 옮긴 회색 와이어. 자리·크기는 실제 화면에서 잰 값에 맞췄다.
+const PW_C = { line:'#D6D6D2', fill:'#F1F1EE', dark:'#2B2B2A', sub:'#8C8C88', acc:'#2A6159', red:'#B42318', map:'#ECE9E1', road:'#CFCAC0', water:'#C6DCD2' };
+const PW_RAMP = ['#F2B78C', '#E3814D', '#C8102E', '#8E0B1F', '#4A0710'];
+const PW_A = (x, y, w, h, st = '', inner = '') => `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;${st}">${inner}</div>`;
+const PW_T = (x, y, t, s = 13, st = '') => `<div style="position:absolute;left:${x}px;top:${y}px;font-size:${s}px;line-height:1.3;color:${PW_C.dark};white-space:nowrap;${st}">${t}</div>`;
+const PW_BOX = (x, y, w, h, label = '', st = '') => PW_A(x, y, w, h, `border:1.5px dashed ${PW_C.line};background:${PW_C.fill};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:${PW_C.sub};text-align:center;${st}`, label);
+const PW_IN = (x, y, w, h, ph) => PW_A(x, y, w, h, `border:1.5px solid ${PW_C.line};background:#fff;border-radius:10px;font-size:13px;color:${PW_C.sub};padding:${h > 60 ? '12px' : '0'} 14px;display:flex;align-items:${h > 60 ? 'flex-start' : 'center'}`, ph);
+const PW_LN = (x, y, w, n = 1, gap = 14, h = 7) => Array.from({ length: n }, (_, i) => PW_A(x, y + i * gap, i === n - 1 && n > 1 ? Math.round(w * .62) : w, h, 'background:#E3E3DF;border-radius:4px')).join('');
+const PW_CHIP = (x, y, t, on = false, w) => PW_A(x, y, w ?? t.length * 12 + 28, 30, `border:1.5px solid ${on ? PW_C.dark : PW_C.line};background:${on ? PW_C.dark : '#fff'};color:${on ? '#fff' : PW_C.dark};border-radius:99px;font-size:12.5px;display:flex;align-items:center;justify-content:center;font-weight:${on ? 700 : 400}`, t);
+const PW_BTN = (x, y, w, h, t, kind = 'line') => PW_A(x, y, w, h, `border-radius:10px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;${kind === 'pri' ? `background:${PW_C.acc};color:#fff` : kind === 'red' ? `background:${PW_C.red};color:#fff` : `border:1.5px solid ${PW_C.line};background:#fff;color:${PW_C.dark}`}`, t);
+const PW_CHILI = h => `<svg width="${(h * 10 / 14).toFixed(1)}" height="${h}" viewBox="0 0 10 14" style="flex:none"><path d="M5 3 C8 3 9 7 7 11 C6 13 4 13 3 11 C1 7 2 3 5 3Z" fill="#C8102E"/><path d="M5 3.2 L5.6 .8" stroke="#4F8A3A" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+// 지도 핀 = 고추 개수 알약 (11-08). sel = 고른 가게(옥빛 바깥 테두리)
+const PW_PIN = (x, y, n, sel = false, label = '') => PW_A(x, y, n * 9.5 + 13, 22, `display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid ${PW_RAMP[n - 1]};border-radius:99px;box-shadow:${sel ? `0 0 0 3px #fff,0 0 0 5.5px ${PW_C.acc}` : '0 1px 3px rgba(0,0,0,.2)'}`, PW_CHILI(13).repeat(n) + (label ? `<span style="position:absolute;top:25px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#4a4a46;white-space:nowrap;text-shadow:0 0 2px #fff,0 0 3px #fff">${label}</span>` : ''));
+// 카드·상세의 맵기 도장(HTML)은 아직 게이지 도장 + 고추 알약
+const PW_GAUGE = (x, y, n, s = 26) => PW_A(x, y, s, s + 10, '', `<div style="width:${s}px;height:${s}px;border-radius:20%;background:linear-gradient(to top, ${PW_RAMP[n - 1]} ${n * 20}%, #EDEDE9 ${n * 20}%);box-shadow:inset 0 0 0 2px ${PW_RAMP[n - 1]};transform:rotate(-3deg)"></div><div style="margin:2px auto 0;width:${n * 6 + 6}px;height:8px;border-radius:9px;border:1px solid #ccc;background:#fff;display:flex;gap:1px;justify-content:center;align-items:center">${'<i style="width:4px;height:5px;border-radius:2px;background:#C8102E;display:block"></i>'.repeat(n)}</div>`);
+const PW_MARK = (x, y, k) => PW_A(x, y, 22, 22, `background:${PW_C.red};color:#fff;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff;z-index:9`, k);
+const PW_MAP = (x, y, w, h, extra = '') => PW_A(x, y, w, h, `background:${PW_C.map};overflow:hidden`,
+  `<svg width="${w}" height="${h}" style="position:absolute;left:0;top:0"><path d="M-20 ${h * .74} C ${w * .25} ${h * .62}, ${w * .5} ${h * .98}, ${w + 20} ${h * .82}" stroke="${PW_C.water}" stroke-width="${Math.max(28, w * .07)}" fill="none"/>${[[0, .22, 1, .32], [.14, 0, .34, 1], [.52, 0, .6, 1], [0, .55, 1, .48], [.78, 0, .9, 1], [0, .08, 1, .14], [.3, 0, .05, 1]].map(([a, b, c, d]) => `<line x1="${a * w}" y1="${b * h}" x2="${c * w}" y2="${d * h}" stroke="${PW_C.road}" stroke-width="2.2"/>`).join('')}</svg>` + PW_T(Math.round(w / 2 - 64), 12, '예시 데이터 · 실제 가게가 아니에요', 11, 'background:#2b2b2a;color:#fff;padding:3px 10px;border-radius:99px;opacity:.85') + extra);
+const PW_HEAD = on => PW_A(0, 0, 1280, 56, `border-bottom:1.5px solid ${PW_C.line};background:#fff`,
+  PW_T(20, 12, '떡볶여지도', 25, `font-family:'Song Myung',serif;color:${PW_C.red}`) +
+  PW_A(150, 10, 300, 36, `border:1.5px solid ${PW_C.line};border-radius:10px;font-size:13px;color:${PW_C.sub};display:flex;align-items:center;padding-left:14px`, '⌕ 가게 이름이나 동네로 찾기') +
+  [['지도', 'map', 952], ['떡볶이방', 'room', 1000], ['내 맛지도', 'mine', 1070]].map(([t, k, x]) => PW_T(x, 19, t, 13.5, k === on ? 'font-weight:800' : 'color:#555')).join('') +
+  PW_BTN(1148, 10, 116, 36, '+ 맛집 등록', 'red'));
+// 가게 줄 (지도 홈 · 상세 왼쪽 목록)
+const PW_ROWS = [
+  { n: '신촌 누들떡 국물 (예시)', d: '창천동 · 확인 1일 전', tg: '국물 · 누들밀떡', r: '★ 4.0 · 2개', p: '5,000원', m: '누들 국물떡볶이', s: 3, pend: true },
+  { n: '연남 마라떡볶이 (예시)', d: '연남동 · 확인 2일 전', tg: '마라 · 누들밀떡·분모자', r: '★ 4.0 · 9개', p: '7,000원', m: '마라떡볶이', s: 4, pend: true },
+  { n: '서교동 불지옥 떡볶이 (예시)', d: '서교동 · 확인 2주 전', tg: '촉촉 · 밀떡', r: '★ 3.6 · 4개', p: '5,000원', m: '떡볶이 (1인)', s: 5 },
+  { n: '대흥동 시장 분식 (예시)', d: '대흥동 · 확인 2주 전', tg: '촉촉 · 밀떡·눈사람떡', r: '★ 4.2 · 15개', p: '4,000원', m: '떡볶이', s: 3 },
+  { n: '신촌 치즈떡볶이 (예시)', d: '창천동 · 확인 2주 전', tg: '촉촉 · 치즈떡·쌀떡', r: '★ 3.7 · 3개', p: '5,500원', m: '치즈떡볶이', s: 4 },
+  { n: '망원 할머니 국물떡볶이 (예시)', d: '망원동 · 확인 2주 전', tg: '국물 · 밀떡', r: '★ 4.3 · 12개', p: '4,000원', m: '국물떡볶이', s: 2 },
+  { n: '합정 로제떡볶이 연구소 (예시)', d: '합정동 · 확인 3주 전', tg: '로제 · 쌀떡·치즈떡', r: '★ 4.6 · 31개', p: '6,500원', m: '로제떡볶이', s: 2 },
+];
+const PW_ROW = (x, y, w, s, sel = false) => PW_A(x, y, w, 100, `background:${sel ? PW_C.fill : '#fff'};border-bottom:1px solid ${PW_C.line}`,
+  PW_BOX(16, 16, 60, 60, '사진', 'border-style:solid') +
+  PW_T(90, 13, `<b>${s.n}</b>${s.pend ? ' <span style="font-size:10.5px;border:1px dashed #999;border-radius:99px;padding:0 6px;color:#555">확인 중</span>' : ''}`, 14) +
+  PW_T(90, 34, s.d, 11.5, `color:${PW_C.sub}`) + PW_T(90, 52, s.tg, 12, 'color:#555') + PW_T(90, 72, s.r, 12, 'color:#555') +
+  PW_GAUGE(w - 44, 12, s.s) + PW_T(w - 16, 56, `<b>${s.p}</b>`, 14.5, 'transform:translateX(-100%)') + PW_T(w - 16, 76, s.m, 10.5, `color:${PW_C.sub};transform:translateX(-100%)`));
+const PW_SCREEN = body => `<div style="position:relative;width:1280px;height:800px;background:#fff;border:1px solid #BDBDB8;border-radius:10px;overflow:hidden;flex:none;box-shadow:0 2px 10px rgba(0,0,0,.06)">${body}</div>`;
+const PW_CARD = (title, sub, screen, notes) => WB_DOC(1720, 960, `${WB_H(title, sub)}
+  <div style="display:flex;gap:26px;align-items:flex-start">${PW_SCREEN(screen)}
+    <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0;padding-top:4px">${notes.map((t, i) => `<div style="display:flex;gap:10px;font-size:14px;line-height:1.6;color:#3D3D3B"><span style="flex:none;width:22px;height:22px;border-radius:50%;background:${PW_C.red};color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px">${i + 1}</span><span>${t}</span></div>`).join('')}</div>
+  </div>`);
+const PW_LIST_HEAD = (w, n) => PW_A(0, 56, w, 46, `border-bottom:1.5px solid ${PW_C.line};background:#fff`, ['필터', '떡', '스타일', '맵기', '가격'].map((t, i) => PW_CHIP(16 + [0, 58, 104, 170, 224][i], 8, t, false, [50, 38, 58, 46, 46][i])).join('')) +
+  PW_T(16, 116, `<b>현재 지도에서 찾은 가게 ${n}곳</b>`, 13.5) + PW_T(w - 186, 113, '<span style="color:#aaa;padding:3px 9px">가까운순</span><span style="background:#2b2b2a;color:#fff;border-radius:99px;padding:3px 10px">최근 확인순</span>', 12);
+const PW_MAPCTRL = (w, h) => PW_A(w - 52, h - 140, 38, 38, `border:1.5px solid ${PW_C.line};border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;color:#2D5B9A`, '◎') + PW_A(w - 46, h - 88, 28, 56, `border:1.5px solid ${PW_C.line};border-radius:6px;background:#fff;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:space-around`, '<span>+</span><span>−</span>');
+
+add({ id:'pc_home', code:'PC-01', t:'PC 지도 홈 · 헤더 메뉴 셋 · 왼쪽 가게 줄(흰 바탕) · 고추 개수 핀', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['폭 1280 기준 · 헤더 56 · 왼쪽 목록 칸 400 · 나머지 지도','실제 화면: 위쪽 「PC 화면」 스튜디오의 지도 홈'], rel:['pc_store', 'pc_room', 'pc_mine'],
+  html:() => PW_CARD('PC 지도 홈', '열자마자 지도 + 지금 보이는 범위의 가게 줄. 거지맵처럼 가입 없이 바로.',
+    PW_HEAD('map') + PW_LIST_HEAD(400, 15) + PW_A(0, 146, 400, 654, `border-right:1.5px solid ${PW_C.line};overflow:hidden`, PW_ROWS.slice(0, 7).map((s, i) => PW_ROW(0, i * 100, 400, s, i === 0)).join('')) + PW_A(399, 56, 1.5, 90, `background:${PW_C.line}`) +
+    PW_MAP(400, 56, 880, 744, PW_PIN(380, 300, 3, true, '5,000원 · 확인 중') + PW_PIN(520, 210, 4) + PW_PIN(250, 360, 5) + PW_PIN(160, 250, 2) + PW_PIN(610, 420, 3) + PW_PIN(300, 170, 1) + PW_PIN(700, 300, 2) + PW_PIN(450, 470, 4) +
+      PW_A(120, 470, 34, 34, `border-radius:50%;background:${PW_C.acc};color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2.5px #fff`, '5') + PW_MAPCTRL(880, 744)) +
+    PW_MARK(926, 17, '1') + PW_MARK(2, 62, '2') + PW_MARK(2, 160, '3') + PW_MARK(940, 340, '4') + PW_MARK(752, 330, '5') + PW_MARK(1126, 4, '6') + PW_MARK(512, 520, '7'),
+    ['위 메뉴 셋 = <b>지도 · 떡볶이방 · 내 맛지도</b> (11-08). 「목록」「함께 고치기」는 메뉴에서 뺌 (목록 주소는 남김, 함께 고치기는 가게 상세 안으로)',
+     '필터는 칩 한 줄. 누르면 이 칸 안에서 펼쳐짐 (떡 · 스타일 · 맵기 · 가격). 0곳이면 「필터 초기화」',
+     '가게 줄 칸은 <b>흰 바탕</b>. 줄 = 사진 · 이름 · 동네·확인 · 스타일·떡 · 별점 · 맵기 도장 · 대표 가격. 지도를 움직이면 보이는 범위의 가게만, 최근 확인순',
+     '지도 핀 = <b>고추 개수 알약</b> (11-08). 테두리 색 = 맵기 (1 연주황 → 5 검붉음). 14.5배부터 핀 밑에 가격·별점',
+     '고른 가게 = 옥빛 바깥 테두리 + 왼쪽 줄 회색 + 상세 패널이 열림 (PC-02)',
+     '「+ 맛집 등록」은 늘 오른쪽 위, 포인트 빨강 (PC-03)',
+     '가게가 몰린 곳은 둥근 묶음(가게 수). 누르면 그 곳으로 확대. 오른쪽 아래 내 위치 · 확대·축소'
+    ]) });
+
+add({ id:'pc_store', code:'PC-02', t:'PC 가게 상세 · 목록 + 상세 패널 + 큰 지도', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['폭 1280: 목록 360 + 상세 420 + 지도 500','상세 순서: 이름·종류·맵기 → 동네·영업 → 대표 가격 → 주소 → 길찾기 → 리스트에 담기 → 소개글 → 사진 → 메뉴판 → 가게 정보 → 평가 → 마지막 확인 → 함께 고치기'], rel:['pc_home', 'pc_list'],
+  html:() => PW_CARD('PC 가게 상세', '지도를 그대로 둔 채 가운데 패널로 연다. 주소로 바로 들어와도 같은 모양.',
+    PW_HEAD('map') + PW_LIST_HEAD(360, 3) + PW_A(0, 146, 360, 654, `border-right:1.5px solid ${PW_C.line};overflow:hidden`, PW_ROWS.slice(0, 3).map((s, i) => PW_ROW(0, i * 100, 360, s, i === 0)).join('')) +
+    PW_A(360, 56, 420, 744, `border-right:1.5px solid ${PW_C.line};background:#fff;box-shadow:4px 0 16px rgba(0,0,0,.08);overflow:hidden`,
+      PW_A(0, 0, 420, 56, `border-bottom:1.5px solid ${PW_C.line}`, PW_T(18, 16, '×', 18) + PW_T(170, 18, '<b>가게 위치</b>', 14) + PW_T(350, 16, '♡', 18) + PW_T(386, 17, '↗', 16)) +
+      PW_GAUGE(18, 78, 3, 44) + PW_T(76, 76, '<b>신촌 누들떡 국물 (예시)</b>', 19) + PW_T(76, 104, '<span style="border:1px solid #ccc;border-radius:4px;padding:0 5px">메뉴에 있음 · 포장마차</span> <span style="border:1px dashed #999;border-radius:99px;padding:0 6px">확인 중</span>', 11) + PW_T(76, 126, '서대문구 창천동 · 오늘 쉼', 12, `color:${PW_C.sub}`) +
+      PW_CHIP(18, 152, '국물', false, 52) + PW_CHIP(76, 152, '누들밀떡', false, 76) +
+      PW_T(18, 196, '누들 국물떡볶이', 13.5, 'color:#555') + PW_T(400, 192, '<b>5,000원</b>', 19, 'transform:translateX(-100%)') + PW_T(18, 220, '맵기 3 · 신라면 정도 · 대표 메뉴 기준 · 4주 전 확인', 11.5, `color:${PW_C.sub}`) +
+      PW_T(18, 256, '⌖ 서울 서대문구 창천동 (예시 주소)', 13) + PW_CHIP(316, 250, '주소 복사', false, 84) +
+      PW_BTN(18, 292, 252, 50, '네이버 지도로 길찾기', 'pri') + PW_BTN(278, 292, 124, 50, '카카오맵') +
+      PW_BTN(18, 352, 384, 42, '+ 내 리스트에 담기') +
+      PW_T(18, 414, '<b>소개글</b>', 15) + PW_LN(18, 444, 384, 2) + PW_T(18, 486, '<b>사진</b>', 15) + PW_BOX(18, 514, 384, 92, '아직 사진이 없어요 · 눌러서 올려 주세요') +
+      PW_T(18, 626, '<b>메뉴판</b>', 15) + PW_LN(18, 656, 384, 3) +
+      PW_A(0, 690, 420, 54, 'background:linear-gradient(to bottom, rgba(255,255,255,0), #fff 70%)', PW_T(18, 26, '↓ 가게 정보 · 평가 · 마지막 확인 · 함께 고치기', 12, `color:${PW_C.sub}`))) +
+    PW_MAP(780, 56, 500, 744, PW_PIN(210, 330, 3, true, '5,000원 · 확인 중') + PW_PIN(120, 450, 4) + PW_PIN(330, 240, 2) + PW_MAPCTRL(500, 744)) +
+    PW_MARK(788, 72, '1') + PW_MARK(368, 168, '2') + PW_MARK(788, 252, '3') + PW_MARK(788, 360, '4') + PW_MARK(788, 418, '5') + PW_MARK(788, 570, '6') + PW_MARK(788, 744, '7') + PW_MARK(1050, 360, '8'),
+    ['패널 머리: × 닫기(지도에 걸어 둔 필터 그대로) · ♡ 찜 · ↗ 공유',
+     '<b>맵기 도장</b>(누르면 휙 돌아가며 표정) + 이름 + 종류 · 확인 중. 11-08 사진으로 바꿔 봤다가 이 자리 유지로 결정 (WB-06)',
+     '대표 메뉴 · 가격 → 맵기 글자 「맵기 3 · 신라면 정도」',
+     '주소 + 복사 → <b>길찾기 둘</b> (네이버 크게, 카카오맵 작게). 폰에서는 앱이 있으면 앱으로',
+     '<b>+ 내 리스트에 담기</b> (11-08): 내 리스트마다 넣기·빼기, 없으면 이 가게로 새 리스트',
+     '소개글(누구나 고침·이력) → <b>사진</b>(여기서 올림, 한 번에 5장) → 메뉴판',
+     '아래로: 가게 정보 · 평가(별 + 한 줄 후기) · 마지막 확인 「아직 있어요」 · <b>함께 고치기</b>(빠진 정보 + 정보 고치기·변경 이력·공유·신고)',
+     '큰 지도는 그대로. 고른 가게 핀에 옥빛 테두리'
+    ]) });
+
+add({ id:'pc_reg', code:'PC-03', t:'PC 맛집 등록 · 한 화면 · 제목·단계는 왼쪽 끝', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['폭 1280: 가운데 1120 안에서 입력 칸 457 · 지도·사진 칸 457','1280 이상에서 제목·단계 목록만 화면 왼쪽 끝으로 (11-08 사용자 시안 Group 3616)'], rel:['pc_home'],
+  html:() => PW_CARD('PC 맛집 등록', '폰은 다섯 단계로 나눠 넘기고, PC 는 한 화면에 다 보인다. 쓰다 나가도 이어 쓰기.',
+    PW_HEAD('') + PW_T(26, 82, '‹ &nbsp;<b>맛집 등록</b>', 19) +
+    ['1. 가게 · 위치', '2. 떡 · 맛', '3. 메뉴 · 가격', '4. 소개글', '5. 사진'].map((t, i) => PW_T(56, 132 + i * 31, i === 0 ? `<b>${t}</b>` : t, 13.5, i ? `color:${PW_C.sub}` : '')).join('') +
+    PW_T(258, 112, '<b>어떤 가게인가요?</b>', 16) + PW_T(258, 146, '가게 이름', 12, `color:${PW_C.sub}`) + PW_IN(258, 166, 457, 46, '간판 그대로 적어 주세요') +
+    PW_T(258, 228, '떡볶이를 어떻게 파나요?', 12, `color:${PW_C.sub}`) + PW_CHIP(258, 250, '떡볶이 전문', false, 94) + PW_CHIP(358, 250, '분식집', false, 66) + PW_CHIP(430, 250, '메뉴에 있음', false, 90) +
+    PW_T(258, 298, '주소', 12, `color:${PW_C.sub}`) + PW_IN(258, 318, 457, 46, '예: 서울 마포구 망원동 123') +
+    PW_T(258, 392, '<b>떡과 맛</b>', 16) + PW_T(258, 428, '<b>떡</b> <span style="color:#999;font-size:11px">여러 개</span>', 14) +
+    ['밀떡', '쌀떡', '누들밀떡', '가래떡', '눈사람떡'].map((t, i) => PW_CHIP(258 + [0, 60, 120, 206, 278][i], 452, t, false, [52, 52, 78, 64, 78][i])).join('') + PW_CHIP(258, 490, '치즈떡', false, 64) + PW_CHIP(330, 490, '분모자', false, 64) +
+    PW_T(258, 540, '<b>스타일</b> <span style="color:#999;font-size:11px">하나</span>', 14) +
+    ['국물', '촉촉', '즉석', '기름', '로제', '짜장', '마라'].map((t, i) => PW_CHIP(258 + i * 60, 564, t, false, 52)).join('') +
+    PW_T(258, 616, '<b>맵기</b> <span style="color:#999;font-size:11px">대표 메뉴 기준 · 신라면 = 3</span>', 14) + [1, 2, 3, 4, 5].map(n => PW_GAUGE(270 + (n - 1) * 88, 644, n, 32)).join('') +
+    PW_T(743, 112, '가게 위치', 12, `color:${PW_C.sub}`) + PW_A(743, 132, 457, 300, 'border-radius:14px;overflow:hidden;border:1.5px solid #ddd', PW_MAP(0, 0, 457, 300, PW_A(214, 120, 26, 34, '', '<svg width="26" height="34" viewBox="0 0 26 34"><path d="M13 33 C13 33 25 20 25 12 A12 12 0 1 0 1 12 C1 20 13 33 13 33Z" fill="#B42318"/><circle cx="13" cy="12" r="4.5" fill="#fff"/></svg>') + PW_BTN(372, 12, 72, 30, '내 위치로'))) +
+    PW_T(743, 440, '지도를 움직여 핀을 가게 자리에 맞춰 주세요', 11.5, `color:${PW_C.sub}`) +
+    PW_T(743, 482, '<b>사진을 올려 주세요</b>', 16) + PW_T(743, 508, '간판이나 메뉴판 1장 이상 · 진짜 있는 가게인지 확인하는 데 써요', 11.5, `color:${PW_C.sub}`) + PW_BOX(743, 532, 146, 146, '+ 사진<br>끌어다 놓거나 누르기') +
+    PW_T(743, 696, '닉네임 · 가입 없이 이 이름으로 올라가요', 11.5, `color:${PW_C.sub}`) + PW_IN(743, 716, 360, 44, '매콤한 튀김 601') + PW_BTN(1112, 716, 88, 44, '다시 짓기') +
+    PW_MARK(4, 80, '1') + PW_MARK(30, 130, '2') + PW_MARK(232, 112, '3') + PW_MARK(232, 616, '4') + PW_MARK(1208, 132, '5') + PW_MARK(1208, 532, '6') + PW_MARK(1208, 716, '7'),
+    ['<b>제목은 화면 왼쪽 끝</b> (1280 이상, 11-08). 입력·지도 칸 자리는 그대로',
+     '단계 목록: 누르면 그 칸으로, 다 채운 칸은 ✓. 스크롤해도 따라옴',
+     '가게 이름 · 파는 방식(전문/분식집/메뉴에 있음) · 주소. 비슷한 이름이 근처에 있으면 「이미 있는 가게 같아요」',
+     '떡(여러 개) · 스타일(하나) · <b>맵기</b>(대표 메뉴 기준, 신라면 = 3). 맵기 투표는 나중에',
+     '가게 위치: 지도를 움직여 핀을 맞춤 · 내 위치로',
+     '사진 1장 이상 (간판·메뉴판). 찍은 위치 정보는 지우고 올림',
+     '닉네임은 자동으로 지어 줌 · 다시 짓기. 아래로 메뉴·가격 → 소개글 → 「지도에 올리기」 (바로 「확인 중」으로 올라감)'
+    ]) });
+
+add({ id:'pc_room', code:'PC-04', t:'PC 떡볶이방 · 게시판 목록', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['메뉴 「떡볶이방」 = 게시판 (11-08)','가운데 1120 폭 · 줄 목록은 하나의 흰 상자'], rel:['pc_post', 'pc_write', 'pc_home'],
+  html:() => PW_CARD('PC 떡볶이방', '떡볶이 이야기 나누는 곳. 가입 없이 닉네임으로 쓴다.',
+    PW_HEAD('room') + PW_T(80, 82, '<b>떡볶이방</b>', 20) + PW_T(80, 112, '떡볶이 이야기 나누는 곳 · 가입 없이 닉네임으로', 12, `color:${PW_C.sub}`) + PW_BTN(1112, 82, 88, 40, '글쓰기', 'pri') +
+    PW_CHIP(80, 144, '전체', true, 56) + PW_CHIP(142, 144, '자유', false, 56) + PW_CHIP(204, 144, '맛집 추천', false, 84) + PW_CHIP(294, 144, '같이 가요', false, 84) +
+    PW_A(80, 196, 1120, 400, `border:1.5px solid ${PW_C.line};border-radius:16px;overflow:hidden;background:#fff`,
+      [['맛집 추천', '망원 할머니 국물떡볶이 어묵 국물 꼭 드세요 (예시)', 1, '쫀득한 밀떡 412 · 1일 전 · 👍 7 · 📍 망원 할머니 국물떡볶이 (예시)'],
+       ['같이 가요', '이번 주 금요일 저녁 서교동 불지옥 같이 가실 분 (예시)', 0, '매콤한 튀김 731 · 2일 전 · 👍 2 · 📍 서교동 불지옥 떡볶이 (예시)'],
+       ['자유', '밀떡파 vs 쌀떡파 (예시)', 2, '촉촉한 라볶이 154 · 3일 전 · 👍 4'],
+       ['자유', '(새 글) 오늘 연남동 마라떡볶이 웨이팅 30분', 0, '바삭한 김말이 880 · 방금'],
+       ['맛집 추천', '(새 글) 공덕 궁중떡볶이 전 모둠이 진짜예요', 3, '말랑한 가래떡 660 · 12분 전 · 👍 1 · 📍 공덕 궁중떡볶이']].map(([c, t, k, m], i) =>
+        PW_A(0, i * 80, 1120, 80, i < 4 ? `border-bottom:1px solid ${PW_C.line}` : '', PW_T(22, 18, `<span style="border:1px solid #ccc;border-radius:4px;padding:0 6px;font-size:11px;color:#555">${c}</span> &nbsp;<b>${t}</b>${k ? ` <b style="color:${PW_C.acc}">[${k}]</b>` : ''}`, 15) + PW_T(22, 46, m, 12, `color:${PW_C.sub}`))).join('')) +
+    PW_MARK(1206, 88, '1') + PW_MARK(56, 148, '2') + PW_MARK(56, 216, '3') + PW_MARK(1206, 236, '4'),
+    ['<b>글쓰기</b> → PC-06',
+     '말머리 셋: 자유 · 맛집 추천 · 같이 가요 (전체 보기)',
+     '줄 = 말머리 · 제목 · <b>[댓글 수]</b> / 닉네임 · 시각 · <b>👍 추천 수</b> · 📍 붙인 가게. 최신 글부터',
+     '누르면 글 보기 (PC-05). 신고 3명이면 글이 가려짐'
+    ]) });
+
+add({ id:'pc_post', code:'PC-05', t:'PC 떡볶이방 글 보기 · 엄지척 추천 · 댓글', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['가운데 640 폭 (page-narrow)','추천 = 기기당 한 번, 다시 누르면 취소, 내 글은 숫자만'], rel:['pc_room', 'pc_store'],
+  html:() => PW_CARD('PC 떡볶이방 글 보기', '글 → 붙인 가게 → 추천 → 댓글. 내 글·댓글은 이 기기에서 지울 수 있다.',
+    PW_HEAD('room') + PW_T(320, 76, '‹ &nbsp;<b>떡볶이방</b>', 17) +
+    PW_T(320, 128, '<span style="border:1px solid #ccc;border-radius:4px;padding:0 6px;font-size:11px;color:#555">맛집 추천</span>', 12) + PW_T(320, 152, '<b>망원 할머니 국물떡볶이 어묵 국물 꼭 드세요 (예시)</b>', 20) + PW_T(320, 184, '쫀득한 밀떡 412 · 1일 전', 12, `color:${PW_C.sub}`) +
+    PW_A(320, 210, 640, 1.5, `background:${PW_C.line}`) + PW_LN(320, 228, 640, 3, 18, 9) +
+    PW_A(320, 300, 640, 64, `border:1.5px solid ${PW_C.line};border-radius:12px;background:#fff`, PW_GAUGE(14, 12, 2, 28) + PW_T(56, 13, '<b>망원 할머니 국물떡볶이 (예시)</b>', 14) + PW_T(56, 35, '망원동 · 국물떡볶이 4,000원', 12, `color:${PW_C.sub}`) + PW_T(560, 22, '가게 보기 ›', 12.5, `color:${PW_C.sub}`)) +
+    PW_BTN(584, 384, 112, 42, '👍 &nbsp;추천 7') + PW_T(932, 440, '<u>신고</u>', 12, `color:${PW_C.sub}`) +
+    PW_A(320, 468, 640, 1.5, `background:${PW_C.line}`) + PW_T(320, 484, '<b>댓글 1</b>', 15) +
+    PW_T(320, 516, '<b style="color:#555">말랑한 가래떡 660</b> · 21시간 전', 12, `color:${PW_C.sub}`) + PW_T(932, 516, '<u>신고</u>', 12, `color:${PW_C.sub}`) + PW_T(320, 538, '저도 거기 단골이에요! (예시 댓글)', 14) +
+    PW_IN(320, 580, 640, 64, '매콤한 튀김 601 으로 댓글 남기기') + PW_BTN(872, 654, 88, 36, '댓글 달기', 'pri') +
+    PW_MARK(296, 300, '1') + PW_MARK(702, 394, '2') + PW_MARK(964, 438, '3') + PW_MARK(296, 516, '4'),
+    ['글에 <b>붙인 가게</b> 카드 → 누르면 가게 상세',
+     '<b>👍 추천 + 숫자</b> (11-08): 누르면 「추천함」으로 채워지고 +1, 다시 누르면 취소. 기기당 한 번 · 내 글은 숫자만',
+     '내 글이면 「글 지우기」(한 번 더 묻기), 남의 글이면 「신고」 — 3명이면 가림',
+     '댓글: 오래된 것부터 · 닉네임으로 · 내 댓글은 지우기, 남의 댓글은 신고'
+    ]) });
+
+add({ id:'pc_write', code:'PC-06', t:'PC 떡볶이방 글쓰기', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['가운데 640 폭','제목 60자 · 내용 2,000자 · 하루 20개까지 (도배 막기)'], rel:['pc_room', 'pc_post'],
+  html:() => PW_CARD('PC 떡볶이방 글쓰기', '말머리 → 제목 → 내용 → 가게 붙이기(선택). 쓰면 바로 올라간다.',
+    PW_HEAD('room') + PW_T(320, 76, '‹ &nbsp;<b>떡볶이방 글쓰기</b>', 17) +
+    PW_T(320, 128, '말머리', 12.5, `color:#555;font-weight:600`) + PW_CHIP(320, 150, '자유', true, 56) + PW_CHIP(382, 150, '맛집 추천', false, 84) + PW_CHIP(472, 150, '같이 가요', false, 84) +
+    PW_T(320, 202, '제목', 12.5, `color:#555;font-weight:600`) + PW_IN(320, 224, 640, 46, '예: 망원 국물떡볶이 오늘 줄 없어요') +
+    PW_T(320, 288, '내용', 12.5, `color:#555;font-weight:600`) + PW_T(960, 288, '0/2000', 11.5, `color:${PW_C.sub};transform:translateX(-100%)`) + PW_IN(320, 310, 640, 200, '떡볶이 이야기를 자유롭게 써 주세요. 남을 깎아내리는 글은 신고되면 가려져요.') +
+    PW_T(320, 528, '가게 붙이기 (선택)', 12.5, `color:#555;font-weight:600`) + PW_IN(320, 550, 640, 46, '가게 이름이나 동네로 찾기') +
+    PW_T(320, 612, '닉네임 <b>매콤한 튀김 601</b> 으로 올라가요 · 이 기기에서 쓴 글은 나중에 지울 수 있어요', 12, `color:${PW_C.sub}`) + PW_BTN(320, 644, 640, 50, '올리기', 'pri') +
+    PW_MARK(296, 152, '1') + PW_MARK(296, 552, '2') + PW_MARK(296, 646, '3'),
+    ['말머리 셋 중 하나', '<b>가게 붙이기</b>: 이름·동네로 찾아 하나 고름 → 글 목록에 📍, 글 보기에 가게 카드', '가입 없이 자동 닉네임으로 · 올리면 바로 글 보기로']) });
+
+add({ id:'pc_mine', code:'PC-07', t:'PC 내 맛지도 · 탭 넷 · 리스트 카드 3열', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['내 맛지도 = 가게를 모아 「맛집 리스트」를 만들고, 공개해서 나누고 추천받는 곳 (11-08)','리스트는 서버 저장(링크로 공유), 찜·내 등록은 이 기기에만'], rel:['pc_list', 'pc_store'],
+  html:() => PW_CARD('PC 내 맛지도', '내 리스트 · 모두의 리스트(추천순/최신순) · 찜한 가게 · 내 등록.',
+    PW_HEAD('mine') + PW_T(80, 82, '<b>내 맛지도</b> <span style="font-size:12px;color:#8c8c88;font-weight:400">가게를 모아 리스트로 · 나누고 추천받기</span>', 20) +
+    PW_CHIP(80, 120, '내 리스트 1', false, 92) + PW_CHIP(178, 120, '모두의 리스트 4', true, 124) + PW_CHIP(308, 120, '찜한 가게 0', false, 98) + PW_CHIP(412, 120, '내 등록 0', false, 84) +
+    PW_T(80, 172, '<b>공개된 리스트 4개</b>', 13) + PW_T(1200, 168, '<span style="background:#2b2b2a;color:#fff;border-radius:99px;padding:3px 10px">추천순</span><span style="color:#aaa;padding:3px 9px">최신순</span>', 12, 'transform:translateX(-100%)') +
+    [['마포 맵부심 코스 (예시)', 12, '신라면이 순하게 느껴지는 분만. 매운 순서대로 돌아보세요.', [5, 4, 4, 2], '4곳 · 화끈한 쫄면 208 · 4일 전'],
+     ['시장 떡볶이 투어 (예시)', 8, '망원시장부터 대흥동까지, 4천 원 안쪽 시장 떡볶이만.', [2, 2, 3, 3], '4곳 · 든든한 순대 317 · 9일 전'],
+     ['맵찔이도 괜찮은 집 (예시)', 5, '맵기 1~2 위주. 아이랑 가도 되는 곳.', [1, 1, 2], '3곳 · 달콤한 순대 95 · 2일 전'],
+     ['비 오는 날 국물떡볶이', 3, '국물 넉넉한 집만 모음.', [2, 3, 2, 3, 2], '5곳 · 뜨끈한 어묵 402 · 방금']].map(([t, l, d, st, m], i) =>
+      PW_A(80 + (i % 3) * 381, 200 + Math.floor(i / 3) * 170, 365, 154, `border:1.5px solid ${PW_C.line};border-radius:16px;background:#fff`,
+        PW_T(16, 14, `<b>${t}</b>`, 15) + PW_T(349, 12, `👍 ${l}`, 12, 'transform:translateX(-100%);background:#F1F1EE;border-radius:99px;padding:2px 8px;font-weight:700') + PW_T(16, 42, d, 12.5, 'color:#555;white-space:normal;width:330px') + st.map((n, j) => PW_GAUGE(16 + j * 28, 86, n, 22).replace(/<div style="margin:2px[^]*?<\/div>/, '')).join('') + PW_T(16, 124, m, 11.5, `color:${PW_C.sub}`))).join('') +
+    PW_A(80, 560, 1120, 1, `background:${PW_C.line}`) + PW_T(80, 580, '<b>「내 리스트」 탭</b>', 13) + PW_BOX(80, 606, 520, 48, '＋ 새 리스트 만들기 &nbsp;→&nbsp; 이름 · 설명 · 공개 범위(모두에게 / 링크로만)', 'border-color:#bbb') +
+    PW_MARK(56, 124, '1') + PW_MARK(1206, 166, '2') + PW_MARK(56, 220, '3') + PW_MARK(56, 612, '4'),
+    ['탭 넷: <b>내 리스트 · 모두의 리스트 · 찜한 가게 · 내 등록</b>. 주소 뒤 ?tab= 으로 바로 열림',
+     '모두의 리스트는 <b>추천순</b> / 최신순',
+     '리스트 카드 = 이름 · <b>👍 추천 수</b> · 설명 · 담긴 가게 도장 · N곳 · 만든 사람 · 고친 때. 누르면 PC-08',
+     '<b>새 리스트 만들기</b>: 이름 · 설명 · 공개 범위. 만들면 리스트 화면으로 가서 가게를 넣음. 찜한 가게 탭에는 「찜한 N곳으로 리스트 만들기」'
+    ]) });
+
+add({ id:'pc_list', code:'PC-08', t:'PC 맛집 리스트 · 번호 줄 + 오른쪽 지도 · 추천 · 공유', lane:'PC', w:1720, h:960, isDoc:true,
+  spec:['주소 /lists/[id] · 링크로만 공유한 리스트도 주소를 알면 열림','고치기는 만든 기기에서만 (로그인 없음)'], rel:['pc_mine', 'pc_store'],
+  html:() => PW_CARD('PC 맛집 리스트', '왼쪽 = 이름 · 설명 · 추천 · 공유 · 가게 순서, 오른쪽 = 담긴 가게가 다 보이는 지도.',
+    PW_HEAD('mine') + PW_T(80, 76, '‹ &nbsp;<b>맛집 리스트</b>', 17) +
+    PW_T(80, 126, '<b>마포 맵부심 코스 (예시)</b>', 22) + PW_T(80, 160, '신라면이 순하게 느껴지는 분만. 매운 순서대로 돌아보세요.', 14, 'color:#555') + PW_T(80, 186, '화끈한 쫄면 208 님의 리스트 · 4곳 · 4일 전 고침', 12, `color:${PW_C.sub}`) +
+    PW_BTN(80, 214, 104, 40, '👍 &nbsp;추천 12') + PW_BTN(192, 214, 64, 40, '공유') + PW_BTN(264, 214, 130, 40, '이름·설명 고치기') +
+    PW_A(80, 272, 640, 1.5, `background:${PW_C.line}`) +
+    [['서교동 불지옥 떡볶이 (예시)', '서교동 · 촉촉 · 밀떡', '5,000원', 5], ['연남 마라떡볶이 (예시)', '연남동 · 마라 · 누들밀떡·분모자', '7,000원', 4], ['신촌 치즈떡볶이 (예시)', '창천동 · 촉촉 · 치즈떡·쌀떡', '5,500원', 4], ['합정 로제떡볶이 연구소 (예시)', '합정동 · 로제 · 쌀떡·치즈떡', '6,500원', 2]].map(([n, d, p, s], i) =>
+      PW_A(80, 274 + i * 64, 640, 64, `border-bottom:1px solid ${PW_C.line};${i === 0 ? `background:${PW_C.fill}` : ''}`, PW_T(4, 20, `<b style="font-family:'Song Myung',serif;color:${PW_C.acc}">${i + 1}</b>`, 18) + PW_GAUGE(34, 12, s, 26) + PW_T(74, 12, `<b>${n}</b>`, 14.5) + PW_T(74, 34, d, 11.5, `color:${PW_C.sub}`) + PW_T(512, 20, `<b>${p}</b>`, 14, 'transform:translateX(-100%)') + PW_T(530, 20, '↑ &nbsp;↓ &nbsp;<span style="font-size:11px;color:#8c8c88">빼기</span>', 14, 'color:#666'))).join('') +
+    PW_T(80, 548, '<b>가게 넣기</b> <span style="color:#999;font-weight:400">(4/50)</span>', 13) + PW_IN(80, 572, 640, 44, '가게 이름이나 동네로 찾기') + PW_T(720, 632, '<u>리스트 지우기</u>', 12, `color:${PW_C.sub};transform:translateX(-100%)`) +
+    PW_A(744, 76, 456, 700, 'border-radius:16px;overflow:hidden;border:1.5px solid #ddd', PW_MAP(0, 0, 456, 700, PW_PIN(150, 300, 5, true, '서교동 불지옥 떡볶이') + PW_PIN(250, 200, 4, false, '연남 마라떡볶이') + PW_PIN(330, 330, 4, false, '신촌 치즈떡볶이') + PW_PIN(70, 420, 2, false, '합정 로제떡볶이 연구소'))) +
+    PW_MARK(56, 222, '1') + PW_MARK(56, 290, '2') + PW_MARK(726, 290, '3') + PW_MARK(56, 576, '4') + PW_MARK(1206, 90, '5'),
+    ['<b>👍 추천</b>(기기당 한 번, 내 리스트는 못 함) · <b>공유</b>(폰은 공유 창, PC 는 링크 복사) · 만든 기기면 이름·설명·공개 범위 고치기',
+     '<b>번호 = 리스트 순서</b>. 줄을 누르면 가게 상세, 마우스를 올리면 지도 핀이 표시됨',
+     '만든 기기만: ↑ ↓ 순서 바꾸기 · 빼기',
+     '가게 넣기(이름·동네로 찾기, 50곳까지) · 리스트 지우기(한 번 더 묻기). 가게 상세의 「+ 내 리스트에 담기」로도 넣음',
+     '오른쪽 지도: 담긴 가게가 다 보이게 맞춰지고, 넣고 빼면 다시 맞춤. 핀 밑에 가게 이름'
+    ]) });
 
 /* ═════════ 글꼴 고르기 (11-04) ═════════ */
 const FT_CARD = f => { const b = (r, t) => `<button class="ftb ${PAL.font[r] === f.id ? 'on' : ''}" data-fset="${r}:${f.id}">${t}</button>`;
