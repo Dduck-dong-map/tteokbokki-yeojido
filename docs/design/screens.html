@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>떡볶여지도 화면 스튜디오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+/* 화면 설계 보드(index.html)와 같은 어두운 작업 화면 틀. 오른쪽에는 실제 웹 화면을 액자로 띄운다. */
+:root{
+  --t-bg:#1c1c21; --t-panel:#232329; --t-line:#34343c; --t-ink:#ececf1; --t-sub:#9a9aa6;
+  --t-canvas:#2b2b32; --t-sel:#4b8bff; --t-warn:#f0b35a; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--t-bg);color:var(--t-ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:14px;overflow:hidden}
+button,input,select{font:inherit;color:inherit}
+.top{height:52px;display:flex;align-items:center;gap:10px;padding:0 12px;background:var(--t-panel);border-bottom:1px solid var(--t-line)}
+.brand{font-weight:800;white-space:nowrap}
+.brand small{color:var(--t-sub);font-weight:500;margin-left:6px}
+.modes{display:flex;background:#18181c;border-radius:9px;padding:3px;margin-left:auto;margin-right:auto}
+.modes a,.modes button{border:0;background:none;padding:6px 14px;border-radius:7px;cursor:pointer;color:var(--t-sub);font-weight:600;text-decoration:none;font-size:14px}
+.modes .on{background:#34343d;color:var(--t-ink)}
+.tools{display:flex;gap:8px;align-items:center;white-space:nowrap}
+.tools label{color:var(--t-sub);font-size:12px;display:flex;align-items:center;gap:6px}
+.tools input[type=range]{width:110px}
+.tb-btn{border:1px solid var(--t-line);background:#2a2a31;border-radius:8px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+.tb-btn:hover{border-color:#4a4a55}
+.tb-btn:focus-visible,.modes a:focus-visible,.row button:focus-visible{outline:2px solid var(--t-sel);outline-offset:2px}
+.main{position:absolute;top:52px;left:0;right:0;bottom:0;display:flex}
+
+/* 왼쪽: 파트별 색 */
+.side{width:300px;flex:none;background:var(--t-panel);border-right:1px solid var(--t-line);overflow:auto;padding:12px 0 40px}
+.side h2{margin:2px 14px 2px;font-size:15px}
+.side .sub{margin:0 14px 10px;color:var(--t-sub);font-size:12px;line-height:1.5}
+.side h3{margin:16px 14px 6px;font-size:12px;color:var(--t-sub);font-weight:600;letter-spacing:.3px}
+.row{display:grid;grid-template-columns:30px minmax(0,1fr) 78px 26px;align-items:center;gap:8px;padding:4px 14px}
+.row:hover{background:#2a2a32}
+.row input[type=color]{width:30px;height:26px;border:1px solid var(--t-line);border-radius:6px;padding:0;background:none;cursor:pointer}
+.row input[type=color]::-webkit-color-swatch-wrapper{padding:2px}
+.row input[type=color]::-webkit-color-swatch{border:0;border-radius:4px}
+.row .name{font-size:13px;line-height:1.3;min-width:0}
+.row .name small{display:block;color:var(--t-sub);font-size:11px}
+.row .name.changed{color:#cfe0ff}
+.row input[type=text]{width:78px;border:1px solid var(--t-line);background:#1d1d22;border-radius:6px;padding:3px 6px;font-size:12px;font-family:ui-monospace,Consolas,monospace}
+.row .where{border:0;background:none;cursor:pointer;color:var(--t-sub);font-size:14px;padding:0;border-radius:6px;height:26px}
+.row .where:hover{color:var(--t-ink);background:#34343d}
+.side .acts{display:flex;flex-wrap:wrap;gap:6px;padding:14px 14px 0}
+.side .note{margin:12px 14px 0;color:var(--t-sub);font-size:12px;line-height:1.6}
+.side textarea{display:block;width:calc(100% - 28px);margin:8px 14px 0;height:150px;background:#18181c;border:1px solid var(--t-line);border-radius:8px;color:var(--t-ink);font:12px/1.5 ui-monospace,Consolas,monospace;padding:8px}
+
+/* 오른쪽: 화면 액자 */
+.stage{flex:1;min-width:0;overflow:auto;background:var(--t-canvas);padding:20px 24px 60px}
+.banner{display:none;margin:0 0 16px;padding:12px 14px;border:1px solid #6b5426;background:#3a3020;border-radius:10px;color:#f5deb0;font-size:13px;line-height:1.6}
+.banner code{background:#00000040;padding:1px 6px;border-radius:5px}
+.grid{display:flex;flex-wrap:wrap;gap:26px 22px;align-items:flex-start}
+.card{display:flex;flex-direction:column;gap:6px}
+.card .cap{display:flex;align-items:baseline;gap:8px;font-size:13px}
+.card .cap b{font-size:14px}
+.card .cap span{color:var(--t-sub);font-family:ui-monospace,Consolas,monospace;font-size:11px}
+.card .cap a{margin-left:auto;color:var(--t-sub);font-size:12px;text-decoration:none}
+.card .cap a:hover{color:var(--t-ink)}
+.frame{position:relative;overflow:hidden;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.frame.mobile{border-radius:22px;outline:6px solid #111;outline-offset:0}
+.frame.pc{border-radius:8px;outline:1px solid #3a3a44}
+.frame iframe{position:absolute;top:0;left:0;border:0;transform-origin:0 0;background:#fff}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">떡볶여지도 <small>화면 스튜디오 · 실제 웹 화면에서 파트별 색 바꿔 보기 (11-08)</small></div>
+  <div class="modes" role="tablist" aria-label="화면">
+    <a href="index.html" title="화면 설계 보드(기획 캔버스)로 돌아가기">← 설계 보드</a>
+    <button id="tabMobile" role="tab">모바일 화면</button>
+    <button id="tabPc" role="tab">PC 화면</button>
+  </div>
+  <div class="tools">
+    <label for="scale">크기 <input id="scale" type="range" min="0.3" max="1" step="0.05"> <span id="scaleV"></span></label>
+    <label for="server">웹 주소 <input id="server" class="tb-btn" style="width:170px;cursor:text" spellcheck="false"></label>
+    <button class="tb-btn" id="reload" title="화면 모두 새로 불러오기">새로 고침</button>
+  </div>
+</div>
+<div class="main">
+  <aside class="side" aria-label="파트별 색">
+    <h2 id="sideTitle">모바일 색</h2>
+    <p class="sub">모바일과 PC 는 따로 저장돼요. 고친 칸은 파랗게 보이고, <b>◎</b> 를 누르면 그 파트가 화면에서 잠깐 분홍으로 깜빡여요.</p>
+    <div id="rows"></div>
+    <div class="acts">
+      <button class="tb-btn" id="resetAll">모두 원래대로</button>
+      <button class="tb-btn" id="copyOther"></button>
+      <button class="tb-btn" id="copyCss">색 값 복사</button>
+    </div>
+    <textarea id="cssOut" readonly aria-label="바꾼 색 값 (CSS)"></textarea>
+    <p class="note">여기서 바꾼 색은 이 브라우저에만 저장돼요. 실제 웹에 넣으려면 위 「색 값 복사」 내용을 전해 주세요 (web/src/lib/theme.ts 에 옮김).<br>지도 그림(길·물·동네 이름) 색은 팔레트 쪽이라 여기서는 안 바뀌어요.</p>
+  </aside>
+  <section class="stage" id="stage" aria-live="polite">
+    <div class="banner" id="down">웹 서버가 꺼져 있어서 화면을 못 불러와요. <code>web</code> 폴더에서 <code>npm run dev -- -p 3100</code> 으로 켠 뒤 「새로 고침」을 눌러 주세요. (Claude 에게 「웹 서버 켜 줘」라고 해도 돼요)</div>
+    <div class="grid" id="grid"></div>
+  </section>
+</div>
+
+<script>
+// ── 파트: 웹의 색 변수(web/src/lib/theme.ts)와 1:1. only = 한쪽 화면에만 보이는 파트 ──
+const PARTS = [
+  { g: '바탕', k: 'paper', n: '화면 바탕', d: '페이지 뒤 바탕' },
+  { g: '바탕', k: 'bar', n: '메뉴줄 바탕', d: '위 헤더 · 폰 아래 메뉴' },
+  { g: '바탕', k: 'surface', n: '면 바탕', d: '가게 상세 · 시트 · 카드' },
+  { g: '바탕', k: 'panel', n: '가게 목록 칸', d: 'PC 왼쪽 가게 줄 (기본 흰색)', only: 'pc' },
+  { g: '바탕', k: 'chip', n: '칩 · 선택 줄 바탕', d: '고른 가게 줄 · 태그' },
+  { g: '글자 · 선', k: 'ink', n: '글자', d: '제목 · 본문' },
+  { g: '글자 · 선', k: 'ink2', n: '보조 글자', d: '설명 · 태그 글자' },
+  { g: '글자 · 선', k: 'ink3', n: '흐린 글자', d: '날짜 · 동네 · 안내' },
+  { g: '글자 · 선', k: 'line', n: '구분선', d: '줄 사이 · 칸 테두리' },
+  { g: '글자 · 선', k: 'chipline', n: '칩 · 버튼 테두리', d: '' },
+  { g: '버튼', k: 'primary', n: '주 버튼', d: '길찾기 · 글쓰기 · 필터 켬' },
+  { g: '버튼', k: 'onprimary', n: '주 버튼 글자', d: '' },
+  { g: '버튼', k: 'fab', n: '맛집 등록 버튼', d: '포인트 색' },
+  { g: '버튼', k: 'onfab', n: '맛집 등록 글자', d: '' },
+  { g: '버튼', k: 'accent', n: '강조', d: '추천함 · 담김 · 링크' },
+  { g: '버튼', k: 'onaccent', n: '강조 글자', d: '' },
+  { g: '버튼', k: 'spicybg', n: '경고 띠 바탕', d: '오류 · 문 닫음 안내' },
+  { g: '버튼', k: 'spicytext', n: '경고 띠 글자', d: '' },
+  { g: '버튼', k: 'loc', n: '내 위치', d: '내 위치 단추' },
+  { g: '맵기 도장', k: 'stampbg', n: '도장 빈칸', d: '안 찬 부분' },
+  { g: '맵기 도장', k: 's1', n: '맵기 1', d: '' },
+  { g: '맵기 도장', k: 's2', n: '맵기 2', d: '' },
+  { g: '맵기 도장', k: 's3', n: '맵기 3', d: '' },
+  { g: '맵기 도장', k: 's4', n: '맵기 4', d: '' },
+  { g: '맵기 도장', k: 's5', n: '맵기 5', d: '' },
+];
+
+// ── 화면: 웹 1차 + 떡볶이방 + 내 맛지도 (예시 데이터 주소) ──
+const SCREENS = {
+  mobile: { w: 390, h: 844, scale: 0.7, list: [
+    ['지도 홈', '/'], ['가게 상세', '/store/mangwon-soup'], ['맛집 등록', '/register'],
+    ['떡볶이방', '/room'], ['떡볶이방 글', '/room/p-sample-1'], ['내 맛지도', '/mine?tab=all'], ['맛집 리스트', '/lists/l-sample-mapo-hot'],
+  ] },
+  pc: { w: 1440, h: 900, scale: 0.5, list: [
+    ['지도 홈', '/'], ['가게 상세', '/store/mangwon-soup'], ['맛집 등록', '/register'],
+    ['떡볶이방', '/room'], ['떡볶이방 글', '/room/p-sample-1'], ['내 맛지도', '/mine?tab=all'], ['맛집 리스트', '/lists/l-sample-mapo-hot'],
+  ] },
+};
+const NAME = { mobile: '모바일', pc: 'PC' };
+const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+// ── 저장 (이 브라우저에만) ──
+const KEY = 'ddy-screen-studio';
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { S = null; }
+// 웹 서버에서 열면(/share/board/screens.html) 그 서버를, 파일로 열면 127.0.0.1:3100 을 띄운다
+const HOME = location.protocol.startsWith('http') ? location.origin : 'http://127.0.0.1:3100';
+S = Object.assign({ server: HOME, vars: { mobile: {}, pc: {} }, scale: {} }, S || {});
+S.vars = Object.assign({ mobile: {}, pc: {} }, S.vars);
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+let device = location.hash === '#pc' ? 'pc' : 'mobile';
+const defaults = { mobile: null, pc: null }; // 웹이 알려 주는 원래 색
+const $ = (id) => document.getElementById(id);
+const toHex6 = (v) => {
+  v = (v || '').trim();
+  if (/^#[0-9a-f]{3}$/i.test(v)) return '#' + v.slice(1).split('').map((c) => c + c).join('');
+  if (/^#[0-9a-f]{6}$/i.test(v)) return v.toLowerCase();
+  const m = v.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  return m ? '#' + m.slice(1, 4).map((n) => (+n).toString(16).padStart(2, '0')).join('') : '#000000';
+};
+const valueOf = (k) => S.vars[device][k] || (defaults[device] && defaults[device][k]) || '';
+const parts = () => PARTS.filter((p) => !p.only || p.only === device);
+
+// ── 액자들에 색 보내기 ──
+const frames = () => [...document.querySelectorAll('#grid iframe')];
+function push(extra) {
+  const vars = Object.assign({}, S.vars[device], extra || {});
+  frames().forEach((f) => { try { f.contentWindow.postMessage({ type: 'ddy-studio-vars', vars }, '*'); } catch (e) {} });
+}
+window.addEventListener('message', (e) => {
+  const d = e.data;
+  if (!d || d.type !== 'ddy-studio-ready') return;
+  const f = frames().find((x) => x.contentWindow === e.source);
+  if (!f) return;
+  if (!defaults[device] && d.vars) { defaults[device] = d.vars; renderRows(); }
+  e.source.postMessage({ type: 'ddy-studio-vars', vars: S.vars[device] }, '*');
+});
+
+// ── 왼쪽 칸 ──
+function renderRows() {
+  $('sideTitle').textContent = `${NAME[device]} 색`;
+  const other = device === 'mobile' ? 'pc' : 'mobile';
+  $('copyOther').textContent = `${NAME[other]} 색 가져오기`;
+  let html = '', g = '';
+  parts().forEach((p) => {
+    if (p.g !== g) { g = p.g; html += `<h3>${g}</h3>`; }
+    const v = valueOf(p.k), changed = !!S.vars[device][p.k];
+    html += `<div class="row" data-k="${p.k}">
+      <input type="color" id="c-${p.k}" value="${toHex6(v)}" aria-label="${p.n} 색">
+      <label class="name ${changed ? 'changed' : ''}" for="c-${p.k}">${p.n}${p.d ? `<small>${p.d}</small>` : ''}</label>
+      <input type="text" id="t-${p.k}" value="${v ? toHex6(v) : ''}" placeholder="불러오는 중" aria-label="${p.n} 색 값" spellcheck="false">
+      <button class="where" title="${changed ? '원래 색으로' : '이 파트가 어디인지 깜빡이기'}" aria-label="${p.n} ${changed ? '원래 색으로' : '위치 보기'}">${changed ? '↺' : '◎'}</button>
+    </div>`;
+  });
+  $('rows').innerHTML = html;
+  renderCss();
+}
+function setVar(k, v) {
+  const def = defaults[device] && toHex6(defaults[device][k]);
+  if (!v || (def && toHex6(v) === def)) delete S.vars[device][k];
+  else S.vars[device][k] = toHex6(v);
+  save(); push();
+}
+$('rows').addEventListener('input', (e) => {
+  const row = e.target.closest('.row'); if (!row) return;
+  const k = row.dataset.k;
+  if (e.target.type === 'color') { $('t-' + k).value = e.target.value; setVar(k, e.target.value); markRow(row, k); }
+  else if (e.target.type === 'text' && HEX.test(e.target.value.trim())) { $('c-' + k).value = toHex6(e.target.value); setVar(k, e.target.value); markRow(row, k); }
+});
+function markRow(row, k) {
+  const changed = !!S.vars[device][k];
+  row.querySelector('.name').classList.toggle('changed', changed);
+  const b = row.querySelector('.where');
+  b.textContent = changed ? '↺' : '◎'; b.title = changed ? '원래 색으로' : '이 파트가 어디인지 깜빡이기';
+  renderCss();
+}
+$('rows').addEventListener('click', (e) => {
+  const b = e.target.closest('.where'); if (!b) return;
+  const row = b.closest('.row'), k = row.dataset.k;
+  if (S.vars[device][k]) { delete S.vars[device][k]; save(); push(); renderRows(); return; }
+  // 깜빡이기: 분홍 ↔ 원래 세 번
+  let n = 0; const t = setInterval(() => { n++; push(n % 2 ? { [k]: '#ff2fd0' } : {}); if (n >= 6) clearInterval(t); }, 260);
+});
+function renderCss() {
+  const rows = Object.entries(S.vars[device]);
+  $('cssOut').value = rows.length
+    ? `/* 떡볶여지도 화면 스튜디오 · ${NAME[device]} · ${new Date().toLocaleDateString('ko-KR')} */\n:root {\n${rows.map(([k, v]) => `  --${k}: ${v}; /* ${(PARTS.find((p) => p.k === k) || {}).n || ''} */`).join('\n')}\n}`
+    : `/* ${NAME[device]}: 아직 바꾼 색이 없어요 */`;
+}
+$('resetAll').onclick = () => { S.vars[device] = {}; save(); push(); renderRows(); };
+$('copyOther').onclick = () => {
+  const other = device === 'mobile' ? 'pc' : 'mobile';
+  const from = Object.assign({}, S.vars[other]);
+  if (device === 'mobile') delete from.panel; // PC 전용 파트는 빼고
+  S.vars[device] = from; save(); push(); renderRows();
+};
+$('copyCss').onclick = async () => {
+  try { await navigator.clipboard.writeText($('cssOut').value); $('copyCss').textContent = '복사했어요 ✓'; }
+  catch (e) { $('cssOut').select(); $('copyCss').textContent = 'Ctrl+C 로 복사'; }
+  setTimeout(() => { $('copyCss').textContent = '색 값 복사'; }, 1600);
+};
+
+// ── 오른쪽 액자 ──
+const scaleOf = () => S.scale[device] || SCREENS[device].scale;
+function renderFrames() {
+  const sc = SCREENS[device], z = scaleOf(), base = S.server.replace(/\/+$/, '');
+  $('grid').innerHTML = sc.list.map(([t, path]) => `<figure class="card" style="margin:0">
+    <figcaption class="cap"><b>${t}</b><span>${path}</span><a href="${base}${path}" target="_blank" rel="noopener">새 창 ↗</a></figcaption>
+    <div class="frame ${device}" style="width:${Math.round(sc.w * z)}px;height:${Math.round(sc.h * z)}px">
+      <iframe src="${base}${path}" title="${NAME[device]} ${t}" loading="lazy" style="width:${sc.w}px;height:${sc.h}px;transform:scale(${z})"></iframe>
+    </div></figure>`).join('');
+}
+function applyScale() {
+  const sc = SCREENS[device], z = scaleOf();
+  $('scale').value = z; $('scaleV').textContent = Math.round(z * 100) + '%';
+  document.querySelectorAll('#grid .frame').forEach((fr) => { fr.style.width = Math.round(sc.w * z) + 'px'; fr.style.height = Math.round(sc.h * z) + 'px'; });
+  frames().forEach((f) => { f.style.transform = `scale(${z})`; });
+}
+$('scale').oninput = (e) => { S.scale[device] = +e.target.value; save(); applyScale(); };
+$('server').value = S.server;
+$('server').onchange = (e) => { S.server = e.target.value.trim() || HOME; save(); defaults.mobile = defaults.pc = null; show(device); };
+$('reload').onclick = () => { defaults[device] = null; show(device); };
+
+// 서버가 켜져 있는지: 꺼져 있으면 안내 띠
+function checkServer() {
+  fetch(S.server.replace(/\/+$/, '') + '/manifest.webmanifest', { mode: 'no-cors', cache: 'no-store' })
+    .then(() => { $('down').style.display = 'none'; })
+    .catch(() => { $('down').style.display = 'block'; });
+}
+
+function show(d) {
+  device = d;
+  if (location.hash !== '#' + d) history.replaceState(null, '', '#' + d);
+  $('tabMobile').classList.toggle('on', d === 'mobile'); $('tabMobile').setAttribute('aria-selected', d === 'mobile');
+  $('tabPc').classList.toggle('on', d === 'pc'); $('tabPc').setAttribute('aria-selected', d === 'pc');
+  document.title = `${NAME[d]} 화면 · 떡볶여지도 화면 스튜디오`;
+  userScroll = false; $('stage').scrollTop = 0;
+  renderRows(); renderFrames(); applyScale(); checkServer();
+}
+// 액자 안 화면이 고른 가게 줄을 scrollIntoView 하면 바깥 판까지 같이 내려간다 → 사람이 직접 움직이기 전에는 제자리에 둔다
+let userScroll = false;
+['wheel', 'pointerdown', 'keydown', 'touchstart'].forEach((ev) => $('stage').addEventListener(ev, () => { userScroll = true; }, { passive: true }));
+$('stage').addEventListener('scroll', () => { if (!userScroll) $('stage').scrollTop = 0; });
+document.addEventListener('scroll', () => { if (!userScroll) window.scrollTo(0, 0); }, true);
+$('tabMobile').onclick = () => show('mobile');
+$('tabPc').onclick = () => show('pc');
+window.addEventListener('hashchange', () => show(location.hash === '#pc' ? 'pc' : 'mobile'));
+show(device);
+</script>
+</body>
+</html>
