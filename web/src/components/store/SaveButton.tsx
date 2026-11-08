@@ -10,7 +10,7 @@ export default function SaveButton({ id, name }: { id: string; name: string }) {
 
   const press = () => {
     const now = toggle();
-    setToast(now ? "내 맛지도에 담았어요" : "내 맛지도에서 뺐어요");
+    setToast(now ? "찜했어요 · 내 맛지도 「찜한 가게」에 있어요" : "찜을 풀었어요");
     setTimeout(() => setToast(null), 1400);
   };
 
@@ -20,7 +20,7 @@ export default function SaveButton({ id, name }: { id: string; name: string }) {
         type="button"
         onClick={press}
         aria-pressed={on}
-        aria-label={on ? `${name} 저장 취소` : `${name} 내 맛지도에 저장`}
+        aria-label={on ? `${name} 찜 취소` : `${name} 찜하기`}
         className={`grid h-11 w-11 place-items-center rounded-full text-[22px] leading-none transition-transform active:scale-90 ${on ? "text-fab" : "text-ink3"}`}
       >
         {on ? "♥" : "♡"}

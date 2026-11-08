@@ -2,7 +2,8 @@
 // 바탕 7색만 정하면 나머지 색은 계산한다. 팔레트를 고르면 DEFAULT_PALETTE 만 바꾸면 된다.
 // 주소 뒤 ?pal=H1 로 다른 프리셋을 볼 수 있다(보드와 같은 이름).
 
-export type Base = { paper: string; surface: string; ink: string; primary: string; accent: string; fab: string; water: string };
+// mapPaper: 지도 그림 바탕만 따로 둘 때 (없으면 paper). 화면 바탕을 흰색으로 해도 지도는 한지 톤을 지킨다 (11-08)
+export type Base = { paper: string; surface: string; ink: string; primary: string; accent: string; fab: string; water: string; mapPaper?: string };
 export type Preset = { id: string; name: string; v1?: boolean; b: Base };
 
 export const PRESETS: Preset[] = [
@@ -26,10 +27,13 @@ export const PRESETS: Preset[] = [
   // 슬랙 10-28 #design: 팀장이 tweakcn 으로 만든 「떡볶이 초안 1」(shadcn 변수) 을 그대로 옮김 — 비교용. 주 색이 빨강이라 본인 글과 어긋나서 기본으로 쓰지 않음.
   { id: "W", name: "W tweakcn 초안 1", b: { paper: "#FAF8F6", surface: "#FEFEFE", ink: "#2D2D2D", primary: "#E63917", accent: "#E63917", fab: "#E63917", water: "#AFC3D9" } },
   { id: "N6", name: "N6 먹밤", b: { paper: "#1C1D1F", surface: "#242628", ink: "#EDEDED", primary: "#EDEDED", accent: "#8FB4E0", fab: "#8FB4E0", water: "#2B3A4C" } },
+  // 11-08 사용자 「배경을 구분선만 두고 일단 전부 흰색으로」: T 에서 화면 바탕·면·메뉴줄을 흰색으로. 지도 그림 바탕은 T 의 한지 미색 그대로.
+  { id: "T2", name: "T2 흰 바탕 · 옥빛 버튼", b: { paper: "#FFFFFF", surface: "#FFFFFF", ink: "#1C1C1B", primary: "#2A6159", accent: "#2F6F70", fab: "#B42318", water: "#A3C7BC", mapPaper: "#F3F0E9" } },
 ];
 
 // 2026-11-01: 슬랙 #design 10-28 반영 → T (주 버튼 옥빛, 빨강은 포인트만). 이전 기본 R 은 ?pal=R 로 비교. 바꾸려면 여기만 고친다.
-export const DEFAULT_PALETTE = "T";
+// 2026-11-08: 시험으로 T2(흰 바탕) 를 기본으로. 바로 전 기본은 ?pal=T 로 비교.
+export const DEFAULT_PALETTE = "T2";
 
 // 맵기 도장 1~5: [바탕, 숫자, 안쪽 테두리]
 const RAMP_LIGHT = [["#F2B78C", "#3A1408", "rgba(58,20,8,.38)"], ["#E3814D", "#2E0F05", "rgba(46,15,5,.38)"], ["#C8102E", "#FFF4E6", "rgba(255,244,230,.75)"], ["#8E0B1F", "#FFF4E6", "rgba(255,244,230,.75)"], ["#4A0710", "#FFF4E6", "rgba(255,244,230,.75)"]];
@@ -63,10 +67,13 @@ export function derive(p: Preset) {
   const bar = dark ? mix(B.paper, "#000000", 0.28) : mix(B.surface, B.paper, 0.35);
   const ramp = p.v1 ? RAMP_V1 : dark ? RAMP_NIGHT : RAMP_LIGHT;
   const bank = mix(B.water, B.ink, dark ? 0.1 : 0.5);
+  const MP = B.mapPaper ?? B.paper; // 지도 그림 바탕
   return {
     dark,
     css: {
       paper: B.paper, surface: B.surface, ink: B.ink, primary: B.primary, accent: B.accent, fab: B.fab,
+      // PC 왼쪽 가게 목록 칸 바탕 — 사용자 11-08 「이 부분 배경 흰색으로」. 어두운 팔레트에서는 면 색을 그대로 쓴다
+      panel: dark ? B.surface : "#FFFFFF",
       bar, line: mix(bar, B.ink, 0.14),
       chip: mix(B.surface, B.ink, dark ? 0.1 : 0.055), chipline: mix(B.surface, B.ink, 0.2),
       ink2: mix(B.ink, B.surface, 0.2), ink3,
@@ -82,16 +89,16 @@ export function derive(p: Preset) {
     } as Record<string, string>,
     // 대동여지도 느낌 지도 색 (components/map/dongyeoStyle.ts)
     map: {
-      paper: B.paper, ink: B.ink, primary: B.primary, onprimary: onColor(B.primary),
+      paper: MP, ink: B.ink, primary: B.primary, onprimary: onColor(B.primary),
       water: B.water, bank,
-      label: mix(B.ink, B.paper, 0.1),
-      mInk: mix(B.ink, B.paper, dark ? 0.35 : 0.25),
-      mRoad: mix(B.ink, B.paper, dark ? 0.3 : 0.45),
-      mMinor: mix(B.ink, B.paper, dark ? 0.6 : 0.72),
-      seam: mix(B.paper, B.ink, dark ? 0.2 : 0.12),
-      block: mix(B.paper, B.ink, dark ? 0.07 : 0.05),
+      label: mix(B.ink, MP, 0.1),
+      mInk: mix(B.ink, MP, dark ? 0.35 : 0.25),
+      mRoad: mix(B.ink, MP, dark ? 0.3 : 0.45),
+      mMinor: mix(B.ink, MP, dark ? 0.6 : 0.72),
+      seam: mix(MP, B.ink, dark ? 0.2 : 0.12),
+      block: mix(MP, B.ink, dark ? 0.07 : 0.05),
       stampbg: mix(B.surface, B.ink, dark ? 0.14 : 0.07),
-      park: mix(B.paper, "#7FA87F", 0.18),
+      park: mix(MP, "#7FA87F", 0.18),
       ramp: ramp.map(([bg, fg, e]) => ({ bg, fg, edge: e })),
     },
   };

@@ -49,6 +49,8 @@ function subscribe(cb: () => void) {
 // 서버 렌더 때는 빈 값 → 화면이 뜬 뒤 기기 값으로 바뀐다
 export const useMe = () => useSyncExternalStore(subscribe, read, () => EMPTY);
 
+export const myDevice = () => read().device;
+
 export type ApiResult = { ok: boolean; error?: string; existing?: string; id?: string };
 
 // 쓰기 요청 공통: 기기 표시와 닉네임을 붙여 보낸다

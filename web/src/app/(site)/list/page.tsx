@@ -8,7 +8,7 @@ import { USING_SAMPLE_DATA, getRegions, getStores } from "@/lib/data";
 
 export const metadata: Metadata = { title: "동네별 떡볶이 목록" };
 
-// 아래 메뉴 「목록」: 동네 고르기 + 최근 확인된 가게
+// 동네 고르기 + 최근 확인된 가게. 11-08 부터 메뉴에서는 빠졌고, 동네 목록의 「뒤로」와 검색 유입으로 들어온다.
 export default function ListPage() {
   return (
     <div className="page-wide">
@@ -16,7 +16,7 @@ export default function ListPage() {
         <Loader />
       </Suspense>
       <div className="sticky bottom-0 md:hidden">
-        <BottomNav active="list" />
+        <BottomNav />
       </div>
     </div>
   );

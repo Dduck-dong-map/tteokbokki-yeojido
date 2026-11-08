@@ -18,6 +18,8 @@ mkdirSync(OUT, { recursive: true });
 cpSync(`${DOCS}/share`, OUT, { recursive: true });
 // 화면 설계 보드: 기존 v1 사진을 ../화면시안_v1_2026-10-26/화면_이미지/ 에서 불러오므로 같은 자리 관계로 둔다
 cpSync(`${DOCS}/design/index.html`, `${OUT}/board/index.html`);
+// 화면 스튜디오(11-08): 모바일·PC 실제 화면을 액자로 모아 파트별 색 바꿔 보기. 보드 위 「모바일 화면」「PC 화면」 단추가 연다
+cpSync(`${DOCS}/design/screens.html`, `${OUT}/board/screens.html`);
 cpSync(`${DOCS}/design/img`, `${OUT}/board/img`, { recursive: true });
 cpSync(`${DOCS}/화면시안_v1_2026-10-26/화면_이미지`, `${OUT}/화면시안_v1_2026-10-26/화면_이미지`, { recursive: true });
 // 출시 로드맵: 온라인 보드(claude.ai) 밖에서는 「처음 상태」 보기용으로 열린다

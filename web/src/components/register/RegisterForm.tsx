@@ -224,8 +224,12 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
       </ol>
 
       <div className="mt-6 flex flex-1 flex-col gap-4 md:mt-0 md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-[150px_minmax(0,1fr)_minmax(0,1fr)] lg:gap-7">
-        {/* 1024 이상: 왼쪽 진행 표시. 누르면 그 칸으로, 채운 칸은 ✓ */}
-        <nav aria-label="등록 칸" className="hidden self-start lg:sticky lg:top-[72px] lg:flex lg:flex-col lg:gap-2.5 lg:text-[14px]">
+        {/* 1024 이상: 왼쪽 진행 표시. 누르면 그 칸으로, 채운 칸은 ✓
+            1280 이상: 제목 아래 화면 왼쪽 끝에 붙인다 (사용자 11-08 시안 Group 3616). 칸 자리는 그대로 두고 옆으로만 옮겨 입력 칸이 움직이지 않게 한다 */}
+        <nav
+          aria-label="등록 칸"
+          className="hidden self-start lg:sticky lg:top-[72px] lg:flex lg:flex-col lg:gap-2.5 lg:text-[14px] xl:mt-5 xl:translate-x-[calc(56px_-_(100vw_-_1168px)/2_-_24px)]"
+        >
           {STEPS.map((s, i) => (
             <a key={s} href={`#reg-${i}`} className={done[i] ? "text-ink3" : i === done.indexOf(false) ? "font-bold text-ink" : "text-ink3"}>
               {i + 1}. {s} {done[i] && "✓"}

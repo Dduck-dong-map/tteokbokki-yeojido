@@ -108,17 +108,17 @@ export function SampleRibbon() {
   );
 }
 
-// 메뉴 넷: 폰은 아래 메뉴, 768 이상은 위 헤더 (보드 v3 셋 + 「함께 고치기」, 11-04). 떡볶이방은 2차라 아예 안 보인다.
+// 메뉴 셋: 폰은 아래 메뉴, 768 이상은 위 헤더 (11-08 사용자 지시).
+// 「목록」은 지도 화면 목록으로 충분해서 메뉴에서 뺐다(/list 주소는 남김). 「함께 고치기」는 가게 상세 안으로 옮겼다.
 export const NAV = [
   { href: "/", label: "지도", key: "map" },
-  { href: "/list", label: "목록", key: "list" },
-  { href: "/together", label: "함께 고치기", key: "together" },
+  { href: "/room", label: "떡볶이방", key: "room" },
   { href: "/mine", label: "내 맛지도", key: "mine" },
 ] as const;
 
-export function BottomNav({ active }: { active: (typeof NAV)[number]["key"] }) {
+export function BottomNav({ active }: { active?: (typeof NAV)[number]["key"] }) {
   return (
-    <nav aria-label="메뉴" className="grid h-14 shrink-0 grid-cols-4 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px] md:hidden">
+    <nav aria-label="메뉴" className="grid h-14 shrink-0 grid-cols-3 border-t border-line bg-bar pb-[env(safe-area-inset-bottom)] text-[12px] md:hidden">
       {NAV.map((n) => (
         <Link
           key={n.key}
@@ -134,9 +134,9 @@ export function BottomNav({ active }: { active: (typeof NAV)[number]["key"] }) {
 }
 
 // 하위 화면 머리칸. 폰에서는 위에 붙어 따라오고, 768 이상에서는 위 헤더 아래 제목 줄이 된다.
-export function BackHeader({ title, href = "/", right }: { title: string; href?: string; right?: React.ReactNode }) {
+export function BackHeader({ title, href = "/", right, className = "" }: { title: string; href?: string; right?: React.ReactNode; className?: string }) {
   return (
-    <header className="z-10 flex h-12 items-center gap-2 border-b border-line bg-bar px-2 max-md:sticky max-md:top-0 md:h-14 md:border-0 md:bg-transparent md:px-0">
+    <header className={`z-10 flex h-12 items-center gap-2 border-b border-line bg-bar px-2 max-md:sticky max-md:top-0 md:h-14 md:border-0 md:bg-transparent md:px-0 ${className}`}>
       <Link href={href} className="grid h-11 w-11 place-items-center rounded-full text-xl text-ink hover:bg-chip" aria-label="뒤로">
         ‹
       </Link>

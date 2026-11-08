@@ -2,7 +2,7 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
-import type { FilterSpecification, GeoJSONSource, Map as MlMap, SymbolLayerSpecification } from "maplibre-gl";
+import type { ExpressionSpecification, GeoJSONSource, Map as MlMap, SymbolLayerSpecification } from "maplibre-gl";
 import { won } from "@/lib/filters";
 import { freshness } from "@/lib/freshness";
 import { derive, findPreset } from "@/lib/theme";
@@ -10,7 +10,7 @@ import type { Store } from "@/lib/types";
 import { isPending } from "@/lib/wiki";
 import { MAP_CREDIT, REAL_FADE, dongyeoStyle, type ZoomMode } from "./dongyeoStyle";
 import { createRealMap, type RealMap } from "./realMap";
-import { STAMP_ICON_OFFSET, provideStamps } from "./stamps";
+import { provideStamps } from "./stamps";
 
 type LatLng = { lat: number; lng: number };
 
@@ -35,7 +35,6 @@ const START: [number, number] = [126.928, 37.5555];
 const KOREAN_SERIF = "'Nanum Myeongjo', 'Noto Serif KR', Batang, '바탕', AppleMyungjo, serif";
 
 const clip = (name: string) => (name.length > 20 ? `${name.slice(0, 20)}…` : name);
-const rot = (id: string) => ([...id].reduce((a, c) => a + c.charCodeAt(0), 0) % 9) - 4; // 도장을 살짝 비뚤게
 
 function toGeoJSON(stores: Store[], showName = false): GeoJSON.FeatureCollection {
   const now = new Date();
@@ -50,7 +49,6 @@ function toGeoJSON(stores: Store[], showName = false): GeoJSON.FeatureCollection
         spice: s.spice,
         grade: s.grade,
         stale: freshness(s, now) === "stale",
-        rot: rot(s.id),
         // 도장 밑 글자: 대표 가격 + 별점 (확인 중인 가게는 그렇게 적는다)
         label: showName ? clip(s.name) : `${won(s.price)}${isPending(s, now) ? " · 확인 중" : s.rating?.count ? ` · ${s.rating.avg.toFixed(1)}점` : ""}`,
       },
@@ -171,15 +169,10 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
           layout: { "text-field": ["get", "point_count_abbreviated"], "text-font": ["Noto Sans Bold"], "text-size": 13, "text-allow-overlap": true },
           paint: { "text-color": t.map.onprimary },
         });
-        m.addLayer({
-          id: "stamp-ring", type: "circle", source: "stores", filter: selFilter(selectedId),
-          paint: { "circle-radius": 24, "circle-color": "rgba(0,0,0,0)", "circle-stroke-width": 2.5, "circle-stroke-color": t.map.primary },
-        });
+        // 핀 = 고추 개수 알약 (11-08). 고른 가게는 바깥 테두리가 있는 그림(stamp-sel-N)으로 바꾸고 맨 위에 그린다
         const stampLayout: SymbolLayerSpecification["layout"] = {
-          "icon-image": ["concat", "stamp-", ["to-string", ["get", "spice"]]],
-          "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.68, 1],
-          "icon-rotate": ["get", "rot"],
-          "icon-offset": [0, STAMP_ICON_OFFSET], // 도장 중심이 가게 위치에 오게(아래 고추 알약만큼 올림)
+          "icon-image": pinImage(selectedId),
+          "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.8, 1],
           "icon-allow-overlap": true,
         };
         // 안 보이는 도장: 길·건물·상호 이름만 도장을 비켜 가게 한다. 역·동네 이름은 이 층보다 위라 밀려나지 않는다.
@@ -191,14 +184,14 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         }
         m.addLayer({
           id: "stamps", type: "symbol", source: "stores", filter: ["!", ["has", "point_count"]],
-          layout: { ...stampLayout, "icon-ignore-placement": true, "symbol-sort-key": ["get", "spice"] },
+          layout: { ...stampLayout, "icon-ignore-placement": true, "symbol-sort-key": pinSort(selectedId) },
           // 마지막 확인 180일 넘은 가게 = 바랜 도장
           paint: { "icon-opacity": ["case", ["get", "stale"], 0.42, 1] },
         });
         // 확대하면 도장 밑에 가격·별점. 지도만 봐도 고를 수 있게 한다. 자리가 없으면 글자만 빠진다.
         m.addLayer({
           id: "stamp-label", type: "symbol", source: "stores", minzoom: 14.5, filter: ["!", ["has", "point_count"]],
-          layout: { "text-field": ["get", "label"], "text-font": ["Noto Sans Bold"], "text-size": 11.5, "text-anchor": "top", "text-offset": [0, 2.5], "text-padding": 1 },
+          layout: { "text-field": ["get", "label"], "text-font": ["Noto Sans Bold"], "text-size": 11.5, "text-anchor": "top", "text-offset": [0, 1.25], "text-padding": 1 },
           paint: { "text-color": t.map.mInk, "text-halo-color": t.map.paper, "text-halo-width": 1.8 },
         });
         m.addLayer({ id: "me-halo", type: "circle", source: "me", paint: { "circle-radius": 18, "circle-color": t.css.loc, "circle-opacity": 0.18 } });
@@ -219,7 +212,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
           m.on("mouseleave", id, () => (m.getCanvas().style.cursor = ""));
         }
         if (mouse) {
-          const tip = new ml.Popup({ closeButton: false, closeOnClick: false, offset: 30, className: "stamp-tip" });
+          const tip = new ml.Popup({ closeButton: false, closeOnClick: false, offset: 16, className: "stamp-tip" });
           m.on("mousemove", "stamps", (e) => {
             const f = e.features?.[0];
             if (f) tip.setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number]).setText(`${f.properties.name} · ${f.properties.price}`).addTo(m);
@@ -253,7 +246,9 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   }, [stores]);
 
   useEffect(() => {
-    if (ready.current) mapRef.current?.setFilter("stamp-ring", selFilter(selectedId));
+    if (!ready.current || !mapRef.current) return;
+    mapRef.current.setLayoutProperty("stamps", "icon-image", pinImage(selectedId));
+    mapRef.current.setLayoutProperty("stamps", "symbol-sort-key", pinSort(selectedId));
   }, [selectedId]);
 
   useEffect(() => {
@@ -290,8 +285,16 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   );
 }
 
-const selFilter = (id: string | null) =>
-  ["all", ["!", ["has", "point_count"]], ["==", ["get", "id"], id ?? ""]] as FilterSpecification;
+// 고른 가게 = 바깥 테두리 있는 알약, 나머지 = 보통 알약
+const isSel = (id: string | null): ExpressionSpecification => ["==", ["get", "id"], id ?? ""];
+const pinImage = (id: string | null): ExpressionSpecification => [
+  "case",
+  isSel(id),
+  ["concat", "stamp-sel-", ["to-string", ["get", "spice"]]],
+  ["concat", "stamp-", ["to-string", ["get", "spice"]]],
+];
+// 매운 집이 위에, 고른 가게는 맨 위에
+const pinSort = (id: string | null): ExpressionSpecification => ["case", isSel(id), 99, ["get", "spice"]];
 
 function meData(me: LatLng | null): GeoJSON.FeatureCollection {
   return {

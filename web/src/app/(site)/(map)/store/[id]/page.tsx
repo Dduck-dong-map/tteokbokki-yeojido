@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import AddToList from "@/components/lists/AddToList";
 import FlipStamp from "@/components/store/FlipStamp";
 import SaveButton from "@/components/store/SaveButton";
 import { AddPhoto, CopyAddress, FlagReviewButton, MoreActions, ReviewForm, StillHere, VerifyBar } from "@/components/store/StoreActions";
@@ -13,7 +14,7 @@ import { kakaoDirections, naverDirections } from "@/lib/directions";
 import { won } from "@/lib/filters";
 import { confirmedAgo, freshness, hoursText, todayHoursText } from "@/lib/freshness";
 import { GRADES, RICE_CAKES, SHOP_TYPES, SIDES, SPICE_LEVELS, STALE_DAYS, STYLES, TASTES, USAGES } from "@/lib/taxonomy";
-import { isPending } from "@/lib/wiki";
+import { isPending, updateReasons } from "@/lib/wiki";
 
 export async function generateStaticParams() {
   return (await getStores()).map((s) => ({ id: s.id }));
@@ -52,7 +53,7 @@ function Head({ name, right }: { name?: string; right?: React.ReactNode }) {
 }
 
 // 가게 상세 · 위치 · 길찾기 (보드 N-05 + WB-01, 웹 1차 기획 M-W-02)
-// 순서: 이름·종류·맵기 도장 → 동·거리·영업 → 대표 가격 → 위치 지도 → 주소 → 길찾기 → 소개글 → 사진 → 메뉴판 → 가게 정보 → 평가 → 마지막 확인 → 고치기 넷.
+// 순서: 이름·종류·맵기 도장 → 동·거리·영업 → 대표 가격 → 위치 지도 → 주소 → 길찾기 → 소개글 → 사진 → 메뉴판 → 가게 정보 → 평가 → 마지막 확인 → 함께 고치기(빠진 정보 + 고치기 넷).
 // PC는 옆 큰 지도가 작은 지도를 대신한다.
 export default function StorePage({ params }: PageProps<"/store/[id]">) {
   return (
@@ -77,6 +78,7 @@ async function StoreDetail({ id }: { id: string }) {
   const written = reviews.filter((r) => r.text);
   const place = [getRegion(s.gu)?.name, s.dong].filter(Boolean).join(" ");
   const today = todayHoursText(s.hours, now);
+  const why = gone || pending ? [] : updateReasons(s, now);
 
   return (
     <div className="min-h-dvh bg-surface pb-10 md:min-h-full">
@@ -106,7 +108,7 @@ async function StoreDetail({ id }: { id: string }) {
           <p className="rounded-xl bg-chip px-3 py-2 text-[13px] text-ink2">오래된 정보일 수 있어요. 마지막 확인이 {STALE_DAYS}일을 넘었어요.</p>
         )}
 
-        {/* 머리: 도장(누르면 표정) + 이름 + 종류 */}
+        {/* 머리: 도장(누르면 표정) + 이름 + 종류. 11-08 사진으로 바꿔 봤다가 사용자 「도장 위치가 제일 낫다」로 되돌림 (보드 WB-06) */}
         <div className="flex items-center gap-3">
           <FlipStamp n={s.spice} size={44} faded={fresh !== "fresh"} />
           <div className="min-w-0">
@@ -165,6 +167,9 @@ async function StoreDetail({ id }: { id: string }) {
         </div>
         <p className="-mt-1.5 text-[12px] text-ink3 md:hidden">앱이 깔려 있으면 앱으로, 없으면 웹으로 열려요.</p>
 
+        {/* 내 맛지도 리스트에 담기 (11-08) */}
+        {!gone && <AddToList storeId={s.id} />}
+
         {pending && !gone && <VerifyBar id={s.id} by={s.by} yes={s.verify?.yes ?? 0} no={s.verify?.no ?? 0} />}
 
         {/* 소개글: 가게당 한 편, 누구나 고치고 이력에 남는다 */}
@@ -193,7 +198,7 @@ async function StoreDetail({ id }: { id: string }) {
         </section>
 
         {/* 사진 */}
-        <section className={SECTION}>
+        <section id="store-photos" className={`${SECTION} scroll-mt-16`}>
           <h2 className="text-[16px] font-bold">사진</h2>
           {s.photos?.length ? (
             <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none]">
@@ -272,7 +277,27 @@ async function StoreDetail({ id }: { id: string }) {
           <StillHere id={s.id} lat={s.lat} lng={s.lng} />
         </section>
 
-        <MoreActions id={s.id} name={s.name} />
+        {/* 함께 고치기 (11-08 메뉴에서 이곳으로 옮김): 이 가게에 빠졌거나 오래된 정보 + 고치기 넷 */}
+        <section className={SECTION}>
+          <h2 className="flex items-baseline justify-between text-[16px] font-bold">
+            함께 고치기 <span className="text-[12px] font-normal text-ink3">가입 없이 누구나</span>
+          </h2>
+          {why.length > 0 ? (
+            <>
+              <p className="text-[13px] text-ink2">빠졌거나 오래된 정보가 있어요. 아시는 만큼만 채워 주세요.</p>
+              <p className="flex flex-wrap gap-1">
+                {why.map((w) => (
+                  <span key={w} className="rounded-full bg-chip px-2 text-[12px] leading-6 text-ink2">
+                    {w}
+                  </span>
+                ))}
+              </p>
+            </>
+          ) : (
+            <p className="text-[13px] text-ink2">달라진 게 보이면 고쳐 주세요. 고친 내용은 변경 이력에 남아요.</p>
+          )}
+          <MoreActions id={s.id} name={s.name} />
+        </section>
       </div>
     </div>
   );

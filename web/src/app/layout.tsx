@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
+import StudioBridge from "@/components/StudioBridge";
 import { USING_SAMPLE_DATA } from "@/lib/data";
 import { FONT_BOOT } from "@/lib/fonts";
 import { PALETTE_BOOT, paletteCss } from "@/lib/theme";
@@ -33,7 +34,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: PALETTE_BOOT }} />
         <script dangerouslySetInnerHTML={{ __html: FONT_BOOT }} />
       </head>
-      <body className="min-h-dvh antialiased">{children}</body>
+      <body className="min-h-dvh antialiased">
+        {children}
+        <StudioBridge />
+      </body>
     </html>
   );
 }

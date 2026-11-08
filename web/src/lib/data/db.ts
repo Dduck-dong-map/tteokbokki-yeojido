@@ -5,6 +5,8 @@ import { distanceM, won } from "../filters";
 import { GRADES, RICE_CAKES, SPICE_LEVELS, STYLES, USAGES } from "../taxonomy";
 import type { Change, HistoryItem, HistoryKind, Review, Store } from "../types";
 import { DAILY_LIMIT, DUP_RADIUS_M, HIDE_AT, MAX_PHOTOS, VERIFY_YES, isPending, parseAddress, type FlagReason, type NewStoreInput, type StorePatch } from "../wiki";
+import { DAILY_COMMENTS, DAILY_LISTS, DAILY_POSTS, MAX_LIST_STORES, type BoardCat, type ListVisibility, type Owned, type PlaceList, type Post, type PostComment } from "../community";
+import { SAMPLE_LISTS, SAMPLE_POSTS } from "./sample-community";
 import { SAMPLE_HISTORY, SAMPLE_NEW, SAMPLE_REVIEWS, SAMPLE_STORES } from "./sample-stores";
 
 // 저장소: 지금은 서버 폴더의 JSON 파일 하나다 (web/.data/db.json · 깃에 안 올라간다).
@@ -24,11 +26,46 @@ type LogRow = HistoryItem & Mark & { storeId: string };
 type ReviewRow = Review & Mark & { storeId: string; hidden?: boolean; flags?: Mark[] };
 type VoteRow = Mark & { storeId: string; ok: boolean; at: string };
 type FlagRow = Mark & { storeId: string; reason: FlagReason; at: string };
-type Db = { stores: Store[]; logs: LogRow[]; reviews: ReviewRow[]; votes: VoteRow[]; flags: FlagRow[] };
+// 떡볶이방 · 맛집 리스트 (11-08). Mark 는 쓴 사람·만든 사람 — 「내 것」을 가르는 데만 쓴다.
+type PostRow = Post & Mark & { hidden?: boolean; flags?: Mark[] };
+type CommentRow = PostComment & Mark & { postId: string; hidden?: boolean; flags?: Mark[] };
+type ListRow = PlaceList & Mark;
+type LikeRow = Mark & { listId: string; at: string };
+type PostLikeRow = Mark & { postId: string; at: string };
+type Db = {
+  stores: Store[];
+  logs: LogRow[];
+  reviews: ReviewRow[];
+  votes: VoteRow[];
+  flags: FlagRow[];
+  posts: PostRow[];
+  comments: CommentRow[];
+  lists: ListRow[];
+  likes: LikeRow[];
+  postLikes: PostLikeRow[];
+};
 
 const isoDay = (t = Date.now()) => new Date(t + 9 * 3_600_000).toISOString().slice(0, 10);
 const daysAgo = (n: number) => isoDay(Date.now() - n * 86_400_000);
+const isoAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
 const SEED_MARK: Mark = { device: "seed", ip: "seed" };
+
+// 예전 db.json 에는 게시판·리스트 칸이 없다 → 처음 읽을 때 예시로 채운다
+function withCommunity(db: Db): Db {
+  if (!db.posts) {
+    db.posts = SAMPLE_POSTS.map((p) => ({ ...SEED_MARK, id: p.id, at: isoAgo(p.daysAgo), who: p.who, cat: p.cat, title: p.title, body: p.body, storeId: p.storeId, comments: p.comments.length, likes: p.likes, isSample: true }));
+    db.comments = SAMPLE_POSTS.flatMap((p) =>
+      p.comments.map((c, i) => ({ ...SEED_MARK, id: `${p.id}-c${i}`, postId: p.id, at: isoAgo(p.daysAgo - 0.1 * (i + 1)), who: c.who, text: c.text })),
+    );
+  }
+  db.comments ??= [];
+  if (!db.lists) {
+    db.lists = SAMPLE_LISTS.map((l) => ({ ...SEED_MARK, id: l.id, title: l.title, desc: l.desc, storeIds: l.storeIds, who: l.who, createdAt: isoAgo(l.daysAgo), updatedAt: isoAgo(l.daysAgo), visibility: l.visibility, likes: l.likes, isSample: true }));
+  }
+  db.likes ??= [];
+  db.postLikes ??= []; // 글 추천 (11-08 추가)
+  return db;
+}
 
 function seed(): Db {
   const stores: Store[] = SAMPLE_STORES.map((s) => {
@@ -44,14 +81,14 @@ function seed(): Db {
     reviews: SAMPLE_REVIEWS.map((r, i) => ({ ...SEED_MARK, id: `seed-rev-${i}`, storeId: r.storeId, at: `${daysAgo(r.daysAgo)}T12:00:00+09:00`, who: r.who, stars: r.stars, spice: r.spice, text: r.text })),
     votes: [],
     flags: [],
-  };
+  } as unknown as Db;
 }
 
 async function load(): Promise<Db> {
   try {
-    return JSON.parse(await readFile(DB_FILE, "utf8")) as Db;
+    return withCommunity(JSON.parse(await readFile(DB_FILE, "utf8")) as Db);
   } catch (e) {
-    if ((e as NodeJS.ErrnoException).code === "ENOENT") return seed();
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return withCommunity(seed());
     throw e;
   }
 }
@@ -364,5 +401,252 @@ export function flagReview(reviewId: string, who: Who) {
     r.flags = [...flags, m];
     if (r.flags.length >= HIDE_AT) r.hidden = true;
     return { ok: true };
+  });
+}
+
+// ═════════ 떡볶이방(게시판) · 맛집 리스트 (11-08) ═════════
+// 로그인이 없으므로 「내 것」은 기기 표시가 같은지로만 가른다 (접속 위치는 같은 와이파이를 쓰는 남의 것일 수 있다).
+
+const NO_DEVICE = hash("no-device");
+const owns = (row: Mark, m: Mark) => m.device !== NO_DEVICE && row.device === m.device;
+const within24h = (at: string) => new Date(at).getTime() > Date.now() - 86_400_000;
+const toPost = ({ id, at, who, cat, title, body, storeId, comments, likes, isSample }: PostRow): Post => ({ id, at, who, cat, title, body, storeId, comments, likes: likes ?? 0, isSample });
+const toList = ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes, isSample }: ListRow): PlaceList => ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes, isSample });
+
+// ───────── 읽기 ─────────
+
+export async function readPosts(): Promise<Post[]> {
+  return (await load()).posts.filter((p) => !p.hidden).sort((a, b) => b.at.localeCompare(a.at)).map(toPost);
+}
+
+export async function readPost(id: string): Promise<{ post: Post; comments: PostComment[] } | undefined> {
+  const db = await load();
+  const p = db.posts.find((x) => x.id === id && !x.hidden);
+  if (!p) return undefined;
+  const comments = db.comments
+    .filter((c) => c.postId === id && !c.hidden)
+    .sort((a, b) => a.at.localeCompare(b.at))
+    .map(({ id, at, who, text }) => ({ id, at, who, text }));
+  return { post: toPost(p), comments };
+}
+
+export async function readPublicLists(): Promise<PlaceList[]> {
+  return (await load()).lists.filter((l) => l.visibility === "public").map(toList);
+}
+
+// 링크로만 공유한 리스트도 주소를 아는 사람은 연다
+export async function readList(id: string) {
+  const l = (await load()).lists.find((x) => x.id === id);
+  return l ? toList(l) : undefined;
+}
+
+// 이 기기가 만든 리스트 · 쓴 글 · 쓴 댓글 · 추천한 리스트
+export async function readOwned(device: string): Promise<Owned> {
+  const m: Mark = { device: hash(device), ip: "" };
+  if (m.device === NO_DEVICE) return { lists: [], posts: [], comments: [], liked: [], likedPosts: [] };
+  const db = await load();
+  return {
+    lists: db.lists.filter((l) => owns(l, m)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map(toList),
+    posts: db.posts.filter((p) => owns(p, m)).map((p) => p.id),
+    comments: db.comments.filter((c) => owns(c, m)).map((c) => c.id),
+    liked: db.likes.filter((k) => k.device === m.device).map((k) => k.listId),
+    likedPosts: db.postLikes.filter((k) => k.device === m.device).map((k) => k.postId),
+  };
+}
+
+// ───────── 게시판 쓰기 ─────────
+
+export function addPost(input: { cat: BoardCat; title: string; body: string; storeId?: string }, who: Who) {
+  return mutate((db): { ok: true; id: string } | Fail => {
+    const m = mark(who);
+    if (db.posts.filter((p) => same(p, m) && within24h(p.at)).length >= DAILY_POSTS) return fail("오늘은 글을 많이 써 주셨어요. 내일 다시 부탁드려요", 429);
+    if (input.storeId && !db.stores.some((s) => s.id === input.storeId)) return fail("붙인 가게를 찾지 못했어요");
+    const id = `p-${randomUUID().slice(0, 8)}`;
+    db.posts.push({ ...m, id, at: new Date().toISOString(), who: who.nick, cat: input.cat, title: input.title.trim(), body: input.body.trim(), storeId: input.storeId || undefined, comments: 0, likes: 0 });
+    return { ok: true, id };
+  });
+}
+
+export function deletePost(id: string, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    const p = db.posts.find((x) => x.id === id);
+    if (!p) return fail("글을 찾지 못했어요", 404);
+    if (!owns(p, mark(who))) return fail("이 기기에서 쓴 글만 지울 수 있어요", 403);
+    db.posts.splice(db.posts.indexOf(p), 1);
+    db.comments = db.comments.filter((c) => c.postId !== id);
+    db.postLikes = db.postLikes.filter((k) => k.postId !== id);
+    return { ok: true };
+  });
+}
+
+const countComments = (db: Db, postId: string) => db.comments.filter((c) => c.postId === postId && !c.hidden).length;
+
+export function addComment(postId: string, text: string, who: Who) {
+  return mutate((db): { ok: true; id: string } | Fail => {
+    const p = db.posts.find((x) => x.id === postId && !x.hidden);
+    if (!p) return fail("글을 찾지 못했어요", 404);
+    const m = mark(who);
+    if (db.comments.filter((c) => same(c, m) && within24h(c.at)).length >= DAILY_COMMENTS) return fail("오늘은 댓글을 많이 써 주셨어요. 내일 다시 부탁드려요", 429);
+    const id = `c-${randomUUID().slice(0, 8)}`;
+    db.comments.push({ ...m, id, postId, at: new Date().toISOString(), who: who.nick, text: text.trim() });
+    p.comments = countComments(db, postId);
+    return { ok: true, id };
+  });
+}
+
+export function deleteComment(commentId: string, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    const c = db.comments.find((x) => x.id === commentId);
+    if (!c) return fail("댓글을 찾지 못했어요", 404);
+    if (!owns(c, mark(who))) return fail("이 기기에서 쓴 댓글만 지울 수 있어요", 403);
+    db.comments.splice(db.comments.indexOf(c), 1);
+    const p = db.posts.find((x) => x.id === c.postId);
+    if (p) p.comments = countComments(db, p.id);
+    return { ok: true };
+  });
+}
+
+// 글 추천(엄지척): 리스트 추천과 같은 규칙. 기기마다 글 하나에 한 번, 다시 누르면 취소, 내 글은 추천하지 않는다.
+export function likePost(id: string, who: Who) {
+  return mutate((db): { ok: true; liked: boolean; likes: number } | Fail => {
+    const p = db.posts.find((x) => x.id === id && !x.hidden);
+    if (!p) return fail("글을 찾지 못했어요", 404);
+    const m = mark(who);
+    if (m.device === NO_DEVICE) return fail("이 브라우저에서는 추천할 수 없어요", 400);
+    if (owns(p, m)) return fail("내가 쓴 글은 추천할 수 없어요", 409);
+    const old = db.postLikes.find((k) => k.postId === id && k.device === m.device);
+    p.likes ??= 0;
+    if (old) {
+      db.postLikes.splice(db.postLikes.indexOf(old), 1);
+      p.likes = Math.max(0, p.likes - 1);
+    } else {
+      db.postLikes.push({ ...m, postId: id, at: new Date().toISOString() });
+      p.likes += 1;
+    }
+    return { ok: true, liked: !old, likes: p.likes };
+  });
+}
+
+// 신고: 같은 기기·접속 위치는 한 번. HIDE_AT 명이 쌓이면 가린다 (후기 신고와 같은 규칙)
+export function flagPost(id: string, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    const p = db.posts.find((x) => x.id === id);
+    if (!p) return fail("글을 찾지 못했어요", 404);
+    const m = mark(who);
+    const flags = p.flags ?? [];
+    if (flags.some((f) => same(f, m))) return fail("이미 신고해 주셨어요. 고마워요!", 409);
+    p.flags = [...flags, m];
+    if (p.flags.length >= HIDE_AT) p.hidden = true;
+    return { ok: true };
+  });
+}
+
+export function flagComment(id: string, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    const c = db.comments.find((x) => x.id === id);
+    if (!c) return fail("댓글을 찾지 못했어요", 404);
+    const m = mark(who);
+    const flags = c.flags ?? [];
+    if (flags.some((f) => same(f, m))) return fail("이미 신고해 주셨어요. 고마워요!", 409);
+    c.flags = [...flags, m];
+    if (c.flags.length >= HIDE_AT) {
+      c.hidden = true;
+      const p = db.posts.find((x) => x.id === c.postId);
+      if (p) p.comments = countComments(db, p.id);
+    }
+    return { ok: true };
+  });
+}
+
+// ───────── 맛집 리스트 쓰기 ─────────
+
+function findOwnList(db: Db, id: string, who: Who): ListRow | Fail {
+  const l = db.lists.find((x) => x.id === id);
+  if (!l) return fail("리스트를 찾지 못했어요", 404);
+  if (!owns(l, mark(who))) return fail("이 기기에서 만든 리스트만 고칠 수 있어요", 403);
+  return l;
+}
+const isFail = (v: ListRow | Fail): v is Fail => "ok" in v && v.ok === false;
+
+export function createList(input: { title: string; desc?: string; visibility: ListVisibility; storeIds?: string[] }, who: Who) {
+  return mutate((db): { ok: true; id: string } | Fail => {
+    const m = mark(who);
+    if (m.device === NO_DEVICE) return fail("이 브라우저에서는 리스트를 만들 수 없어요. 다른 브라우저로 열어 주세요", 400);
+    if (db.lists.filter((l) => same(l, m) && within24h(l.createdAt)).length >= DAILY_LISTS) return fail("오늘은 리스트를 많이 만들어 주셨어요. 내일 다시 부탁드려요", 429);
+    const known = new Set(db.stores.map((s) => s.id));
+    const storeIds = [...new Set(input.storeIds ?? [])].filter((s) => known.has(s)).slice(0, MAX_LIST_STORES);
+    const now = new Date().toISOString();
+    const id = `l-${randomUUID().slice(0, 8)}`;
+    db.lists.push({ ...m, id, title: input.title.trim(), desc: input.desc?.trim() || undefined, storeIds, who: who.nick, createdAt: now, updatedAt: now, visibility: input.visibility, likes: 0 });
+    return { ok: true, id };
+  });
+}
+
+export function updateList(id: string, patch: { title?: string; desc?: string | null; visibility?: ListVisibility }, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    const l = findOwnList(db, id, who);
+    if (isFail(l)) return l;
+    if (patch.title !== undefined) l.title = patch.title.trim();
+    if (patch.desc !== undefined) l.desc = patch.desc?.trim() || undefined;
+    if (patch.visibility !== undefined) l.visibility = patch.visibility;
+    l.updatedAt = new Date().toISOString();
+    return { ok: true };
+  });
+}
+
+export type ListStoreOp = { kind: "add"; storeId: string } | { kind: "remove"; storeId: string } | { kind: "move"; storeId: string; dir: -1 | 1 };
+
+// 가게 넣기 · 빼기 · 순서 바꾸기
+export function editListStores(id: string, op: ListStoreOp, who: Who) {
+  return mutate((db): { ok: true; storeIds: string[] } | Fail => {
+    const l = findOwnList(db, id, who);
+    if (isFail(l)) return l;
+    const at = l.storeIds.indexOf(op.storeId);
+    if (op.kind === "add") {
+      if (at >= 0) return fail("이미 이 리스트에 있어요", 409);
+      if (!db.stores.some((s) => s.id === op.storeId)) return fail("가게를 찾지 못했어요", 404);
+      if (l.storeIds.length >= MAX_LIST_STORES) return fail(`리스트 하나에 ${MAX_LIST_STORES}곳까지 담을 수 있어요`);
+      l.storeIds.push(op.storeId);
+    } else if (op.kind === "remove") {
+      if (at < 0) return fail("이 리스트에 없는 가게예요", 404);
+      l.storeIds.splice(at, 1);
+    } else {
+      const to = at + op.dir;
+      if (at < 0 || to < 0 || to >= l.storeIds.length) return fail("더 옮길 수 없어요");
+      [l.storeIds[at], l.storeIds[to]] = [l.storeIds[to], l.storeIds[at]];
+    }
+    l.updatedAt = new Date().toISOString();
+    return { ok: true, storeIds: l.storeIds };
+  });
+}
+
+export function deleteList(id: string, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    const l = findOwnList(db, id, who);
+    if (isFail(l)) return l;
+    db.lists.splice(db.lists.indexOf(l), 1);
+    db.likes = db.likes.filter((k) => k.listId !== id);
+    return { ok: true };
+  });
+}
+
+// 추천: 기기마다 리스트 하나에 한 번, 다시 누르면 취소. 내가 만든 리스트는 추천하지 않는다.
+// 같은 와이파이(학교·회사)에 여러 사람이 있을 수 있어 접속 위치로는 막지 않는다.
+export function likeList(id: string, who: Who) {
+  return mutate((db): { ok: true; liked: boolean; likes: number } | Fail => {
+    const l = db.lists.find((x) => x.id === id);
+    if (!l) return fail("리스트를 찾지 못했어요", 404);
+    const m = mark(who);
+    if (m.device === NO_DEVICE) return fail("이 브라우저에서는 추천할 수 없어요", 400);
+    if (owns(l, m)) return fail("내가 만든 리스트는 추천할 수 없어요", 409);
+    const old = db.likes.find((k) => k.listId === id && k.device === m.device);
+    if (old) {
+      db.likes.splice(db.likes.indexOf(old), 1);
+      l.likes = Math.max(0, l.likes - 1);
+    } else {
+      db.likes.push({ ...m, listId: id, at: new Date().toISOString() });
+      l.likes += 1;
+    }
+    return { ok: true, liked: !old, likes: l.likes };
   });
 }

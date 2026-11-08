@@ -1,5 +1,5 @@
 import type { Store } from "../types";
-import { readHistory, readRecentCount, readReviews, readStore, readStores } from "./db";
+import { readHistory, readList, readPost, readPosts, readPublicLists, readRecentCount, readReviews, readStore, readStores } from "./db";
 import { REGIONS } from "./sample-stores";
 
 // 화면이 데이터를 꺼내는 곳은 여기 하나로 모은다. 저장 방식은 db.ts 안에서만 바꾼다.
@@ -17,6 +17,12 @@ export const getReviews = readReviews;
 export const getHistory = readHistory;
 
 export const getRecentReportCount = () => readRecentCount(7);
+
+// 떡볶이방 · 맛집 리스트 (11-08)
+export const getPosts = readPosts;
+export const getPost = readPost;
+export const getPublicLists = readPublicLists;
+export const getList = readList;
 
 export function getRegions() {
   return REGIONS;

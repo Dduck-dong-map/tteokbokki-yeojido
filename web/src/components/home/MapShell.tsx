@@ -319,7 +319,8 @@ export default function MapShell({ stores, recentReports, sample, children }: { 
                   </div>
                 </div>
 
-                <div className={`min-h-0 flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)] ${sheet === "peek" ? "max-md:hidden" : ""}`}>
+                {/* PC 가게 줄 칸은 흰 바탕(--panel, 사용자 11-08). 폰 시트는 그대로 */}
+                <div className={`min-h-0 flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)] md:bg-panel ${sheet === "peek" ? "max-md:hidden" : ""}`}>
                   {list.length > 0 ? (
                     <ul ref={listRef} className="divide-y divide-line" onKeyDown={onListKey}>
                       {list.map((s) => (
