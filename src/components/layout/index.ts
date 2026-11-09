@@ -3,3 +3,6 @@ export { NAV, type NavKey } from "./nav";
 export { BottomNav } from "./BottomNav";
 export { BackHeader } from "./BackHeader";
 export { GRID_UL, GRID_LI } from "./grid";
+export { default as SiteHeaderView } from "./SiteHeaderView";
+export { default as SearchBoxView } from "./SearchBoxView";
+export type { SiteHeaderViewProps, SearchBoxViewProps } from "./types";

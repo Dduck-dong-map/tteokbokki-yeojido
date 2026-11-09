@@ -7,7 +7,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
   return (
     <>
       {/* 새로 등록한 가게 주소는 미리 그려 둘 수 없어 현재 주소를 읽는 헤더는 Suspense 안에 둔다 */}
-      <Suspense fallback={<div className="hidden h-14 border-b border-line bg-bar md:block" />}>
+      <Suspense fallback={<div className="hidden h-14 border-b border-border bg-background md:block" />}>
         <SiteHeader />
       </Suspense>
       {children}
