@@ -4,41 +4,48 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+  색 체계 (2026-11-09 리팩토링, 결정 R2 보류):
+  ┌ shadcn 변수 (--background --primary --card …)  : 이 파일 :root 에 팔레트 T2 값으로 고정. 새로 쓰는 shadcn 부품은 이것만 쓴다.
+  └ web 토큰 (--paper --ink --line …)              : lib/theme.ts 가 런타임에 :root 로 넣는다(?pal= 전환). 아직 안 옮긴 화면만 쓴다.
+  한 파일 안에 두 이름을 섞지 않는다. R2 가 정해지면 한쪽을 지운다.
+  gstack-shortcut(dec-R2): 토큰 두 벌 공존, R2 결정 시 정리
+  이름 충돌: --primary 는 양쪽이 같은 뜻·같은 값(옥빛)이라 공유. --accent 는 뜻이 달라(web=링크색, shadcn=hover 바탕)
+  shadcn 쪽을 --ui-accent 로 분리했다.
+*/
 @theme inline {
+  /* shadcn */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--ui-accent);
+  --color-accent-foreground: var(--ui-accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -46,85 +53,300 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  /* 우리 것: 고추장 포인트(로고·도장·등록 버튼) — 경고색(destructive)과 섞지 않는다 · 링크색 · 지도 종이 */
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-foreground: var(--brand-red-foreground);
+  --color-link: var(--link);
+  --color-map-paper: var(--map-paper);
+
+  /* web 토큰 (lib/theme.ts 가 값을 넣는다) */
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-ink3: var(--ink3);
+  --color-onprimary: var(--onprimary);
+  --color-fab: var(--fab);
+  --color-onfab: var(--onfab);
+  --color-onaccent: var(--onaccent);
+  --color-stampbg: var(--stampbg);
+  --color-bar: var(--bar);
+  --color-line: var(--line);
+  --color-chip: var(--chip);
+  --color-chipline: var(--chipline);
+  --color-spicybg: var(--spicybg);
+  --color-spicytext: var(--spicytext);
+  --color-loc: var(--loc);
+
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-serif: "Nanum Myeongjo", "Noto Serif KR", Batang, "바탕", AppleMyungjo, serif;
+  --font-heading: var(--font-sans);
 }
 
+/* 팔레트 T2 (11-08 기본: 흰 바탕 · 옥빛 버튼 · 고추장 포인트). 값의 출처 = docs/팔레트_shadcn_2026-11-01.md + lib/theme.ts T2 */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #ffffff;
+  --foreground: #1c1c1b;
+  --card: #ffffff;
+  --card-foreground: #1c1c1b;
+  --popover: #ffffff;
+  --popover-foreground: #1c1c1b;
+  --primary: #2a6159;
+  --primary-foreground: #ffffff;
+  --secondary: #ece8df;
+  --secondary-foreground: #1c1c1b;
+  --muted: #f1efe9;
+  --muted-foreground: #5f5c56;
+  --ui-accent: #ece8df;
+  --ui-accent-foreground: #1c1c1b;
+  --destructive: #b42318;
+  --border: #d9d4c9;
+  --input: #d9d4c9;
+  --ring: #2a6159;
+  /* 맵기 1~5 (팔레트 무관 고정, 기획안 v5 8절) */
+  --chart-1: #f2b78c;
+  --chart-2: #e3814d;
+  --chart-3: #c8102e;
+  --chart-4: #8e0b1f;
+  --chart-5: #4a0710;
+  --radius: 0.75rem;
+  --sidebar: #fdfcf9;
+  --sidebar-foreground: #1c1c1b;
+  --sidebar-primary: #2a6159;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ece8df;
+  --sidebar-accent-foreground: #1c1c1b;
+  --sidebar-border: #d9d4c9;
+  --sidebar-ring: #2a6159;
+  --brand-red: #b42318;
+  --brand-red-foreground: #ffffff;
+  --link: #2f6f70;
+  --map-paper: #f3f0e9;
 }
 
+/* 다크(N6 먹밤)는 아직 shadcn 변수로 옮기지 않았다. 필요해지면 theme.ts 의 derive() 값을 옮긴다 */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #1c1d1f;
+  --foreground: #ededed;
+  --card: #242628;
+  --card-foreground: #ededed;
+  --popover: #242628;
+  --popover-foreground: #ededed;
+  --primary: #ededed;
+  --primary-foreground: #1c1d1f;
+  --secondary: #2e3033;
+  --secondary-foreground: #ededed;
+  --muted: #2e3033;
+  --muted-foreground: #a8a8a8;
+  --ui-accent: #2e3033;
+  --ui-accent-foreground: #ededed;
+  --destructive: #e05a4f;
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 15%);
+  --ring: #8fb4e0;
+  --sidebar: #242628;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #8fb4e0;
+  --sidebar-primary-foreground: #1c1d1f;
+  --sidebar-accent: #2e3033;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-ring: #8fb4e0;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
   }
 }
+
+/* 아래는 web/ 에서 그대로 가져온 규칙. 바탕·글자색은 아직 web 토큰(theme.ts)이 정한다 (R2 보류) */
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  word-break: keep-all;
+  /* 띄어쓰기 없는 긴 글도 칸 안에서 줄을 바꾼다. 없으면 폰 화면 전체가 옆으로 밀린다 */
+  overflow-wrap: anywhere;
+}
+.admin-root {
+  overflow-wrap: normal;
+}
+
+/* 글꼴 시험 (lib/fonts.ts): ?logo= 는 로고 그림을 글자로, ?head= 는 화면 제목·가게 이름 글꼴을 바꾼다. 본문은 그대로. */
+.logo-text {
+  display: none;
+  font-family: var(--font-logo);
+  font-size: 28px;
+  line-height: 32px;
+  color: #c00000;
+  filter: var(--logo-filter);
+  white-space: nowrap;
+}
+html[data-logo] .logo-png {
+  display: none;
+}
+html[data-logo] .logo-text {
+  display: block;
+}
+html[data-head] :is(h1, h2, h3):not(.admin-root *) {
+  font-family: var(--font-head);
+  font-weight: 400;
+}
+
+/* 페이지 폭 (웹 1차 기획 3.2): 폰은 화면 가득, 768 이상은 위 헤더 56px 아래 가운데 정렬 */
+@layer components {
+  /* 폰에서 작은 글자 링크·단추도 손가락 44px 로 눌리게 한다 (REQ-W10). 모양은 그대로, 누르는 범위만 넓힌다 */
+  @media (pointer: coarse) {
+    .hit {
+      position: relative;
+    }
+    .hit::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
+  }
+  .page-wide,
+  .page-narrow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100dvh;
+    margin-inline: auto;
+    background: var(--paper);
+  }
+  .page-narrow {
+    max-width: 640px;
+  }
+  @media (min-width: 768px) {
+    .page-wide,
+    .page-narrow {
+      min-height: calc(100dvh - 56px);
+      padding-inline: 24px;
+      padding-bottom: 40px;
+    }
+    .page-wide {
+      max-width: 1168px;
+    }
+    .page-narrow {
+      max-width: 688px;
+    }
+  }
+}
+
+/* 도장에 마우스를 올리면 나오는 이름·가격 */
+.stamp-tip .maplibregl-popup-content {
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 700 13px var(--font-sans);
+  white-space: nowrap;
+}
+.stamp-tip .maplibregl-popup-tip {
+  display: none;
+}
+
+/* 지도 위 오른쪽 아래 출처 표기를 바탕색에 맞춘다 */
+.maplibregl-ctrl-attrib {
+  background: color-mix(in srgb, var(--surface) 80%, transparent) !important;
+  color: var(--ink3) !important;
+  font-size: 10px;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--ink2) !important;
+}
+.maplibregl-ctrl-bottom-left {
+  bottom: var(--attrib-bottom, 0px);
+}
+
+/* 아래에서 올라오는 시트 */
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sheet-up {
+  animation: sheet-up 0.22s ease-out;
+}
+
+/* 로딩 화면: 떡 문 호랑이 (components/loading). 한지 바탕은 바로 깔아 덜 된 화면을 가리고, 호랑이는 0.3초 뒤에 나타난다.
+   스크립트가 죽어도 9초 뒤에는 저절로 걷힌다. 폰에서 max-md:fixed 가 이기도록 components 층에 둔다 */
+@layer components {
+  .tiger-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    overflow: hidden;
+    background: var(--paper);
+    animation: tiger-stop 0.2s linear 9s forwards;
+  }
+  .tiger-loader > * { animation: tiger-in 0.2s ease-out 0.3s both; }
+  .tiger-leaving { animation: tiger-leave 0.2s linear forwards; }
+  .tiger-art { position: relative; width: 220px; height: 220px; }
+  .tiger-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
+    mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
+    transform-origin: 50% 90%;
+    animation: tiger-tilt 1.6s ease-in-out infinite;
+  }
+  .tiger-ho {
+    position: absolute;
+    left: 2px;
+    top: 92px;
+    font: 700 22px var(--font-serif);
+    color: var(--ink3);
+    opacity: 0;
+    animation: tiger-ho 1.6s ease-out infinite;
+  }
+  .tiger-ho-2 { left: -10px; top: 128px; animation-delay: 0.8s; }
+}
+@keyframes tiger-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tiger-stop { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+@keyframes tiger-leave { to { opacity: 0; } }
+@keyframes tiger-tilt {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50% { transform: rotate(3deg) scale(1.03); }
+}
+@keyframes tiger-ho {
+  0% { opacity: 0; transform: translate(14px, 10px) scale(0.8); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-8px, -26px) scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tiger-art img { animation: none; }
+  .tiger-ho { animation: none; opacity: 0.7; }
+}
+
+/* 가게 상세의 맵기 도장 뒤집기 (슬랙 10-28: 누르면 휙 돌아가며 표정) */
+.flip { perspective: 600px; }
+.flip-inner { position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1.1); }
+.flip.on .flip-inner { transform: rotateY(180deg); }
+.flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }
+/* 3D 뒷면 숨기기가 안 먹는 브라우저에서도 앞뒤가 겹치지 않게, 돌아가는 중간에 한 면씩만 보인다 */
+.flip-face { transition: opacity 0s linear 0.2s; }
+.flip-back { opacity: 0; }
+.flip.on .flip-back { opacity: 1; }
+.flip.on .flip-face:not(.flip-back) { opacity: 0; }

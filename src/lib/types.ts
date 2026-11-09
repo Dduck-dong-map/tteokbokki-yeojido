@@ -44,6 +44,9 @@ export type Store = {
   introAt?: string; // 소개글을 마지막으로 고친 날 YYYY-MM-DD
 };
 
+// 쓰기 요청이 거절될 때의 모양. lib/data/db.ts 가 만들고 app/api/* 가 그대로 응답으로 돌려준다 (request.ts 의 reply)
+export type Fail = { ok: false; error: string; existing?: string; status: number };
+
 export type StoreStatus = "active" | "hidden" | "closed";
 
 export type Region = { gu: string; name: string; city: "seoul" };

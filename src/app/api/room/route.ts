@@ -1,14 +1,12 @@
 import { addComment, addPost, deleteComment, deletePost, flagComment, flagPost, likePost } from "@/lib/data/db";
 import { checkComment, checkPost, type BoardCat } from "@/lib/community";
-import { bad, readJson, whoFrom } from "@/lib/request";
+import { bad, readJson, reply, whoFrom } from "@/lib/request";
 
 // 떡볶이방(게시판): 글 쓰기 · 지우기 · 댓글 · 신고. 지우기는 이 기기에서 쓴 것만 된다.
 export async function POST(req: Request) {
   const body = await readJson(req);
   if (!body) return bad("내용을 읽지 못했어요");
   const who = whoFrom(req, body.nick);
-  const reply = (res: { ok: true } | { ok: false; error: string; status: number }) =>
-    res.ok ? Response.json(res) : Response.json({ ok: false, error: res.error }, { status: res.status });
   const id = typeof body.id === "string" ? body.id : "";
 
   switch (body.action) {

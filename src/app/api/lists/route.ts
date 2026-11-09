@@ -1,6 +1,6 @@
 import { createList } from "@/lib/data/db";
 import { checkListInfo, type ListVisibility } from "@/lib/community";
-import { bad, readJson, whoFrom } from "@/lib/request";
+import { bad, readJson, reply, whoFrom } from "@/lib/request";
 
 // 맛집 리스트 새로 만들기 (내 맛지도). 처음부터 가게를 담아 만들 수도 있다 (가게 상세의 「리스트에 담기」).
 export async function POST(req: Request) {
@@ -13,5 +13,5 @@ export async function POST(req: Request) {
     { title: body.title as string, desc: typeof body.desc === "string" ? body.desc : undefined, visibility: (body.visibility as ListVisibility | undefined) ?? "public", storeIds },
     whoFrom(req, body.nick),
   );
-  return res.ok ? Response.json(res) : Response.json({ ok: false, error: res.error }, { status: res.status });
+  return reply(res);
 }

@@ -1,5 +1,5 @@
 import { confirmStill, editStore, flagReview, flagStore, reviewStore, verifyStore } from "@/lib/data/db";
-import { PHOTO_ID, bad, readJson, whoFrom } from "@/lib/request";
+import { PHOTO_ID, bad, readJson, reply, whoFrom } from "@/lib/request";
 import { FLAG_REASONS, checkPatch, checkReview, type FlagReason, type StorePatch } from "@/lib/wiki";
 
 // 가게 하나에 하는 일: 정보 고치기 · 아직 있어요 · 맞아요/달라요 · 평가 · 신고.
@@ -10,8 +10,6 @@ export async function POST(req: Request, ctx: RouteContext<"/api/stores/[id]">) 
   if (!body) return bad("내용을 읽지 못했어요");
   const who = whoFrom(req, body.nick);
 
-  const reply = (res: { ok: true } | { ok: false; error: string; status: number }) =>
-    res.ok ? Response.json(res) : Response.json({ ok: false, error: res.error }, { status: res.status });
 
   switch (body.action) {
     case "edit": {

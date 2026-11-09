@@ -1,9 +1,9 @@
 // 공유 허브(/share): 화면 설계 보드 · 출시 로드맵 · 허브 페이지를 docs/ 에서 public/share/ 로 복사한다.
 // 원본은 늘 docs/ 쪽이다. npm run dev / build 전에 저절로 돈다(package.json predev·prebuild). 복사본은 깃에 올리지 않는다.
-// Vercel 은 web/ 만 올라가서 ../docs 가 없다 → 그때는 건너뛰고, 올라간 public/share/ 를 그대로 쓴다.
+// 2026-11-09 web/ 해체로 루트에서 실행된다 (../docs → ./docs). docs 가 없는 환경에서는 건너뛰고 올라온 public/share/ 를 그대로 쓴다.
 import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
 
-const DOCS = "../docs";
+const DOCS = "./docs";
 const OUT = "public/share";
 
 if (!existsSync(DOCS)) {

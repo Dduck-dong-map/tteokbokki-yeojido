@@ -3,7 +3,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { distanceM, won } from "../filters";
 import { GRADES, RICE_CAKES, SPICE_LEVELS, STYLES, USAGES } from "../taxonomy";
-import type { Change, HistoryItem, HistoryKind, Review, Store } from "../types";
+import type { Change, Fail, HistoryItem, HistoryKind, Review, Store } from "../types";
 import { DAILY_LIMIT, DUP_RADIUS_M, HIDE_AT, MAX_PHOTOS, VERIFY_YES, isPending, parseAddress, type FlagReason, type NewStoreInput, type StorePatch } from "../wiki";
 import { DAILY_COMMENTS, DAILY_LISTS, DAILY_POSTS, MAX_LIST_STORES, type BoardCat, type ListVisibility, type Owned, type PlaceList, type Post, type PostComment } from "../community";
 import { SAMPLE_LISTS, SAMPLE_POSTS } from "./sample-community";
@@ -172,8 +172,7 @@ export async function readRecentCount(days = 7) {
 // ───────── 쓰기 ─────────
 // 결과는 { ok: true, … } 또는 { ok: false, error, existing? } 로 돌려준다
 
-type Fail = { ok: false; error: string; existing?: string; status: number };
-const fail = (error: string, status = 422, existing?: string): Fail => ({ ok: false, error, status, existing });
+const fail =(error: string, status = 422, existing?: string): Fail => ({ ok: false, error, status, existing });
 const norm = (s: string) => s.replace(/\s+/g, "").toLowerCase();
 
 function slugFor(db: Db) {

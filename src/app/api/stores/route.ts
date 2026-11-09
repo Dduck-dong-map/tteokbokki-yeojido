@@ -1,5 +1,5 @@
 import { addStore } from "@/lib/data/db";
-import { PHOTO_ID, bad, readJson, whoFrom } from "@/lib/request";
+import { PHOTO_ID, bad, readJson, reply, whoFrom } from "@/lib/request";
 import { checkNewStore, type NewStoreInput } from "@/lib/wiki";
 
 // 새 가게 등록: 사전 승인 없이 바로 지도에 올라가고, 일주일 동안 「확인 중」으로 보인다.
@@ -11,7 +11,6 @@ export async function POST(req: Request) {
   if (error) return bad(error, 422);
   if (input.photos!.some((p) => !PHOTO_ID.test(p))) return bad("사진을 다시 올려 주세요", 422);
 
-  const res = await addStore(input as NewStoreInput, whoFrom(req, body.nick));
-  if (!res.ok) return Response.json({ ok: false, error: res.error, existing: res.existing }, { status: res.status });
-  return Response.json(res, { status: 201 });
+  // 중복 가게면 existing(그 가게 id)이 함께 간다 → 화면이 「그 가게 보기」를 띄운다
+  return reply(await addStore(input as NewStoreInput, whoFrom(req, body.nick)), 201);
 }
