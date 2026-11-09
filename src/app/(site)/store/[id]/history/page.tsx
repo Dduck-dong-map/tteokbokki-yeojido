@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { BackHeader } from "@/components/layout";
 import { getHistory, getStore } from "@/lib/data";
 import type { HistoryKind } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "변경 이력", robots: { index: false } };
 
@@ -42,29 +43,30 @@ async function Loader({ params }: Pick<PageProps<"/store/[id]/history">, "params
   return (
     <>
       <BackHeader title="변경 이력" href={`/store/${id}`} />
-      <p className="px-4 pt-4 text-[14px] font-bold md:px-0 md:pt-0">{store.name}</p>
+      <p className="px-4 pt-4 text-[14px] font-bold md:px-0 md:pt-0 break-keep [overflow-wrap:anywhere]">{store.name}</p>
       {items.length ? (
-        <ol className="mt-2 divide-y divide-line border-y border-line bg-surface md:rounded-2xl md:border">
+        // 폰은 좌우 꽉 찬 줄 목록, 768 이상은 둥근 카드 한 장
+        <ol className={cn("mt-2 divide-y divide-border border-y border-border bg-card md:rounded-2xl md:border")}>
           {items.map((h) => (
             <li key={h.id} className="px-4 py-3">
-              <p className="flex items-baseline justify-between gap-2 text-[12px] text-ink3">
-                <b className="font-semibold text-ink2">{h.who}</b>
+              <p className="flex items-baseline justify-between gap-2 text-[12px] text-muted-foreground/70">
+                <b className="font-semibold text-muted-foreground">{h.who}</b>
                 <span className="shrink-0">{when(h.at)}</span>
               </p>
               <p className="mt-0.5 text-[14px]">{KIND[h.kind]}</p>
               {h.changes?.map((c) => (
-                <p key={c.field} className="mt-1 text-[13px] text-ink2">
-                  <span className="text-ink3">{c.field}</span> {short(c.from)} → <b>{short(c.to)}</b>
+                <p key={c.field} className="mt-1 text-[13px] text-muted-foreground break-keep [overflow-wrap:anywhere]">
+                  <span className="text-muted-foreground/70">{c.field}</span> {short(c.from)} → <b>{short(c.to)}</b>
                 </p>
               ))}
             </li>
           ))}
         </ol>
       ) : (
-        <p className="px-4 py-10 text-center text-[14px] text-ink3">아직 바뀐 적이 없어요.</p>
+        <p className="px-4 py-10 text-center text-[14px] text-muted-foreground/70">아직 바뀐 적이 없어요.</p>
       )}
       <div className="px-4 pt-4 md:px-0">
-        <Link href={`/store/${id}/edit`} className="grid h-11 place-items-center rounded-xl border border-chipline bg-surface text-[14px] font-bold">
+        <Link href={`/store/${id}/edit`} className={cn("grid h-11 place-items-center rounded-xl border border-input bg-card text-[14px] font-bold hover:bg-muted")}>
           잘못된 곳이 있으면 고치기
         </Link>
       </div>

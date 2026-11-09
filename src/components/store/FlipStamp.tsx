@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SPICE_LEVELS, type Spice } from "@/lib/taxonomy";
 import { SpiceStamp } from "@/components/brand";
+import { cn } from "@/lib/utils";
 
 // 가게 상세에서만: 도장을 누르면 휙 돌아가며 뒷면에 그 맵기의 표정 (슬랙 10-28, 기획 팀장 아이디어).
 // 지도 핀을 누르는 건 가게 열기 그대로다. 표정은 화면 설계 보드 face_1~5 의 눈·입을 옮겨 그렸다(숫자·틀은 뺌).
@@ -15,7 +16,7 @@ export default function FlipStamp({ n, size = 64, faded = false }: { n: Spice; s
       onClick={() => setOn((v) => !v)}
       aria-pressed={on}
       aria-label={`맵기 ${n} 도장 · 누르면 표정이 보여요`}
-      className={`flip shrink-0 ${on ? "on" : ""}`}
+      className={cn("flip shrink-0", on && "on")}
       style={{ width: size, height: size + pillH }}
     >
       <div className="flip-inner" style={{ width: size, height: size + pillH }}>
@@ -29,7 +30,7 @@ export default function FlipStamp({ n, size = 64, faded = false }: { n: Spice; s
           >
             <Face n={n} />
           </span>
-          <span className="mt-[2px] text-[11px] leading-tight text-ink3">{SPICE_LEVELS[n].label}</span>
+          <span className="mt-[2px] text-[11px] leading-tight text-muted-foreground/70">{SPICE_LEVELS[n].label}</span>
         </div>
       </div>
     </button>
