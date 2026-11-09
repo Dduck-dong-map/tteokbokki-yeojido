@@ -1,10 +1,14 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import StoreList, { visibleStores } from "@/components/StoreList";
 import { SampleRibbon } from "@/components/brand";
-import { BackHeader } from "@/components/layout";
+import { BackHeader, GRID_LI, GRID_UL } from "@/components/layout";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { USING_SAMPLE_DATA } from "@/lib/data";
 import { RICE_CAKES, STYLES, keysOf, type RiceCake, type Style } from "@/lib/taxonomy";
 import type { Region, Store } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 // 지역·취향 목록 페이지 (검색 유입용, 기획안 5·11절)
 // /seoul/mapo · /seoul/mapo/soup(스타일) · /seoul/mapo/rice(떡)
@@ -23,6 +27,23 @@ export function tastes(): Taste[] {
 
 export const findTaste = (slug: string) => tastes().find((t) => t.slug === slug);
 
+// 취향 칩 하나. 활성 = 주 버튼색(bg-primary), 비활성 = 테두리 칩. 현재 것은 aria-current 로 알린다.
+// 폰 누르는 곳은 .hit 으로 44px — Badge 의 overflow-hidden 이 .hit 의 ::after 를 자르지 않게 푼다.
+function TasteChip({ href, active, children }: { href: string; active: boolean; children: ReactNode }) {
+  return (
+    <Badge
+      variant={active ? "default" : "outline"}
+      render={<Link href={href} aria-current={active ? "page" : undefined} />}
+      className={cn(
+        "hit h-8 shrink-0 overflow-visible rounded-full px-3 text-[13px] font-medium",
+        active ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-muted-foreground",
+      )}
+    >
+      {children}
+    </Badge>
+  );
+}
+
 export function RegionList({ region, stores, taste, now }: { region: Region; stores: Store[]; taste?: Taste; now: Date }) {
   const inGu = visibleStores(stores, now).filter((s) => s.gu === region.gu);
   const shown = taste ? inGu.filter(taste.match) : inGu;
@@ -36,21 +57,18 @@ export function RegionList({ region, stores, taste, now }: { region: Region; sto
           <SampleRibbon />
         </div>
       )}
-      <p className="px-4 pt-4 text-[14px] text-ink2 md:px-0 md:pt-0">
+      <p className="px-4 pt-4 text-[14px] text-muted-foreground md:px-0 md:pt-0">
         {region.name}의 {taste ? taste.label : "떡볶이"} 가게 {shown.length}곳 · 최근 확인된 곳부터 보여요.
       </p>
-      <nav className="flex gap-1.5 overflow-x-auto px-4 py-3 [scrollbar-width:none] md:flex-wrap md:overflow-visible md:px-0">
-        <Link href={`/seoul/${region.gu}`} className={`hit h-8 shrink-0 rounded-full border px-3 text-[13px] leading-8 ${!taste ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}>
+      {/* 취향 칩: 폰은 가로 스크롤(스크롤바 숨김), 768 이상은 줄바꿈 */}
+      <nav aria-label="취향" className="flex gap-1.5 overflow-x-auto px-4 py-3 [scrollbar-width:none] md:flex-wrap md:overflow-visible md:px-0">
+        <TasteChip href={`/seoul/${region.gu}`} active={!taste}>
           전체
-        </Link>
+        </TasteChip>
         {links.map((t) => (
-          <Link
-            key={t.slug}
-            href={`/seoul/${region.gu}/${t.slug}`}
-            className={`hit h-8 shrink-0 rounded-full border px-3 text-[13px] leading-8 ${taste?.slug === t.slug ? "border-primary bg-primary text-onprimary" : "border-chipline bg-surface text-ink2"}`}
-          >
+          <TasteChip key={t.slug} href={`/seoul/${region.gu}/${t.slug}`} active={taste?.slug === t.slug}>
             {t.label}
-          </Link>
+          </TasteChip>
         ))}
       </nav>
       <StoreList stores={shown} now={now} />
@@ -58,10 +76,28 @@ export function RegionList({ region, stores, taste, now }: { region: Region; sto
   );
 }
 
+// 불러오는 동안: 머리칸 + 안내 문구·칩·카드 자리를 회색 줄로 비워 둔다
 export function ListSkeleton() {
   return (
-    <div className="page-wide">
+    <div className="page-wide pb-10" aria-busy="true">
       <BackHeader title="" href="/list" />
+      <div className="px-4 pt-4 md:px-0 md:pt-0">
+        <Skeleton className="h-5 w-2/3 max-w-[320px]" />
+      </div>
+      <div className="flex gap-1.5 px-4 py-3 md:px-0">
+        <Skeleton className="h-8 w-14 rounded-full" />
+        <Skeleton className="h-8 w-20 rounded-full" />
+        <Skeleton className="h-8 w-20 rounded-full" />
+      </div>
+      <ul className={cn(GRID_UL)}>
+        {[0, 1, 2].map((i) => (
+          <li key={i} className={cn(GRID_LI, "px-4 py-3.5")}>
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="mt-2 h-3 w-1/3" />
+            <Skeleton className="mt-3 h-6 w-2/3 rounded-full" />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

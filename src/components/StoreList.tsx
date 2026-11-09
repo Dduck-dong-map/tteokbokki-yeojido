@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { byRecentlyConfirmed, won } from "@/lib/filters";
-import { confirmedAgo, freshness } from "@/lib/freshness";
-import { RICE_CAKES, SPICE_LEVELS, STYLES } from "@/lib/taxonomy";
-import type { Store } from "@/lib/types";
-import { isPending } from "@/lib/wiki";
-import { PendingTag, SpiceStamp, Stars, Tag } from "@/components/brand";
+import { StoreCardBody } from "@/components/home/StoreCardBody";
 import { GRID_LI, GRID_UL } from "@/components/layout";
+import { byRecentlyConfirmed } from "@/lib/filters";
+import { freshness } from "@/lib/freshness";
+import type { Store } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 // 목록: 지도 없이도 읽히는 글 목록 (검색엔진·지도 API 한도 대비, 기획안 13절)
 // 365일 넘은 가게는 내리고, 최근 확인된 가게를 위에 둔다.
@@ -13,44 +12,27 @@ export function visibleStores(stores: Store[], now: Date) {
   return stores.filter((s) => freshness(s, now) !== "expired").sort(byRecentlyConfirmed);
 }
 
+// 카드 본문은 지도 홈 목록 줄(StoreRowView)과 같은 StoreCardBody 를 쓴다(리팩토링 계획 7-2).
+// 여기서는 바깥 껍데기(격자 · 상세로 가는 Link)만 그린다. 글 목록이라 사진은 끄고 종류 배지는 켠다.
 export default function StoreList({ stores, now }: { stores: Store[]; now: Date }) {
-  if (!stores.length) return <p className="px-4 py-10 text-center text-[14px] text-ink3">아직 등록된 가게가 없어요. 아는 집을 등록해 주세요!</p>;
+  if (!stores.length) {
+    return <p className="px-4 py-10 text-center text-[14px] text-muted-foreground/70">아직 등록된 가게가 없어요. 아는 집을 등록해 주세요!</p>;
+  }
   return (
-    <ul className={GRID_UL}>
-      {stores.map((s) => {
-        const stale = freshness(s, now) === "stale";
-        return (
-          <li key={s.id} className={GRID_LI}>
-            {/* 정보 순서(슬랙 10-28): 이름 → 위치 → 떡볶이 종류 → 맵기 → 대표 가격 */}
-            <Link href={`/store/${s.id}`} className="flex h-full gap-3 px-4 py-3.5">
-              <div className="min-w-0 flex-1">
-                <h3 className="flex items-center gap-1.5 text-[15px] font-bold">
-                  <span className="truncate">{s.name}</span>
-                  {isPending(s, now) && <PendingTag />}
-                </h3>
-                <p className="text-[12px] text-ink3">
-                  {s.dong}
-                  <span className={stale ? " text-spicytext" : ""}> · 확인 {confirmedAgo(s.lastConfirmedAt, now)}</span>
-                </p>
-                <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                  <Tag>{STYLES[s.style]}</Tag>
-                  {s.rice.map((r) => (
-                    <Tag key={r}>{RICE_CAKES[r]}</Tag>
-                  ))}
-                </div>
-                <p className="mt-1.5 flex items-center gap-2 text-[13px] text-ink2">
-                  <Stars rating={s.rating} size={12} />
-                  <span className="text-ink3">· 맵기 {SPICE_LEVELS[s.spice].ref.replace(" 정도", "")}</span>
-                </p>
-              </div>
-              <div className="flex shrink-0 flex-col items-end justify-between">
-                <SpiceStamp n={s.spice} size={28} faded={stale} />
-                <b className="text-[15px]">{won(s.price)}</b>
-              </div>
-            </Link>
-          </li>
-        );
-      })}
+    <ul className={cn(GRID_UL)}>
+      {stores.map((s) => (
+        <li key={s.id} className={cn(GRID_LI)}>
+          <Link
+            href={`/store/${s.id}`}
+            className={cn(
+              "flex h-full min-h-11 gap-3 px-4 py-3.5 outline-none",
+              "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:rounded-2xl md:hover:bg-muted",
+            )}
+          >
+            <StoreCardBody store={s} now={now} tags />
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 }
