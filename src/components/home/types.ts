@@ -1,11 +1,11 @@
 // 지도 홈 View 계약 (리팩토링 계획 2026-11-09 · 계약 단계).
 // View 는 props 만 받아 그린다. 상태·핸들러·데이터는 전부 컨테이너가 넘긴다.
-// 이 파일은 타입만 둔다. 기존 부품(MapShell·FilterSheet·StoreRow)은 아직 그대로다.
+// 이 파일은 타입만 둔다. 계약은 컨테이너(MapShell.tsx)가 소유하고, View 는 받기만 한다.
 
 import type { Bounds, Focus } from "@/components/map/TteokMap";
 import type { Filters } from "@/lib/filters";
 import type { Store } from "@/lib/types";
-import type { ReactNode } from "react";
+import type { KeyboardEvent, PointerEvent, ReactNode, RefObject } from "react";
 
 export type LatLng = { lat: number; lng: number };
 export type SheetState = "peek" | "half" | "full";
@@ -28,6 +28,7 @@ export type MapShellViewProps = {
   query: string;
   recentReports: number;
   sample: boolean;
+  now: Date; // 기준 시각 — 줄마다 「확인 N일 전」·확인 중 표를 계산할 때 StoreRowView 에 그대로 넘긴다 (렌더마다 새로 만들지 않도록 컨테이너가 한 번 정한다)
   // 선택 · 화면
   selectedId: string | null; // 목록·지도에서 고른 가게
   routeId: string | null; // 열린 상세(/store/[id])
@@ -62,6 +63,12 @@ export type MapShellViewProps = {
   onLocate: () => void; // 내 위치 단추
   onShowAll: () => void; // 「가게 N곳 모두 보기」(범위 밖일 때)
   children: ReactNode; // 가게 상세
+  // 선택 사항 — 폰 시트 손잡이 끌기와 PC 키보드 이동. View 가 안 받아도 타입은 통과하고, 받으면 끌기·↑↓ 이동이 살아난다.
+  listRef?: RefObject<HTMLUListElement | null>; // 고른 줄로 스크롤(`#row-<id>` 는 <li>)·↑↓ 이동 대상(`li > button`)을 찾는 <ul>
+  onListKeyDown?: (e: KeyboardEvent<HTMLElement>) => void; // <ul> 의 onKeyDown (ArrowUp/Down)
+  onHandlePointerDown?: (e: PointerEvent<HTMLElement>) => void; // 시트 손잡이: 끌기 시작 y 기록
+  onHandlePointerUp?: (e: PointerEvent<HTMLElement>) => void; // 시트 손잡이: 끌린 거리로 한 단계 이동, 짧으면 반 ↔ 전체 (onSheetChange 를 대신한다)
+  onHandlePointerCancel?: (e: PointerEvent<HTMLElement>) => void; // 시트 손잡이: 끌기 취소
 };
 
 // ───────── FilterSheet ─────────
