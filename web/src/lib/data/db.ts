@@ -32,7 +32,7 @@ type CommentRow = PostComment & Mark & { postId: string; hidden?: boolean; flags
 type ListRow = PlaceList & Mark;
 type LikeRow = Mark & { listId: string; at: string };
 type PostLikeRow = Mark & { postId: string; at: string };
-type Db = {
+export type Db = {
   stores: Store[];
   logs: LogRow[];
   reviews: ReviewRow[];
@@ -84,7 +84,13 @@ function seed(): Db {
   } as unknown as Db;
 }
 
+// 11-08: .env.local 에 DATABASE_URL 이 있으면 로컬 DB(도커 Postgres, pg.ts)에 저장한다. 없으면 지금처럼 파일.
+// 아래 규칙 함수들은 저장 방식과 상관없이 그대로 쓴다.
+const PG = !!process.env.DATABASE_URL;
+const prepare = (raw: Db | null) => withCommunity(raw ?? seed());
+
 async function load(): Promise<Db> {
+  if (PG) return (await import("./pg")).pgRead(prepare);
   try {
     return withCommunity(JSON.parse(await readFile(DB_FILE, "utf8")) as Db);
   } catch (e) {
@@ -111,6 +117,7 @@ async function save(db: Db) {
 // 쓰기는 한 번에 하나씩 (읽고 → 고치고 → 저장). 개발 서버는 모듈을 다시 불러오므로 줄은 전역에 둔다.
 const g = globalThis as unknown as { __ddyQueue?: Promise<unknown> };
 function mutate<T>(fn: (db: Db) => T | Promise<T>): Promise<T> {
+  if (PG) return import("./pg").then((m) => m.pgMutate(prepare, fn));
   const run = (g.__ddyQueue ?? Promise.resolve()).catch(() => undefined).then(async () => {
     const db = await load();
     const out = await fn(db);
