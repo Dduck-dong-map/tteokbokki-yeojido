@@ -26,6 +26,9 @@ export const PRESETS: Preset[] = [
   { id: "T", name: "T 옥빛 버튼 · 고추장 포인트", b: { paper: "#F3F0E9", surface: "#FDFCF9", ink: "#1C1C1B", primary: "#2A6159", accent: "#2F6F70", fab: "#B42318", water: "#A3C7BC" } },
   // 슬랙 10-28 #design: 팀장이 tweakcn 으로 만든 「떡볶이 초안 1」(shadcn 변수) 을 그대로 옮김 — 비교용. 주 색이 빨강이라 본인 글과 어긋나서 기본으로 쓰지 않음.
   { id: "W", name: "W tweakcn 초안 1", b: { paper: "#FAF8F6", surface: "#FEFEFE", ink: "#2D2D2D", primary: "#E63917", accent: "#E63917", fab: "#E63917", water: "#AFC3D9" } },
+  // 11-10 사용자 참고 팔레트: 주황은 구운 고추장 톤으로 낮추고, 링크·제보는 서로 다른 차분한 색으로 분리.
+  { id: "P1", name: "P1 구운 고추장 · 쪽빛 물", b: { paper: "#F3F1EE", surface: "#FEFEFE", ink: "#2D2D2D", primary: "#A85028", accent: "#455F73", fab: "#526B57", water: "#AFC3D9" } },
+  { id: "P2", name: "P2 어묵국물 · 시장 간판", b: { paper: "#F5E6E0", surface: "#FEFEFE", ink: "#2D2D2D", primary: "#435F77", accent: "#A45A2A", fab: "#6E5436", water: "#AFC3D9" } },
   { id: "N6", name: "N6 먹밤", b: { paper: "#1C1D1F", surface: "#242628", ink: "#EDEDED", primary: "#EDEDED", accent: "#8FB4E0", fab: "#8FB4E0", water: "#2B3A4C" } },
   // 11-08 사용자 「배경을 구분선만 두고 일단 전부 흰색으로」: T 에서 화면 바탕·면·메뉴줄을 흰색으로. 지도 그림 바탕은 T 의 한지 미색 그대로.
   { id: "T2", name: "T2 흰 바탕 · 옥빛 버튼", b: { paper: "#FFFFFF", surface: "#FFFFFF", ink: "#1C1C1B", primary: "#2A6159", accent: "#2F6F70", fab: "#B42318", water: "#A3C7BC", mapPaper: "#F3F0E9" } },

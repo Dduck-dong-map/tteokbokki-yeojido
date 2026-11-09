@@ -496,7 +496,10 @@ const PRESETS = [
   // 팀 피드백(슬랙 10-28) — R: #stand-meeting 기획 팀장 「고추장 레드 = 포인트」 · T: #design 「빨간 버튼은 경고색, 버튼은 옥빛(B·N4 중간)으로, 빨강은 포인트만」 · W: #design tweakcn 「떡볶이 초안 1」 그대로
   { id:'R', name:'R 고추장 포인트', g:'팀', b:{ paper:'#F2F2EF', surface:'#FFFFFF', ink:'#1C1C1B', primary:'#232323', accent:'#B42318', fab:'#B42318', water:'#AFC3D9' } },
   { id:'T', name:'T 옥빛 버튼 · 고추장 포인트', g:'팀', b:{ paper:'#F3F0E9', surface:'#FDFCF9', ink:'#1C1C1B', primary:'#2A6159', accent:'#2F6F70', fab:'#B42318', water:'#A3C7BC' } },
-  { id:'W', name:'W tweakcn 초안 1', g:'팀', b:{ paper:'#FAF8F6', surface:'#FEFEFE', ink:'#2D2D2D', primary:'#E63917', accent:'#E63917', fab:'#E63917', water:'#AFC3D9' } }
+  { id:'W', name:'W tweakcn 초안 1', g:'팀', b:{ paper:'#FAF8F6', surface:'#FEFEFE', ink:'#2D2D2D', primary:'#E63917', accent:'#E63917', fab:'#E63917', water:'#AFC3D9' } },
+  // 11-10 새 후보 — tweakcn 참고의 한지·회청색·복숭아빛을 살리고, 경고 빨강 대신 구운 고추장·먹색 계열로 버튼 대비 확보
+  { id:'P1', name:'P1 구운 고추장 · 쪽빛 물', g:'후보', b:{ paper:'#F3F1EE', surface:'#FEFEFE', ink:'#2D2D2D', primary:'#A85028', accent:'#455F73', fab:'#526B57', water:'#AFC3D9' } },
+  { id:'P2', name:'P2 어묵국물 · 시장 간판', g:'후보', b:{ paper:'#F5E6E0', surface:'#FEFEFE', ink:'#2D2D2D', primary:'#435F77', accent:'#A45A2A', fab:'#6E5436', water:'#AFC3D9' } }
 ];
 const PKEYS = [['paper','바탕 (지도 종이)'],['surface','면 (카드·검색창)'],['ink','글자'],['primary','주 버튼 (취향·선택)'],['accent','강조 (링크·메뉴)'],['fab','제보 버튼'],['water','물 (강)']];
 // 11-02 한지 바탕 빠른 선택 — 바탕·면만 바꾸고 버튼·글자 색은 그대로 둔다 (사용자 「테마 컬러(한지 배경) 더 디테일하게 커스텀」)
@@ -701,6 +704,7 @@ function renderPal(T) {
   const grp = g => PRESETS.filter(p => p.g === g).map(chip).join('');
   const c = (a, b, t) => { const v = cr(a, b); return `${t} <b class="${v < 4.5 ? 'bad' : ''}">${v.toFixed(1)}</b>${v < 4.5 ? ' (낮음)' : ''}`; };
   box.innerHTML = `<h4>팔레트 <small>${palName()}</small></h4>
+    <div class="pgroup">새 후보 · 2026-11-10</div><div class="pgrid">${grp('후보')}</div>
     <div class="pgroup">팀 피드백 (슬랙 10-28) · T 추천</div><div class="pgrid">${grp('팀')}</div>
     <div class="pgroup">기존</div><div class="pgrid">${grp('기존')}</div>
     <div class="pgroup">v2 개선안</div><div class="pgrid">${grp('v2')}</div>
