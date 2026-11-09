@@ -6,7 +6,7 @@ import { confirmedAgo, freshness } from "@/lib/freshness";
 import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
 import { isPending } from "@/lib/wiki";
-import { PendingTag, SpiceStamp, Stars, StoreThumb } from "../ui";
+import { PendingTag, SpiceStamp, Stars, StoreThumb } from "@/components/brand";
 
 // 목록 한 줄 (거지맵 목록 참고 · 슬랙 10-28)
 // 정보 순서(기획 팀장): 이름 → 위치(동·거리) → 떡볶이 종류 → 맵기 → 대표 가격 → 길찾기(상세에서)

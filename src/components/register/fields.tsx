@@ -8,7 +8,7 @@ import { randomNick, setNick, uploadPhoto, useMe } from "@/lib/me";
 import { SPICE_LEVELS, type Spice } from "@/lib/taxonomy";
 import type { Hours, MenuItem, Store } from "@/lib/types";
 import { MAX_INTRO, MAX_MENU, MAX_PHOTOS, STAR_WORDS, checkIntro } from "@/lib/wiki";
-import { SpiceStamp } from "../ui";
+import { SpiceStamp } from "@/components/brand";
 
 // 맛집 등록 · 정보 고치기가 함께 쓰는 입력칸들. 입력 글자는 16px (더 작으면 아이폰 사파리가 화면을 저절로 확대한다)
 

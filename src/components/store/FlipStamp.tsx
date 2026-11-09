@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SPICE_LEVELS, type Spice } from "@/lib/taxonomy";
-import { SpiceStamp } from "../ui";
+import { SpiceStamp } from "@/components/brand";
 
 // 가게 상세에서만: 도장을 누르면 휙 돌아가며 뒷면에 그 맵기의 표정 (슬랙 10-28, 기획 팀장 아이디어).
 // 지도 핀을 누르는 건 가게 열기 그대로다. 표정은 화면 설계 보드 face_1~5 의 눈·입을 옮겨 그렸다(숫자·틀은 뺌).

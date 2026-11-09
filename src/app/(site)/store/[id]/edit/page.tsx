@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import EditForm from "@/components/register/EditForm";
-import { BackHeader } from "@/components/ui";
+import { BackHeader } from "@/components/layout";
 import { getStore, getStores } from "@/lib/data";
 
 export const metadata: Metadata = { title: "정보 고치기", robots: { index: false } };

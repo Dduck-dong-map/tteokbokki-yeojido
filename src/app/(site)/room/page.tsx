@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import RoomBoard from "@/components/room/RoomBoard";
-import { BottomNav } from "@/components/ui";
+import { BottomNav } from "@/components/layout";
 import { getPosts, getStores } from "@/lib/data";
 
 export const metadata: Metadata = { title: "떡볶이방" };

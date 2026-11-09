@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { BOARD_CATS, timeAgo, type BoardCat, type Post } from "@/lib/community";
-import { SampleRibbon } from "../ui";
+import { SampleRibbon } from "@/components/brand";
 
 type Cat = BoardCat | "all";
 const CATS: [Cat, string][] = [["all", "전체"], ...(Object.entries(BOARD_CATS) as [BoardCat, string][])];

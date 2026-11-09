@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import RegisterForm from "@/components/register/RegisterForm";
-import { BackHeader } from "@/components/ui";
+import { BackHeader } from "@/components/layout";
 import { getStores } from "@/lib/data";
 
 export const metadata: Metadata = { title: "맛집 등록", robots: { index: false } };

@@ -8,7 +8,7 @@ import FlipStamp from "@/components/store/FlipStamp";
 import SaveButton from "@/components/store/SaveButton";
 import { AddPhoto, CopyAddress, FlagReviewButton, MoreActions, ReviewForm, StillHere, VerifyBar } from "@/components/store/StoreActions";
 import { CloseStore, ShareButton, StoreDistance, StoreMiniMap } from "@/components/store/StoreLocation";
-import { PendingTag, SampleRibbon, Stars, Tag } from "@/components/ui";
+import { PendingTag, SampleRibbon, Stars, Tag } from "@/components/brand";
 import { getRegion, getReviews, getStore, getStores } from "@/lib/data";
 import { kakaoDirections, naverDirections } from "@/lib/directions";
 import { won } from "@/lib/filters";

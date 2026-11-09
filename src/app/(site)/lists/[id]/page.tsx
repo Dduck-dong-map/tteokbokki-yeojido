@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import ListView from "@/components/lists/ListView";
-import { BackHeader } from "@/components/ui";
+import { BackHeader } from "@/components/layout";
 import { getList, getStores } from "@/lib/data";
 
 export async function generateMetadata({ params }: PageProps<"/lists/[id]">): Promise<Metadata> {

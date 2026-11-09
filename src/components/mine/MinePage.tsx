@@ -14,7 +14,8 @@ import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
 import { ListCard } from "../lists/ListParts";
 import { ListInfoForm } from "../lists/ListView";
-import { BottomNav, GRID_LI, GRID_UL, SampleRibbon, SpiceStamp } from "../ui";
+import { SampleRibbon, SpiceStamp } from "@/components/brand";
+import { BottomNav, GRID_LI, GRID_UL } from "@/components/layout";
 
 // 내 맛지도 (11-08 사용자 지시): 가게를 모아 「맛집 리스트」를 만들고, 공개해서 서로 나누고 추천한다.
 // 탭: 내 리스트 · 모두의 리스트(추천순/최신순) · 찜한 가게(♡) · 내 등록

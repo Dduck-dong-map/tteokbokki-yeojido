@@ -6,7 +6,7 @@ import { LIST_VISIBILITY, timeAgo, type PlaceList } from "@/lib/community";
 import { send } from "@/lib/me";
 import { refreshOwned, useOwned } from "@/lib/owned";
 import type { Store } from "@/lib/types";
-import { SpiceStamp } from "../ui";
+import { SpiceStamp } from "@/components/brand";
 
 // 리스트 카드: 이름 · 설명 한 줄 · 담긴 가게 도장 · N곳 · 만든 사람 · 추천 수
 export function ListCard({ list, stores, now, showVisibility = false }: { list: PlaceList; stores: Map<string, Store>; now: Date; showVisibility?: boolean }) {

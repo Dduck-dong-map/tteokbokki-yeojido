@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import SearchBox from "./SearchBox";
-import { Logo, NAV } from "./ui";
+import { Logo } from "@/components/brand";
+import { NAV } from "@/components/layout";
 
 // 768 이상에서만 보이는 위 헤더 (웹 1차 기획 3.2). 폰에서는 아래 메뉴(BottomNav)가 같은 일을 한다.
 export default function SiteHeader() {

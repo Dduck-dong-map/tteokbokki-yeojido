@@ -10,7 +10,8 @@ import { DEFAULT_FILTERS, activeFilterCount, applyFilters, byRecentlyConfirmed, 
 import { useIsWide } from "@/lib/screen";
 import { setSearch, useSearch } from "@/lib/search";
 import type { Store } from "@/lib/types";
-import { BottomNav, Logo, SampleRibbon } from "../ui";
+import { Logo, SampleRibbon } from "@/components/brand";
+import { BottomNav } from "@/components/layout";
 import FilterSheet from "./FilterSheet";
 import StoreRow from "./StoreRow";
 

@@ -2,7 +2,7 @@
 
 import { DEFAULT_FILTERS, type Filters } from "@/lib/filters";
 import { PRICE_STEPS, RICE_CAKES, SPICE_LEVELS, STYLES, keysOf, type Spice } from "@/lib/taxonomy";
-import { SpiceStamp } from "../ui";
+import { SpiceStamp } from "@/components/brand";
 
 type Props = {
   value: Filters;

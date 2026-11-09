@@ -1,6 +1,7 @@
 import Link from "next/link";
 import StoreList, { visibleStores } from "@/components/StoreList";
-import { BackHeader, SampleRibbon } from "@/components/ui";
+import { SampleRibbon } from "@/components/brand";
+import { BackHeader } from "@/components/layout";
 import { USING_SAMPLE_DATA } from "@/lib/data";
 import { RICE_CAKES, STYLES, keysOf, type RiceCake, type Style } from "@/lib/taxonomy";
 import type { Region, Store } from "@/lib/types";

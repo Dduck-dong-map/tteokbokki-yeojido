@@ -1,4 +1,4 @@
-import { Logo } from "../ui";
+import { Logo } from "@/components/brand";
 
 // 로딩 화면: 떡 문 호랑이가 떡을 호호 분다 (docs/로딩캐릭터기획_v1).
 // CSS 로만 움직이므로 서버에서 바로 그린다. 시간 규칙은 globals.css 의 .tiger-loader:

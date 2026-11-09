@@ -3,7 +3,8 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import StoreList, { visibleStores } from "@/components/StoreList";
-import { BottomNav, SampleRibbon } from "@/components/ui";
+import { SampleRibbon } from "@/components/brand";
+import { BottomNav } from "@/components/layout";
 import { USING_SAMPLE_DATA, getRegions, getStores } from "@/lib/data";
 
 export const metadata: Metadata = { title: "동네별 떡볶이 목록" };

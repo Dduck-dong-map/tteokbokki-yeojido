@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { BackHeader } from "@/components/ui";
+import { BackHeader } from "@/components/layout";
 import { getHistory, getStore } from "@/lib/data";
 import type { HistoryKind } from "@/lib/types";
 

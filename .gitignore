@@ -66,3 +66,7 @@ next-env.d.ts
 # 시험·개발용 저장소 (lib/data/db.ts). 지우면 예시 데이터로 다시 시작한다
 /.data/
 /.data-e2e/
+
+# Playwright 산출물 (tests/e2e)
+/test-results/
+/playwright-report/

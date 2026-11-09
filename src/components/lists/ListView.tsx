@@ -11,7 +11,7 @@ import { refreshOwned, useOwned } from "@/lib/owned";
 import { useIsWide } from "@/lib/screen";
 import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
-import { SampleRibbon, SpiceStamp } from "../ui";
+import { SampleRibbon, SpiceStamp } from "@/components/brand";
 import { LikeButton, ShareListButton } from "./ListParts";
 import StorePicker, { type PickStore } from "./StorePicker";
 

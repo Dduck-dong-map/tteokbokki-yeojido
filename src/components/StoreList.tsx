@@ -4,7 +4,8 @@ import { confirmedAgo, freshness } from "@/lib/freshness";
 import { RICE_CAKES, SPICE_LEVELS, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
 import { isPending } from "@/lib/wiki";
-import { GRID_LI, GRID_UL, PendingTag, SpiceStamp, Stars, Tag } from "./ui";
+import { PendingTag, SpiceStamp, Stars, Tag } from "@/components/brand";
+import { GRID_LI, GRID_UL } from "@/components/layout";
 
 // 목록: 지도 없이도 읽히는 글 목록 (검색엔진·지도 API 한도 대비, 기획안 13절)
 // 365일 넘은 가게는 내리고, 최근 확인된 가게를 위에 둔다.
