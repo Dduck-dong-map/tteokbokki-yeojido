@@ -7,9 +7,11 @@ import { LikeButton } from "@/components/lists/ListParts";
 import { Comments, PostActions } from "@/components/room/PostParts";
 import { SampleRibbon, SpiceStamp } from "@/components/brand";
 import { BackHeader } from "@/components/layout";
+import { Badge } from "@/components/ui/badge";
 import { BOARD_CATS, timeAgo } from "@/lib/community";
 import { getPost, getStore } from "@/lib/data";
 import { won } from "@/lib/filters";
+import { cn } from "@/lib/utils";
 
 export async function generateMetadata({ params }: PageProps<"/room/[id]">): Promise<Metadata> {
   "use cache";
@@ -17,7 +19,7 @@ export async function generateMetadata({ params }: PageProps<"/room/[id]">): Pro
   return found ? { title: `${found.post.title} · 떡볶이방`, description: found.post.body.slice(0, 80) } : {};
 }
 
-// 떡볶이방 글 하나: 말머리 · 제목 · 닉네임/시각 → 내용 → 붙인 가게 → 지우기·신고 → 댓글
+// 떡볶이방 글 하나: 말머리 · 제목 · 닉네임/시각 → 내용 → 붙인 가게 → 추천 → 지우기·신고 → 댓글
 export default function PostPage({ params }: PageProps<"/room/[id]">) {
   return (
     <div className="page-narrow">
@@ -30,7 +32,7 @@ export default function PostPage({ params }: PageProps<"/room/[id]">) {
 }
 
 async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
-  await connection();
+  await connection(); // 새 댓글·추천이 바로 보여야 한다
   const found = await getPost((await params).id);
   if (!found) notFound();
   const { post, comments } = found;
@@ -46,23 +48,29 @@ async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
       )}
       <article className="flex flex-col gap-3">
         <header>
-          <span className="rounded border border-chipline px-1.5 text-[11px] leading-5 text-ink2">{BOARD_CATS[post.cat]}</span>
-          <h1 className="mt-1.5 text-[20px] leading-snug font-bold text-balance">{post.title}</h1>
-          <p className="mt-1 text-[12px] text-ink3">
+          <Badge variant="outline" className="rounded-md border-input px-1.5 text-[11px] font-normal text-muted-foreground">
+            {BOARD_CATS[post.cat]}
+          </Badge>
+          <h1 className="mt-1.5 text-[20px] leading-snug font-bold text-balance break-keep [overflow-wrap:anywhere]">{post.title}</h1>
+          <p className="mt-1 text-[12px] text-muted-foreground/70">
             {post.who} · {timeAgo(post.at, now)}
           </p>
         </header>
-        <p className="border-t border-line pt-3 text-[15px] leading-relaxed whitespace-pre-line">{post.body}</p>
+        <p className="border-t border-border pt-3 text-[15px] leading-relaxed whitespace-pre-line break-keep [overflow-wrap:anywhere]">{post.body}</p>
         {store && (
-          <Link href={`/store/${store.id}`} className="flex items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5 hover:bg-chip/60">
+          // 붙인 가게 카드: 도장 · 이름 · 동 · 대표 메뉴 가격 → 가게 상세
+          <Link
+            href={`/store/${store.id}`}
+            className={cn("flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 hover:bg-muted")}
+          >
             <SpiceStamp n={store.spice} size={26} />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[14px] font-bold">{store.name}</span>
-              <span className="block text-[12px] text-ink3">
+              <span className="block truncate text-[14px] font-bold text-foreground">{store.name}</span>
+              <span className="block truncate text-[12px] text-muted-foreground/70">
                 {store.dong} · {store.menu[0].name} {won(store.price)}
               </span>
             </span>
-            <span className="shrink-0 text-[13px] text-ink3">가게 보기 ›</span>
+            <span className="shrink-0 text-[13px] text-muted-foreground/70">가게 보기 ›</span>
           </Link>
         )}
         {/* 추천(엄지척) + 숫자 (11-08) */}
