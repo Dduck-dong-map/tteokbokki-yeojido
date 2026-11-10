@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ExpressionSpecification, GeoJSONSource, Map as MlMap, SymbolLayerSpecification } from "maplibre-gl";
 import { won } from "@/lib/filters";
 import { freshness } from "@/lib/freshness";
-import { derive, findPreset } from "@/lib/theme";
+import { THEME } from "@/lib/theme";
 import type { Store } from "@/lib/types";
 import { isPending } from "@/lib/wiki";
 import { MAP_CREDIT, REAL_FADE, dongyeoStyle, type ZoomMode } from "./dongyeoStyle";
@@ -89,7 +89,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       if (cancelled || !box.current) return;
       if (!ml) return fail();
       ml.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs"); // scripts/copy-maplibre-worker.mjs 가 복사해 둔 파일
-      const t = derive(findPreset(document.documentElement.dataset.pal));
+      const t = THEME; // 팔레트는 T2 고정 (lib/theme.ts)
       const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "real" ? "real" : "names";
       let m: MlMap;
       try {
@@ -272,12 +272,12 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         <div ref={box} className="h-full w-full" aria-label="떡볶이 가게 지도" role="region" />
       </div>
       {failed && (
-        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-line bg-surface px-3 py-2 text-center text-[13px] text-ink2 shadow-sm">
+        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-border bg-card px-3 py-2 text-center text-[13px] text-muted-foreground shadow-sm">
           지도를 불러오지 못했어요. 주소와 길찾기는 그대로 쓸 수 있어요.
         </p>
       )}
       {realOn && (
-        <span className="pointer-events-none absolute top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-chipline bg-surface px-3 py-1 text-[12px] text-ink2 shadow-sm">
+        <span className="pointer-events-none absolute top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-input bg-card px-3 py-1 text-[12px] text-muted-foreground shadow-sm">
           실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도
         </span>
       )}

@@ -1,10 +1,5 @@
-// 로고: 기본은 붓글씨 그림. ?logo=글꼴 로 시험하면 글자로 바뀐다 (lib/fonts.ts · globals.css)
+// 로고: 붓글씨 그림 (글꼴 시험 ?logo= 은 11-10 R2 결정으로 없앴다)
 export function Logo() {
-  return (
-    <>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/brand/logo_red.png" alt="떡볶여지도" className="logo-png h-8 w-auto [filter:var(--logo-filter)]" />
-      <span className="logo-text">떡볶여지도</span>
-    </>
-  );
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src="/brand/logo_red.png" alt="떡볶여지도" className="h-8 w-auto" />;
 }

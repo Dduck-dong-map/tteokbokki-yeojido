@@ -2,9 +2,9 @@
 export function StoreThumb({ photo, size = 64 }: { photo?: string; size?: number }) {
   return photo ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={`/api/photos/${photo}`} alt="" loading="lazy" style={{ width: size, height: size }} className="shrink-0 rounded-xl border border-line object-cover" />
+    <img src={`/api/photos/${photo}`} alt="" loading="lazy" style={{ width: size, height: size }} className="shrink-0 rounded-xl border border-border object-cover" />
   ) : (
-    <div style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-xl border border-line bg-paper text-[22px]" aria-hidden="true">
+    <div style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-xl border border-border bg-background text-[22px]" aria-hidden="true">
       🍢
     </div>
   );

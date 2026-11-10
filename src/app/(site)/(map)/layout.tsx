@@ -10,7 +10,7 @@ export default function MapLayout({ children }: { children: React.ReactNode }) {
   return (
     <Suspense
       fallback={
-        <div className="relative h-dvh bg-paper md:h-[calc(100dvh-56px)]">
+        <div className="relative h-dvh bg-background md:h-[calc(100dvh-56px)]">
           <TigerLoader />
         </div>
       }

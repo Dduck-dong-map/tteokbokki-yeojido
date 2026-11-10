@@ -78,7 +78,7 @@ export default function MapShellView(p: MapShellViewProps) {
                 onClick={p.onLocate}
                 aria-label="내 위치"
                 title="내 위치"
-                className="grid h-11 w-11 place-items-center rounded-full border border-input bg-card text-[var(--loc)] shadow-md"
+                className="grid h-11 w-11 place-items-center rounded-full border border-input bg-card text-loc shadow-md"
               >
                 <LocateFixed size={20} strokeWidth={2.2} aria-hidden="true" />
               </button>

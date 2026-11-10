@@ -1,5 +1,5 @@
 import type { Map as MlMap } from "maplibre-gl";
-import type { Tokens } from "@/lib/theme";
+import type { MapTokens } from "@/lib/theme";
 
 // 가게 핀 = 「고추 개수」 알약 (11-08 사용자 지시, 맵기 표시 4안 중 「나) 고추 개수」)
 //  - 흰 알약 안에 고추를 맵기만큼(1~5개). 3개가 신라면 정도.
@@ -21,7 +21,7 @@ export const CHILI_GREEN = "#4F8A3A";
 
 export const pinWidth = (n: number) => PAD_X * 2 + n * STEP;
 
-export function drawChiliPin(n: number, ramp: Tokens["map"]["ramp"], surface: string, ring?: string) {
+export function drawChiliPin(n: number, ramp: MapTokens["ramp"], surface: string, ring?: string) {
   const c = ramp[n - 1];
   const extra = ring ? RING_GAP + RING : 0;
   const pw = pinWidth(n);
@@ -104,7 +104,7 @@ function roundRect(g: CanvasRenderingContext2D, x: number, y: number, w: number,
 }
 
 // 스타일이 'stamp-3' · 'stamp-sel-3'(고른 가게) 같은 그림을 찾을 때 그 자리에서 그려 넣는다
-export function provideStamps(map: MlMap, t: Tokens["map"], surface: string) {
+export function provideStamps(map: MlMap, t: MapTokens, surface: string) {
   map.setMissingStyleImageResolver((id) => {
     const m = /^stamp-(sel-)?([1-5])$/.exec(id);
     if (!m || map.hasImage(id)) return;

@@ -15,7 +15,7 @@ export default function TigerLoader({ className = "" }: { className?: string }) 
         <span className="tiger-ho">호</span>
         <span className="tiger-ho tiger-ho-2">호</span>
       </div>
-      <p className="text-[15px] text-ink2" aria-hidden="true">
+      <p className="text-[15px] text-muted-foreground" aria-hidden="true">
         호호, 떡 식히는 중…
       </p>
     </div>

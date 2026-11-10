@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
-import StudioBridge from "@/components/StudioBridge";
 import { USING_SAMPLE_DATA } from "@/lib/data";
-import { FONT_BOOT } from "@/lib/fonts";
-import { PALETTE_BOOT, paletteCss } from "@/lib/theme";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -23,20 +20,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   interactiveWidget: "resizes-content", // 안드로이드 키보드가 올라오면 화면 높이를 줄여 입력칸·단추가 가려지지 않게 한다
-  themeColor: "#F2F2EF",
+  themeColor: "#ffffff", // globals.css --background (T2 흰 바탕)
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" suppressHydrationWarning>
-      <head>
-        <style dangerouslySetInnerHTML={{ __html: paletteCss() }} />
-        <script dangerouslySetInnerHTML={{ __html: PALETTE_BOOT }} />
-        <script dangerouslySetInnerHTML={{ __html: FONT_BOOT }} />
-      </head>
+    <html lang="ko">
       <body className="min-h-dvh antialiased">
         {children}
-        <StudioBridge />
       </body>
     </html>
   );

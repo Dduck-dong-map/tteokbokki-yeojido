@@ -16,8 +16,9 @@ export default function ListPanelView({
   list, stores, pick, now, mine, wide, selectedId, editing, askDelete, message, start, focus, inList, info,
   onSelect, onEditStart, onRemove, onMove, onAdd, onAskDelete, onDelete,
 }: ListPanelViewProps) {
+  // 768~1279 는 오른쪽 지도 300px: 440 이면 왼쪽 열이 ~256px 라 가게 이름이 0 폭으로 접혔다 (flows.spec ⑤, 11-09 보고)
   return (
-    <main className="flex-1 pb-10 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,440px)] md:gap-6 xl:grid-cols-[minmax(0,1fr)_520px]">
+    <main className="flex-1 pb-10 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,300px)] md:gap-6 xl:grid-cols-[minmax(0,1fr)_520px]">
       <div className="flex min-w-0 flex-col gap-4 px-4 pt-3 md:px-0">
         {list.isSample && (
           <div className="flex justify-center">

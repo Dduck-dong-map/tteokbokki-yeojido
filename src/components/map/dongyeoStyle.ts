@@ -1,5 +1,5 @@
 import type { ExpressionSpecification, FilterSpecification, LayerSpecification, StyleSpecification } from "maplibre-gl";
-import type { Tokens } from "@/lib/theme";
+import type { MapTokens } from "@/lib/theme";
 
 // 대동여지도 느낌 바탕 지도 (기획안 8절)
 // 한지 바탕 · 옅은 먹선 길 · 쪽빛 물 · 큰길 위 10리 점 · 첩 이음선 격자 · 명조 지명.
@@ -40,7 +40,7 @@ export const REAL_FADE: [number, number] = [15, 15.8]; // ① 그림 지도가 �
 
 // 확대했을 때 위치를 짚는 이름. 멀리서는 그림 지도 그대로, 가까이 갈수록 길 → 큰 건물 → 상호 순으로 나온다.
 // 층은 아래일수록 먼저 밀려난다: 상호 < 큰 건물 < 길 < 역·동네.
-function nameLayers(t: Tokens["map"]): LayerSpecification[] {
+function nameLayers(t: MapTokens): LayerSpecification[] {
   return [
     {
       id: "poi-name", type: "symbol", source: "omt", "source-layer": "poi", minzoom: 16.5,
@@ -88,7 +88,7 @@ function fadeOut(layer: LayerSpecification): LayerSpecification {
   } as LayerSpecification;
 }
 
-export function dongyeoStyle(t: Tokens["map"], mode: ZoomMode = "names"): StyleSpecification {
+export function dongyeoStyle(t: MapTokens, mode: ZoomMode = "names"): StyleSpecification {
   return {
     version: 8,
     glyphs: `${OFM}/fonts/{fontstack}/{range}.pbf`,

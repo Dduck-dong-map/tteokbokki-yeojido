@@ -5,13 +5,11 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
-  색 체계 (2026-11-09 리팩토링, 결정 R2 보류):
-  ┌ shadcn 변수 (--background --primary --card …)  : 이 파일 :root 에 팔레트 T2 값으로 고정. 새로 쓰는 shadcn 부품은 이것만 쓴다.
-  └ web 토큰 (--paper --ink --line …)              : lib/theme.ts 가 런타임에 :root 로 넣는다(?pal= 전환). 아직 안 옮긴 화면만 쓴다.
-  한 파일 안에 두 이름을 섞지 않는다. R2 가 정해지면 한쪽을 지운다.
-  gstack-shortcut(dec-R2): 토큰 두 벌 공존, R2 결정 시 정리
-  이름 충돌: --primary 는 양쪽이 같은 뜻·같은 값(옥빛)이라 공유. --accent 는 뜻이 달라(web=링크색, shadcn=hover 바탕)
-  shadcn 쪽을 --ui-accent 로 분리했다.
+  색 체계: shadcn 변수 한 벌 (R2 결정: 제거, 2026-11-10)
+  --background --foreground --card --primary … 를 이 파일 :root 에 팔레트 T2 값으로 고정한다. 런타임 팔레트 전환(?pal=)은 없앴다.
+  그 밖의 우리 토큰은 아래 「우리 것」 몇 개뿐(고추장 포인트 · 링크 · 지도 종이 · 맵기 경고색 · 맵기 도장 · 내 위치).
+  --accent 는 shadcn 의 hover 바탕 뜻으로만 쓰되 옛 web 토큰(링크색)과 헷갈리지 않게 --ui-accent 로 둔다.
+  지도(MapLibre)는 CSS 변수를 못 읽으므로 lib/theme.ts 가 같은 T2 값으로 지도 색을 계산한다.
 */
 @theme inline {
   /* shadcn */
@@ -58,25 +56,10 @@
   --color-brand-red-foreground: var(--brand-red-foreground);
   --color-link: var(--link);
   --color-map-paper: var(--map-paper);
-
-  /* web 토큰 (lib/theme.ts 가 값을 넣는다) */
-  --color-paper: var(--paper);
-  --color-surface: var(--surface);
-  --color-panel: var(--panel);
-  --color-ink: var(--ink);
-  --color-ink2: var(--ink2);
-  --color-ink3: var(--ink3);
-  --color-onprimary: var(--onprimary);
-  --color-fab: var(--fab);
-  --color-onfab: var(--onfab);
-  --color-onaccent: var(--onaccent);
-  --color-stampbg: var(--stampbg);
-  --color-bar: var(--bar);
-  --color-line: var(--line);
-  --color-chip: var(--chip);
-  --color-chipline: var(--chipline);
+  /* 맵기 경고색(태그) · 게이지 도장의 안 찬 부분 · 내 위치 단추 */
   --color-spicybg: var(--spicybg);
   --color-spicytext: var(--spicytext);
+  --color-stampbg: var(--stampbg);
   --color-loc: var(--loc);
 
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
@@ -84,7 +67,7 @@
   --font-heading: var(--font-sans);
 }
 
-/* 팔레트 T2 (11-08 기본: 흰 바탕 · 옥빛 버튼 · 고추장 포인트). 값의 출처 = docs/팔레트_shadcn_2026-11-01.md + lib/theme.ts T2 */
+/* 팔레트 T2 (11-08 기본: 흰 바탕 · 옥빛 버튼 · 고추장 포인트). 값의 출처 = docs/팔레트_shadcn_2026-11-01.md. 지도 쪽 같은 값 = lib/theme.ts T2 */
 :root {
   --background: #ffffff;
   --foreground: #1c1c1b;
@@ -123,9 +106,30 @@
   --brand-red-foreground: #ffffff;
   --link: #2f6f70;
   --map-paper: #f3f0e9;
+  /* 맵기 경고색(태그 spicy) · 내 위치(쪽빛) */
+  --spicybg: #f6dcd9;
+  --spicytext: #9a0f25;
+  --loc: #2d5b9a;
+  /* 맵기 도장 1~5: 바탕(--sN) · 표정 획(--sNf) · 안쪽 테두리(--sNe). lib/theme.ts RAMP_LIGHT 와 같은 값 */
+  --stampbg: #efefef; /* 안 찬 부분 = mix(card, foreground, .07) */
+  --s1: #f2b78c;
+  --s2: #e3814d;
+  --s3: #c8102e;
+  --s4: #8e0b1f;
+  --s5: #4a0710;
+  --s1f: #3a1408;
+  --s2f: #2e0f05;
+  --s3f: #fff4e6;
+  --s4f: #fff4e6;
+  --s5f: #fff4e6;
+  --s1e: rgba(58, 20, 8, 0.38);
+  --s2e: rgba(46, 15, 5, 0.38);
+  --s3e: rgba(255, 244, 230, 0.75);
+  --s4e: rgba(255, 244, 230, 0.75);
+  --s5e: rgba(255, 244, 230, 0.75);
 }
 
-/* 다크(N6 먹밤)는 아직 shadcn 변수로 옮기지 않았다. 필요해지면 theme.ts 의 derive() 값을 옮긴다 */
+/* 다크(N6 먹밤) 기본 변수만 옮겨 둔 것. 아직 쓰지 않는다(전환 UI 없음). 맵기·도장 변수는 밝은 값 그대로 */
 .dark {
   --background: #1c1d1f;
   --foreground: #ededed;
@@ -164,11 +168,11 @@
   }
 }
 
-/* 아래는 web/ 에서 그대로 가져온 규칙. 바탕·글자색은 아직 web 토큰(theme.ts)이 정한다 (R2 보류) */
+/* 바탕·글자색은 shadcn 변수가 정한다 */
 html,
 body {
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--background);
+  color: var(--foreground);
 }
 
 body {
@@ -180,27 +184,6 @@ body {
 }
 .admin-root {
   overflow-wrap: normal;
-}
-
-/* 글꼴 시험 (lib/fonts.ts): ?logo= 는 로고 그림을 글자로, ?head= 는 화면 제목·가게 이름 글꼴을 바꾼다. 본문은 그대로. */
-.logo-text {
-  display: none;
-  font-family: var(--font-logo);
-  font-size: 28px;
-  line-height: 32px;
-  color: #c00000;
-  filter: var(--logo-filter);
-  white-space: nowrap;
-}
-html[data-logo] .logo-png {
-  display: none;
-}
-html[data-logo] .logo-text {
-  display: block;
-}
-html[data-head] :is(h1, h2, h3):not(.admin-root *) {
-  font-family: var(--font-head);
-  font-weight: 400;
 }
 
 /* 페이지 폭 (웹 1차 기획 3.2): 폰은 화면 가득, 768 이상은 위 헤더 56px 아래 가운데 정렬 */
@@ -227,7 +210,7 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
     width: 100%;
     min-height: 100dvh;
     margin-inline: auto;
-    background: var(--paper);
+    background: var(--background);
   }
   .page-narrow {
     max-width: 640px;
@@ -252,8 +235,8 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
 .stamp-tip .maplibregl-popup-content {
   padding: 4px 9px;
   border-radius: 8px;
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--card);
+  color: var(--foreground);
   font: 700 13px var(--font-sans);
   white-space: nowrap;
 }
@@ -263,12 +246,12 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
 
 /* 지도 위 오른쪽 아래 출처 표기를 바탕색에 맞춘다 */
 .maplibregl-ctrl-attrib {
-  background: color-mix(in srgb, var(--surface) 80%, transparent) !important;
-  color: var(--ink3) !important;
+  background: color-mix(in srgb, var(--card) 80%, transparent) !important;
+  color: color-mix(in srgb, var(--muted-foreground) 70%, transparent) !important;
   font-size: 10px;
 }
 .maplibregl-ctrl-attrib a {
-  color: var(--ink2) !important;
+  color: var(--muted-foreground) !important;
 }
 .maplibregl-ctrl-bottom-left {
   bottom: var(--attrib-bottom, 0px);
@@ -296,7 +279,7 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
     justify-content: center;
     gap: 14px;
     overflow: hidden;
-    background: var(--paper);
+    background: var(--background);
     animation: tiger-stop 0.2s linear 9s forwards;
   }
   .tiger-loader > * { animation: tiger-in 0.2s ease-out 0.3s both; }
@@ -316,7 +299,7 @@ html[data-head] :is(h1, h2, h3):not(.admin-root *) {
     left: 2px;
     top: 92px;
     font: 700 22px var(--font-serif);
-    color: var(--ink3);
+    color: color-mix(in srgb, var(--muted-foreground) 70%, transparent);
     opacity: 0;
     animation: tiger-ho 1.6s ease-out infinite;
   }
