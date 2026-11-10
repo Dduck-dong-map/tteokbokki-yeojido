@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="132" height="146" viewBox="-6 -20 132 146">
+<defs>
+<linearGradient id="bd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A1273A"/><stop offset="1" stop-color="#7F081B"/></linearGradient>
+<linearGradient id="hf" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8401C"/><stop offset=".55" stop-color="#FF9A2E"/><stop offset="1" stop-color="#FFE58A"/></linearGradient>
+<linearGradient id="bf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE58A"/><stop offset=".45" stop-color="#FF9A2E"/><stop offset="1" stop-color="#E8401C"/></linearGradient>
+</defs>
+<ellipse cx="60" cy="114" rx="36" ry="4.5" fill="#3A1408" opacity=".12"/>
+<path d="M32 16 v-6 M88 16 v-6" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/><g fill="#FFFFFF" stroke="#CFC3B8" stroke-width="1.4"><circle cx="23.7" cy="3.05" r="5.25"/><circle cx="36.3" cy="3.05" r="5.25"/><circle cx="30" cy="-1.1500000000000004" r="6.720000000000001"/></g><path d="M23.7 4.1 h12.600000000000001" stroke="#FFFFFF" stroke-width="5.25"/><g fill="#FFFFFF" stroke="#CFC3B8" stroke-width="1.4"><circle cx="83.7" cy="3.05" r="5.25"/><circle cx="96.3" cy="3.05" r="5.25"/><circle cx="90" cy="-1.1500000000000004" r="6.720000000000001"/></g><path d="M83.7 4.1 h12.600000000000001" stroke="#FFFFFF" stroke-width="5.25"/><path d="M5 50 q-4 8 0 16 M-1 46 q-6 12 0 24 M115 50 q4 8 0 16 M121 46 q6 12 0 24" fill="none" stroke="#94091F" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
+<rect x="14" y="16" width="92" height="92" rx="20" fill="url(#bd)"/>
+<rect x="22" y="24" width="76" height="76" rx="13" fill="none" stroke="#FFF4E6" stroke-width="2.2" opacity="0.7"/>
+<rect x="26" y="27" width="20" height="6" rx="3" fill="#FFFFFF" opacity=".24"/><circle cx="51" cy="30" r="3" fill="#FFFFFF" opacity=".24"/>
+<path d="M34 52 l13 7.5 l-13 7.5 M86 52 l-13 7.5 l13 7.5" fill="none" stroke="#FFF4E6" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M41 69 q-4 14 -2 27 M79 69 q4 14 2 27" fill="none" stroke="#8CC6F2" stroke-width="6.5" stroke-linecap="round"/><path d="M41.5 73 q-2 6 -1.5 11 M79 73 q2 6 1.5 11" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity=".85"/><path d="M44 84 q4 -5 8 0 q4 5 8 0 q4 -5 8 0 q4 5 8 0" fill="none" stroke="#FFF4E6" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

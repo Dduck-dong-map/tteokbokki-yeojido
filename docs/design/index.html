@@ -660,6 +660,13 @@ function bindFontPanel(box) {
   box.querySelector('#ftWeb').onclick = () => window.open(FONT_WEB(), '_blank');
 }
 // 왼쪽 칸과 비교판의 글꼴 버튼 (버튼은 그릴 때마다 바뀌므로 한 곳에서 받는다)
+// 11-09 IN-01 첫 화면 전환 시안 처음부터 다시
+addEventListener('click', e => { const b = e.target.closest('[data-inreplay]'); if (!b) return;
+  b.closest('.doc').querySelectorAll('.in-anim').forEach(el => { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }); }, true);
+// 11-09 CH-15 도장이 디벨롭 색 바꾸기 (A~D)
+addEventListener('click', e => { const b = e.target.closest('[data-fvp]'); if (!b) return; const card = b.closest('.doc'); const p = b.dataset.fvp;
+  card.querySelectorAll('[data-fvp]').forEach(x => x.classList.toggle('on', x === b));
+  card.querySelectorAll('img[data-fv]').forEach(im => { im.src = 'img/face_v2/' + p + im.dataset.fv + '.svg'; }); }, true);
 addEventListener('click', e => { const b = e.target.closest('[data-fset]'); if (!b) return; const [r, id] = b.dataset.fset.split(':'); setFont(r, id); }, true);
 
 // 팔레트 변수 글 — 스튜디오의 단계 색 덮어쓰기 · 종이 결 · 도장 모양 변수까지 한 번에
@@ -923,10 +930,11 @@ const LANES = [
   { id:'F7', t:'MVP 흐름 ② 제보 · 검증 · 갱신 (11-04)', s:'제보 네 단계 → 바로 지도에 「확인 중」 → 맞아요·달라요 → 함께 고치기(새로 온 가게 · 확인이 필요해요). 시험 사진은 예시' },
   { id:'PC', t:'PC 와이어프레임 (11-08) · 지금 웹 web_2 기준', s:'사용자 「PC 화면도 와이어프레임」 → 폭 1280 화면 여덟 장: 지도 홈 · 가게 상세 · 맛집 등록 · 떡볶이방 목록·글·글쓰기 · 내 맛지도 · 맛집 리스트. 회색 상자 = 자리, 빨간 번호 = 오른쪽 설명. 실제 화면은 위쪽 「PC 화면」 스튜디오에서', flow:true },
   { id:'WB', t:'웹 1차 기획 (11-06)', s:'사용자 「첫 버전은 웹, PC·모바일 둘 다」 · 가게 등록 + 소개글 · 위치·길찾기는 기존 디자인 + 지도 · 맵기 투표는 나중에 · 어드민. 기획 단계의 와이어이고 웹은 아직 안 고쳤어요. 문서 docs/웹1차기획_v1_2026-11-06.md', flow:true },
+  { id:'IN', t:'첫 화면 전환 · 한지 통일 (11-09)', s:'사용자 11-09 「대동여지도에서 확대되는 전환으로 지도 진입 · 로딩과 지도에 한지 느낌 일관성 · 시안으로 비교해서 결정」 → IN-01 시안 A·B·C + 한지 ①·②', flow:true },
   { id:'FT', t:'글꼴 고르기 (11-04)', s:'사용자 사진의 붓 로고 · 슬로건 · 굵은 붓과 닮은 무료 글꼴. 왼쪽 칸 「글꼴 고르기」나 이 판의 버튼을 누르면 N-01 첫 화면의 로고·슬로건과 손글씨 제목이 바로 바뀌어요', flow:true },
   { id:'V1', t:'기존 디자인 v1 (비교용)', s:'10-26 시안 v1 화면 그대로. 프로토타입에서 「기존과 나란히」를 켜면 같은 자리의 v1이 옆 폰에 떠요' },
   { id:'SP', t:'맵기 표시 시안 (팀 결정 10-28 = 마 게이지 도장 + 고추) · 도장 스튜디오 (11-02)', s:'SP-00 다섯 방식 비교 · SP-01 도장 스튜디오 미리보기 — 왼쪽 칸 「맵기 도장 스튜디오」에서 고추 위치·모양·채움·색을 바꾸면 모든 화면이 같이 바뀌어요 · 도장 모양 네모·고추·떡순이 비교(11-02)', flow:true },
-  { id:'CH', t:'캐릭터 기획 · 시안 v1 (11-01) · 호랑이 기획 · 시안 v2 (11-02) · 시안 v3 (11-05)', s:'방향 8가지 → 팀이 1·2 선택 → 시안 v1(CH-09) → 호랑이 기획(CH-10) → 시안 v2 떡순이 4 + 호랑이 3(CH-11, 고르는 중)', flow:true }
+  { id:'CH', t:'캐릭터 기획 · 시안 v1 (11-01) · 호랑이 기획 · 시안 v2 (11-02) · 시안 v3 (11-05) · 도장이 느낌 다섯 (11-09)', s:'방향 8가지 → 팀이 1·2 선택 → 시안 v1(CH-09) → 호랑이 기획(CH-10) → 시안 v2 떡순이 4 + 호랑이 3(CH-11, 고르는 중)', flow:true }
 ];
 const S = [];
 const add = o => S.push(o);
@@ -1342,7 +1350,7 @@ add({ id:'ch_v3', code:'CH-12', t:'시안 v3 (11-05) · 앱 표지 지도 + 호�
 </div>` });
 // 11-06 로딩 화면 확정 — 떡 문 호랑이 「호호」. 문서 docs/로딩캐릭터기획_v1_2026-11-06.md · 코드 web/src/components/loading
 add({ id:'ch_loading', code:'CH-13', t:'로딩 화면 · 떡 문 호랑이 「호호」 (11-06 확정) · 왼쪽 지금 → 오른쪽 적용', lane:'CH', w:1340, h:840, isDoc:true,
-  spec:['사용자 11-06: 「호랑이 호호가 좋다 이걸로 적용하고 로딩창에」 → 웹에 적용','크레딧 0: 있는 그림(호랑이_나_윙크_떡하나_v01) + CSS 움직임. 웹용 그림 29KB','내린 안: 도장이 「쾅!」 · 떡순이 「보글보글」. 비교판용 조각만 지웠고 원본 시안은 그대로','배포 방식 빌드에서 로딩 시험 30개 · 기능 시험 132개 통과. 실제 폰은 아직','🔴 실제 폰에서 기다리는 시간 확인 · 표정 3장(45)은 허락 전이라 안 만듦'],
+  spec:['사용자 11-06: 「호랑이 호호가 좋다 이걸로 적용하고 로딩창에」 → 웹에 적용','크레딧 0: 있는 그림(호랑이_나_윙크_떡하나_v01) + CSS 움직임. 웹용 그림 29KB','내린 안: 도장이 「쾅!」 · 떡순이 「보글보글」. 비교판용 조각만 지웠고 원본 시안은 그대로','배포 방식 빌드에서 로딩 시험 30개 · 기능 시험 132개 통과. 실제 폰은 아직','사용자 11-09: 「호호호 글자 나오는 건 없애줘」 → 호랑이 옆에 떠오르던 「호」 글자 뺌(웹 TigerLoader·globals.css, 보드 움직임 칸도). 아래 「호호, 떡 식히는 중…」 글줄은 그대로','🔴 실제 폰에서 기다리는 시간 확인 · 표정 3장(45)은 허락 전이라 안 만듦'],
   html:() => `<div class="doc" style="width:1340px;height:840px">
   <style>
     .ld-grid{display:grid;grid-template-columns:200px 240px 208px 1fr;gap:16px;align-items:start}
@@ -1364,13 +1372,233 @@ add({ id:'ch_loading', code:'CH-13', t:'로딩 화면 · 떡 문 호랑이 「�
   <div><div style="font-family:'Song Myung',serif;font-size:34px">로딩 화면 · 떡 문 호랑이 「호호」 <span style="font-size:14px;color:#62625F;margin-left:8px">11-06 확정 · 크레딧 0 · 웹에 적용됨</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 지금까지 · 오른쪽 = 적용. 사진은 느린 망을 흉내 내어 실제 웹에서 찍었다.</div></div>
   <div class="ld-grid">
     <div class="ld-col"><div class="ld-head"><b>지금까지</b><span class="ld-tag">빈 화면</span></div><div class="ld-stage"><div class="ld-now">빈 한지 화면이다가<br>지도가 뜨면 바로 바뀐다.<br>느린 망에서는 멈춘 것처럼 보인다.</div></div></div>
-    <div class="ld-col"><div class="ld-head"><b>움직임</b><span class="ld-tag on">적용</span></div><div class="ld-stage"><div class="ld-b"><img src="img/loading/tg_wink.jpg" alt="떡 문 호랑이"><span class="ld-ho" style="left:0;top:84px">호</span><span class="ld-ho" style="left:-12px;top:118px;animation-delay:.8s">호</span></div><div class="ld-cap">호호, 떡 식히는 중…</div></div></div>
+    <div class="ld-col"><div class="ld-head"><b>움직임</b><span class="ld-tag on">적용</span></div><div class="ld-stage"><div class="ld-b"><img src="img/loading/tg_wink.jpg" alt="떡 문 호랑이"></div><div class="ld-cap">호호, 떡 식히는 중…</div></div></div>
     <div class="ld-col"><div class="ld-head"><b>폰</b><span class="ld-tag">화면 전체</span></div><img class="ld-shot" src="img/loading/web_phone.jpg" alt="폰 로딩 화면"></div>
     <div class="ld-col"><div class="ld-head"><b>PC · 패널</b><span class="ld-tag">지도 칸만 · 목록은 먼저 쓸 수 있음</span></div><img class="ld-shot" src="img/loading/web_pc.jpg" alt="PC 로딩 화면"></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
     <div style="padding:14px 16px;border-radius:12px;background:#F4F4F2;font-size:13.5px;line-height:1.7;color:#3D3D3B"><b>언제 뜨나</b><br>· 첫 진입 때만. 다른 화면에 갔다 돌아오면 안 뜨고, 새로고침하면 처음부터<br>· 한지 바탕은 바로 깔고, 호랑이는 0.3초 뒤에 나타난다. 나타났으면 0.6초는 보여 준다<br>· 지도가 뜨거나, 실패하거나, 8초가 지나면 걷힌다. 8초까지 타일이 없으면 「지도를 불러오지 못했어요…」 안내<br>· 폰에서 가게 주소로 바로 들어오면 안 뜬다 · 움직임 줄이기를 켠 기기는 멈춘 그림 + 글자</div>
     <div style="padding:14px 16px;border-radius:12px;background:#F4F4F2;font-size:13.5px;line-height:1.7;color:#3D3D3B"><b>확인할 것</b><br>· 이 PC 크롬에서 걷히기까지 2.7~5초. <b>실제 폰은 아직 안 재 봤다.</b> 폰은 그동안 목록도 가려지므로, 길게 느껴지면 줄인다<br>· 움직임은 그림 한 장을 흔드는 것이다. 호호·냠·윙크로 표정을 바꾸려면 3장 = 45 크레딧(허락 전이라 안 만듦)<br>· 떡이 아직 핫바처럼 읽힌다(CH-12)<br><b>시험</b> · 로딩 30개 · 기능 132개 통과(배포 방식). 지도 실패 안내가 안 뜨던 W1 버그도 여기서 찾아 고쳤다</div>
+  </div>
+</div>` });
+// 11-09 도장이 맵기 1~5 · 느낌 다섯 가지 시안 (싼 모델 넷을 섞어 55). 원본 docs/캐릭터시안_v4_2026-11-09
+add({ id:'ch_v4', code:'CH-14', t:'도장이 맵기 1~5 · 느낌 다섯 가지 (11-09) · 왼쪽 위 기존 → 이번 ①~⑤', lane:'CH', w:1000, h:1420, isDoc:true,
+  spec:['사용자 11-09: 「도장이 맵기 1~5단계 각각 다른 느낌으로 시안 4~5개」 · 「저화질로, 모델도 다양하게, 더 저렴한 걸로」','모델 넷: GPT 2.6 저화질 15 · Ideogram 4.5 아주 낮음 10 · Flux.2 Klein 10 · Z-Image 5 · GPT 2.5 저화질 15 = 55. 잔액 11,948 → 11,893(확인, 계산값과 일치)','①②⑤ 는 기존 v02 를 참고 그림으로 넣음 · ③④ 는 글로만(참고 그림을 넣으면 Klein 이 15 로 올라서)','🔴 마음에 드는 느낌 고르기 → 그 하나만 고칠 점 반영 · 고화질 마무리는 모델 비교 뒤 다시 허락'],
+  html:() => `<div class="doc" style="width:1000px;height:1420px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">도장이 맵기 1~5 · 느낌 다섯 가지 <span style="font-size:14px;color:#62625F;margin-left:8px">11-09 · 5장 · 55 크레딧 · 잔액 11,893</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 위 = 기존 v02 · 나머지 = 이번 시안. 모두 싼 모델·낮은 화질로 뽑은 초기 시안이라, 고른 것만 고쳐서 고화질로 마무리한다.</div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    ${[
+      ['기존 · v02 (GPT 2.5)', 'char_v3_dojang_v02.jpg', '#1C1C1B', '부드러운 이모티콘 결 · 몸 색이 단계마다 진해짐 · 이마 고추 뺌(11-06).', '이번 다섯 장의 기준.'],
+      ['① 먹붓 민화풍 · GPT 2.6 저화질 15', 'char_v4_dojang_1.jpg', '#2A6159', '먹 테두리 · 한지 결 · 4 의 김이 민화 구름 무늬, 5 의 불꽃이 더 붓 그림답다.', '기존과 그림 결이 거의 같아 「다른 느낌」은 약하다. 민화 느낌을 세게 원하면 참고 그림 없이 다시.'],
+      ['② 인주 도장 자국 · Ideogram 4.5 아주 낮음 10', 'char_v4_dojang_2.jpg', '#2A6159', '빨강 한 색. 맵기 = 누른 세기(1 연하게 살짝 → 5 꾹 눌러 번지고 튐). 지도 도장·로고와 한 세트, 「빨강은 도장에만」 규칙에 맞는다.', '몸에 가는 흰 금(긁힌 선)이 그어짐 · 1~3 은 안쪽 테두리가 사라짐 · 1 이 너무 연해 작게 줄이면 안 보일 수 있음 · 5 입의 불이 혀처럼 보임.'],
+      ['③ 말랑 3D · Flux.2 Klein 10 (글로만)', 'char_v4_dojang_3.jpg', '#2A6159', '맵기가 오를수록 녹아내린다(4 흘러내림 → 5 웅덩이 + 머리 불). 가장 장난감 같고 눈에 띈다.', '2 부터 눈물이 나서 1~3 차이가 약함 · 3 이 놀람보다 울상 · 5 가 거의 검정이라 얼굴이 묻힘 · 팔다리가 갈색.'],
+      ['④ 굵은 선 스티커 · Z-Image 5 (글로만)', 'char_v4_dojang_4.jpg', '#2A6159', '표정이 가장 크고 또렷해 작게 줄여도 읽힌다(1 손 흔들기 → 3 두 손 볼 → 4 펑펑 → 5 불).', '도장 테두리·얼굴 칸이 없어져 도장이보다 젤리 사탕처럼 보임 · 스티커 테두리가 하나로 붙음 · 5 는 얼굴이 불에 덮임 · 1·2 사이에 손이 하나 더 있음.'],
+      ['⑤ 떡볶이 먹는 장면 · GPT 2.5 저화질 15', 'char_v4_dojang_5.jpg', '#2A6159', '동작만 봐도 맵기가 읽힌다(냠 → 부채질 → 떨어뜨림 → 물 → 물동이 + 불). 기존 결 그대로.', '<b>떡 그림 규칙 어긋남</b>(docs/떡볶이리서치_v1): 1·3 의 이쑤시개 떡이 길쭉하게 꿰여 핫바처럼 보이고 3 은 끝으로 꿰뚫음 · 컵 속 떡이 동그란 알(방울토마토처럼).']
+    ].map(([t, f, c, good, fix]) => `<div style="display:flex;flex-direction:column;gap:8px">
+      <div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11.5px;padding:2px 9px;border-radius:10px;background:${c};color:#fff">${t}</span><img src="img/${f}" alt="${t}" style="width:100%;display:block"></div>
+      <div style="padding:10px 12px;border-radius:10px;background:#F4F4F2;font-size:12.5px;line-height:1.6;color:#3D3D3B"><b>좋은 점</b> · ${good}<br><b>고칠 점</b> · ${fix}</div>
+    </div>`).join('')}
+  </div>
+  <div style="padding:12px 14px;border-radius:12px;background:#FFF4E6;font-size:13px;line-height:1.7;color:#3D3D3B"><b>쓰임으로 보면</b> · 지도 핀·작은 아이콘까지 같이 쓰려면 <b>②</b>(빨강 한 색 도장) · 상세 화면 맵기 칸이나 공유 그림처럼 크게 보이는 곳은 <b>③·⑤</b>가 재미있다 · 작게 줄여도 표정이 읽히는 건 <b>④</b> · 지금 결을 지키면서 지도와 어울리게는 <b>①</b>.<br><b>다음</b> · 고른 느낌 하나만 고칠 점을 넣어 다시 싸게 1장 → 확정되면 모델을 비교해 고화질 마무리(그때 다시 허락). 다섯 칸 자르기·색 맞춤은 크레딧 0.</div>
+</div>` });
+// 11-09 도장이 맵기 1~5 표정 디벨롭 (SVG, 크레딧 0). 만든 스크립트 docs/만든_스크립트/face_v2_2026-11-09.py → img/face_v2/{A~D}{1~5}.svg
+const FV_PALS = [['A','지도 도장 색 그대로','웹과 같음',['#F2B78C','#E3814D','#C8102E','#8E0B1F','#4A0710']],['B','맑고 진하게','단계 차이 크게',['#F8C79E','#F28A3A','#E2232A','#A0102A','#55091A']],['C','인주 한 색','빨강 계열만',['#F4B4A8','#E8736A','#C8102E','#94091F','#4E0510']],['D','차분한 한지 톤','누런 종이와',['#E9BD94','#D27A44','#B42A2A','#7A1C24','#3B1416']]];
+add({ id:'ch_face2', code:'CH-15', t:'도장이 맵기 1~5 표정 디벨롭 (11-09) · 왼쪽 기존 → 오른쪽 디벨롭 · 숫자 뺌', lane:'CH', w:1000, h:1390, isDoc:true,
+  spec:['사용자 11-09: CH-00 의 도장이 1~5 를 기준으로 「표정·색감 등 디자인 디벨롭, 이마 숫자는 빼고」','크레딧 0 — 직접 그린 SVG(스크립트 docs/만든_스크립트/face_v2_2026-11-09.py). 색 네 벌은 카드 안 버튼으로 바꿔 보기','웹 가게 상세의 도장 뒤집기(FlipStamp) 표정이 이 그림을 옮긴 것이라, 고르면 웹에도 옮길 수 있음(허락 뒤)','사용자 11-09 「좋아 저비용으로 만들어봐 시안 2종류」 → 디벨롭 A 를 참고 그림으로 a 손그림(GPT 2.6 저화질 15) · b 말랑 3D(Flux.2 Klein 15) = 30. 잔액 11,893 → 11,863(확인, 계산값과 일치)','🔴 a·b 중 고르기 · 4 김 모양 고치기 · 색 A~D 중 고르기'],
+  html:() => `<div class="doc" style="width:1000px;height:1390px">
+  <style>.fvb{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:10px;border:1.5px solid #DEDED9;background:#fff;cursor:pointer;font:inherit;font-size:13px;color:#1C1C1B}.fvb.on{border-color:#2A6159;box-shadow:0 0 0 2px rgba(42,97,89,.18)}.fvb i{display:flex;gap:2px}.fvb i b{width:11px;height:14px;border-radius:3px;display:block}.fvb small{color:#62625F;font-size:11.5px}</style>
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">도장이 맵기 1~5 · 표정 디벨롭 <span style="font-size:14px;color:#62625F;margin-left:8px">11-09 · SVG 직접 그림 · 크레딧 0</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 기존 (CH-00) · 오른쪽 = 디벨롭. 이마 숫자를 빼고 표정·색감·소품을 다듬었다. 아래 버튼으로 색 네 벌을 바꿔 볼 수 있다.</div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${FV_PALS.map(([k, n, d, c], i) => `<button class="fvb ${i ? '' : 'on'}" data-fvp="${k}"><b>${k}</b><i>${c.map(x => `<b style="background:${x}"></b>`).join('')}</i>${n}<small>${d}</small></button>`).join('')}</div>
+  <div style="display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px;align-items:stretch">
+    <div style="border:1px solid #DEDED9;border-radius:14px;padding:14px;background:#FAFAF8;display:flex;flex-direction:column;gap:10px">
+      <b style="font-size:15px">기존</b>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px 4px">${FACES.map(([a, b], i) => `<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><img src="img/face_${i + 1}.svg" alt="기존 ${i + 1}" style="width:64px;height:64px"><b style="font-size:11.5px;text-align:center">${i + 1} ${a}</b><span style="font-size:10.5px;color:#62625F">${b}</span></div>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:auto;padding-top:10px;border-top:1px dashed #DEDED9"><small style="color:#62625F">작게 · 40</small><div style="display:flex;gap:6px">${[1,2,3,4,5].map(n => `<img src="img/face_${n}.svg" alt="" style="width:40px">`).join('')}</div></div>
+    </div>
+    <div style="border:1.5px solid #2A6159;border-radius:14px;padding:14px;background:#F3F0E9;display:flex;flex-direction:column;gap:10px">
+      <b style="font-size:15px">디벨롭</b>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">${FACES.map(([a, b], i) => `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:116px"><img data-fv="${i + 1}" src="img/face_v2/A${i + 1}.svg" alt="디벨롭 ${i + 1}" style="width:116px;height:128px"><b style="font-size:12.5px">${i + 1} ${a}</b><span style="font-size:11.5px;color:#62625F">${b}</span></div>`).join('')}</div>
+      <div style="display:flex;gap:26px;align-items:flex-end;margin-top:6px;padding-top:10px;border-top:1px dashed #CFC9BC">
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">작게 · 48</small><div style="display:flex;gap:6px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img data-fv="${n}" src="img/face_v2/A${n}.svg" alt="" style="width:48px">`).join('')}</div></div>
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">더 작게 · 28</small><div style="display:flex;gap:5px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img data-fv="${n}" src="img/face_v2/A${n}.svg" alt="" style="width:28px">`).join('')}</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="padding:14px 16px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.75;color:#3D3D3B"><b>표정 · 단계마다 바꾼 것</b><br>
+      <b>1 안 매움</b> · 감은 반달 눈 + 볼 터치 그대로, 입꼬리를 조금 더 올려 편안하게<br>
+      <b>2 진라면</b> · 점 눈에 눈빛, 살짝 처진 눈썹 + 머쓱한 웃음. 땀방울을 파랑 + 흰 테두리로 바꿔 주황 몸에서도 보임 (기존은 1·2 가 작게 보면 색으로만 구분됨)<br>
+      <b>3 신라면</b> · 흰자 있는 큰 눈 + 치켜뜬 눈썹 + 「오」 입, 볼에 빗금 홍조, 머리 모서리에서 튀는 열기 선<br>
+      <b>4 불닭</b> · 질끈 감은 눈 + 떨리는 입, 눈물을 굵은 물줄기로, 김을 구름 두 덩이로, 몸 양옆에 부들부들 선<br>
+      <b>5 핵불닭</b> · X 눈 + 크게 벌린 입에서 옆으로 뿜는 불, 머리 불꽃 셋(노랑 → 주황 → 빨강)</div>
+    <div style="padding:14px 16px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.75;color:#3D3D3B"><b>몸 · 색감</b><br>
+      · 이마 숫자를 뺐다 (숫자는 도장 아래 글자 줄이 맡는다)<br>
+      · 모서리를 더 둥글게(8 → 20), 안쪽 테두리도 둥글게<br>
+      · 위는 밝게 아래는 조금 어둡게 + 왼쪽 위 작은 광 → 납작한 네모에서 말랑한 캐릭터로. 밝은 1·2 는 검정 대신 갈색 쪽으로 어둡게 해 탁하지 않게<br>
+      · 발밑 그림자 · 김·불꽃·땀이 몸 밖으로 나오게 그림 칸을 위로 넓힘<br>
+      <b>색 네 벌</b> · A 지금 지도 도장 색 · B 단계 차이를 더 크게 · C 빨강 계열만(인주) · D 누런 한지와 어울리게 차분히<br>
+      <b>다음</b> · 고르면 웹 가게 상세의 도장 뒤집기 표정(FlipStamp)에 옮길 수 있다(허락 뒤, 크레딧 0)</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding-top:6px;border-top:2px solid #1C1C1B">
+    <div style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:5px;background:#1C1C1B;color:#fff;font-weight:700">+</span><b style="font-size:22px">그림 시안 2종 (저비용)</b><span style="font-size:12.5px;color:#62625F">위 디벨롭 A 다섯 장을 참고 그림으로 · 2장 30 크레딧 · 잔액 11,863</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      ${[['a 손그림 · GPT 2.6 저화질 15','char_v5_dojang_a.jpg','색연필·과슈 결 + 손 선 + 한지 바탕. 디벨롭 모양·표정·소품을 거의 그대로 따랐다. 지도(대동여지도풍)와 한 세계로 보인다.','4 의 김이 막대 위 구름이라 닭다리·뼈처럼 보임 → 막대 빼고 피어오르는 김 줄기로 · 5 입이 「C」 모양으로 읽힘'],
+         ['b 말랑 3D · Flux.2 Klein 15','char_v5_dojang_b.jpg','말랑한 젤리 장난감 느낌, 테두리가 도드라져 도장 같다. 가장 매끈하고 앱 아이콘·공유 그림에 잘 맞는다.','2 가 머쓱한 웃음이 아니라 시무룩한 입으로 바뀜 · 5 몸이 거의 검정 · 4 김이 a 와 같이 뼈처럼 보임 · 몸 아래 그림자가 붉게 번짐']
+        ].map(([t, f, good, fix]) => `<div style="display:flex;flex-direction:column;gap:8px">
+        <div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11.5px;padding:2px 9px;border-radius:10px;background:#2A6159;color:#fff">${t}</span><img src="img/${f}" alt="${t}" style="width:100%;display:block"></div>
+        <div style="padding:10px 12px;border-radius:10px;background:#F4F4F2;font-size:12.5px;line-height:1.6;color:#3D3D3B"><b>좋은 점</b> · ${good}<br><b>고칠 점</b> · ${fix}</div>
+      </div>`).join('')}
+    </div>
+    <div style="padding:10px 14px;border-radius:10px;background:#FFF4E6;font-size:13px;line-height:1.6;color:#3D3D3B"><b>다음</b> · a·b 중 하나 고르기 → 고칠 점(4 김 · 2 표정 등)만 넣어 싸게 1장 → 확정되면 고화질 마무리 모델 비교 뒤 허락. 웹 아이콘으로 쓸 땐 위 SVG 를 그대로 쓰고, 그림은 공유 그림·빈 화면·홍보용으로 쓰는 길도 있다.</div>
+    <div style="padding:10px 14px;border-radius:10px;background:#F4F4F2;font-size:13px;line-height:1.6;color:#3D3D3B"><b>11-10 결정</b> · 사용자 「둘 다 안 어울려, 기존 디자인에 충실하게 심플하게」 · 색 A → 다음 카드 <b>CH-16 단순판</b></div>
+  </div>
+</div>` });
+// 11-10 CH-16 도장이 단순판 — 기존 face_1~5 그대로 · 숫자만 뺌 (스크립트 docs/만든_스크립트/face_v3_2026-11-10.py → img/face_v3/1~5.svg)
+add({ id:'ch_face3', code:'CH-16', t:'도장이 맵기 1~5 · 단순판 (11-10) · 왼쪽 기존 → 오른쪽 단순판 · 색 A', lane:'CH', w:1000, h:1075, isDoc:true,
+  spec:['사용자 11-10: CH-15 그림 시안 a 손그림 · b 말랑 3D 「둘 다 안 어울려, 기존 디자인에 충실하게 심플하게」 · 색 A(지도 도장 색) · 「1장 뽑기(15)」','SVG 단순판(크레딧 0): 기존 CH-00 그림 그대로, 바꾼 것은 이마 숫자 뺌(얼굴을 가운데로) · 5 머리 불꽃이 위로 잘리던 것 · 2 땀방울 크림 테두리 셋뿐. 광·그라데이션·그림자·소품 추가 없음. 4 김은 기존 물결 선(막대 위 구름은 버림)','그림 1장: 단순판 SVG 를 참고 그림으로 GPT 2.6 저화질 1k = 15. 잔액 11,863 → 11,848(확인, 계산값과 일치). 원본·프롬프트 = docs/캐릭터시안_v6_2026-11-10/','🔴 이 단순판으로 확정할지 · 웹 FlipStamp·지도 도장 표정에 옮길지'],
+  html:() => `<div class="doc" style="width:1000px;height:1075px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">도장이 맵기 1~5 · 단순판 <span style="font-size:14px;color:#62625F;margin-left:8px">11-10 · 기존 디자인 그대로 · 색 A</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 기존 (CH-00) · 오른쪽 = 단순판. 기존 그림에서 이마 숫자만 빼고 얼굴을 가운데로 옮겼다. 광·그라데이션·그림자·새 소품은 넣지 않았다.</div></div>
+  <div style="display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px;align-items:stretch">
+    <div style="border:1px solid #DEDED9;border-radius:14px;padding:14px;background:#FAFAF8;display:flex;flex-direction:column;gap:10px">
+      <b style="font-size:15px">기존</b>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px 4px">${FACES.map(([a, b], i) => `<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><img src="img/face_${i + 1}.svg" alt="기존 ${i + 1}" style="width:64px;height:64px"><b style="font-size:11.5px;text-align:center">${i + 1} ${a}</b><span style="font-size:10.5px;color:#62625F">${b}</span></div>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:auto;padding-top:10px;border-top:1px dashed #DEDED9"><small style="color:#62625F">작게 · 40</small><div style="display:flex;gap:6px">${[1,2,3,4,5].map(n => `<img src="img/face_${n}.svg" alt="" style="width:40px">`).join('')}</div></div>
+    </div>
+    <div style="border:1.5px solid #2A6159;border-radius:14px;padding:14px;background:#F3F0E9;display:flex;flex-direction:column;gap:10px">
+      <b style="font-size:15px">단순판 (SVG · 크레딧 0)</b>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">${FACES.map(([a, b], i) => `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:116px"><img src="img/face_v3/${i + 1}.svg" alt="단순판 ${i + 1}" style="width:116px;height:129px"><b style="font-size:12.5px">${i + 1} ${a}</b><span style="font-size:11.5px;color:#62625F">${b}</span></div>`).join('')}</div>
+      <div style="display:flex;gap:26px;align-items:flex-end;margin-top:6px;padding-top:10px;border-top:1px dashed #CFC9BC">
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">작게 · 48</small><div style="display:flex;gap:6px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img src="img/face_v3/${n}.svg" alt="" style="width:48px">`).join('')}</div></div>
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">더 작게 · 28</small><div style="display:flex;gap:5px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img src="img/face_v3/${n}.svg" alt="" style="width:28px">`).join('')}</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 16px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.75;color:#3D3D3B"><b>기존에서 바꾼 것 (셋뿐)</b><br>
+    ① 이마 숫자를 뺐다 → 얼굴을 몸 가운데로 올림 (숫자는 도장 아래 글자 줄이 맡는다)<br>
+    ② 5 머리 불꽃이 그림 칸 위로 잘리던 것 → 그림 칸을 위로 넓혀 다 보이게 (다섯 장 모두 같은 칸이라 줄을 세워도 높이가 맞는다)<br>
+    ③ 2 땀방울에 얇은 크림 테두리 → 주황 몸 위에서도 보임<br>
+    <b>그대로 둔 것</b> · 모서리(8) · 얇은 안쪽 테두리 · 한 색 몸 · 표정 선 · 4 김은 기존 물결 선 세 줄 · 1~5 색 = A(지도 도장 색, 웹과 같음)</div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding-top:6px;border-top:2px solid #1C1C1B">
+    <div style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:5px;background:#1C1C1B;color:#fff;font-weight:700">+</span><b style="font-size:22px">그림 1장 (저비용)</b><span style="font-size:12.5px;color:#62625F">위 단순판 SVG 를 참고 그림으로 · GPT 2.6 저화질 15 · 잔액 11,863 → 11,848</span></div>
+    <div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid #DEDED9"><span style="position:absolute;left:10px;top:8px;font-size:11.5px;padding:2px 9px;border-radius:10px;background:#2A6159;color:#fff">단순판 · GPT 2.6 저화질 15</span><img src="img/char_v6_dojang_simple.jpg" alt="도장이 단순판 그림" style="width:100%;display:block"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="padding:10px 12px;border-radius:10px;background:#F4F4F2;font-size:12.5px;line-height:1.6;color:#3D3D3B"><b>좋은 점</b> · 기존 모양·표정·소품을 그대로 따랐다. 4 김은 물결 선이라 뼈처럼 안 보인다. 광·그림자·종이 결 없이 납작한 한 색.</div>
+      <div style="padding:10px 12px;border-radius:10px;background:#F4F4F2;font-size:12.5px;line-height:1.6;color:#3D3D3B"><b>다른 점</b> · 색이 A 와 조금 다르다 (2 더 주황 · 4·5 조금 밝음) · 선이 SVG 보다 조금 가늘다. SVG 와 거의 같아서, 웹 아이콘으로는 SVG 를 그대로 쓰는 편이 정확하고 크레딧도 안 든다.</div>
+    </div>
+    <div style="padding:10px 14px;border-radius:10px;background:#FFF4E6;font-size:13px;line-height:1.6;color:#3D3D3B"><b>다음 (🔴)</b> · 이 단순판으로 확정할지 → 확정되면 웹 가게 상세 도장 뒤집기(FlipStamp)·지도 도장 표정을 단순판 SVG 로 맞출지(크레딧 0, 허락 뒤)</div>
+  </div>
+</div>` });
+// 11-09 첫 화면 전환 시안 — 대동여지도에서 확대해 지도로 · 로딩·지도 한지 통일. 크레딧 0 (CSS 움직임 + 지금 웹 사진 img/intro/)
+// 대동여지도 그림 = docs/참고_대동여지도.jpg (960×1615) 를 img/intro/ddy_full.webp 로(바깥 흰 바탕만 투명). 한양(서울) 자리 = 그림의 (38%, 54%)
+const IN_CSS = `<style>
+.inq{display:flex;flex-direction:column;gap:8px;min-width:0}
+.inq h4{margin:0;font-size:17px;display:flex;align-items:center;gap:8px}
+.inq h4 small{font-weight:400;font-size:12px;color:#62625F}
+.in-ph{position:relative;width:270px;height:584px;border-radius:30px;overflow:hidden;background:#F3F0E9;box-shadow:0 0 0 7px #1C1C1B,0 10px 24px rgba(0,0,0,.18);margin:7px auto 10px;flex:none}
+.in-ph.sm{width:150px;height:325px;border-radius:18px;box-shadow:0 0 0 5px #1C1C1B;margin:5px 0 8px}
+.in-ph.md{width:176px;height:381px;border-radius:20px;box-shadow:0 0 0 5px #1C1C1B;margin:5px 0 8px}
+.in-ph.fib::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;filter:url(#fiber);opacity:.5}
+.in-ph > img.full{position:absolute;inset:0;width:100%;height:100%;display:block}
+.in-zm{position:absolute;inset:0;transform-origin:105.8px 308.4px;will-change:transform}
+.in-zm img{position:absolute;left:13.5px;top:87.6px;width:243px;display:block;mix-blend-mode:multiply}
+.in-logo{position:absolute;left:0;right:0;top:26px;display:flex;justify-content:center;z-index:5}
+.in-logo img{width:92px}
+.in-cap{position:absolute;left:0;right:0;bottom:34px;text-align:center;font-size:12px;color:#62625F;z-index:5}
+.in-mo{position:absolute;left:0;top:12.44%;width:100%;height:80.92%;display:block;z-index:6}
+.in-ui{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:7}
+.in-tg{position:absolute;left:50%;top:50%;width:150px;margin:-110px 0 0 -75px;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:5}
+.in-tg img{width:150px;height:150px;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%)}
+.in-tg span{font-size:12px;color:#3D3D3B;white-space:nowrap}
+.in-st{position:absolute;left:105.8px;top:308.4px;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:7px;background:#B42318;box-shadow:inset 0 0 0 2.5px rgba(255,244,230,.8);color:#FFF4E6;font:700 19px/34px 'Song Myung',serif;text-align:center;z-index:8}
+.in-ring{position:absolute;left:105.8px;top:308.4px;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:9px;border:3px solid #B42318;z-index:7}
+.in-note{padding:10px 12px;border-radius:10px;background:#F4F4F2;font-size:12.5px;line-height:1.6;color:#3D3D3B}
+.in-sw{display:flex;gap:6px;flex-wrap:wrap}
+.in-sw span{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#3D3D3B}
+.in-sw i{width:18px;height:18px;border-radius:4px;border:1px solid #CFC9BC;display:block}
+.in-btn{padding:6px 12px;border-radius:9px;border:1.5px solid #2A6159;background:#fff;color:#2A6159;font:inherit;font-size:13px;cursor:pointer}
+/* A 대동여지도 줌인 (8초 반복) */
+.in-a .in-zm{animation:inA-z 8s infinite}
+.in-a .in-logo{animation:inA-logo 8s infinite}
+.in-a .in-cap{animation:inA-cap 8s infinite}
+.in-a .in-mo{animation:inA-mo 8s infinite}
+.in-a .in-ui{animation:inA-ui 8s infinite}
+@keyframes inA-z{0%,7%{opacity:0;filter:blur(4px);transform:none}20%{opacity:1;filter:blur(0);transform:none}30%{transform:none;animation-timing-function:cubic-bezier(.55,0,.35,1)}58%{opacity:1;transform:translate(29px,1px) scale(4.5)}66%,100%{opacity:0;transform:translate(29px,1px) scale(5.2)}}
+@keyframes inA-logo{0%{opacity:0}6%,30%{opacity:1}38%,100%{opacity:0}}
+@keyframes inA-cap{0%,8%{opacity:0}14%,30%{opacity:1}36%,100%{opacity:0}}
+@keyframes inA-mo{0%,50%{opacity:0;transform:scale(1.12)}62%,100%{opacity:1;transform:scale(1)}}
+@keyframes inA-ui{0%,66%{opacity:0}74%,100%{opacity:1}}
+/* B 호랑이 + 옅은 대동여지도 (9초) */
+.in-b .in-zm{animation:inB-z 9s infinite}
+.in-b .in-tg{animation:inB-tg 9s infinite}
+.in-b .in-logo{animation:inB-logo 9s infinite}
+.in-b .in-mo{animation:inB-mo 9s infinite}
+.in-b .in-ui{animation:inB-ui 9s infinite}
+@keyframes inB-z{0%{opacity:0;transform:none}8%,36%{opacity:.16;transform:none}46%{opacity:1;transform:none;animation-timing-function:cubic-bezier(.55,0,.35,1)}72%{opacity:1;transform:translate(29px,1px) scale(4.5)}78%,100%{opacity:0;transform:translate(29px,1px) scale(5.2)}}
+@keyframes inB-tg{0%,3%{opacity:0;transform:none}8%,36%{opacity:1;transform:none}44%,100%{opacity:0;transform:scale(.6)}}
+@keyframes inB-logo{0%{opacity:0}5%,42%{opacity:1}50%,100%{opacity:0}}
+@keyframes inB-mo{0%,66%{opacity:0;transform:scale(1.12)}76%,100%{opacity:1;transform:scale(1)}}
+@keyframes inB-ui{0%,78%{opacity:0}86%,100%{opacity:1}}
+/* C 도장 꾹 → 줌인 (9초) */
+.in-c .in-zm{animation:inC-z 9s infinite}
+.in-c .in-logo{animation:inC-logo 9s infinite}
+.in-c .in-st{animation:inC-st 9s infinite}
+.in-c .in-ring{animation:inC-ring 9s infinite}
+.in-c .in-mo{animation:inC-mo 9s infinite}
+.in-c .in-ui{animation:inC-ui 9s infinite}
+@keyframes inC-z{0%,4%{opacity:0;transform:none}18%{opacity:1;transform:none}38%{transform:none;animation-timing-function:cubic-bezier(.55,0,.35,1)}64%{opacity:1;transform:translate(29px,1px) scale(4.5)}72%,100%{opacity:0;transform:translate(29px,1px) scale(5.2)}}
+@keyframes inC-logo{0%{opacity:0}5%,36%{opacity:1}44%,100%{opacity:0}}
+@keyframes inC-st{0%,22%{opacity:0;transform:scale(2.6) rotate(-16deg)}28%{opacity:1;transform:scale(.9) rotate(-6deg)}30%{transform:scale(1.06) rotate(-6deg)}32%,38%{opacity:1;transform:scale(1) rotate(-6deg);animation-timing-function:cubic-bezier(.55,0,.35,1)}64%{opacity:1;transform:translate(29px,1px) scale(1.5) rotate(-6deg)}70%,100%{opacity:0;transform:translate(29px,1px) scale(.6) rotate(-6deg)}}
+@keyframes inC-ring{0%,27%{opacity:0;transform:scale(1)}28%{opacity:.6;transform:scale(1)}38%,100%{opacity:0;transform:scale(2.6)}}
+@keyframes inC-mo{0%,58%{opacity:0;transform:scale(1.12)}70%,100%{opacity:1;transform:scale(1)}}
+@keyframes inC-ui{0%,74%{opacity:0}82%,100%{opacity:1}}
+</style>`;
+const IN_LOAD = (cls = '') => `<div class="in-ph md fib ${cls}"><div class="in-logo" style="top:18px"><img src="img/logo_red.png" alt="" style="width:66px"></div><div class="in-tg" style="width:110px;margin:-82px 0 0 -55px"><img src="img/loading/tg_wink.jpg" alt="" style="width:110px;height:110px"><span style="font-size:10px">호호, 떡 식히는 중…</span></div></div>`;
+add({ id:'in_intro', code:'IN-01', t:'첫 화면 전환 · 대동여지도에서 확대해 지도로 + 한지 통일 (11-09) · 왼쪽 지금 → 시안 A·B·C', lane:'IN', w:1500, h:1760, isDoc:true,
+  spec:['사용자 11-09: 「처음 시작 화면에 대동여지도 이미지에서 확대되는 전환으로 지도로 진입 · 로딩 화면과 지도 화면에 한지 느낌 일관성 · 시안으로 보드에 올려 비교해서 결정」','크레딧 0 — CSS 움직임 + 지금 웹(localhost:3100) 사진. 대동여지도 그림은 docs/참고_대동여지도.jpg(960px, 시안용)','웹 코드는 아직 안 고침 — 고른 뒤 구현','🔴 A·B·C 중 전환 고르기 · 한지 ①·② 고르기 · 대동여지도 고화질 그림 출처 정하기'],
+  html:() => `<div class="doc" style="width:1500px;height:1760px">${IN_CSS}
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px"><div><div style="font-family:'Song Myung',serif;font-size:34px">첫 화면 전환 · 한지 통일 시안</div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 지금 웹 · 오른쪽 = 시안 A·B·C (폰 화면이 저절로 되풀이). 마지막 장면은 지금 웹의 실제 지도 사진이다. 크레딧 0.</div></div><button class="in-btn" data-inreplay="1">↻ 세 시안 처음부터 같이 보기</button></div>
+  <div style="display:grid;grid-template-columns:330px repeat(3,minmax(0,1fr));gap:18px;align-items:start">
+    <div class="inq">
+      <h4>지금 <small>첫 진입</small></h4>
+      <div style="display:flex;gap:12px;align-items:center"><div class="in-ph sm"><img class="full" src="img/intro/now_loading.jpg" alt="지금 로딩"></div><span style="font-size:18px;color:#8A8A85">→</span><div class="in-ph sm"><img class="full" src="img/intro/now_map.jpg" alt="지금 지도"></div></div>
+      <div class="in-note"><b>지금</b> · 흰 바탕에 호랑이가 흔들리다가, 지도가 뜨면 <b>한지색 지도로 뚝 바뀐다</b>.<br>· 로딩 바탕 <b>#FFFFFF</b> · 지도 바탕 <b>#F3F0E9</b> · 머리칸·목록 <b>#FFFFFF</b> → 바탕색이 달라 화면이 끊겨 보인다<br>· 종이 결(섬유 질감)은 웹에 아직 없다</div>
+    </div>
+    <div class="inq">
+      <h4>A · 대동여지도 확대 <small>가장 단순 · 약 2.8초</small></h4>
+      <div class="in-ph fib in-a"><div class="in-zm in-anim"><img src="img/intro/ddy_full.webp" alt="대동여지도"></div><div class="in-logo in-anim"><img src="img/logo_red.png" alt="떡볶여지도"></div><div class="in-cap in-anim">지도 펼치는 중…</div><img class="in-mo in-anim" src="img/intro/now_map_only.jpg" alt=""><img class="in-ui in-anim" src="img/intro/now_map.jpg" alt=""></div>
+      <div class="in-note"><b>흐름</b> · 한지 + 로고 → 대동여지도 전도가 먹 번지듯 나타남 → 한양(서울)으로 쭉 확대 → 같은 자리의 지금 지도로 겹쳐 바뀜 → 검색·목록이 올라옴<br><b>좋은 점</b> · 확대하는 동안 지도를 불러오니 기다림이 곧 첫 장면 · 「대동여지도 → 오늘 지도」라는 이름 뜻이 바로 보임<br><b>걸리는 점</b> · 호랑이가 빠진다(로딩 캐릭터 결정 11-06 과 바뀜) · 지도가 늦으면 확대 직전에서 멈추고 「지도 펼치는 중…」</div>
+    </div>
+    <div class="inq">
+      <h4>B · 호랑이 + 옅은 대동여지도 <small>지금 로딩 살림 · 약 3.5초</small></h4>
+      <div class="in-ph fib in-b"><div class="in-zm in-anim"><img src="img/intro/ddy_full.webp" alt="대동여지도"></div><div class="in-logo in-anim"><img src="img/logo_red.png" alt="떡볶여지도"></div><div class="in-tg in-anim"><img src="img/loading/tg_wink.jpg" alt="떡 문 호랑이"><span>호호, 떡 식히는 중…</span></div><img class="in-mo in-anim" src="img/intro/now_map_only.jpg" alt=""><img class="in-ui in-anim" src="img/intro/now_map.jpg" alt=""></div>
+      <div class="in-note"><b>흐름</b> · 한지 바탕에 옅은 대동여지도(16%) + 지금 호랑이 로딩 → 다 불러오면 호랑이가 작아지며 사라지고 대동여지도가 진해짐 → 한양으로 확대 → 지도<br><b>좋은 점</b> · 11-06 에 고른 호랑이 로딩을 그대로 쓴다 · 기다리는 동안에도 배경이 지도라 끊김이 없다<br><b>걸리는 점</b> · 단계가 하나 많아 조금 길다 · 바탕 지도와 호랑이가 겹쳐 처음엔 조금 복잡</div>
+    </div>
+    <div class="inq">
+      <h4>C · 도장 꾹 → 확대 <small>도장 이야기 · 약 3.3초</small></h4>
+      <div class="in-ph fib in-c"><div class="in-zm in-anim"><img src="img/intro/ddy_full.webp" alt="대동여지도"></div><div class="in-logo in-anim"><img src="img/logo_red.png" alt="떡볶여지도"></div><div class="in-ring in-anim"></div><div class="in-st in-anim">떡</div><img class="in-mo in-anim" src="img/intro/now_map_only.jpg" alt=""><img class="in-ui in-anim" src="img/intro/now_map.jpg" alt=""></div>
+      <div class="in-note"><b>흐름</b> · 대동여지도 전도 → 한양 자리에 빨간 도장이 「꾹」 찍히며 인주가 번짐 → 도장을 따라 확대 → 도장이 작아지며 지도 속으로 → 지도<br><b>좋은 점</b> · 지도 핀이 도장이라 「여기 떡볶이 도장 찍었다」는 이야기로 이어진다 · 가장 기억에 남는다<br><b>걸리는 점</b> · 도장 글자·모양을 정해야 한다(지금은 「떡」 자리 표시) · 빨강을 로고·도장·제보 버튼에만 쓰는 규칙 안이다</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;padding-top:8px;border-top:2px solid #1C1C1B">
+    <div style="display:flex;align-items:center;gap:8px"><b style="font-size:22px">한지 느낌 통일</b><span style="font-size:12.5px;color:#62625F">로딩 · 지도 · 머리칸/목록의 바탕과 종이 결 (위 시안 A·B·C 는 ① 기준)</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px">
+      <div class="inq"><h4>지금</h4>
+        <div style="display:flex;gap:14px"><div class="in-ph md"><img class="full" src="img/intro/now_loading.jpg" alt=""></div><div class="in-ph md"><img class="full" src="img/intro/now_map.jpg" alt=""></div></div>
+        <div class="in-sw"><span><i style="background:#FFFFFF"></i>로딩 #FFFFFF</span><span><i style="background:#F3F0E9"></i>지도 #F3F0E9</span><span><i style="background:#FFFFFF"></i>머리칸·목록 #FFFFFF</span></div>
+        <div class="in-note">로딩만 흰색이라 지도로 넘어갈 때 색이 확 바뀐다. 결 없음.</div></div>
+      <div class="inq"><h4>① 바탕만 한지 <small>추천</small></h4>
+        <div style="display:flex;gap:14px">${IN_LOAD()}<div class="in-ph md"><img class="full" src="img/intro/now_map.jpg" alt=""><div style="position:absolute;left:0;right:0;top:12.4%;height:45.6%;filter:url(#fiber);opacity:.5;mix-blend-mode:multiply"></div></div></div>
+        <div class="in-sw"><span><i style="background:#F3F0E9"></i>로딩 #F3F0E9</span><span><i style="background:#F3F0E9"></i>지도 #F3F0E9</span><span><i style="background:#FFFFFF"></i>머리칸·목록 #FFFFFF</span><span><i style="background:#F3F0E9;filter:url(#fiber)"></i>종이 결 (로딩·지도)</span></div>
+        <div class="in-note">로딩 바탕을 지도와 같은 한지색으로 + 같은 종이 결을 로딩·지도에 얹는다. 글을 읽는 머리칸·목록은 흰색 그대로 (11-08 흰 바탕 결정 유지).</div></div>
+      <div class="inq"><h4>② 전부 한지</h4>
+        <div style="display:flex;gap:14px">${IN_LOAD()}<div class="in-ph md"><img class="full" src="img/intro/now_map.jpg" alt=""><div style="position:absolute;inset:0;background:#F7F2E7;mix-blend-mode:multiply"></div><div style="position:absolute;inset:0;filter:url(#fiber);opacity:.5;mix-blend-mode:multiply"></div></div></div>
+        <div class="in-sw"><span><i style="background:#F3F0E9"></i>로딩 #F3F0E9</span><span><i style="background:#EAE4D7"></i>지도 (더 짙게)</span><span><i style="background:#F7F2E7"></i>머리칸·목록 미색 #F7F2E7</span></div>
+        <div class="in-note">머리칸·목록까지 미색 + 결. 가장 한지답지만, 11-08 에 「흰 바탕」으로 바꾼 것을 되돌리는 셈이고 글 읽기는 조금 탁해진다.</div></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="in-note" style="font-size:13px;line-height:1.75"><b>만드는 방법 (고른 뒤)</b><br>· <b>그림 확대 → 지도로 겹쳐 바꾸기</b>(위 시안 그대로): 대동여지도 그림을 CSS 로 확대하는 동안 뒤에서 지도를 불러오고, 다 되면 겹쳐 바꾼다. 간단하고 빠르다 → <b>추천</b><br>· 지도 안에 대동여지도를 실제 좌표로 깔고 날아 들어가기: 이음새는 가장 자연스럽지만, 옛 지도는 축척이 지역마다 달라 좌표 맞추기가 크다<br>· 첫 진입에만 · 다시 오면 바로 지도 · 「움직임 줄이기」 기기는 겹쳐 바꾸기만 · 지도가 늦으면 확대 직전에서 기다림</div>
+    <div class="in-note" style="font-size:13px;line-height:1.75;background:#FFF4E6"><b>정할 것</b><br>🔴 전환 A · B · C 중 하나 (B 는 호랑이 로딩 유지)<br>🔴 한지 ① 바탕만 · ② 전부<br>🔴 대동여지도 그림: 지금 시안은 960px 라 확대하면 흐리다 → 고화질 원본이 필요하다. 대동여지도(1861)는 저작권이 끝났지만, 고화질 사진은 소장 기관(규장각·국립중앙박물관 등)의 이용 조건을 확인해야 한다. 또는 11-05 표지 지도 시안(생성 그림)을 고화질로 다시 뽑는 길(65)<br>· 고르면 웹에 구현하고 폰·PC 에서 시간 재기 (크레딧 0)</div>
   </div>
 </div>` });
 CHARS.forEach(c => add({ id:'ch_' + c.n, code:'CH-0' + c.n, t:c.name, lane:'CH', w:520, isDoc:true,
@@ -2209,7 +2437,7 @@ function renderLayers() {
 
 /* 팬·줌 */
 let drag = null;
-stage.addEventListener('pointerdown', e => { if (e.button !== 0 || e.target.closest('[data-fset]')) return; drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false }; stage.setPointerCapture(e.pointerId); });
+stage.addEventListener('pointerdown', e => { if (e.button !== 0 || e.target.closest('[data-fset],[data-fvp],[data-inreplay]')) return; drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false }; stage.setPointerCapture(e.pointerId); });
 stage.addEventListener('pointermove', e => {
   if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; stage.classList.add('drag'); }
