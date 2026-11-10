@@ -27,15 +27,13 @@ pnpm dev
 | `/lists/[id]` | 맛집 리스트 하나 | 링크로만 공유한 리스트도 주소를 알면 연다 |
 | `/admin` | 운영 어드민 **시안** | 예시 데이터로 움직이고 저장·로그인 없음. 기획: [`docs/어드민기획_v1_2026-10-27.md`](docs/어드민기획_v1_2026-10-27.md) |
 
-- `?pal=H1`: 팔레트 바꾸기(화면 설계 보드와 같은 이름). 팀 비교용이지 이용자 기능이 아니다.
-- `?logo=euljiro&head=yeongwol`: 글꼴 시험(`src/lib/fonts.ts`). 원래대로 `?logo=png&head=base`.
 
 ## 구성
 
 - Next.js 16 (App Router · Cache Components) · React 19 · TypeScript · Tailwind 4 · shadcn/ui(base-nova) · pnpm
 - 지도: MapLibre 6 + OpenFreeMap 타일(OpenStreetMap). 대동여지도 느낌 바탕은 `src/components/map/dongyeoStyle.ts`
 - 화면 구조(2026-11-09 리팩토링): 화면마다 **컨테이너**(`X.tsx`: 상태·데이터·라우터)와 **View**(`XView.tsx`: props 만 받아 그리는 정적 마크업)로 나뉜다. View 의 props 계약은 `src/components/<screen>/types.ts`. 공용 부품은 `src/components/ui/`(shadcn) · `brand/`(도장·별점·로고 등 우리 것) · `layout/`(헤더·아래 메뉴·격자)
-- 색: `src/app/globals.css` 의 shadcn 변수(팔레트 T2 값)가 기준. 옛 web 토큰(`--paper --ink …`)은 `src/lib/theme.ts` 의 `?pal=` 전환용으로 공존 중(결정 R2 보류)
+- 색: `src/app/globals.css` 의 shadcn 변수 한 벌(팔레트 T2 값 고정, 2026-11-10 결정 R2). 런타임 팔레트 전환 `?pal=`·글꼴 시험 `?logo=`·화면 스튜디오 연동은 제거했다. 팔레트 비교는 `docs/design/index.html` 보드에서만 한다. `src/lib/theme.ts` 는 지도 색 계산(T2)만 남겼다
 - 태그 체계: `src/lib/taxonomy.ts` (기획안 7절, 화면·서버·DB 공통) · 규칙: `src/lib/wiki.ts`(등록·확인·숨김) · `src/lib/community.ts`(게시판·리스트 한도)
 - 데이터: 화면은 `src/lib/data/index.ts` 로만 읽고, 쓰기는 route handler(`src/app/api/*`) → `src/lib/data/db.ts`(규칙·단일 쓰기 경로) → `DATABASE_URL` 이 있으면 `pg.ts`(Postgres), 없으면 `.data/db.json`. 표 설계는 `db/init/*.sql`
 - 시험: `pnpm test`(vitest, 규칙 단위) · `pnpm e2e`(Playwright: 라우트 23개 × 폭 390·768·1280 + 저장 흐름 5. 3101 포트에 파일 저장소 모드로 따로 띄우며 개발 DB 는 건드리지 않는다) · `pnpm typecheck` · `pnpm lint`
