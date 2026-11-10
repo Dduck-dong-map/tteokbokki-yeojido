@@ -12,8 +12,7 @@ export default function TigerLoader({ className = "" }: { className?: string }) 
       <div className="tiger-art" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/loading/tiger-hoho.webp" alt="" width={220} height={220} fetchPriority="high" />
-        <span className="tiger-ho">호</span>
-        <span className="tiger-ho tiger-ho-2">호</span>
+        {/* 11-09 사용자 「호호호 글자 나오는 건 없애줘」 → 호랑이 옆에 떠오르던 「호」 글자 뺌 */}
       </div>
       <p className="text-[15px] text-ink2" aria-hidden="true">
         호호, 떡 식히는 중…
