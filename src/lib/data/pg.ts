@@ -5,7 +5,7 @@ import type { Db } from "./db";
 // 규칙(누가 무엇을 할 수 있나)은 전부 db.ts 에 그대로 두고, 여기서는 「읽기 · 바뀐 줄만 쓰기」만 한다.
 //  - 읽기: 표 전부를 db.ts 의 Db 모양으로 읽는다 (지금 규모 = 가게 수백 곳이라 충분하다)
 //  - 쓰기: 한 번에 하나씩(pg_advisory_xact_lock) 읽고 → db.ts 규칙대로 고치고 → 바뀐 줄만 넣기·고치기·지우기
-// 표 = web/db/init/001_schema.sql. 이름은 앱 값 이름의 snake_case.
+// 표 = db/init/001_schema.sql. 이름은 앱 값 이름의 snake_case.
 
 type Col = "text" | "int" | "num" | "bool" | "date" | "ts" | "json";
 type Spec = { table: string; key: string[]; cols: Record<string, Col> };

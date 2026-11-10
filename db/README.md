@@ -7,30 +7,29 @@
   - [`init/001_schema.sql`](init/001_schema.sql) — 가게 · 변경 이력 · 평가 · 맞아요/달라요 · 신고 · 떡볶이방 글·댓글·추천 · 맛집 리스트·추천 (표 10개)
   - [`init/002_postgis.sql`](init/002_postgis.sql) — 가게 위치 · 화면 범위 · 반경 검색 함수. PostGIS 는 `extensions` 칸(스키마)에 깐다 (Supabase 권장, 11-09)
   - [`init/003_rls.sql`](init/003_rls.sql) — 잠금(RLS). 공개 키로는 표를 못 읽고 못 쓰게 한다. 앱은 서버에서 DB 주인 계정으로 붙으므로 영향 없음 (11-09)
-- **앱 연결:** `.env.local` 에 `DATABASE_URL` 이 있으면 앱이 파일(`web/.data/db.json`) 대신 DB 에 저장한다 → [`src/lib/data/pg.ts`](../src/lib/data/pg.ts). 누가 무엇을 할 수 있는지(규칙)는 그대로 [`src/lib/data/db.ts`](../src/lib/data/db.ts) 한 곳이다.
+- **앱 연결:** `.env.local` 에 `DATABASE_URL` 이 있으면 앱이 파일(루트 `.data/db.json`) 대신 DB 에 저장한다 → [`src/lib/data/pg.ts`](../src/lib/data/pg.ts). 누가 무엇을 할 수 있는지(규칙)는 그대로 [`src/lib/data/db.ts`](../src/lib/data/db.ts) 한 곳이다.
   - 읽기는 표 10개를 **한 번에** 가져온다 (DB 와 한 번만 오감, 11-09). DB 가 멀리 있어도 화면이 덜 느려진다.
   - 이 컴퓨터 DB 가 아니면(= Supabase) 저절로 암호화 연결 · 연결 1개 · 포트 6543 이면 미리 준비한 질의 끄기.
 - **처음 켠 빈 DB:** 앱이 처음 읽을 때 예시 가게 16곳 · 글 3 · 리스트 3 을 넣는다. (Supabase 에서도 똑같이 들어간다 → 실제 가게 자료를 넣을 때 예시를 지워야 한다)
-- **사진 파일**은 아직 `web/.data/photos` 폴더에 둔다 (DB 에는 사진 id 만).
-- `web/supabase/migrations/` (10-27) 는 **처음 설계안**이다. 지금 앱과 표가 달라 쓰지 않는다. 옮길 때는 이 폴더의 `init/` 세 파일을 쓴다.
+- **사진 파일**은 아직 루트 `.data/photos` 폴더에 둔다 (DB 에는 사진 id 만).
+- 옛 `web/supabase/migrations/` (10-27 처음 설계안)는 11-09 루트 이동 때 지웠다(깃 이력에만 남음). 옮길 때는 이 폴더의 `init/` 세 파일을 쓴다.
 
 ## 쓰는 법
 
 준비: Docker Desktop 을 켜 둔다 (작업 표시줄 고래 아이콘).
 
 ```bash
-cd web
-npm run db:up        # DB 켜기 (처음이면 이미지 받기 + 표 만들기, 1~2분)
+pnpm db:up        # DB 켜기 (처음이면 이미지 받기 + 표 만들기, 1~2분)
 cp .env.example .env.local   # 그리고 .env.local 의 DATABASE_URL 줄 앞 # 지우기
-npm run dev -- -p 3100       # 앱 켜기 → http://127.0.0.1:3100
+pnpm dev -p 3100             # 앱 켜기 → http://127.0.0.1:3100
 ```
 
 | 명령 | 하는 일 |
 | --- | --- |
-| `npm run db:up` | DB 켜기 (127.0.0.1:15432, 이 컴퓨터에서만 열림 · 포트를 바꾸려면 `DDY_DB_PORT=5433 npm run db:up` 하고 `.env.local` 주소의 포트도 같이 바꾼다) |
-| `npm run db:down` | DB 끄기 (데이터는 남음) |
-| `npm run db:reset` | **데이터를 다 지우고** 표부터 다시 만들기 → 다음에 앱을 열면 예시 데이터로 시작 |
-| `npm run db:psql` | DB 안을 직접 보기 (`\dt` 표 목록, `select * from stores limit 5;`) |
+| `pnpm db:up` | DB 켜기 (127.0.0.1:15432, 이 컴퓨터에서만 열림 · 포트를 바꾸려면 `DDY_DB_PORT=5433 pnpm db:up` 하고 `.env.local` 주소의 포트도 같이 바꾼다) |
+| `pnpm db:down` | DB 끄기 (데이터는 남음) |
+| `pnpm db:reset` | **데이터를 다 지우고** 표부터 다시 만들기 → 다음에 앱을 열면 예시 데이터로 시작 |
+| `pnpm db:psql` | DB 안을 직접 보기 (`\dt` 표 목록, `select * from stores limit 5;`) |
 
 DB 를 그만 쓰려면 `.env.local` 의 `DATABASE_URL` 줄 앞에 `#` 을 붙이고 개발 서버를 다시 켠다 (다시 파일 저장).
 
@@ -45,7 +44,7 @@ DB 를 그만 쓰려면 `.env.local` 의 `DATABASE_URL` 줄 앞에 `#` 을 붙�
 2. **(사람 또는 Claude)** Supabase 화면 왼쪽 **SQL Editor** 에 `init/001_schema.sql` → `002_postgis.sql` → `003_rls.sql` 을 차례로 붙여 넣고 실행한다.
 3. **(사람)** 위쪽 **Connect** → **Transaction pooler** 주소(포트 **6543**)를 복사해 비밀번호를 채운다. 모양: `postgres://postgres.<프로젝트ID>:<비밀번호>@aws-0-ap-northeast-2.pooler.supabase.com:6543/postgres`
    - 「Direct connection」(포트 5432)은 IPv6 라서 Vercel 에서 안 붙는다. **꼭 pooler** 주소.
-4. 먼저 이 컴퓨터에서 확인: `.env.local` 의 `DATABASE_URL` 을 그 주소로 바꾸고 `npm run dev -- -p 3100` → 화면이 뜨고 글을 써서 남으면 된다.
+4. 먼저 이 컴퓨터에서 확인: `.env.local` 의 `DATABASE_URL` 을 그 주소로 바꾸고 `pnpm dev -p 3100` → 화면이 뜨고 글을 써서 남으면 된다.
 5. **(사람)** Vercel 프로젝트 설정 → Environment Variables 에 `DATABASE_URL` · `HASH_SALT`(아무도 모르는 긴 글자) 를 넣고 다시 배포.
    - 권장: Vercel 함수 지역을 **서울(icn1)** 로. 기본(미국)이면 DB(서울)와 멀어 화면마다 느려진다.
 6. 남는 일: **사진**은 아직 서버 폴더라 Vercel 에서는 사라진다 → Supabase Storage 로 옮겨야 사진이 남는다 (다음 작업).
@@ -70,5 +69,5 @@ DB 를 그만 쓰려면 `.env.local` 의 `DATABASE_URL` 줄 앞에 `#` 을 붙�
 
 - Supabase 프로젝트 만들기 · 연결 (위 1~5, 계정은 사람이)
 - 사진을 Supabase Storage 로
-- 앱 자체를 도커로 띄우기 (지금은 DB 만 도커, 앱은 `npm run dev`)
+- 앱 자체를 도커로 띄우기 (지금은 DB 만 도커, 앱은 `pnpm dev`)
 - 지도 화면 범위 조회를 DB 함수(`stores_in_bounds`)로 바꾸기 — 지금은 앱이 전부 읽어 거른다 (가게 수백 곳까지는 충분)

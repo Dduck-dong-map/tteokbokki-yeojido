@@ -9,11 +9,12 @@ import { DAILY_COMMENTS, DAILY_LISTS, DAILY_POSTS, MAX_LIST_STORES, type BoardCa
 import { SAMPLE_LISTS, SAMPLE_POSTS } from "./sample-community";
 import { SAMPLE_HISTORY, SAMPLE_NEW, SAMPLE_REVIEWS, SAMPLE_STORES } from "./sample-stores";
 
-// 저장소: 지금은 서버 폴더의 JSON 파일 하나다 (web/.data/db.json · 깃에 안 올라간다).
+// 저장소: 지금은 서버 폴더의 JSON 파일 하나다 (저장소 루트 .data/db.json · 깃에 안 올라간다).
 // 계정 없이 흐름 전체를 시험하려고 이렇게 뒀고, Supabase 키를 받으면 이 파일 안만 바꾼다.
 // 주의: Vercel 에서는 API 와 페이지가 임시 폴더를 함께 쓰지 못해 저장이 화면에 안 나타난다 (11-06 확인) → 공개 전에 반드시 바꿔야 한다.
 // 파일을 지우면 예시 데이터로 다시 시작한다.
 
+// DATA_DIR 은 tests/unit/db.test.ts 가 격리 확인에 쓴다
 export const DATA_DIR = process.env.DATA_DIR ?? (process.env.VERCEL ? "/tmp/ddy-data" : path.join(process.cwd(), ".data"));
 const DB_FILE = path.join(DATA_DIR, "db.json");
 export const PHOTO_DIR = path.join(DATA_DIR, "photos");
@@ -128,8 +129,13 @@ function mutate<T>(fn: (db: Db) => T | Promise<T>): Promise<T> {
   return run;
 }
 
+// 기기·접속 위치 해시에 섞는 소금. 배포(Vercel)에서 비어 있으면 기본값 "ddy" 로 해시가 역산될 수 있어 시작 때 멈춘다 (정리 보고서 2절 #2).
+// 로컬 pnpm build · E2E(next start) 는 VERCEL 이 없어 기본값으로 돈다.
+const HASH_SALT = process.env.HASH_SALT ?? (process.env.VERCEL ? null : "ddy");
+if (HASH_SALT === null) throw new Error("HASH_SALT 환경 변수가 비어 있어요. Vercel 설정에 아무도 모르는 긴 글자를 넣어 주세요 (.env.example 참고)");
+
 export function hash(v: string) {
-  return createHash("sha256").update(`${process.env.HASH_SALT ?? "ddy"}:${v}`).digest("hex").slice(0, 24);
+  return createHash("sha256").update(`${HASH_SALT}:${v}`).digest("hex").slice(0, 24);
 }
 
 const mark = (who: Who): Mark => ({ device: hash(who.device), ip: hash(who.ip) });
