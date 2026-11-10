@@ -1,0 +1,56 @@
+import { ArrowDown, ArrowUp } from "lucide-react";
+import Link from "next/link";
+import { SpiceStamp } from "@/components/brand";
+import { Button } from "@/components/ui/button";
+import { won } from "@/lib/filters";
+import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
+import { cn } from "@/lib/utils";
+import type { ListPanelViewProps } from "./types";
+
+// 리스트에 담긴 가게 줄 — 번호 = 리스트 순서. 내 리스트면 ↑↓·빼기가 붙는다. 비어 있으면 안내 한 줄.
+// ListPanelView 에서 떼어 낸 섹션 View. props 는 ListPanelViewProps 의 부분집합(계약에서 파생, 새 계약 아님).
+// 줄의 id(`row-${id}`)는 컨테이너가 scrollIntoView 로 찾는 손잡이다 — 바꾸지 않는다.
+export type ListStoreRowsViewProps = Pick<ListPanelViewProps, "stores" | "mine" | "selectedId" | "onSelect" | "onMove" | "onRemove">;
+
+export default function ListStoreRowsView({ stores, mine, selectedId, onSelect, onMove, onRemove }: ListStoreRowsViewProps) {
+  if (!stores.length)
+    return (
+      <p className="rounded-xl border border-dashed border-input px-4 py-8 text-center text-[13px] leading-relaxed text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
+        아직 담긴 가게가 없어요.
+        {mine ? <> 아래에서 가게를 찾아 넣거나, 가게 화면의 「리스트에 담기」를 눌러 주세요.</> : null}
+      </p>
+    );
+
+  return (
+    <ol className="divide-y divide-border border-y border-border">
+      {stores.map((s, i) => (
+        <li key={s.id} id={`row-${s.id}`} className={cn("flex items-center gap-3 py-3", selectedId === s.id && "bg-muted")}>
+          <span className="w-6 shrink-0 text-center font-serif text-[17px] font-bold text-primary">{i + 1}</span>
+          <Link href={`/store/${s.id}`} onMouseEnter={() => onSelect(s.id)} className="flex min-w-0 flex-1 items-center gap-3">
+            <SpiceStamp n={s.spice} size={28} />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[15px] font-bold">{s.name}</span>
+              <span className="block truncate text-[12px] text-muted-foreground/70">
+                {s.dong} · {STYLES[s.style]} · {s.rice.map((r) => RICE_CAKES[r]).join("·")}
+              </span>
+            </span>
+            <b className="shrink-0 text-[14px]">{won(s.price)}</b>
+          </Link>
+          {mine && (
+            <span className="flex shrink-0 items-center gap-0.5">
+              <Button type="button" variant="ghost" size="icon" aria-label={`${s.name} 위로`} disabled={i === 0} onClick={() => onMove(s.id, -1)} className={cn("hit h-9 w-8 rounded-lg text-muted-foreground disabled:opacity-30")}>
+                <ArrowUp />
+              </Button>
+              <Button type="button" variant="ghost" size="icon" aria-label={`${s.name} 아래로`} disabled={i === stores.length - 1} onClick={() => onMove(s.id, 1)} className={cn("hit h-9 w-8 rounded-lg text-muted-foreground disabled:opacity-30")}>
+                <ArrowDown />
+              </Button>
+              <Button type="button" variant="ghost" aria-label={`${s.name} 리스트에서 빼기`} onClick={() => onRemove(s.id)} className={cn("hit h-9 rounded-lg px-2 text-[12px] font-normal text-muted-foreground/70")}>
+                빼기
+              </Button>
+            </span>
+          )}
+        </li>
+      ))}
+    </ol>
+  );
+}

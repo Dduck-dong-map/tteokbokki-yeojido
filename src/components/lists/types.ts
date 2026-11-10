@@ -1,6 +1,6 @@
 // 맛집 리스트 View 계약 (리팩토링 계획 2026-11-09 · 계약 단계).
 // View 는 props 만 받아 그린다. 상태·핸들러·데이터는 전부 컨테이너가 넘긴다.
-// 이 파일은 타입만 둔다. 기존 부품(ListView·AddToList·StorePicker)은 아직 그대로다.
+// 이 파일은 타입만 둔다. 컨테이너(ListPanel·ListInfoForm·AddToList·StorePicker)는 같은 폴더의 *View 에 이 props 를 넘긴다.
 
 import type { Focus } from "@/components/map/TteokMap";
 import type { ListVisibility, PlaceList } from "@/lib/community";
@@ -24,11 +24,11 @@ export type ListInfoFormViewProps = {
   onCancel?: () => void;
 };
 
-// ───────── ListView ─────────  (부품 이름이 이미 View 로 끝나 View 를 겹쳐 쓰지 않는다)
+// ───────── ListPanel ─────────  (옛 이름 ListView 는 View 접미사와 겹쳐 ListPanel 로 바꿨다 · 계획 ⑧)
 // 이 View 가 그리는 것: 머리(이름·설명·누가·추천·공유·고치기 또는 ListInfoForm) · 폰 지도 · 오류 · 번호 붙은 가게 줄(내 것이면 ↑↓·빼기) · 빈 상태 · 가게 넣기(StorePicker) · 리스트 지우기 · PC 오른쪽 큰 지도.
 // 컨테이너가 넘기는 것: 리스트, 담긴 가게(순서대로), 고를 수 있는 가게, 기준 시각, 내 것 여부, 화면 폭, 고른 가게·고치는 중·지우기 묻는 중, 오류, 지도 처음 위치·초점, 이미 담긴 id, 그리고 모든 onX.
 // 넘기지 않는 것: router · fetch · refreshOwned · useOwned · useIsWide · scrollIntoView(선택은 onSelect 로만 알린다).
-export type ListViewProps = {
+export type ListPanelViewProps = {
   list: PlaceList;
   stores: Store[]; // list.storeIds 순서대로
   pick: PickStore[];

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import ListView from "@/components/lists/ListView";
 import { BackHeader } from "@/components/layout";
+import ListPanel from "@/components/lists/ListPanel";
 import { getList, getStores } from "@/lib/data";
 
 export async function generateMetadata({ params }: PageProps<"/lists/[id]">): Promise<Metadata> {
@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: PageProps<"/lists/[id]">): Pr
 
 // 맛집 리스트 하나 (내 맛지도, 11-08): 이름 · 설명 · 추천 · 공유 → 지도 + 가게 순서대로.
 // 링크로만 공유한 리스트도 주소를 아는 사람은 볼 수 있다. 고치기는 만든 기기에서만.
+// 화면은 ListPanel(컨테이너) → ListPanelView(마크업)가 그린다 (리팩토링 계획 ⑧, 옛 ListView).
 export default function ListPage({ params }: PageProps<"/lists/[id]">) {
   return (
     <div className="page-wide">
@@ -37,5 +38,5 @@ async function Loader({ params }: Pick<PageProps<"/lists/[id]">, "params">) {
   const byId = new Map(all.map((s) => [s.id, s]));
   const stores = list.storeIds.map((id) => byId.get(id)).filter((s) => !!s);
   const pick = all.map(({ id, name, dong }) => ({ id, name, dong }));
-  return <ListView list={list} stores={stores} pick={pick} nowIso={new Date().toISOString()} />;
+  return <ListPanel list={list} stores={stores} pick={pick} nowIso={new Date().toISOString()} />;
 }
