@@ -479,6 +479,8 @@ body.edge-frame .real svg{left:-12px;top:-112px}
 /* ═════════ 팔레트 ═════════ */
 // 바탕 7색만 정하면 나머지(윗줄·선·흐린 글자·지도 먹선·실제 지도 칸 등)는 아래 derive() 가 계산한다
 const PRESETS = [
+  // 11-10 사용자 「색상 이렇게 진행해」(바탕 7색 그림) — 바탕 = 지도 종이 · 화면 배경 · 주 버튼 옥빛 · 강조·제보 구운 갈색 · 11-11 웹 색은 T2 그대로로 정함 → 시안으로 남김
+  { id:'F1', name:'F1 11-10 시안', g:'확정', b:{ paper:'#F3F1EE', surface:'#FEFEFE', ink:'#202020', primary:'#2A6159', accent:'#A45A2A', fab:'#6E5436', water:'#AFC3D9' } },
   { id:'V1', name:'V1 기준 (기존)', g:'기존', v1:true, b:{ paper:'#ECE3D1', surface:'#FBF7EF', ink:'#1A1614', primary:'#C00000', accent:'#C00000', fab:'#C00000', water:'#87A3C9' } },
   { id:'A', name:'A 먹과 쪽빛', g:'v2', b:{ paper:'#ECE3D1', surface:'#FBF7EF', ink:'#1F1A17', primary:'#2A2421', accent:'#2D5B9A', fab:'#2D5B9A', water:'#87A3C9' } },
   { id:'B', name:'B 청자', g:'v2', b:{ paper:'#E8E6D8', surface:'#FAFAF5', ink:'#18211E', primary:'#2F6B62', accent:'#2B6259', fab:'#2F6B62', water:'#A3C7BC' } },
@@ -712,6 +714,7 @@ function renderPal(T) {
   const grp = g => PRESETS.filter(p => p.g === g).map(chip).join('');
   const c = (a, b, t) => { const v = cr(a, b); return `${t} <b class="${v < 4.5 ? 'bad' : ''}">${v.toFixed(1)}</b>${v < 4.5 ? ' (낮음)' : ''}`; };
   box.innerHTML = `<h4>팔레트 <small>${palName()}</small></h4>
+    <div class="pgroup">11-10 시안 (11-11 웹은 T2 유지)</div><div class="pgrid">${grp('확정')}</div>
     <div class="pgroup">새 후보 · 2026-11-10</div><div class="pgrid">${grp('후보')}</div>
     <div class="pgroup">팀 피드백 (슬랙 10-28) · T 추천</div><div class="pgrid">${grp('팀')}</div>
     <div class="pgroup">기존</div><div class="pgrid">${grp('기존')}</div>
@@ -1492,6 +1495,89 @@ add({ id:'ch_face3', code:'CH-16', t:'도장이 맵기 1~5 · 단순판 (11-10) 
     </div>
     <div style="padding:10px 14px;border-radius:10px;background:#FFF4E6;font-size:13px;line-height:1.6;color:#3D3D3B"><b>다음 (🔴)</b> · 이 단순판으로 확정할지 → 확정되면 웹 가게 상세 도장 뒤집기(FlipStamp)·지도 도장 표정을 단순판 SVG 로 맞출지(크레딧 0, 허락 뒤)</div>
   </div>
+</div>` });
+// 11-10 CH-17 도장이 떡 느낌 세 갈래 — 얼굴·소품은 단순판 그대로, 몸만 (스크립트 docs/만든_스크립트/face_v4_ddeok_2026-11-10.py → img/face_v4/{g,c,t}1~5.svg)
+const DDEOK_WAYS = [
+  ['g', '① 고명 도장', '가장 기존에 가까움', '단순판 네모 그대로, 숫자가 있던 이마 자리에 깨 넷 + 파 한 조각. 기존 디자인을 거의 안 건드린다.', '떡 자체는 안 보여 「떡볶이 고명 얹은 도장」 정도 · 24 에서는 고명이 점으로 뭉개짐'],
+  ['c', '② 떡 단면 도장', '추천', '가래떡 자른 면 = 동그란 도장(인감). 바깥 테 = 소스(단계 색), 안 = 흰 떡. 진한 4·5 도 흰 떡이 보여 소시지처럼 안 보이고, 작게 봐도 테 색으로 단계가 갈린다.', '네모 → 동그라미 (지도 도장 핀 모양도 같이 바꿀지) · 얼굴이 모두 먹선이라 3~5 의 크림 얼굴 대비는 사라짐'],
+  ['t', '③ 떡볶이 떡', '떡볶이로 가장 바로 읽힘', '옆에서 본 통통한 떡 토막, 오른쪽 자른 끝 = 흰 떡. 보자마자 떡볶이 떡이다.', '가로로 길어 작게 보면 얼굴이 작아짐(24 에서는 거의 안 보임) · 도장 느낌은 없어짐 · 길이:굵기 약 2.6:1 로 실제(3~5:1)보다 통통하게 · 1 은 흰 끝과 몸 색이 비슷']
+];
+add({ id:'ch_ddeok', code:'CH-17', t:'도장이 떡 느낌 세 갈래 (11-10) · 왼쪽 단순판 → 오른쪽 고명 · 떡 단면 · 떡볶이 떡', lane:'CH', w:1000, h:930, isDoc:true,
+  spec:['사용자 11-10: 「이거 떡볶이나 떡 느낌으로 만들 수 있나 도장이 디자인」 (바로 앞 결정: 기존 디자인에 충실하게 심플하게 · 색 A)','크레딧 0 — SVG 직접 그림. 얼굴·소품(땀·김·불꽃)은 CH-16 단순판 그대로, 몸만 바꿈. 광·그라데이션·그림자 없음','떡 그림 규칙(docs/떡볶이리서치_v1) 지킴: 통통한 원기둥 · 끝은 살짝 둥글게 · 진한 빨강으로 다 칠하면 소시지 → 자른 면 흰 떡을 보이게','🔴 셋 중 하나(또는 단순판 유지) 고르기 → 웹에 옮길지 · 그림 시안이 필요하면 싼 모델 1장(15) 허락'],
+  html:() => `<div class="doc" style="width:1000px;height:930px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">도장이 · 떡 느낌 세 갈래 <span style="font-size:14px;color:#62625F;margin-left:8px">11-10 · SVG 직접 그림 · 크레딧 0 · 색 A</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 단순판 (CH-16) · 오른쪽 = 떡 느낌 세 갈래. 얼굴과 땀·김·불꽃은 단순판 그대로 두고 몸만 바꿨다.</div></div>
+  <div style="display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px;align-items:stretch">
+    <div style="border:1px solid #DEDED9;border-radius:14px;padding:14px;background:#FAFAF8;display:flex;flex-direction:column;gap:10px">
+      <b style="font-size:15px">단순판 (CH-16)</b>
+      ${FACES.map(([a], i) => `<div style="display:flex;align-items:center;gap:10px"><img src="img/face_v3/${i + 1}.svg" alt="단순판 ${i + 1}" style="width:58px;height:65px"><span style="font-size:12px"><b>${i + 1}</b> ${a}</span></div>`).join('')}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${DDEOK_WAYS.map(([k, t, tag, good, fix]) => `<div style="border:1.5px solid ${k === 'c' ? '#2A6159' : '#DEDED9'};border-radius:14px;padding:12px 14px;background:#F3F0E9;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px"><b style="font-size:16px">${t}</b><span style="font-size:11.5px;padding:2px 9px;border-radius:10px;background:${k === 'c' ? '#2A6159' : '#62625F'};color:#fff">${tag}</span></div>
+        <div style="display:flex;align-items:flex-end;gap:14px">
+          <div style="display:flex;gap:4px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img src="img/face_v4/${k}${n}.svg" alt="${t} ${n}" style="width:80px;height:89px">`).join('')}</div>
+          <div style="display:flex;flex-direction:column;gap:6px;padding-left:12px;border-left:1px dashed #CFC9BC">
+            <div style="display:flex;gap:4px;align-items:flex-end"><small style="color:#62625F;width:22px">36</small>${[1,2,3,4,5].map(n => `<img src="img/face_v4/${k}${n}.svg" alt="" style="width:36px">`).join('')}</div>
+            <div style="display:flex;gap:4px;align-items:flex-end"><small style="color:#62625F;width:22px">24</small>${[1,2,3,4,5].map(n => `<img src="img/face_v4/${k}${n}.svg" alt="" style="width:24px">`).join('')}</div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.6;color:#3D3D3B"><b>좋은 점</b> · ${good}<br><b>아쉬운 점</b> · ${fix}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div style="padding:10px 14px;border-radius:10px;background:#FFF4E6;font-size:13px;line-height:1.6;color:#3D3D3B"><b>다음 (🔴)</b> · ①·②·③ 중 하나, 또는 단순판 유지 고르기 → 고르면 웹 도장 표정(FlipStamp)·지도 핀에 옮길지 · 그림 시안이 필요하면 고른 것만 싼 모델 1장(15, 허락 뒤). <b>추천 ②</b> = 도장(동그란 인감)과 떡을 한 번에, 작게 봐도 단계가 갈린다.</div>
+</div>` });
+// 11-10 CH-18 떡 캐릭터 맵기 1~5 — 사용자 그림(img/ddeok_char/ref_user_526.png) 그대로 + 도장이 단순판 표정 (스크립트 docs/만든_스크립트/ddeok_char_2026-11-10.py → img/ddeok_char/0~5.svg)
+add({ id:'ch_ddeokchar', code:'CH-18', t:'떡 캐릭터 맵기 1~5 (11-10) · 왼쪽 사용자 그림 → 오른쪽 표정 다섯', lane:'CH', w:1000, h:760, isDoc:true,
+  spec:['사용자 11-10: 그림(세운 떡볶이 떡 · 위쪽 소스 · 깨 · 막대 팔) 「이걸로 캐릭터 만들어보자 표정별로 추가하고 도장이처럼 지금 주는 디자인에 충실해서」','크레딧 0 — SVG 직접 그림. 몸·테두리·소스·깨·팔·볼 터치는 원본 그대로, 표정·소품은 도장이 단순판(CH-16) 그대로','원본 소스 빨강 #C8102E = 도장이 3단계 색 → 단계마다 소스 색을 도장이 색 A 로, 맵을수록 소스가 조금 더 흘러내림 · 팔 각도도 단계마다','🔴 이대로 갈지 · 이름 · 고칠 곳 → 웹(로딩·빈 화면·맵기 표시)에 쓸지'],
+  html:() => `<div class="doc" style="width:1000px;height:760px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">떡 캐릭터 · 맵기 1~5 <span style="font-size:14px;color:#62625F;margin-left:8px">11-10 · SVG 직접 그림 · 크레딧 0</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 사용자 그림 · 오른쪽 = 같은 몸에 도장이 단순판 표정. 소스 색이 맵기 단계 색(도장이 색 A)이고, 맵을수록 소스가 더 흘러내린다.</div></div>
+  <div style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:16px;align-items:stretch">
+    <div style="border:1px solid #DEDED9;border-radius:14px;padding:14px;background:#FAFAF8;display:flex;flex-direction:column;gap:10px;align-items:center">
+      <b style="font-size:15px;align-self:flex-start">사용자 그림</b>
+      <img src="img/ddeok_char/ref_user_526.png" alt="사용자 그림" style="width:123px;height:141px;image-rendering:pixelated">
+      <b style="font-size:13px;align-self:flex-start;margin-top:6px">SVG 로 다시 그림</b>
+      <img src="img/ddeok_char/0.svg" alt="다시 그림" style="width:110px;height:122px">
+      <span style="font-size:11.5px;color:#62625F;line-height:1.5">크림 몸 #FBF3E6 · 소스 #C8102E · 검은 테두리 · 깨 셋 · 막대 팔 · 점 눈 · 볼 터치</span>
+    </div>
+    <div style="border:1.5px solid #2A6159;border-radius:14px;padding:14px;background:#F3F0E9;display:flex;flex-direction:column;gap:10px">
+      <b style="font-size:15px">맵기 1~5</b>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">${FACES.map(([a, b], i) => `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:130px"><img src="img/ddeok_char/${i + 1}.svg" alt="떡 캐릭터 ${i + 1}" style="width:126px;height:140px"><b style="font-size:12.5px">${i + 1} ${a}</b><span style="font-size:11.5px;color:#62625F">${b}</span></div>`).join('')}</div>
+      <div style="display:flex;gap:26px;align-items:flex-end;margin-top:6px;padding-top:10px;border-top:1px dashed #CFC9BC">
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">작게 · 48</small><div style="display:flex;gap:6px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img src="img/ddeok_char/${n}.svg" alt="" style="width:48px">`).join('')}</div></div>
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">더 작게 · 28</small><div style="display:flex;gap:5px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img src="img/ddeok_char/${n}.svg" alt="" style="width:28px">`).join('')}</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 16px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.75;color:#3D3D3B"><b>원본에서 그대로 둔 것</b> · 세운 떡 몸(크림 · 검은 테두리) · 위에서 흘러내린 소스와 작은 방울 · 깨 세 알 · 양옆 막대 팔 · 볼 터치<br>
+    <b>단계마다 바뀌는 것</b> · 소스 색 = 도장이 색 A (원본 빨강이 3단계 색과 같다) · 소스가 흘러내린 길이 · 표정(1 웃음 · 2 땀 · 3 놀람 · 4 눈물과 김 · 5 X 눈과 불꽃 — 도장이 단순판과 같음) · 팔(1 내림 · 2 원본 · 3 옆으로 · 4 위로 · 5 위로 크게)<br>
+    <b>한계</b> · 원본이 41×47 작은 그림이라 방울 모양·눈 크기는 눈대중으로 옮김 · 28 에서는 깨·땀이 거의 안 보임</div>
+  <div style="padding:10px 14px;border-radius:10px;background:#FFF4E6;font-size:13px;line-height:1.6;color:#3D3D3B"><b>다음 (🔴)</b> · 이대로 갈지 · 캐릭터 이름 · 고칠 곳 → 웹 어디에 쓸지(로딩 · 빈 화면 · 맵기 표시) · 그림 시안이 필요하면 싼 모델 1장(15, 허락 뒤)</div>
+  <div style="padding:10px 14px;border-radius:10px;background:#F4F4F2;font-size:13px;line-height:1.6;color:#3D3D3B"><b>11-11</b> · 사용자 「CH-15 표정 디벨롭의 표정을 입혀봐」 → 다음 카드 <b>CH-19</b></div>
+</div>` });
+// 11-11 CH-19 떡 캐릭터 + CH-15 표정 — 몸·소스·깨·팔은 CH-18 그대로, 얼굴·머리 소품은 CH-15 표정 디벨롭(face_v2) (스크립트 docs/만든_스크립트/ddeok_char_ch15_2026-11-11.py → img/ddeok_char/ch15_1~5.svg)
+add({ id:'ch_ddeokface15', code:'CH-19', t:'떡 캐릭터 + CH-15 표정 (11-11) · 왼쪽 지금(CH-18) → 오른쪽 CH-15 표정 입힘', lane:'CH', w:1000, h:780, isDoc:true,
+  spec:['사용자 11-11: 「CH-15 표정 디벨롭의 표정을 입혀봐 지금 만든 캐릭터에게」','크레딧 0 — SVG 직접 그림. 몸·소스(단계 색·길이)·깨·팔 = CH-18 그대로, 얼굴과 머리 소품 = CH-15 디벨롭 표정 그대로','크림 몸 위라 얼굴 선은 모두 먹색(CH-15 는 3~5 가 크림 선) · 흰 눈에 먹 테두리 · 머리 소품은 떡 머리 둥근 끝 둘레로 자리만 옮김 · 4 김은 CH-15 에서 「뼈처럼 보임」이던 막대만 뺌','🔴 CH-18(단순판 표정)과 CH-19(CH-15 표정) 중 고르기 · 고칠 곳'],
+  html:() => `<div class="doc" style="width:1000px;height:780px">
+  <div><div style="font-family:'Song Myung',serif;font-size:34px">떡 캐릭터 · CH-15 표정 <span style="font-size:14px;color:#62625F;margin-left:8px">11-11 · SVG 직접 그림 · 크레딧 0</span></div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 참고(CH-15 도장이 표정 · 지금 떡 캐릭터 CH-18) · 오른쪽 = 떡 캐릭터에 CH-15 표정을 입힌 것. 몸·소스·깨·팔은 그대로다.</div></div>
+  <div style="display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:stretch">
+    <div style="border:1px solid #DEDED9;border-radius:14px;padding:14px;background:#FAFAF8;display:flex;flex-direction:column;gap:8px">
+      <div style="display:grid;grid-template-columns:22px 1fr 1fr;gap:4px;font-size:12px;color:#62625F"><span></span><b style="color:#1C1C1B">CH-15 도장이</b><b style="color:#1C1C1B">CH-18 지금</b></div>
+      ${[1,2,3,4,5].map(n => `<div style="display:grid;grid-template-columns:22px 1fr 1fr;gap:4px;align-items:center"><b style="font-size:13px">${n}</b><img src="img/face_v2/A${n}.svg" alt="CH-15 ${n}" style="width:62px;height:69px"><img src="img/ddeok_char/${n}.svg" alt="CH-18 ${n}" style="width:62px;height:69px"></div>`).join('')}
+    </div>
+    <div style="border:1.5px solid #2A6159;border-radius:14px;padding:14px;background:#F3F0E9;display:flex;flex-direction:column;gap:10px">
+      <b style="font-size:15px">CH-15 표정 입힘</b>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">${FACES.map(([a, b], i) => `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:130px"><img src="img/ddeok_char/ch15_${i + 1}.svg" alt="CH-15 표정 ${i + 1}" style="width:126px;height:140px"><b style="font-size:12.5px">${i + 1} ${a}</b><span style="font-size:11.5px;color:#62625F">${b}</span></div>`).join('')}</div>
+      <div style="display:flex;gap:26px;align-items:flex-end;margin-top:6px;padding-top:10px;border-top:1px dashed #CFC9BC">
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">작게 · 48</small><div style="display:flex;gap:6px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img src="img/ddeok_char/ch15_${n}.svg" alt="" style="width:48px">`).join('')}</div></div>
+        <div style="display:flex;flex-direction:column;gap:4px"><small style="color:#62625F">더 작게 · 28</small><div style="display:flex;gap:5px;align-items:flex-end">${[1,2,3,4,5].map(n => `<img src="img/ddeok_char/ch15_${n}.svg" alt="" style="width:28px">`).join('')}</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 16px;border-radius:12px;background:#F4F4F2;font-size:13px;line-height:1.75;color:#3D3D3B"><b>입힌 표정 (CH-15 그대로)</b> · 1 감은 반달 눈 + 볼 터치 · 2 처진 눈썹 · 눈빛 있는 점 눈 · 머쓱한 웃음 + 땀방울 · 3 흰자 큰 눈 · 치켜뜬 눈썹 · 「오」 입 · 빗금 홍조 + 머리 열기 선 · 4 질끈 감은 눈 · 떨리는 입 · 굵은 눈물 + 김 구름 둘 · 양옆 떨림 선 · 5 X 눈 · 벌린 입에서 옆으로 뿜는 불 + 머리 불꽃 셋<br>
+    <b>떡 몸에 맞춰 바꾼 것</b> · 얼굴 선을 모두 먹색으로(크림 몸 위라) · 3 흰 눈에 먹 테두리 · 머리 소품(땀 · 열기 선 · 김 · 불꽃)을 떡 머리 둥근 끝 둘레로 · 4 김은 막대를 빼고 구름만(CH-15 에서 뼈처럼 보인다던 것) · 볼 터치는 CH-15 처럼 1~3 에만<br>
+    <b>그대로</b> · 몸 · 테두리 · 소스 색(도장이 색 A)과 흘러내린 길이 · 깨 · 팔 각도 (CH-18)</div>
+  <div style="padding:10px 14px;border-radius:10px;background:#FFF4E6;font-size:13px;line-height:1.6;color:#3D3D3B"><b>다음 (🔴)</b> · CH-18(단순판 표정)과 CH-19(CH-15 표정) 중 고르기 · 고칠 곳</div>
 </div>` });
 // 11-09 첫 화면 전환 시안 — 대동여지도에서 확대해 지도로 · 로딩·지도 한지 통일. 크레딧 0 (CSS 움직임 + 지금 웹 사진 img/intro/)
 // 대동여지도 그림 = docs/참고_대동여지도.jpg (960×1615) 를 img/intro/ddy_full.webp 로(바깥 흰 바탕만 투명). 한양(서울) 자리 = 그림의 (38%, 54%)

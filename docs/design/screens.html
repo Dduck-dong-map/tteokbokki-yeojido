@@ -95,7 +95,7 @@ button,input,select{font:inherit;color:inherit}
     <p class="note">여기서 바꾼 색은 이 브라우저에만 저장돼요. 실제 웹에 넣으려면 위 「색 값 복사」 내용을 전해 주세요 (web/src/lib/theme.ts 에 옮김).<br>지도 그림(길·물·동네 이름) 색은 팔레트 쪽이라 여기서는 안 바뀌어요.</p>
   </aside>
   <section class="stage" id="stage" aria-live="polite">
-    <div class="banner" id="down">웹 서버가 꺼져 있어서 화면을 못 불러와요. <code>web</code> 폴더에서 <code>npm run dev -- -p 3100</code> 으로 켠 뒤 「새로 고침」을 눌러 주세요. (Claude 에게 「웹 서버 켜 줘」라고 해도 돼요)</div>
+    <div class="banner" id="down">웹 서버가 꺼져 있어서 화면을 못 불러와요. 저장소 맨 위에서 <code>pnpm dev</code>(또는 도커 <code>pnpm app:up</code>)로 켠 뒤 「새로 고침」을 눌러 주세요. 다른 포트로 켰으면 위 「웹 주소」를 그 주소로 바꿔 주세요. (Claude 에게 「웹 서버 켜 줘」라고 해도 돼요)</div>
     <div class="grid" id="grid"></div>
   </section>
 </div>
@@ -148,9 +148,16 @@ const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 const KEY = 'ddy-screen-studio';
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { S = null; }
-// 웹 서버에서 열면(/share/board/screens.html) 그 서버를, 파일로 열면 127.0.0.1:3100 을 띄운다
-const HOME = location.protocol.startsWith('http') ? location.origin : 'http://127.0.0.1:3100';
+// 웹 서버에서 열면(/share/board/screens.html) 그 서버를, 파일이나 다른 서버(보드 서버 등)로 열면 앱 기본 주소 127.0.0.1:3000 을 띄운다
+// 11-10 고침: 보드 서버로 열면 「웹 주소」가 보드 서버 자신으로 잡혀 액자가 비던 문제
+// 11-12 고침: 루트 앱(dev)은 3000 에 뜬다(pnpm dev · 도커 app). 예전 기본 3100 이 저장돼 있으면 3000 으로 바꾼다
+const ON_WEB = location.protocol.startsWith('http') && location.pathname.includes('/share/board/');
+const OLD_HOME = 'http://127.0.0.1:3100';
+const HOME = ON_WEB ? location.origin : 'http://127.0.0.1:3000';
 S = Object.assign({ server: HOME, vars: { mobile: {}, pc: {} }, scale: {} }, S || {});
+// 예전에 보드 서버 주소가 「웹 주소」로 저장돼 있으면 고친다
+if (!ON_WEB && location.protocol.startsWith('http') && S.server.replace(/\/+$/, '') === location.origin) S.server = HOME;
+if (!ON_WEB && S.server.replace(/\/+$/, '') === OLD_HOME) S.server = HOME;
 S.vars = Object.assign({ mobile: {}, pc: {} }, S.vars);
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
 
