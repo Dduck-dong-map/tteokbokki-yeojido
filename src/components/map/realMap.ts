@@ -3,7 +3,7 @@ import type { LayerSpecification, LngLatLike, Map as MlMap, StyleSpecification }
 // 확대 방식 ① 의 「실제 지도」 자리 (주소 ?zoom=real).
 // 네이버 키를 받기 전이라 OpenFreeMap 상세 지도를 임시로 쓴다. 키를 받으면 이 파일만 네이버 지도로 바꾼다 — 밖에서는 follow · remove 만 쓴다.
 
-const SANS = "'Pretendard', 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif";
+const SANS = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif"; // 글꼴 통일: 조선100년체 (11-12)
 const PRELOAD_ZOOM = 14; // 그림 지도가 사라지기 전에 미리 타일을 받아 둔다. 그 아래에선 움직이지 않아 비용이 없다.
 
 export type RealMap = { follow: (center: LngLatLike, zoom: number) => void; remove: () => void };

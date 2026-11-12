@@ -32,7 +32,8 @@ type Props = {
 
 // 첫 화면 중심: 예시 데이터가 있는 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
 const START: [number, number] = [126.928, 37.5555];
-const KOREAN_SERIF = "'Nanum Myeongjo', 'Noto Serif KR', Batang, '바탕', AppleMyungjo, serif";
+// 한글 지명·이름표 = 조선100년체 (app/layout.tsx 에서 이 이름으로 불러온다)
+const KOREAN_SERIF = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif";
 
 const clip = (name: string) => (name.length > 20 ? `${name.slice(0, 20)}…` : name);
 
@@ -89,7 +90,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       if (cancelled || !box.current) return;
       if (!ml) return fail();
       ml.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs"); // scripts/copy-maplibre-worker.mjs 가 복사해 둔 파일
-      const t = THEME; // 팔레트는 T2 고정 (lib/theme.ts)
+      const t = THEME; // 팔레트는 P3 고정 (lib/theme.ts)
       const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "real" ? "real" : "names";
       let m: MlMap;
       try {
