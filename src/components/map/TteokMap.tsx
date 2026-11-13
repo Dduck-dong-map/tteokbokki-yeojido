@@ -286,7 +286,8 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   // maplibre 가 지도 상자에 position: relative 를 붙이므로, 바깥 상자로 자리를 잡는다
   return (
     <div className="absolute inset-0">
-      <div className="absolute inset-0" aria-hidden="true">
+      {/* isolate: 네이버 지도 로고·컨트롤(z-index)이 위 그림 지도 칸을 뚫고 올라오지 않게 이 칸 안에 가둔다 (11-13 확인: 14~15배에서 로고가 비침) */}
+      <div className="absolute inset-0 isolate" aria-hidden="true">
         <div ref={under} className="h-full w-full" />
       </div>
       <div className="absolute inset-0">
