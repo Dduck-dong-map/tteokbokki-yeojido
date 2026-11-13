@@ -1,15 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* 디자인 토큰 (생성 파일, scripts/build-tokens.mjs) */
+@import "./tokens.css";
 
 @custom-variant dark (&:is(.dark *));
 
 /*
-  색 체계: shadcn 변수 한 벌 (R2 결정: 제거, 2026-11-10)
-  --background --foreground --card --primary … 를 이 파일 :root 에 팔레트 T2 값으로 고정한다. 런타임 팔레트 전환(?pal=)은 없앴다.
-  그 밖의 우리 토큰은 아래 「우리 것」 몇 개뿐(고추장 포인트 · 링크 · 지도 종이 · 맵기 경고색 · 맵기 도장 · 내 위치).
-  --accent 는 shadcn 의 hover 바탕 뜻으로만 쓰되 옛 web 토큰(링크색)과 헷갈리지 않게 --ui-accent 로 둔다.
-  지도(MapLibre)는 CSS 변수를 못 읽으므로 lib/theme.ts 가 같은 T2 값으로 지도 색을 계산한다.
+  색 체계 (2026-11-12): 디자인 토큰 2층 = src/app/tokens.css (docs/design-system/tokens.json 에서 생성, pnpm tokens). 규칙 문서 = docs/design-system/
+  원본은 Claude 디자인의 「떡볶여지도」 디자인 시스템 — 팔레트 P3 「어묵국물 · 옥빛 버튼」, 바탕 #F3F1EE, 글꼴 조선100년체.
+  여기서는 shadcn 변수(--background --primary …)와 우리 변수(--brand-red --link …)를 Semantic 토큰에 이어 줄 뿐 색 값을 직접 쓰지 않는다.
+  테마는 <html> 에 class="dark" 또는 data-theme="dark" | "hc"(고대비). 아래 :root 의 이음은 <html> 에서 풀리므로 테마도 <html> 에 둔다.
+  지도(MapLibre)는 CSS 변수를 못 읽으므로 lib/theme.ts 가 같은 P3 값으로 지도 색을 계산한다.
 */
 @theme inline {
   /* shadcn */
@@ -51,72 +53,76 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  /* 우리 것: 고추장 포인트(로고·도장·등록 버튼) — 경고색(destructive)과 섞지 않는다 · 링크색 · 지도 종이 */
+  /* 우리 것: 제보·등록 버튼(이름은 옛 고추장 포인트에서 왔다) · 링크색 · 지도 종이 · 이름 글씨 */
   --color-brand-red: var(--brand-red);
   --color-brand-red-foreground: var(--brand-red-foreground);
   --color-link: var(--link);
   --color-map-paper: var(--map-paper);
+  --color-wordmark: var(--text-wordmark);
   /* 맵기 경고색(태그) · 게이지 도장의 안 찬 부분 · 내 위치 단추 */
   --color-spicybg: var(--spicybg);
   --color-spicytext: var(--spicytext);
   --color-stampbg: var(--stampbg);
   --color-loc: var(--loc);
 
-  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
-  --font-serif: "Nanum Myeongjo", "Noto Serif KR", Batang, "바탕", AppleMyungjo, serif;
-  --font-heading: var(--font-sans);
+  /* 글꼴은 조선100년체 하나(font-sans · font-serif · font-heading 모두). 이름 「떡볶여지도」만 font-wordmark */
+  --font-sans: var(--font-family-base);
+  --font-serif: var(--font-family-base);
+  --font-heading: var(--font-family-base);
+  --font-wordmark: var(--font-family-wordmark);
 }
 
-/* 팔레트 T2 (11-08 기본: 흰 바탕 · 옥빛 버튼 · 고추장 포인트). 값의 출처 = docs/팔레트_shadcn_2026-11-01.md. 지도 쪽 같은 값 = lib/theme.ts T2 */
+/* shadcn · 우리 변수 → Semantic 토큰. 테마별 값은 tokens.css 가 바꾼다 */
 :root {
-  --background: #ffffff;
-  --foreground: #1c1c1b;
-  --card: #ffffff;
-  --card-foreground: #1c1c1b;
-  --popover: #ffffff;
-  --popover-foreground: #1c1c1b;
-  --primary: #2a6159;
-  --primary-foreground: #ffffff;
-  --secondary: #ece8df;
-  --secondary-foreground: #1c1c1b;
-  --muted: #f1efe9;
-  --muted-foreground: #5f5c56;
-  --ui-accent: #ece8df;
-  --ui-accent-foreground: #1c1c1b;
-  --destructive: #b42318;
-  --border: #d9d4c9;
-  --input: #d9d4c9;
-  --ring: #2a6159;
-  /* 맵기 1~5 (팔레트 무관 고정, 기획안 v5 8절) */
-  --chart-1: #f2b78c;
-  --chart-2: #e3814d;
-  --chart-3: #c8102e;
-  --chart-4: #8e0b1f;
-  --chart-5: #4a0710;
-  --radius: 0.75rem;
-  --sidebar: #fdfcf9;
-  --sidebar-foreground: #1c1c1b;
-  --sidebar-primary: #2a6159;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ece8df;
-  --sidebar-accent-foreground: #1c1c1b;
-  --sidebar-border: #d9d4c9;
-  --sidebar-ring: #2a6159;
-  --brand-red: #b42318;
-  --brand-red-foreground: #ffffff;
-  --link: #2f6f70;
-  --map-paper: #f3f0e9;
+  --background: var(--background-primary);
+  --foreground: var(--text-primary);
+  --card: var(--background-secondary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--background-secondary);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--interactive-primary);
+  --primary-foreground: var(--text-on-interactive);
+  --secondary: var(--interactive-secondary);
+  --secondary-foreground: var(--text-on-secondary);
+  --muted: var(--background-tertiary);
+  --muted-foreground: var(--text-secondary);
+  --ui-accent: var(--interactive-ghost-hover);
+  --ui-accent-foreground: var(--text-primary);
+  --destructive: var(--text-error);
+  --border: var(--border-default);
+  --input: var(--border-strong);
+  --ring: var(--border-focus);
+  /* 맵기 1~5 (기획안 v5 8절 고정값) */
+  --chart-1: var(--spicy-1);
+  --chart-2: var(--spicy-2);
+  --chart-3: var(--spicy-3);
+  --chart-4: var(--spicy-4);
+  --chart-5: var(--spicy-5);
+  --radius: var(--radius-12);
+  --sidebar: var(--background-secondary);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--interactive-primary);
+  --sidebar-primary-foreground: var(--text-on-interactive);
+  --sidebar-accent: var(--interactive-ghost-hover);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border-default);
+  --sidebar-ring: var(--border-focus);
+  /* 제보·등록 버튼과 등록 화면 가운데 핀 = 제보 갈색(P3) */
+  --brand-red: var(--interactive-accent);
+  --brand-red-foreground: var(--text-on-accent);
+  --link: var(--text-link);
+  --map-paper: var(--background-primary);
   /* 맵기 경고색(태그 spicy) · 내 위치(쪽빛) */
   --spicybg: #f6dcd9;
   --spicytext: #9a0f25;
-  --loc: #2d5b9a;
+  --loc: var(--icon-location);
   /* 맵기 도장 1~5: 바탕(--sN) · 표정 획(--sNf) · 안쪽 테두리(--sNe). lib/theme.ts RAMP_LIGHT 와 같은 값 */
-  --stampbg: #efefef; /* 안 찬 부분 = mix(card, foreground, .07) */
-  --s1: #f2b78c;
-  --s2: #e3814d;
-  --s3: #c8102e;
-  --s4: #8e0b1f;
-  --s5: #4a0710;
+  --stampbg: #efefef; /* 안 찬 부분 = mix(card #FEFEFE, foreground #2D2D2D, .07) */
+  --s1: var(--spicy-1);
+  --s2: var(--spicy-2);
+  --s3: var(--spicy-3);
+  --s4: var(--spicy-4);
+  --s5: var(--spicy-5);
   --s1f: #3a1408;
   --s2f: #2e0f05;
   --s3f: #fff4e6;
@@ -127,36 +133,6 @@
   --s3e: rgba(255, 244, 230, 0.75);
   --s4e: rgba(255, 244, 230, 0.75);
   --s5e: rgba(255, 244, 230, 0.75);
-}
-
-/* 다크(N6 먹밤) 기본 변수만 옮겨 둔 것. 아직 쓰지 않는다(전환 UI 없음). 맵기·도장 변수는 밝은 값 그대로 */
-.dark {
-  --background: #1c1d1f;
-  --foreground: #ededed;
-  --card: #242628;
-  --card-foreground: #ededed;
-  --popover: #242628;
-  --popover-foreground: #ededed;
-  --primary: #ededed;
-  --primary-foreground: #1c1d1f;
-  --secondary: #2e3033;
-  --secondary-foreground: #ededed;
-  --muted: #2e3033;
-  --muted-foreground: #a8a8a8;
-  --ui-accent: #2e3033;
-  --ui-accent-foreground: #ededed;
-  --destructive: #e05a4f;
-  --border: rgb(255 255 255 / 10%);
-  --input: rgb(255 255 255 / 15%);
-  --ring: #8fb4e0;
-  --sidebar: #242628;
-  --sidebar-foreground: #ededed;
-  --sidebar-primary: #8fb4e0;
-  --sidebar-primary-foreground: #1c1d1f;
-  --sidebar-accent: #2e3033;
-  --sidebar-accent-foreground: #ededed;
-  --sidebar-border: rgb(255 255 255 / 10%);
-  --sidebar-ring: #8fb4e0;
 }
 
 @layer base {
@@ -177,6 +153,8 @@ body {
 
 body {
   font-family: var(--font-sans);
+  /* 조선100년체는 굵기가 Regular 하나뿐이다. 브라우저가 획을 덧그려 만드는 가짜 굵게를 막는다(강조는 크기·색·자간으로) */
+  font-synthesis-weight: none;
   -webkit-tap-highlight-color: transparent;
   word-break: keep-all;
   /* 띄어쓰기 없는 긴 글도 칸 안에서 줄을 바꾼다. 없으면 폰 화면 전체가 옆으로 밀린다 */
@@ -383,3 +361,10 @@ body {
 .flip-back { opacity: 0; }
 .flip.on .flip-back { opacity: 1; }
 .flip.on .flip-face:not(.flip-back) { opacity: 0; }
+
+/* 서비스 이름 「떡볶여지도」 전용 (을지로10년후체 서브셋 TteokWordmark: 이 다섯 글자만 들어 있다). 다른 글자에 쓰지 않는다 */
+.wordmark {
+  font-family: var(--font-family-wordmark);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-wordmark);
+}

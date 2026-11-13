@@ -4,7 +4,7 @@ import type { LayerSpecification, LngLatLike, Map as MlMap, StyleSpecification }
 // 네이버 키(NEXT_PUBLIC_NAVER_MAP_KEY_ID)가 있으면 네이버 지도(GL 벡터), 없거나 인증이 안 되면 OpenFreeMap 상세 지도(임시).
 // 범위 = ① 확대했을 때 실제 지도만 네이버 (보드 W1-6, 11-11 사용자 결정). 그림 지도·주소 검색은 그대로.
 
-const SANS = "'Pretendard', 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif";
+const SANS = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif"; // 글꼴 통일: 조선100년체 (11-12)
 const PRELOAD_ZOOM = 14; // 그림 지도가 사라지기 전에 미리 타일을 받아 둔다. 그 아래에선 움직이지 않아 비용이 없다.
 const NAVER_KEY = process.env.NEXT_PUBLIC_NAVER_MAP_KEY_ID; // 빌드 때 박힌다 → .env.local 을 바꾸면 개발 서버를 다시 켠다
 

@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "tokens": "node scripts/build-tokens.mjs",
     "test": "vitest run",
     "e2e": "playwright test",
     "db:up": "docker compose up -d --wait db",

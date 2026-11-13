@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+// 어드민은 자체 남색 테마라 Pretendard 를 그대로 쓴다 (서비스 화면은 조선100년체, app/layout.tsx)
+import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./admin-navy.css";
 import "./admin-extra.css";
 

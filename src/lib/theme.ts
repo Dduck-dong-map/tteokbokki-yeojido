@@ -1,12 +1,12 @@
-// 팔레트는 T2 로 고정(2026-11-10 결정 R2=제거). 다른 팔레트와의 비교는 docs/design 보드(docs/design/index.html)에서 한다.
-// 화면 색은 app/globals.css 의 shadcn 변수(--background --card …)가 정한다.
+// 팔레트는 P3 「어묵국물 · 옥빛 버튼」, 바탕 #F3F1EE (2026-11-12 디자인 시스템). 다른 팔레트와의 비교는 docs/design 보드에서 한다.
+// 화면 색은 app/tokens.css(docs/design-system/tokens.json 에서 생성)가 정한다.
 // 이 파일은 CSS 변수를 못 읽는 지도(components/map: MapLibre 스타일·캔버스 도장)의 색 계산에만 쓴다.
 
 // mapPaper: 지도 그림 바탕만 따로 둘 때. 화면 바탕은 흰색이어도 지도는 한지 톤을 지킨다 (11-08)
 type Base = { paper: string; surface: string; ink: string; primary: string; accent: string; fab: string; water: string; mapPaper?: string };
 
-// T2 흰 바탕 · 옥빛 버튼 · 고추장 포인트 (11-08 사용자 「배경을 구분선만 두고 일단 전부 흰색으로」)
-const T2: Base = { paper: "#FFFFFF", surface: "#FFFFFF", ink: "#1C1C1B", primary: "#2A6159", accent: "#2F6F70", fab: "#B42318", water: "#A3C7BC", mapPaper: "#F3F0E9" };
+// P3 어묵국물 · 옥빛 버튼, 바탕만 #F3F1EE (11-12). tokens.json 의 neutral-100 · neutral-50 · neutral-900 · jade-600 · broth-500 · bark-600 · blue-300 과 같은 값
+const P3: Base = { paper: "#F3F1EE", surface: "#FEFEFE", ink: "#2D2D2D", primary: "#2A6159", accent: "#A45A2A", fab: "#6E5436", water: "#AFC3D9" };
 
 // 맵기 도장 1~5: [바탕, 숫자, 안쪽 테두리]. globals.css 의 --s1..--s5 / --s1f.. / --s1e.. 와 같은 값
 const RAMP_LIGHT = [["#F2B78C", "#3A1408", "rgba(58,20,8,.38)"], ["#E3814D", "#2E0F05", "rgba(46,15,5,.38)"], ["#C8102E", "#FFF4E6", "rgba(255,244,230,.75)"], ["#8E0B1F", "#FFF4E6", "rgba(255,244,230,.75)"], ["#4A0710", "#FFF4E6", "rgba(255,244,230,.75)"]];
@@ -41,7 +41,7 @@ function derive(B: Base) {
     css: {
       surface: B.surface,
       loc: dark ? "#8FB4E0" : "#2D5B9A",
-      // 게이지 도장의 안 찬 부분(종이 톤) — 슬랙 10-28 결정. T2 에서 #EFEFEF
+      // 게이지 도장의 안 찬 부분(종이 톤) — 슬랙 10-28 결정. P3 에서 #EFEFEF
       stampbg: mix(B.surface, B.ink, dark ? 0.14 : 0.07),
     },
     // 대동여지도 느낌 지도 색 (components/map/dongyeoStyle.ts)
@@ -61,5 +61,5 @@ function derive(B: Base) {
   };
 }
 
-export const THEME = derive(T2);
+export const THEME = derive(P3);
 export type MapTokens = typeof THEME.map;
