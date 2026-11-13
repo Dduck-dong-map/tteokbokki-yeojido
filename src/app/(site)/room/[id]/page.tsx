@@ -48,7 +48,7 @@ async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
       )}
       <article className="flex flex-col gap-3">
         <header>
-          <Badge variant="outline" className="rounded-md border-input px-1.5 text-[11px] font-normal text-muted-foreground">
+          <Badge variant="outline" className="rounded-full border-transparent bg-muted px-2 text-[12px] font-normal text-muted-foreground">
             {BOARD_CATS[post.cat]}
           </Badge>
           <h1 className="mt-1.5 text-[20px] leading-snug font-bold text-balance break-keep [overflow-wrap:anywhere]">{post.title}</h1>

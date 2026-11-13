@@ -196,13 +196,13 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
           "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.8, 1],
           "icon-allow-overlap": true,
         };
-        // 안 보이는 도장: 길·건물·상호 이름만 도장을 비켜 가게 한다. 역·동네 이름은 이 층보다 위라 밀려나지 않는다.
-        if (mode === "names") {
-          m.addLayer(
-            { id: "stamps-block", type: "symbol", source: "stores", minzoom: 15, filter: ["!", ["has", "point_count"]], layout: stampLayout, paint: { "icon-opacity": 0 } },
-            "water-name",
-          );
-        }
+        // 안 보이는 도장: 역·길·건물·상호 이름이 도장을 비켜 가게 한다. 동네·구 이름(이 층보다 위)은 그대로.
+        // 11-13 수정판(게슈탈트 「전경-배경」): 도장이 「홍대입구역」 같은 역 이름을 덮던 것 → 역 이름이 옆으로 비킨다(dongyeoStyle station).
+        // ① 은 15.8배부터 그림 지도 층이 꺼지므로 이 층도 그 아래에서만 일한다.
+        m.addLayer(
+          { id: "stamps-block", type: "symbol", source: "stores", minzoom: 12.5, filter: ["!", ["has", "point_count"]], layout: stampLayout, paint: { "icon-opacity": 0 } },
+          "place-dong",
+        );
         m.addLayer({
           id: "stamps", type: "symbol", source: "stores", filter: ["!", ["has", "point_count"]],
           layout: { ...stampLayout, "icon-ignore-placement": true, "symbol-sort-key": pinSort(selectedId) },

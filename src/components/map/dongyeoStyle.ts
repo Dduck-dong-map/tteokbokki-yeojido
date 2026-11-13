@@ -166,6 +166,9 @@ export function dongyeoStyle(t: MapTokens, mode: ZoomMode = "names"): StyleSpeci
           "text-font": FONT_BOLD,
           "text-size": ["interpolate", ["linear"], ["zoom"], 12.5, 11, 16, 13],
           "text-padding": 4,
+          // 도장(TteokMap stamps-block)과 부딪히면 위·아래·옆으로 비킨다 (11-13 수정판). 비킬 자리가 없을 때만 빠진다
+          "text-variable-anchor": ["center", "top", "bottom", "left", "right"],
+          "text-radial-offset": 1.2,
         },
         paint: { "text-color": t.mInk, "text-halo-color": t.paper, "text-halo-width": 1.8 },
       },

@@ -53,7 +53,7 @@ function Head({ name, right }: { name?: string; right?: React.ReactNode }) {
   return (
     <header className={cn(HEAD)}>
       <CloseStore />
-      <p className="text-[16px] font-bold">{name ? "가게 위치" : ""}</p>
+      <p className="text-[16px] font-bold">{name ? "가게 정보" : ""}</p>
       <div className="flex min-w-11 justify-end">{right}</div>
     </header>
   );
@@ -127,7 +127,7 @@ async function StoreDetail({ id }: { id: string }) {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
               <h1 className="text-[21px] font-bold leading-tight break-keep [overflow-wrap:anywhere]">{s.name}</h1>
-              <span className="rounded border border-input px-1.5 py-px text-[11px] font-medium whitespace-nowrap text-muted-foreground">
+              <span className="inline-flex h-6 items-center rounded-full bg-muted px-2.5 text-[12px] font-medium whitespace-nowrap text-muted-foreground">
                 {GRADES[s.grade]}
                 {s.shopType && ` · ${SHOP_TYPES[s.shopType]}`}
               </span>

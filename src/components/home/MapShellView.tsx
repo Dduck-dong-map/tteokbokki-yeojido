@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/layout";
 import MapLoading from "@/components/loading/MapLoading";
 import TteokMap from "@/components/map/TteokMap";
 import SearchBox from "@/components/SearchBox";
+import { freshness } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
 import FilterSheetView from "./FilterSheetView";
 import StoreListPanelView from "./StoreListPanelView";
@@ -21,6 +22,8 @@ const SHEET_H: Record<SheetState, string> = { peek: "64px", half: "44%", full: "
 
 export default function MapShellView(p: MapShellViewProps) {
   const { shown, recentReports, sample, selectedId, routeId, wide, sheet, mapOn, mapSettled, start, focus, me, toast, filterCount, filterOpen, children } = p;
+  // 바랜 도장(마지막 확인 180일 넘음)이 지도에 있으면 뜻을 적어 둔다 (11-13 수정판, 게슈탈트 「흐린 핀, 뜻이 안 보임」)
+  const hasStale = p.list.some((s) => freshness(s, p.now) === "stale"); // 지금 지도 범위 안에 있을 때만
 
   return (
     <div className="md:flex md:h-[calc(100dvh-56px)]" style={{ ["--sheet-h" as string]: SHEET_H[sheet] }}>
@@ -56,6 +59,12 @@ export default function MapShellView(p: MapShellViewProps) {
               <TteokMap stores={shown} selectedId={selectedId} onSelect={p.onSelectFromMap} me={me} focus={focus} onBoundsChange={p.onBoundsChange} onSettled={p.onMapSettled} start={start} />
             )}
             <MapLoading settled={mapSettled} />
+            {hasStale && mapSettled && (
+              <p className="pointer-events-none absolute bottom-[calc(var(--attrib-bottom)+30px)] left-2 z-10 flex items-center gap-1.5 rounded-full bg-card/90 px-2.5 py-1 text-[12px] text-muted-foreground shadow-sm">
+                <span aria-hidden="true" className="inline-block h-3 w-3 rounded-full bg-chart-3 opacity-45" />
+                흐린 도장 = 반년 넘게 확인 안 됨
+              </p>
+            )}
 
             <div className="pointer-events-none absolute inset-x-0 top-2 z-10 flex flex-col items-center gap-1.5">
               {sample && <SampleRibbon />}
@@ -85,7 +94,7 @@ export default function MapShellView(p: MapShellViewProps) {
               <Link
                 href="/register"
                 aria-label="맛집 등록"
-                className="grid h-14 w-14 place-items-center rounded-full bg-brand-red text-[13px] leading-tight font-bold text-brand-red-foreground shadow-lg md:hidden"
+                className="grid h-14 w-14 place-items-center rounded-full bg-report text-[13px] leading-tight font-bold text-report-foreground shadow-lg md:hidden"
               >
                 등록
               </Link>

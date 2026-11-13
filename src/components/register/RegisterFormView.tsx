@@ -69,7 +69,7 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
       <ol className="flex gap-1 md:hidden" aria-label={`${steps.length}단계 중 ${step + 1}단계`}>
         {steps.map((s, i) => (
           <li key={s} className="flex-1">
-            <span className={cn("block h-1 rounded-full", i <= step ? "bg-primary" : "bg-input")} />
+            <span className={cn("block h-1 rounded-full", i <= step ? "bg-primary" : "bg-border")} />
             <span className={cn("mt-1 block text-[11px] leading-tight", i === step ? "font-bold text-foreground" : "text-muted-foreground/70")}>{s}</span>
           </li>
         ))}

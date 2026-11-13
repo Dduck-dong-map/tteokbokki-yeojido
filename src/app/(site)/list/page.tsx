@@ -62,7 +62,7 @@ async function Loader() {
         </div>
       )}
 
-      <h2 className="px-4 pt-4 text-[13px] font-semibold text-muted-foreground/70 md:px-0 md:pt-1 md:pb-3">최근 확인된 가게부터</h2>
+      <h2 className="px-4 pt-4 font-sans text-[13px] font-semibold text-muted-foreground/70 md:px-0 md:pt-1 md:pb-3">최근 확인된 가게부터</h2>
       <main className="flex-1">
         <StoreList stores={stores} now={now} />
       </main>

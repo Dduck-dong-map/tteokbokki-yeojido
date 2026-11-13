@@ -48,7 +48,7 @@ export default function ListInfoFormView({ values, error, busy, submitLabel = "ì
             type="button"
             aria-pressed={values.visibility === k}
             onClick={() => onChange({ visibility: k })}
-            className={cn("hit h-9 rounded-full border px-3.5 text-[13px]", values.visibility === k ? "border-foreground bg-foreground font-semibold text-background" : "border-input bg-card text-muted-foreground")}
+            className={cn("hit h-9 rounded-full border px-3.5 text-[13px]", values.visibility === k ? "border-primary bg-primary font-semibold text-primary-foreground" : "border-input bg-card text-muted-foreground")}
           >
             {v}
           </button>
