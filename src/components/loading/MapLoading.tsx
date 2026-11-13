@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import IntroZoom from "./IntroZoom";
 
-const ZOOM_END = 2400; // 확대가 끝나는 때 (globals.css 의 intro-zoom 과 맞춘다) — 브라우저가 움직임을 못 알려 줄 때만 쓴다
+const ZOOM_END = 1600; // 확대가 끝나는 때 (globals.css 의 intro-zoom 과 맞춘다) — 브라우저가 움직임을 못 알려 줄 때만 쓴다
 const STILL_END = 800; // 움직임 줄이기 설정일 때 (확대 없이 그림만 나타남)
-const LEAVE = 500; // 지도로 겹쳐 바뀌는 시간 (globals.css 의 intro-leave)
+const LEAVE = 350; // 지도로 겹쳐 바뀌는 시간 (globals.css 의 .intro-leaving)
 
 // 지도가 한 번 준비되면 다른 화면에 갔다 와도 다시 띄우지 않는다. 새로고침하면 처음부터.
 type Seen = { __tteokMapSeen?: boolean };
