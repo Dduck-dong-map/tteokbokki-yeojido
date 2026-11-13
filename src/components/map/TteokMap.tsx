@@ -63,7 +63,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   const box = useRef<HTMLDivElement>(null);
   const startAt = useRef(start);
   const under = useRef<HTMLDivElement>(null);
-  const [realOn, setRealOn] = useState(false);
+  const [realOn, setRealOn] = useState<"naver" | "temp" | null>(null); // ① 실제 지도가 드러났을 때 어느 지도인지
   const [failed, setFailed] = useState(false); // 지도를 못 불러와도 주소·길찾기는 그대로 쓸 수 있다 (경고창#6)
   const initial = useRef({ interactive, showName });
   const mapRef = useRef<MlMap | null>(null);
@@ -139,10 +139,10 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       if (mode === "real" && under.current) {
         const follow = () => {
           real?.follow(m.getCenter(), m.getZoom());
-          setRealOn(m.getZoom() >= REAL_FADE[1]);
+          setRealOn(m.getZoom() >= REAL_FADE[1] ? (real?.kind() ?? "temp") : null);
         };
         m.on("move", follow);
-        createRealMap(ml, under.current, m.getCenter(), m.getZoom()).then((r) => {
+        createRealMap(ml, under.current, m.getCenter(), m.getZoom(), follow).then((r) => {
           if (cancelled) return r.remove();
           real = r;
           follow();
@@ -278,7 +278,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       )}
       {realOn && (
         <span className="pointer-events-none absolute top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-input bg-card px-3 py-1 text-[12px] text-muted-foreground shadow-sm">
-          실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도
+          {realOn === "naver" ? "실제 지도 · 축소하면 그림 지도" : "실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도"}
         </span>
       )}
     </div>
