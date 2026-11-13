@@ -19,6 +19,10 @@ export const DATA_DIR = process.env.DATA_DIR ?? (process.env.VERCEL ? "/tmp/ddy-
 const DB_FILE = path.join(DATA_DIR, "db.json");
 export const PHOTO_DIR = path.join(DATA_DIR, "photos");
 
+// 예시 데이터(가게 16곳 · 글 · 리스트)를 보여 줄지 (W1-1 · W1-2). 실제 가게를 넣으면 NEXT_PUBLIC_SAMPLE_DATA=off →
+// 예시를 화면에서 숨기고(지우지는 않는다) 검색엔진을 연다. 빌드 때 코드에 박히는 값이라 바꾼 뒤엔 다시 빌드한다.
+export const SHOW_SAMPLES = process.env.NEXT_PUBLIC_SAMPLE_DATA !== "off";
+
 export type Who = { nick: string; device: string; ip: string };
 
 // 기기·접속 위치는 해시로만 남기고 화면에 내보내지 않는다
@@ -33,6 +37,9 @@ type CommentRow = PostComment & Mark & { postId: string; hidden?: boolean; flags
 type ListRow = PlaceList & Mark;
 type LikeRow = Mark & { listId: string; at: string };
 type PostLikeRow = Mark & { postId: string; at: string };
+// 길찾기 누름 (W1-4) — 성공 지표 KPI-W01. 화면에는 쓰지 않고 쌓기만 한다
+export type GoApp = "naver" | "kakao";
+type GoRow = Mark & { id: string; storeId: string; app: GoApp; at: string };
 export type Db = {
   stores: Store[];
   logs: LogRow[];
@@ -44,6 +51,7 @@ export type Db = {
   lists: ListRow[];
   likes: LikeRow[];
   postLikes: PostLikeRow[];
+  goes: GoRow[];
 };
 
 const isoDay = (t = Date.now()) => new Date(t + 9 * 3_600_000).toISOString().slice(0, 10);
@@ -65,6 +73,7 @@ function withCommunity(db: Db): Db {
   }
   db.likes ??= [];
   db.postLikes ??= []; // 글 추천 (11-08 추가)
+  db.goes ??= []; // 길찾기 누름 (11-11 추가)
   return db;
 }
 
@@ -131,7 +140,8 @@ function mutate<T>(fn: (db: Db) => T | Promise<T>): Promise<T> {
 
 // 기기·접속 위치 해시에 섞는 소금. 배포(Vercel)에서 비어 있으면 기본값 "ddy" 로 해시가 역산될 수 있어 시작 때 멈춘다 (정리 보고서 2절 #2).
 // 로컬 pnpm build · E2E(next start) 는 VERCEL 이 없어 기본값으로 돈다.
-const HASH_SALT = process.env.HASH_SALT ?? (process.env.VERCEL ? null : "ddy");
+// 빈 값(HASH_SALT=)도 없는 것으로 본다 — 도커 앱 서버가 빈 값을 넘겨도 개발 서버와 같은 해시가 되고, Vercel 에서는 빈 값이면 멈춘다
+const HASH_SALT = process.env.HASH_SALT || (process.env.VERCEL ? null : "ddy");
 if (HASH_SALT === null) throw new Error("HASH_SALT 환경 변수가 비어 있어요. Vercel 설정에 아무도 모르는 긴 글자를 넣어 주세요 (.env.example 참고)");
 
 export function hash(v: string) {
@@ -139,7 +149,8 @@ export function hash(v: string) {
 }
 
 const mark = (who: Who): Mark => ({ device: hash(who.device), ip: hash(who.ip) });
-const same = (a: Mark, b: Mark) => a.device === b.device || a.ip === b.ip;
+// 같은 사람 = 기기와 접속 위치가 모두 같을 때만 (W1-9). 같은 와이파이(교회)에 모여도 기기가 다르면 각자 한 표 · 각자 하루 한도.
+const same = (a: Mark, b: Mark) => a.device === b.device && a.ip === b.ip;
 const log = (db: Db, storeId: string, who: { nick: string } & Mark, kind: HistoryKind, changes?: Change[]) =>
   db.logs.push({ id: randomUUID(), storeId, at: new Date().toISOString(), who: who.nick, device: who.device, ip: who.ip, kind, changes });
 
@@ -172,7 +183,10 @@ export async function readHistory(storeId: string): Promise<HistoryItem[]> {
 
 export async function readRecentCount(days = 7) {
   const from = Date.now() - days * 86_400_000;
-  return (await load()).logs.filter((l) => (l.kind === "new" || l.kind === "edit") && new Date(l.at).getTime() > from).length;
+  const db = await load();
+  // 예시를 숨기면 예시 가게의 기록도 세지 않는다
+  const hidden = SHOW_SAMPLES ? null : new Set(db.stores.filter((s) => s.isSample).map((s) => s.id));
+  return db.logs.filter((l) => (l.kind === "new" || l.kind === "edit") && new Date(l.at).getTime() > from && !hidden?.has(l.storeId)).length;
 }
 
 // ───────── 쓰기 ─────────
@@ -194,7 +208,8 @@ export function addStore(input: NewStoreInput, who: Who) {
     if (overDailyLimit(db, m)) return fail(LIMIT_MSG, 429);
     const name = input.name.trim();
     if (!input.notDuplicate) {
-      const dup = db.stores.find((s) => s.status !== "hidden" && distanceM(s, input) <= DUP_RADIUS_M && (norm(s.name).includes(norm(name)) || norm(name).includes(norm(s.name))));
+      // 숨긴 예시 가게와는 겹쳐도 막지 않는다 (화면에 없는 가게를 「이미 있어요」로 안내하게 되므로)
+      const dup = db.stores.find((s) => s.status !== "hidden" && (SHOW_SAMPLES || !s.isSample) && distanceM(s, input) <= DUP_RADIUS_M && (norm(s.name).includes(norm(name)) || norm(name).includes(norm(s.name))));
       if (dup) return fail(`이미 지도에 있는 가게 같아요: ${dup.name}`, 409, dup.id);
     }
 
@@ -319,6 +334,18 @@ export function editStore(id: string, patch: StorePatch, who: Who) {
 
     s.lastConfirmedAt = isoDay(); // 고친 사람이 곧 확인한 사람이다
     log(db, id, { nick: who.nick, ...m }, "edit", changes);
+    return { ok: true };
+  });
+}
+
+// 길찾기 누름 (W1-4). 같은 사람이 같은 가게를 같은 날 다시 누르면 더하지 않는다 → 「찾아가려 한 사람·날」을 센다
+export function recordGo(id: string, app: GoApp, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    if (!db.stores.some((x) => x.id === id)) return fail("가게를 찾지 못했어요", 404);
+    const m = mark(who);
+    const today = isoDay();
+    if (!db.goes.some((g) => g.storeId === id && same(g, m) && isoDay(new Date(g.at).getTime()) === today))
+      db.goes.push({ ...m, id: randomUUID(), storeId: id, app, at: new Date().toISOString() });
     return { ok: true };
   });
 }

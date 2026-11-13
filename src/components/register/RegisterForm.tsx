@@ -163,7 +163,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
     !!(r.rice.length && r.style && r.spice),
     !!(r.menu[0].name.trim() && r.menu[0].price),
     !!r.memo?.trim(),
-    r.photos.length >= MIN_PHOTOS,
+    r.photos.length >= Math.max(1, MIN_PHOTOS), // 사진이 선택이어도 한 장은 올려야 ✓ (소개글 단계와 같게)
   ];
 
   return (

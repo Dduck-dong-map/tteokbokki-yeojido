@@ -34,6 +34,16 @@ export type CopyAddressViewProps = {
   onCopy: () => void;
 };
 
+// ───────── GoLinks ─────────
+// 이 View 가 그리는 것: 「네이버 지도로 길찾기」「카카오맵」 두 링크(새 창).
+// 컨테이너가 넘기는 것: 두 주소, 누름 핸들러(어느 앱인지).
+// 넘기지 않는 것: 누름 기록 요청(W1-4) — 컨테이너가 보낸다.
+export type GoLinksViewProps = {
+  naver: string;
+  kakao: string;
+  onGo: (app: "naver" | "kakao") => void;
+};
+
 // ───────── VerifyButtons · VerifyBar ─────────
 // 이 View 가 그리는 것: 「맞아요」「달라요」 두 단추(+안내 문구). VerifyBar 는 그 위에 등록자·집계 설명을 얹은 칸.
 // 컨테이너가 넘기는 것: 보내는 중 여부, 결과 문구, 투표 핸들러; Bar 는 등록자 닉네임과 맞아요·달라요 수까지.

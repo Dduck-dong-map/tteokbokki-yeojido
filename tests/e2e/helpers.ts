@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { BrowserContext, ConsoleMessage, Page } from "@playwright/test";
 
 // 가입이 없는 서비스라 「누구」는 기기 표시(localStorage ddy-me → x-ddy-device 헤더)와 접속 위치(IP)로만 가른다.
-// 하루 한도(lib/data/db.ts same())는 기기 OR IP 로 묶이므로, 테스트마다 둘 다 새로 준다.
+// 같은 사람(lib/data/db.ts same())은 기기와 IP 가 모두 같을 때만이지만, 테스트끼리 섞이지 않게 둘 다 새로 준다.
 
 export const tag = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 

@@ -8,6 +8,7 @@ import { HIDE_AT, checkReview, type FlagReason } from "@/lib/wiki";
 import AddPhotoView from "./AddPhotoView";
 import CopyAddressView from "./CopyAddressView";
 import FlagReviewButtonView from "./FlagReviewButtonView";
+import GoLinksView from "./GoLinksView";
 import MoreActionsView from "./MoreActionsView";
 import ReviewFormView from "./ReviewFormView";
 import StillHereView from "./StillHereView";
@@ -64,6 +65,14 @@ export function CopyAddress({ address }: { address: string }) {
   };
 
   return <CopyAddressView copied={done} onCopy={copy} />;
+}
+
+// 길찾기 두 링크 + 누름 기록 (W1-4, KPI-W01). 기록은 보내기만 하고 결과는 기다리지 않는다.
+export function GoLinks({ id, naver, kakao }: { id: string; naver: string; kakao: string }) {
+  const go = (app: "naver" | "kakao") => {
+    void send(`/api/stores/${id}`, { action: "go", app });
+  };
+  return <GoLinksView naver={naver} kakao={kakao} onGo={go} />;
 }
 
 // 「맞아요」「달라요」 투표 상태. VerifyButtons 와 VerifyBar 가 같은 로직을 쓴다.

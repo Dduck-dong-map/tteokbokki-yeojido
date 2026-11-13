@@ -33,6 +33,8 @@ const SPECS: [keyof Db, Spec][] = [
     id: "text", title: "text", desc: "text", storeIds: "json", who: "text", createdAt: "ts", updatedAt: "ts", visibility: "text", likes: "int", isSample: "bool", ...MARK,
   } }],
   ["likes", { table: "list_likes", key: ["listId", "device"], cols: { listId: "text", at: "ts", ...MARK } }],
+  // 길찾기 누름 (W1-4, db/init/004_directions.sql)
+  ["goes", { table: "store_directions", key: ["id"], cols: { id: "text", storeId: "text", app: "text", at: "ts", ...MARK } }],
 ];
 
 const PG_TYPE: Record<Col, string> = { text: "text", int: "int", num: "float8", bool: "boolean", date: "date", ts: "timestamptz", json: "jsonb" };
@@ -52,7 +54,7 @@ type Client = postgres.Sql;
 // 빈 칸(null)은 앱에서처럼 아예 없는 값으로
 const clean = (r: Row) => Object.fromEntries(Object.entries(r).filter(([, v]) => v !== null));
 
-// 표 10개를 한 번에 (DB 와 한 번만 오간다, 11-09). Supabase 처럼 DB 가 멀리 있으면 표마다 따로 읽을 때 화면이 그만큼 느려진다.
+// 표 11개를 한 번에 (DB 와 한 번만 오간다, 11-09). Supabase 처럼 DB 가 멀리 있으면 표마다 따로 읽을 때 화면이 그만큼 느려진다.
 // 각 표를 JSON 배열로 묶어 { stores: [...], logs: [...] } 하나로 받는다. 칸 이름·날짜 모양은 selectSql 그대로.
 const READ_ALL_SQL = `select json_build_object(${SPECS.map(
   ([k, sp]) => `'${k}', (select coalesce(json_agg(t), '[]'::json) from (${selectSql(sp)}) t)`,

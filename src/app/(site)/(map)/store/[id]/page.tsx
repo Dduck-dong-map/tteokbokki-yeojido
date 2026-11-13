@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import AddToList from "@/components/lists/AddToList";
 import FlipStamp from "@/components/store/FlipStamp";
 import SaveButton from "@/components/store/SaveButton";
-import { AddPhoto, CopyAddress, FlagReviewButton, MoreActions, ReviewForm, StillHere, VerifyBar } from "@/components/store/StoreActions";
+import { AddPhoto, CopyAddress, FlagReviewButton, GoLinks, MoreActions, ReviewForm, StillHere, VerifyBar } from "@/components/store/StoreActions";
 import { CloseStore, ShareButton, StoreDistance, StoreMiniMap } from "@/components/store/StoreLocation";
 import { PendingTag, SampleRibbon, Stars, Tag } from "@/components/brand";
 import { getRegion, getReviews, getStore, getStores } from "@/lib/data";
@@ -48,8 +48,6 @@ const SECTION = "flex flex-col gap-2 border-t border-border pt-3.5";
 const H2 = "text-[16px] font-bold";
 // 뒤로·♡·공유가 들어가는 머리칸. 폰에서는 위에 붙어 따라온다
 const HEAD = "sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background px-1.5";
-// 길찾기 단추 둘의 공통 모양 (52px — 상세에서 가장 큰 행동, REQ-W10)
-const GO = "flex h-[52px] items-center justify-center rounded-xl font-bold whitespace-nowrap";
 
 function Head({ name, right }: { name?: string; right?: React.ReactNode }) {
   return (
@@ -169,14 +167,7 @@ async function StoreDetail({ id }: { id: string }) {
           <span className="min-w-0 flex-1 text-[14px] break-keep [overflow-wrap:anywhere]">{s.address}</span>
           <CopyAddress address={s.address} />
         </div>
-        <div className="flex gap-2">
-          <a href={naverDirections(s)} target="_blank" rel="noopener" className={cn(GO, "flex-[2] bg-primary text-[15px] text-primary-foreground hover:bg-primary/90")}>
-            네이버 지도로 길찾기
-          </a>
-          <a href={kakaoDirections(s)} target="_blank" rel="noopener" className={cn(GO, "flex-1 border border-input bg-card text-[14px] text-foreground hover:bg-muted")}>
-            카카오맵
-          </a>
-        </div>
+        <GoLinks id={s.id} naver={naverDirections(s)} kakao={kakaoDirections(s)} />
         <p className="-mt-1.5 text-[12px] text-muted-foreground/70 md:hidden">앱이 깔려 있으면 앱으로, 없으면 웹으로 열려요.</p>
 
         {/* 내 맛지도 리스트에 담기 (11-08) */}

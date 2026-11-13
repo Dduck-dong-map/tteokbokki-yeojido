@@ -121,8 +121,8 @@ export default function RegisterStepsView({ step, draft, stores, mapKey, sending
         </div>
         <section id="reg-4" className={cn("flex scroll-mt-20 flex-col gap-5", only(4))}>
           <div id="reg-photos">
-            <h2 className={TITLE}>사진을 올려 주세요</h2>
-            <p className={cn("mt-1 mb-3", LABEL)}>간판이나 메뉴판 {MIN_PHOTOS}장 이상 · 진짜 있는 가게인지 확인하는 데 써요</p>
+            <h2 className={TITLE}>{MIN_PHOTOS > 0 ? "사진을 올려 주세요" : "사진이 있으면 올려 주세요"}</h2>
+            <p className={cn("mt-1 mb-3", LABEL)}>{MIN_PHOTOS > 0 ? `간판이나 메뉴판 ${MIN_PHOTOS}장 이상` : "없어도 올릴 수 있어요 · 간판이나 메뉴판"} · 진짜 있는 가게인지 확인하는 데 써요</p>
             <PhotoPicker ids={draft.photos} onChange={(photos) => onChange({ photos })} hint="사람 얼굴이 크게 나오지 않게 찍어 주세요. 찍은 위치 정보는 지워서 올려요." />
           </div>
           <NickField />

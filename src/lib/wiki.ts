@@ -9,10 +9,10 @@ import type { Hours, MenuItem, Store } from "./types";
 export const VERIFY_DAYS = 7; // 새 가게는 일주일 동안 「확인 중」으로 보인다
 export const VERIFY_YES = 3; // 「맞아요」 3명이면 확인 완료
 export const HIDE_AT = 3; // 「달라요」 또는 신고가 3명 쌓이면 지도에서 내린다
-export const MIN_PHOTOS = 1; // 새 가게 등록에 필요한 사진 (간판이나 메뉴판) — 값만 바꾸면 2장으로 올릴 수 있다
+export const MIN_PHOTOS = 0; // 새 가게 등록에 필요한 사진 (간판이나 메뉴판). 써 보기 동안은 0 = 없어도 등록 (W1-3) — 사진 저장소를 붙이면 1 로 되돌린다
 export const MAX_PHOTOS = 5;
 export const MAX_MENU = 5;
-export const DAILY_LIMIT = 10; // 기기·접속 위치 기준 하루 등록·수정 10건
+export const DAILY_LIMIT = 10; // 한 사람(기기와 접속 위치가 모두 같으면 한 사람) 하루 등록·수정 10건
 export const DUP_RADIUS_M = 80; // 이 거리 안에 같은 이름이 있으면 이미 있는 가게로 본다
 export const MAX_INTRO = 500; // 소개글 글자 수
 export const OLD_DAYS = 60; // 마지막 확인이 이보다 오래되면 「확인이 필요해요」
@@ -104,7 +104,7 @@ export function checkNewStore(r: Partial<NewStoreInput>): string | null {
   const menuError = checkMenu(r.menu);
   if (menuError) return menuError;
   if ((r.photos?.length ?? 0) < MIN_PHOTOS) return `간판이나 메뉴판 사진을 ${MIN_PHOTOS}장 이상 올려 주세요`;
-  if (r.photos!.length > MAX_PHOTOS) return `사진은 ${MAX_PHOTOS}장까지 올릴 수 있어요`;
+  if ((r.photos?.length ?? 0) > MAX_PHOTOS) return `사진은 ${MAX_PHOTOS}장까지 올릴 수 있어요`;
   if (r.memo !== undefined) {
     const e = checkIntro(r.memo);
     if (e) return e;

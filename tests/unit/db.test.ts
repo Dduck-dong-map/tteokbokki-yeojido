@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -114,12 +114,12 @@ describe(`addStore — 같은 기기 하루 ${DAILY_LIMIT}건 한도`, () => {
     expect(other.ok).toBe(true);
   });
 
-  it("기기가 달라도 접속 위치가 같으면 같은 사람으로 센다", async () => {
+  it("같은 와이파이(접속 위치)라도 기기가 다르면 한도를 따로 센다", async () => {
     for (let i = 0; i < DAILY_LIMIT; i++) {
       await db.addStore(input({ name: `가게 ${i}`, lat: 37.4 + i * 0.01 }), who("1"));
     }
     const sameIp = await db.addStore(input({ name: "같은 와이파이", lat: 37.3 }), { ...who("9"), ip: who("1").ip });
-    expect(sameIp.ok).toBe(false);
+    expect(sameIp.ok).toBe(true);
   });
 });
 
@@ -199,5 +199,56 @@ describe("맛집 리스트 — 만든 기기만 고친다", () => {
     const res = await db.createList({ title: "익명", visibility: "public" }, { nick: "손님", device: "no-device", ip: "1.1.1.1" });
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.status).toBe(400);
+  });
+});
+
+describe("recordGo — 길찾기 누름 (W1-4)", () => {
+  const goes = () => (JSON.parse(readFileSync(path.join(dir, "db.json"), "utf8")) as { goes: { storeId: string; app: string }[] }).goes;
+
+  it("같은 사람이 같은 가게를 같은 날 다시 누르면 한 줄, 다른 사람은 따로", async () => {
+    const [s] = await db.readStores();
+    expect((await db.recordGo(s.id, "naver", who("1"))).ok).toBe(true);
+    expect((await db.recordGo(s.id, "kakao", who("1"))).ok).toBe(true);
+    expect((await db.recordGo(s.id, "naver", who("2"))).ok).toBe(true);
+    expect(goes()).toHaveLength(2);
+    expect(goes()[0]).toMatchObject({ storeId: s.id, app: "naver" });
+  });
+
+  it("없는 가게는 404", async () => {
+    const res = await db.recordGo("no-such-store", "naver", who("1"));
+    expect(res.ok).toBe(false);
+    if (!res.ok) expect(res.status).toBe(404);
+  });
+});
+
+describe("예시 숨기기 — NEXT_PUBLIC_SAMPLE_DATA=off (W1-1 · W1-2)", () => {
+  beforeEach(() => {
+    process.env.NEXT_PUBLIC_SAMPLE_DATA = "off";
+    vi.resetModules();
+  });
+  afterEach(() => {
+    delete process.env.NEXT_PUBLIC_SAMPLE_DATA;
+  });
+
+  it("화면 읽기에서 예시 가게·글·리스트가 빠지고, 예시 표시가 꺼진다", async () => {
+    const data = await import("@/lib/data");
+    const raw = await import("@/lib/data/db");
+    const [sample] = await raw.readStores();
+    expect(sample.isSample).toBe(true); // 지우지는 않는다
+    expect(data.USING_SAMPLE_DATA).toBe(false);
+    expect(await data.getStores()).toHaveLength(0);
+    expect(await data.getStore(sample.id)).toBeUndefined();
+    expect(await data.getPosts()).toHaveLength(0);
+    expect(await data.getPublicLists()).toHaveLength(0);
+    expect(await data.getRecentReportCount()).toBe(0);
+  });
+
+  it("숨긴 예시 가게 옆에 같은 이름으로 올려도 막지 않는다", async () => {
+    const raw = await import("@/lib/data/db");
+    const [sample] = await raw.readStores();
+    const res = await raw.addStore(input({ name: sample.name, lat: sample.lat + 0.0003, lng: sample.lng }), who("1"));
+    expect(res.ok).toBe(true);
+    const data = await import("@/lib/data");
+    expect((await data.getStores()).map((s) => s.name)).toEqual([sample.name]);
   });
 });
