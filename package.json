@@ -15,7 +15,11 @@
     "db:up": "docker compose up -d --wait db",
     "db:down": "docker compose stop db",
     "db:reset": "docker compose down -v && docker compose up -d --wait db",
-    "db:psql": "docker compose exec db psql -U ddy -d tteok"
+    "db:psql": "docker compose exec db psql -U ddy -d tteok",
+    "db:update": "docker compose exec -T db psql -U ddy -d tteok -v ON_ERROR_STOP=1 -f /docker-entrypoint-initdb.d/004_directions.sql",
+    "app:up": "docker compose --env-file .env.local up -d --build --wait app",
+    "app:down": "docker compose stop app",
+    "app:logs": "docker compose logs -f --tail 100 app"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

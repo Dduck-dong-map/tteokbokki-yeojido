@@ -13,7 +13,7 @@ pnpm dev
 
 크롬에서 http://localhost:3000 을 연다. 폭 768 미만은 지도 + 아래 시트 + 아래 메뉴, 768~1279 는 왼쪽 패널 + 지도, 1280 이상은 목록 + 상세 + 지도다. 휴대폰 크기로 보려면 F12 → 휴대폰 아이콘.
 
-키나 계정이 없어도 돈다. 가게는 예시 데이터(가짜) 16곳이고, 등록·평가·글은 `.data/` 폴더 파일에 저장된다(지우면 예시로 다시 시작). 로컬 DB(도커 Postgres)에 저장하려면 [`db/README.md`](db/README.md) 대로 `pnpm db:up` 뒤 `.env.local` 에 `DATABASE_URL` 을 넣는다. 나중에 쓸 값은 [`.env.example`](.env.example) 에 적어 두었다.
+키나 계정이 없어도 돈다. 가게는 예시 데이터(가짜) 16곳이고, 등록·평가·글은 `.data/` 폴더 파일에 저장된다(지우면 예시로 다시 시작). 로컬 DB(도커 Postgres)에 저장하려면 [`db/README.md`](db/README.md) 대로 `pnpm db:up` 뒤 `.env.local` 에 `DATABASE_URL` 을 넣는다. 배포처럼 빌드한 앱까지 도커로 띄우려면 `pnpm app:up` (같은 문서 「앱 서버」). 나중에 쓸 값은 [`.env.example`](.env.example) 에 적어 두었다.
 
 | 주소 | 화면 | 비고 |
 | --- | --- | --- |
