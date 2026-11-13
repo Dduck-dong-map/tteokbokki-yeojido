@@ -33,7 +33,7 @@ const roadClass = (...c: string[]): FilterSpecification => [
   ["!=", ["get", "brunnel"], "tunnel"],
 ];
 
-// 확대 방식 (팀 피드백 v2 정-2, 시안 비교 중). 주소 ?zoom=real 이면 ①, 아니면 ②.
+// 확대 방식 (팀 피드백 v2 정-2). 기본은 ① (11-13 네이버 키 확인 뒤 사용자 결정), 주소 ?zoom=names 면 ②.
 // ② names: 같은 지도에 이름을 더한다. ① real: 그림 지도가 사라지며 아래 실제 지도(realMap.ts)가 드러난다.
 export type ZoomMode = "names" | "real";
 export const REAL_FADE: [number, number] = [15, 15.8]; // ① 그림 지도가 사라지는 구간

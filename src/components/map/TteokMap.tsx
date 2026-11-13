@@ -9,7 +9,7 @@ import { THEME } from "@/lib/theme";
 import type { Store } from "@/lib/types";
 import { isPending } from "@/lib/wiki";
 import { MAP_CREDIT, REAL_FADE, dongyeoStyle, type ZoomMode } from "./dongyeoStyle";
-import { createRealMap, type RealMap } from "./realMap";
+import { NAVER_CREDIT, PRELOAD_ZOOM, createRealMap, type RealMap } from "./realMap";
 import { provideStamps } from "./stamps";
 
 type LatLng = { lat: number; lng: number };
@@ -91,7 +91,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       if (!ml) return fail();
       ml.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs"); // scripts/copy-maplibre-worker.mjs 가 복사해 둔 파일
       const t = THEME; // 팔레트는 P3 고정 (lib/theme.ts)
-      const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "real" ? "real" : "names";
+      const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "names" ? "names" : "real"; // 기본 ① (11-13)
       let m: MlMap;
       try {
         m = new ml.Map({
@@ -127,8 +127,18 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       // 패널을 열고 닫거나 등록 단계를 넘기면 지도 칸의 크기가 바뀐다
       resize = new ResizeObserver(() => m.resize());
       resize.observe(box.current);
-      // 오른쪽 아래는 등록·내 위치 버튼 자리. ① 은 확대하면 위 지도 층이 꺼지므로 저작권 표시를 고정으로 둔다.
-      m.addControl(new ml.AttributionControl({ compact: true, customAttribution: mode === "real" ? MAP_CREDIT : undefined }), "bottom-left");
+      // 오른쪽 아래는 등록·내 위치 버튼 자리. ① 은 확대하면 위 지도 층이 꺼지므로 저작권 표시를 고정으로 두고,
+      // 드러난 실제 지도가 네이버면 네이버 표시로 바꾼다 (임시 지도·그림 지도는 OpenFreeMap · OpenStreetMap).
+      let credit = mode === "real" ? MAP_CREDIT : undefined;
+      let attrib = new ml.AttributionControl({ compact: true, customAttribution: credit });
+      m.addControl(attrib, "bottom-left");
+      const setCredit = (next: string) => {
+        if (next === credit) return;
+        credit = next;
+        m.removeControl(attrib);
+        attrib = new ml.AttributionControl({ compact: true, customAttribution: next });
+        m.addControl(attrib, "bottom-left");
+      };
       m.touchZoomRotate.disableRotation();
       // 마우스를 쓰는 넓은 화면: ＋− 단추 + 도장에 올리면 이름·가격 (웹 1차 기획 REQ-W11). 터치 노트북도 마우스가 있으면 나온다.
       const mouse = initial.current.interactive && window.matchMedia("(hover: hover) and (min-width: 768px)").matches;
@@ -138,16 +148,26 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       provideStamps(m, t.map, t.css.surface);
 
       if (mode === "real" && under.current) {
+        const underEl = under.current;
+        let making = false;
         const follow = () => {
-          real?.follow(m.getCenter(), m.getZoom());
-          setRealOn(m.getZoom() >= REAL_FADE[1] ? (real?.kind() ?? "temp") : null);
+          const z = m.getZoom();
+          // 실제 지도는 PRELOAD_ZOOM 에 처음 닿을 때 만든다 (네이버는 띄울 때마다 1건)
+          if (!real && !making && z >= PRELOAD_ZOOM) {
+            making = true;
+            void createRealMap(ml, underEl, m.getCenter(), z, follow).then((r) => {
+              if (cancelled) return r.remove();
+              real = r;
+              follow();
+            });
+          }
+          real?.follow(m.getCenter(), z);
+          const shown = z >= REAL_FADE[1] ? (real?.kind() ?? "temp") : null;
+          setRealOn(shown);
+          setCredit(shown === "naver" ? NAVER_CREDIT : MAP_CREDIT);
         };
         m.on("move", follow);
-        createRealMap(ml, under.current, m.getCenter(), m.getZoom(), follow).then((r) => {
-          if (cancelled) return r.remove();
-          real = r;
-          follow();
-        });
+        follow();
       }
 
       m.on("load", () => {
@@ -277,7 +297,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
           지도를 불러오지 못했어요. 주소와 길찾기는 그대로 쓸 수 있어요.
         </p>
       )}
-      {realOn && (
+      {realOn && interactive && (
         <span className="pointer-events-none absolute top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-input bg-card px-3 py-1 text-[12px] text-muted-foreground shadow-sm">
           {realOn === "naver" ? "실제 지도 · 축소하면 그림 지도" : "실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도"}
         </span>

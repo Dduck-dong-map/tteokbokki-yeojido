@@ -9,7 +9,8 @@ const browser = existsSync(chromium.executablePath()) ? {} : { channel: "chrome"
 // 저장소는 파일 모드(DATA_DIR=.data-e2e)로 고정하고, 개발 DB(DATABASE_URL)는 절대 쓰지 않는다 — 계획 9절(Codex 보강) 결정.
 const E2E_PORT = 3101;
 const E2E_URL = `http://127.0.0.1:${E2E_PORT}`;
-const E2E_ENV = { DATA_DIR: ".data-e2e", PORT: String(E2E_PORT), DATABASE_URL: "" };
+// 네이버 키는 비운다: 시험이 네이버 사용량(한도)을 쓰지 않게, 실제 지도 자리는 임시 지도로 (11-13)
+const E2E_ENV = { DATA_DIR: ".data-e2e", PORT: String(E2E_PORT), DATABASE_URL: "", NEXT_PUBLIC_NAVER_MAP_KEY_ID: "" };
 
 // Next 16 은 같은 프로젝트에서 `next dev` 를 둘 띄울 수 없다 (experimental.lockDistDir 기본 켜짐 → .next/dev/lock, 두 번째는 exit 1).
 // 개발 서버가 살아 있으면 프로덕션 빌드(`next build` + `next start`)로 돌린다 — 번들 문서(02-guides/testing/playwright.md)도 이 방식을 권한다.

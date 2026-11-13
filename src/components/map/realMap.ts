@@ -1,11 +1,15 @@
 import type { LayerSpecification, LngLatLike, Map as MlMap, StyleSpecification } from "maplibre-gl";
 
-// 확대 방식 ① 의 「실제 지도」 자리 (주소 ?zoom=real). 밖에서는 follow · remove · kind 만 쓴다.
+// 확대 방식 ① 의 「실제 지도」 자리 (11-13 부터 기본, 주소 ?zoom=names 면 ②). 밖에서는 follow · remove · kind 만 쓴다.
 // 네이버 키(NEXT_PUBLIC_NAVER_MAP_KEY_ID)가 있으면 네이버 지도(GL 벡터), 없거나 인증이 안 되면 OpenFreeMap 상세 지도(임시).
 // 범위 = ① 확대했을 때 실제 지도만 네이버 (보드 W1-6, 11-11 사용자 결정). 그림 지도·주소 검색은 그대로.
 
 const SANS = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif"; // 글꼴 통일: 조선100년체 (11-12)
-const PRELOAD_ZOOM = 14; // 그림 지도가 사라지기 전에 미리 타일을 받아 둔다. 그 아래에선 움직이지 않아 비용이 없다.
+// 이 배율에 처음 닿을 때 실제 지도를 만든다(TteokMap). 네이버 Dynamic Map 은 지도를 띄울 때마다 1건으로 세므로,
+// 확대하지 않고 둘러보기만 하는 사람은 0건이다. 그림 지도가 사라지기(REAL_FADE 15) 전에 미리 받아 둔다.
+export const PRELOAD_ZOOM = 14;
+// 네이버 지도가 드러났을 때 왼쪽 아래 저작권 표시 (네이버 로고는 지도 왼쪽 위에 따로 나온다)
+export const NAVER_CREDIT = '<a href="https://www.navercorp.com" target="_blank">© NAVER Corp.</a>';
 const NAVER_KEY = process.env.NEXT_PUBLIC_NAVER_MAP_KEY_ID; // 빌드 때 박힌다 → .env.local 을 바꾸면 개발 서버를 다시 켠다
 
 export type RealMap = { follow: (center: LngLatLike, zoom: number) => void; remove: () => void; kind: () => "naver" | "temp" };
