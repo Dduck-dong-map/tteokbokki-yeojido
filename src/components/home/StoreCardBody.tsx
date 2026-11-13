@@ -62,7 +62,7 @@ export function StoreCardBody({ store: s, now, me = null, thumb = false, tags = 
       </div>
 
       <div className="flex shrink-0 flex-col items-end justify-between">
-        <SpiceStamp n={s.spice} size={26} faded={stale} />
+        <SpiceStamp n={s.spice} size={26} faded={stale} face />
         <div className="text-right">
           <b className="block text-[15px] leading-tight text-foreground">{won(s.price)}</b>
           {s.menu[0] && <span className="block max-w-[96px] truncate text-[11px] text-muted-foreground/70">{s.menu[0].name}</span>}

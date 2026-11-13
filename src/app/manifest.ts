@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "떡 종류와 맵기까지 골라 찾는 분식 맛집 지도",
     start_url: "/",
     display: "standalone",
-    background_color: "#ECE3D1",
-    theme_color: "#ECE3D1",
+    background_color: "#ffffff", // T2 흰 바탕 (globals.css --background · layout.tsx themeColor 와 같게, A-2)
+    theme_color: "#ffffff",
     lang: "ko",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },

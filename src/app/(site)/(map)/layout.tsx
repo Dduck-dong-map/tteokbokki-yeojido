@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import MapShell from "@/components/home/MapShell";
-import TigerLoader from "@/components/loading/TigerLoader";
+import IntroZoom from "@/components/loading/IntroZoom";
 import { USING_SAMPLE_DATA, getRecentReportCount, getStores } from "@/lib/data";
 
 // 지도 홈(/)과 가게 상세(/store/[id])가 함께 쓰는 틀.
@@ -11,7 +11,8 @@ export default function MapLayout({ children }: { children: React.ReactNode }) {
     <Suspense
       fallback={
         <div className="relative h-dvh bg-background md:h-[calc(100dvh-56px)]">
-          <TigerLoader />
+          {/* 지도 데이터를 받는 동안은 첫 화면 전환(대동여지도 확대)의 첫 장면(로고)만 세워 둔다 → 받으면 MapLoading 이 이어서 움직인다 */}
+          <IntroZoom still />
         </div>
       }
     >
