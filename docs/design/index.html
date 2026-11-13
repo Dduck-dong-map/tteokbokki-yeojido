@@ -30,6 +30,11 @@ button,input{font:inherit;color:inherit}
 .tb-btn.on{border-color:var(--t-sel);color:#cfe0ff}
 .zoomv{min-width:52px;text-align:center;color:var(--t-sub);font-variant-numeric:tabular-nums}
 .main{position:absolute;top:52px;left:0;right:0;bottom:0;display:flex}
+.srcbar{position:absolute;top:52px;left:0;right:0;height:44px;display:none;align-items:center;gap:6px;padding:0 12px 0 16px;background:var(--t-panel);border-bottom:1px solid var(--t-line);z-index:5;overflow-x:auto}
+.srcbar>span{color:var(--t-sub);font-size:12px;font-weight:600;margin-right:4px;white-space:nowrap}
+body.pg-src .srcbar{display:flex}
+body.pg-src .main{top:96px}
+body.pg-src .tools [data-page="main"]{display:none}
 .layers{width:272px;background:var(--t-panel);border-right:1px solid var(--t-line);overflow:auto;padding:10px 0 30px;flex:none}
 .layers h4{margin:16px 14px 8px;font-size:12px;color:var(--t-sub);font-weight:600;letter-spacing:.3px}
 .layers h4:first-child{margin-top:4px}
@@ -440,24 +445,29 @@ body.edge-frame .real svg{left:-12px;top:-112px}
 </g>
 </symbol><symbol id="map-street" viewBox="0 0 390 844"><rect style="fill:var(--s-block)" width="390" height="844"/><path style="fill:var(--s-park)" d="M-20 640 L120 666 L260 694 L410 722 L410 782 L260 752 L120 722 L-20 694 Z"/><path style="fill:var(--m-water)" d="M-20 694 L120 722 L260 752 L410 782 L410 844 L-20 844 Z"/><path style="stroke:var(--m-bank)" d="M-20 694 L120 722 L260 752 L410 782" fill="none" stroke-width="1.6" opacity="0.6"/><path style="fill:var(--s-park)" d="M262 420 L318 404 L330 470 L276 488 Z"/><path style="stroke:var(--s-case)" d="M411.4 671.7 L381.2 687.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M393 636.2 L362.8 651.8 L332.6 667.4 L302.4 683" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M287.2 653.5 L257 669.1" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M390.6 557.4 L360.4 573 L330.2 588.6 L300 604.2 L269.8 619.8" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M239.6 635.4 L209.4 651" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M399.7 500.9 L369.5 516.5 L339.3 532.1 L309.1 547.7 L278.9 563.3 L248.7 578.9 L218.5 594.5 L188.2 610.1 L158 625.7 L127.8 641.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M410.6 447.9 L380.4 463.5 L350.2 479.1" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M320 494.7 L289.8 510.3 L259.6 525.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M229.4 541.5 L199.2 557.1 L168.9 572.7 L138.7 588.3 L108.5 603.9 L78.3 619.5 L48.1 635.1" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M362.3 428.5 L332.1 444.1 L301.9 459.7 L271.7 475.3 L241.5 490.9 L211.3 506.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M181.1 522.1 L150.8 537.7 L120.6 553.3 L90.4 568.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M30 600.1 L-0.2 615.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M405.2 363.3 L375 378.9 L344.8 394.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M314.6 410.1 L284.4 425.7 L254.1 441.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M223.9 456.9 L193.7 472.5 L163.5 488.1 L133.3 503.7 L103.1 519.3 L72.9 534.9 L42.7 550.5 L12.5 566.1 L-17.8 581.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M387.2 328.5 L357 344.1 L326.8 359.7 L296.6 375.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M236.2 406.5 L206 422.1" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M145.5 453.3 L115.3 468.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M85.1 484.5 L54.9 500.1 L24.7 515.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M399 277.1 L368.7 292.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M278.1 339.5 L247.9 355.1 L217.7 370.7 L187.5 386.3 L157.3 401.9 L127.1 417.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M96.8 433.1 L66.6 448.7 L36.4 464.2 L6.2 479.8 L-24 495.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M380.2 240.8 L350 256.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M319.8 272 L289.6 287.6 L259.4 303.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M199 334.4 L168.8 350 L138.6 365.6 L108.3 381.2 L78.1 396.8 L47.9 412.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M362.4 206.2 L332.2 221.8 L302 237.4 L271.7 253" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M211.3 284.2 L181.1 299.8 L150.9 315.4 L120.7 331" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M30.1 377.8 L-0.2 393.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M374.7 156 L344.5 171.6 L314.3 187.1 L284.1 202.7 L253.8 218.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M223.6 233.9 L193.4 249.5 L163.2 265.1 L133 280.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M102.8 296.3 L72.6 311.9 L42.4 327.5 L12.1 343.1 L-18.1 358.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M417.2 90.1 L387 105.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M356.8 121.3 L326.6 136.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M296.4 152.5 L266.2 168.1 L236 183.7 L205.8 199.3 L175.5 214.9 L145.3 230.5 L115.1 246.1 L84.9 261.7 L54.7 277.3 L24.5 292.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M400.4 57.6 L370.2 73.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M340 88.8 L309.8 104.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M279.6 120 L249.4 135.6 L219.2 151.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M188.9 166.8 L158.7 182.4 L128.5 198" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M98.3 213.6 L68.1 229.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M37.9 244.8 L7.7 260.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M410.4 2.8 L380.2 18.4 L350 34 L319.8 49.6 L289.5 65.2 L259.3 80.8 L229.1 96.4 L198.9 112" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M168.7 127.5 L138.5 143.1 L108.3 158.7 L78.1 174.3 L47.9 189.9 L17.6 205.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M299.2 9.7 L269 25.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M208.5 56.5 L178.3 72.1 L148.1 87.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M87.7 118.9 L57.5 134.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M27.3 150.1 L-2.9 165.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M284.3 -19 L254.1 -3.4 L223.9 12.2 L193.7 27.8 L163.5 43.4 L133.3 58.9 L103.1 74.5 L72.9 90.1 L42.7 105.7 L12.4 121.3 L-17.8 136.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M203.4 -27.6 L173.2 -12 L142.9 3.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M112.7 19.2 L82.5 34.7 L52.3 50.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M126.6 -28 L96.4 -12.4 L66.2 3.2 L36 18.8" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M5.8 34.3 L-24.4 49.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M16.9 -18.2 L-13.3 -2.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M419.2 479.7 L416.5 513.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M413.8 547.5 L411.1 581.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M408.4 615.2 L405.7 649.1 L403.1 683" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M411.2 35.6 L408.5 69.5 L405.8 103.4 L403.1 137.3 L400.4 171.2 L397.7 205.1 L395 239 L392.4 272.9 L389.7 306.8 L387 340.7 L384.3 374.6 L381.6 408.5 L378.9 442.4 L376.2 476.3 L373.5 510.1 L370.8 544 L368.1 577.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M370 -1.7 L367.3 32.2 L364.6 66 L361.9 99.9 L359.2 133.8 L356.5 167.7 L353.8 201.6 L351.2 235.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M348.5 269.4 L345.8 303.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M343.1 337.2 L340.4 371.1 L337.7 405" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M335 438.9 L332.3 472.8 L329.6 506.7 L326.9 540.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M324.2 574.4 L321.5 608.3 L318.9 642.2 L316.2 676.1" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M317.2 -5.9 L314.5 28" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M301 197.4 L298.3 231.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M293 299.1 L290.3 333" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M287.6 366.9 L284.9 400.8 L282.2 434.7 L279.5 468.6 L276.8 502.5 L274.1 536.4 L271.4 570.3" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M268.7 604.1 L266 638 L263.4 671.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M275.5 -9.2 L272.8 24.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M256.7 228 L254 261.9 L251.3 295.8 L248.6 329.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M245.9 363.6 L243.2 397.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M237.8 465.3 L235.1 499.2 L232.4 533" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M229.8 566.9 L227.1 600.8 L224.4 634.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M229.9 21.2 L227.2 55.1 L224.5 89 L221.9 122.9 L219.2 156.8 L216.5 190.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M213.8 224.6 L211.1 258.5 L208.4 292.4 L205.7 326.3 L203 360.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M200.3 394.1 L197.6 428 L194.9 461.9 L192.2 495.7 L189.6 529.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M186.9 563.5 L184.2 597.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M191.2 -15.9 L188.5 18 L185.8 51.8 L183.1 85.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M172.4 221.3 L169.7 255.2 L167 289.1 L164.3 323 L161.6 356.9 L158.9 390.8" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M156.2 424.7 L153.5 458.6" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M150.8 492.5 L148.1 526.4 L145.4 560.2 L142.8 594.1 L140.1 628" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M142.9 -19.8 L140.2 14.1 L137.5 48 L134.8 81.9" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M132.1 115.8 L129.4 149.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M124 217.5 L121.3 251.4 L118.7 285.3 L116 319.2 L113.3 353" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M110.6 386.9 L107.9 420.8 L105.2 454.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M99.8 522.5 L97.1 556.4 L94.4 590.3 L91.7 624.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M90.3 -24 L87.6 9.9 L84.9 43.8 L82.2 77.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M79.5 111.6 L76.8 145.5 L74.1 179.4 L71.4 213.3 L68.8 247.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M60.7 348.9 L58 382.8 L55.3 416.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M52.6 450.6 L49.9 484.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M47.2 518.3 L44.5 552.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M41.8 586.1 L39.1 620" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M44.1 -27.6 L41.4 6.3 L38.8 40.2" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M36.1 74.1 L33.4 108 L30.7 141.8 L28 175.7" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M25.3 209.6 L22.6 243.5" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M19.9 277.4 L17.2 311.3 L14.5 345.2 L11.8 379.1 L9.2 413" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M6.5 446.9 L3.8 480.8 L1.1 514.7 L-1.6 548.6 L-4.3 582.5 L-7 616.4" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M-0.4 71.2 L-3.1 105.1" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M-19.3 308.4 L-22 342.3 L-24.7 376.2 L-27.4 410.1" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M-20 252 L410 160" fill="none" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M70 -20 L64 300 L52 560 L46 650" fill="none" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M332 -20 L320 280 L304 560 L298 700" fill="none" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-case)" d="M-20 400 L120 380 L200 352" fill="none" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-maincase)" d="M410 300 L-20 522" fill="none" stroke-width="17.5" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-maincase)" d="M232 -20 L214 200 L198 410 L182 620 L178 660" fill="none" stroke-width="17.5" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-maincase)" d="M-20 640 L120 666 L260 694 L410 722" fill="none" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M411.4 671.7 L381.2 687.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M393 636.2 L362.8 651.8 L332.6 667.4 L302.4 683" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M287.2 653.5 L257 669.1" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M390.6 557.4 L360.4 573 L330.2 588.6 L300 604.2 L269.8 619.8" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M239.6 635.4 L209.4 651" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M399.7 500.9 L369.5 516.5 L339.3 532.1 L309.1 547.7 L278.9 563.3 L248.7 578.9 L218.5 594.5 L188.2 610.1 L158 625.7 L127.8 641.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M410.6 447.9 L380.4 463.5 L350.2 479.1" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M320 494.7 L289.8 510.3 L259.6 525.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M229.4 541.5 L199.2 557.1 L168.9 572.7 L138.7 588.3 L108.5 603.9 L78.3 619.5 L48.1 635.1" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M362.3 428.5 L332.1 444.1 L301.9 459.7 L271.7 475.3 L241.5 490.9 L211.3 506.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M181.1 522.1 L150.8 537.7 L120.6 553.3 L90.4 568.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M30 600.1 L-0.2 615.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M405.2 363.3 L375 378.9 L344.8 394.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M314.6 410.1 L284.4 425.7 L254.1 441.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M223.9 456.9 L193.7 472.5 L163.5 488.1 L133.3 503.7 L103.1 519.3 L72.9 534.9 L42.7 550.5 L12.5 566.1 L-17.8 581.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M387.2 328.5 L357 344.1 L326.8 359.7 L296.6 375.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M236.2 406.5 L206 422.1" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M145.5 453.3 L115.3 468.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M85.1 484.5 L54.9 500.1 L24.7 515.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M399 277.1 L368.7 292.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M278.1 339.5 L247.9 355.1 L217.7 370.7 L187.5 386.3 L157.3 401.9 L127.1 417.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M96.8 433.1 L66.6 448.7 L36.4 464.2 L6.2 479.8 L-24 495.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M380.2 240.8 L350 256.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M319.8 272 L289.6 287.6 L259.4 303.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M199 334.4 L168.8 350 L138.6 365.6 L108.3 381.2 L78.1 396.8 L47.9 412.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M362.4 206.2 L332.2 221.8 L302 237.4 L271.7 253" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M211.3 284.2 L181.1 299.8 L150.9 315.4 L120.7 331" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M30.1 377.8 L-0.2 393.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M374.7 156 L344.5 171.6 L314.3 187.1 L284.1 202.7 L253.8 218.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M223.6 233.9 L193.4 249.5 L163.2 265.1 L133 280.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M102.8 296.3 L72.6 311.9 L42.4 327.5 L12.1 343.1 L-18.1 358.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M417.2 90.1 L387 105.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M356.8 121.3 L326.6 136.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M296.4 152.5 L266.2 168.1 L236 183.7 L205.8 199.3 L175.5 214.9 L145.3 230.5 L115.1 246.1 L84.9 261.7 L54.7 277.3 L24.5 292.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M400.4 57.6 L370.2 73.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M340 88.8 L309.8 104.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M279.6 120 L249.4 135.6 L219.2 151.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M188.9 166.8 L158.7 182.4 L128.5 198" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M98.3 213.6 L68.1 229.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M37.9 244.8 L7.7 260.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M410.4 2.8 L380.2 18.4 L350 34 L319.8 49.6 L289.5 65.2 L259.3 80.8 L229.1 96.4 L198.9 112" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M168.7 127.5 L138.5 143.1 L108.3 158.7 L78.1 174.3 L47.9 189.9 L17.6 205.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M299.2 9.7 L269 25.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M208.5 56.5 L178.3 72.1 L148.1 87.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M87.7 118.9 L57.5 134.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M27.3 150.1 L-2.9 165.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M284.3 -19 L254.1 -3.4 L223.9 12.2 L193.7 27.8 L163.5 43.4 L133.3 58.9 L103.1 74.5 L72.9 90.1 L42.7 105.7 L12.4 121.3 L-17.8 136.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M203.4 -27.6 L173.2 -12 L142.9 3.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M112.7 19.2 L82.5 34.7 L52.3 50.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M126.6 -28 L96.4 -12.4 L66.2 3.2 L36 18.8" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M5.8 34.3 L-24.4 49.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M16.9 -18.2 L-13.3 -2.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M419.2 479.7 L416.5 513.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M413.8 547.5 L411.1 581.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M408.4 615.2 L405.7 649.1 L403.1 683" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M411.2 35.6 L408.5 69.5 L405.8 103.4 L403.1 137.3 L400.4 171.2 L397.7 205.1 L395 239 L392.4 272.9 L389.7 306.8 L387 340.7 L384.3 374.6 L381.6 408.5 L378.9 442.4 L376.2 476.3 L373.5 510.1 L370.8 544 L368.1 577.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M370 -1.7 L367.3 32.2 L364.6 66 L361.9 99.9 L359.2 133.8 L356.5 167.7 L353.8 201.6 L351.2 235.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M348.5 269.4 L345.8 303.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M343.1 337.2 L340.4 371.1 L337.7 405" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M335 438.9 L332.3 472.8 L329.6 506.7 L326.9 540.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M324.2 574.4 L321.5 608.3 L318.9 642.2 L316.2 676.1" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M317.2 -5.9 L314.5 28" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M301 197.4 L298.3 231.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M293 299.1 L290.3 333" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M287.6 366.9 L284.9 400.8 L282.2 434.7 L279.5 468.6 L276.8 502.5 L274.1 536.4 L271.4 570.3" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M268.7 604.1 L266 638 L263.4 671.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M275.5 -9.2 L272.8 24.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M256.7 228 L254 261.9 L251.3 295.8 L248.6 329.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M245.9 363.6 L243.2 397.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M237.8 465.3 L235.1 499.2 L232.4 533" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M229.8 566.9 L227.1 600.8 L224.4 634.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M229.9 21.2 L227.2 55.1 L224.5 89 L221.9 122.9 L219.2 156.8 L216.5 190.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M213.8 224.6 L211.1 258.5 L208.4 292.4 L205.7 326.3 L203 360.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M200.3 394.1 L197.6 428 L194.9 461.9 L192.2 495.7 L189.6 529.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M186.9 563.5 L184.2 597.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M191.2 -15.9 L188.5 18 L185.8 51.8 L183.1 85.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M172.4 221.3 L169.7 255.2 L167 289.1 L164.3 323 L161.6 356.9 L158.9 390.8" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M156.2 424.7 L153.5 458.6" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M150.8 492.5 L148.1 526.4 L145.4 560.2 L142.8 594.1 L140.1 628" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M142.9 -19.8 L140.2 14.1 L137.5 48 L134.8 81.9" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M132.1 115.8 L129.4 149.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M124 217.5 L121.3 251.4 L118.7 285.3 L116 319.2 L113.3 353" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M110.6 386.9 L107.9 420.8 L105.2 454.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M99.8 522.5 L97.1 556.4 L94.4 590.3 L91.7 624.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M90.3 -24 L87.6 9.9 L84.9 43.8 L82.2 77.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M79.5 111.6 L76.8 145.5 L74.1 179.4 L71.4 213.3 L68.8 247.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M60.7 348.9 L58 382.8 L55.3 416.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M52.6 450.6 L49.9 484.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M47.2 518.3 L44.5 552.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M41.8 586.1 L39.1 620" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M44.1 -27.6 L41.4 6.3 L38.8 40.2" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M36.1 74.1 L33.4 108 L30.7 141.8 L28 175.7" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M25.3 209.6 L22.6 243.5" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M19.9 277.4 L17.2 311.3 L14.5 345.2 L11.8 379.1 L9.2 413" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M6.5 446.9 L3.8 480.8 L1.1 514.7 L-1.6 548.6 L-4.3 582.5 L-7 616.4" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M-0.4 71.2 L-3.1 105.1" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M-19.3 308.4 L-22 342.3 L-24.7 376.2 L-27.4 410.1" fill="none" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M-20 252 L410 160" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M70 -20 L64 300 L52 560 L46 650" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M332 -20 L320 280 L304 560 L298 700" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-road)" d="M-20 400 L120 380 L200 352" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-main)" d="M410 300 L-20 522" fill="none" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-main)" d="M232 -20 L214 200 L198 410 L182 620 L178 660" fill="none" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path style="stroke:var(--s-express)" d="M-20 640 L120 666 L260 694 L410 722" fill="none" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></symbol></svg><!--MAPS:END-->
 <div class="top">
-  <div class="brand">떡볶여지도 <small>화면 설계 v2 → v3 초기판 · 기존과 나란히 비교 · 한지 바탕 세부 고르기 (11-02)</small></div>
-  <div class="modes"><button id="mDesign" class="on">디자인</button><button id="mProto">프로토타입</button><button id="mMobile" title="실제 웹 화면을 폰 크기로 모아 보고, 파트별 색을 바꿔 보기 (11-08)">모바일 화면</button><button id="mPc" title="실제 웹 화면을 PC 크기로 모아 보고, 파트별 색을 바꿔 보기 (11-08)">PC 화면</button></div>
+  <div class="brand">떡볶여지도 <small id="brandSub">화면 설계 v2 → v3 초기판 · 기존과 나란히 비교 · 한지 바탕 세부 고르기 (11-02)</small></div>
+  <div class="modes"><button id="mDesign" class="on">디자인</button><button id="mProto">프로토타입</button><button id="mMobile" title="실제 웹 화면을 폰 크기로 모아 보고, 파트별 색을 바꿔 보기 (11-08)">모바일 화면</button><button id="mPc" title="실제 웹 화면을 PC 크기로 모아 보고, 파트별 색을 바꿔 보기 (11-08)">PC 화면</button><button id="mSrc" title="디자인 소스 · 시안 모음: 글꼴 · 맵기 표시 · 도장이 · 호랑이 · 떡 캐릭터 · 캐릭터 시안 · 기존 v1 (11-12)">디자인 소스</button></div>
   <div class="tools">
     <button class="tb-btn on" id="tWire" title="연결선: 정리 → 전체 → 끔 (W)">연결선: 정리</button>
     <button class="tb-btn" id="tOut" title="축소 (-)">−</button>
     <span class="zoomv" id="zv">100%</span>
     <button class="tb-btn" id="tIn" title="확대 (+)">+</button>
     <button class="tb-btn" id="tFit" title="전체 보기 (0)">전체</button>
-    <button class="tb-btn" id="tSpicy" title="맵기 표시 비교판으로 이동">맵기 표시</button>
-    <button class="tb-btn" id="tStudio" title="맵기 도장 스튜디오: 도장·고추 디테일을 모든 화면에서 한 번에">도장 스튜디오</button>
-    <button class="tb-btn" id="tChar" title="캐릭터 기획 줄로 이동">캐릭터 기획</button>
-    <button class="tb-btn" id="tV3" title="v3 초기판(단순 흐름) 줄로 이동">v3 초기판</button>
-    <button class="tb-btn" id="tTiger" title="호랑이 이미지 기획(로딩·중간 화면)으로 이동">호랑이</button>
-    <button class="tb-btn" id="tMvp" title="거지맵 구도로 추린 MVP 줄로 이동">MVP</button>
-    <button class="tb-btn" id="tWeb" title="웹 1차 기획(반응형 · 등록 · 위치 · 어드민)으로 이동">웹 1차</button>
-    <button class="tb-btn" id="tFont" title="글꼴 비교판으로 이동 · 왼쪽 칸 「글꼴 고르기」 열기">글꼴</button>
+    <button class="tb-btn" id="tV3" data-page="main" title="v3 초기판(단순 흐름) 줄로 이동">v3 초기판</button>
+    <button class="tb-btn" id="tMvp" data-page="main" title="거지맵 구도로 추린 MVP 줄로 이동">MVP</button>
+    <button class="tb-btn" id="tWeb" data-page="main" title="웹 1차 기획(반응형 · 등록 · 위치 · 어드민)으로 이동">웹 1차</button>
     <button class="tb-btn" id="tTheme" title="라이트 / 다크 모드 바꾸기">☀ 라이트</button>
   </div>
+</div>
+<div class="srcbar" id="srcBar"><span>바로가기</span>
+    <button class="tb-btn" id="tFont" data-page="src" title="글꼴 비교판으로 이동 · 왼쪽 칸 「글꼴 고르기」 열기">글꼴</button>
+    <button class="tb-btn" id="tSpicy" data-page="src" title="맵기 표시 비교판으로 이동">맵기 표시</button>
+    <button class="tb-btn" id="tStudio" data-page="src" title="맵기 도장 스튜디오: 도장·고추 디테일을 모든 화면에서 한 번에">도장 스튜디오</button>
+    <button class="tb-btn" id="tDojang" data-page="src" title="도장이 맵기 1~5 줄로 이동 (CH-14~17)">도장이</button>
+    <button class="tb-btn" id="tTiger" data-page="src" title="호랑이 · 로딩 화면 줄로 이동 (CH-10 · CH-13)">호랑이·로딩</button>
+    <button class="tb-btn" id="tDdeok" data-page="src" title="떡 캐릭터 줄로 이동 (CH-18 · CH-19)">떡 캐릭터</button>
+    <button class="tb-btn" id="tChar" data-page="src" title="캐릭터 방향 · 시안 줄로 이동 (CH-00~09 · CH-11 · CH-12)">캐릭터 방향·시안</button>
+    <button class="tb-btn" id="tV1" data-page="src" title="기존 디자인 v1 화면 줄로 이동">기존 v1</button>
 </div>
 <div class="main">
   <nav class="layers">
@@ -939,10 +949,15 @@ const LANES = [
   { id:'PC', t:'PC 와이어프레임 (11-08) · 지금 웹 web_2 기준', s:'사용자 「PC 화면도 와이어프레임」 → 폭 1280 화면 여덟 장: 지도 홈 · 가게 상세 · 맛집 등록 · 떡볶이방 목록·글·글쓰기 · 내 맛지도 · 맛집 리스트. 회색 상자 = 자리, 빨간 번호 = 오른쪽 설명. 실제 화면은 위쪽 「PC 화면」 스튜디오에서', flow:true },
   { id:'WB', t:'웹 1차 기획 (11-06)', s:'사용자 「첫 버전은 웹, PC·모바일 둘 다」 · 가게 등록 + 소개글 · 위치·길찾기는 기존 디자인 + 지도 · 맵기 투표는 나중에 · 어드민. 기획 단계의 와이어이고 웹은 아직 안 고쳤어요. 문서 docs/웹1차기획_v1_2026-11-06.md', flow:true },
   { id:'IN', t:'첫 화면 전환 · 한지 통일 (11-09)', s:'사용자 11-09 「대동여지도에서 확대되는 전환으로 지도 진입 · 로딩과 지도에 한지 느낌 일관성 · 시안으로 비교해서 결정」 → IN-01 시안 A·B·C + 한지 ①·②', flow:true },
-  { id:'FT', t:'글꼴 고르기 (11-04)', s:'사용자 사진의 붓 로고 · 슬로건 · 굵은 붓과 닮은 무료 글꼴. 왼쪽 칸 「글꼴 고르기」나 이 판의 버튼을 누르면 N-01 첫 화면의 로고·슬로건과 손글씨 제목이 바로 바뀌어요', flow:true },
-  { id:'V1', t:'기존 디자인 v1 (비교용)', s:'10-26 시안 v1 화면 그대로. 프로토타입에서 「기존과 나란히」를 켜면 같은 자리의 v1이 옆 폰에 떠요' },
-  { id:'SP', t:'맵기 표시 시안 (팀 결정 10-28 = 마 게이지 도장 + 고추) · 도장 스튜디오 (11-02)', s:'SP-00 다섯 방식 비교 · SP-01 도장 스튜디오 미리보기 — 왼쪽 칸 「맵기 도장 스튜디오」에서 고추 위치·모양·채움·색을 바꾸면 모든 화면이 같이 바뀌어요 · 도장 모양 네모·고추·떡순이 비교(11-02)', flow:true },
-  { id:'CH', t:'캐릭터 기획 · 시안 v1 (11-01) · 호랑이 기획 · 시안 v2 (11-02) · 시안 v3 (11-05) · 도장이 느낌 다섯 (11-09)', s:'방향 8가지 → 팀이 1·2 선택 → 시안 v1(CH-09) → 호랑이 기획(CH-10) → 시안 v2 떡순이 4 + 호랑이 3(CH-11, 고르는 중)', flow:true }
+  // 11-12 아래 줄들은 「디자인 소스」 페이지 (page:'src') · 순서 = 위쪽 바로가기 순서
+  { id:'FT', page:'src', t:'글꼴 고르기 (11-04)', s:'사용자 사진의 붓 로고 · 슬로건 · 굵은 붓과 닮은 무료 글꼴. 왼쪽 칸 「글꼴 고르기」나 이 판의 버튼을 누르면 N-01 첫 화면의 로고·슬로건과 손글씨 제목이 바로 바뀌어요', flow:true },
+  { id:'SP', page:'src', t:'맵기 표시 시안 (팀 결정 10-28 = 마 게이지 도장 + 고추) · 도장 스튜디오 (11-02)', s:'SP-00 다섯 방식 비교 · SP-01 도장 스튜디오 미리보기 — 왼쪽 칸 「맵기 도장 스튜디오」에서 고추 위치·모양·채움·색을 바꾸면 모든 화면이 같이 바뀌어요 · 도장 모양 네모·고추·떡순이 비교(11-02)', flow:true },
+  // 캐릭터는 카드마다 lane:'CH' 로 넣고, 보드 배치 직전에 CH_LANE 이 아래 네 줄로 나눈다 (11-12)
+  { id:'CHD', page:'src', t:'도장이 · 맵기 1~5 (11-09 ~ 11-10)', s:'CH-14 느낌 다섯 → CH-15 표정 디벨롭 → CH-16 단순판 → CH-17 떡 느낌 세 갈래', flow:true, sort:true },
+  { id:'CHT', page:'src', t:'호랑이 · 로딩 화면 (11-02 · 11-06)', s:'CH-10 호랑이 이미지 기획(로딩·중간 화면) → CH-13 로딩 화면 떡 문 호랑이 「호호」 (11-06 확정)', flow:true, sort:true },
+  { id:'CHR', page:'src', t:'떡 캐릭터 (11-10 ~ 11-11)', s:'CH-18 사용자 그림(세운 떡 + 소스 + 깨 + 막대 팔)으로 맵기 1~5 → CH-19 CH-15 표정 입힘', flow:true, sort:true },
+  { id:'CHA', page:'src', t:'캐릭터 방향 · 시안 (11-01 ~ 11-05)', s:'CH-00 한눈에 · CH-01~08 방향 여덟 → 팀이 1·2 선택 → 시안 v1(CH-09) → 시안 v2 떡순이·호랑이(CH-11) → 시안 v3 표지 지도·호랑이 표정·도장이(CH-12)', flow:true, sort:true },
+  { id:'V1', page:'src', t:'기존 디자인 v1 (비교용)', s:'10-26 시안 v1 화면 그대로. 프로토타입에서 「기존과 나란히」를 켜면 같은 자리의 v1이 옆 폰에 떠요' },
 ];
 const S = [];
 const add = o => S.push(o);
@@ -1645,7 +1660,7 @@ const IN_CSS = `<style>
 </style>`;
 const IN_LOAD = (cls = '') => `<div class="in-ph md fib ${cls}"><div class="in-logo" style="top:18px"><img src="img/logo_red.png" alt="" style="width:66px"></div><div class="in-tg" style="width:110px;margin:-82px 0 0 -55px"><img src="img/loading/tg_wink.jpg" alt="" style="width:110px;height:110px"><span style="font-size:10px">호호, 떡 식히는 중…</span></div></div>`;
 add({ id:'in_intro', code:'IN-01', t:'첫 화면 전환 · 대동여지도에서 확대해 지도로 + 한지 통일 (11-09) · 왼쪽 지금 → 시안 A·B·C', lane:'IN', w:1500, h:1760, isDoc:true,
-  spec:['사용자 11-09: 「처음 시작 화면에 대동여지도 이미지에서 확대되는 전환으로 지도로 진입 · 로딩 화면과 지도 화면에 한지 느낌 일관성 · 시안으로 보드에 올려 비교해서 결정」','크레딧 0 — CSS 움직임 + 지금 웹(localhost:3100) 사진. 대동여지도 그림은 docs/참고_대동여지도.jpg(960px, 시안용)','웹 코드는 아직 안 고침 — 고른 뒤 구현','🔴 A·B·C 중 전환 고르기 · 한지 ①·② 고르기 · 대동여지도 고화질 그림 출처 정하기'],
+  spec:['사용자 11-09: 「처음 시작 화면에 대동여지도 이미지에서 확대되는 전환으로 지도로 진입 · 로딩 화면과 지도 화면에 한지 느낌 일관성 · 시안으로 보드에 올려 비교해서 결정」','크레딧 0 — CSS 움직임 + 지금 웹(localhost:3100) 사진. 대동여지도 그림은 docs/참고_대동여지도.jpg(960px, 시안용)','✅ 11-12 사용자 결정: 전환 = A (대동여지도 확대) · 한지 느낌 통일 = 지금 그대로 → 웹에 A 구현(components/loading/IntroZoom · 페이지 열고 약 2.9초에 지도로 바뀌기 시작 · 다른 화면 갔다 오면 다시 안 뜸). 호랑이 로딩은 이제 안 나옴(파일은 남겨 둠)','🔴 대동여지도 고화질 그림 출처 정하기 (지금 웹은 시안용 960px 라 확대하면 흐림)'],
   html:() => `<div class="doc" style="width:1500px;height:1760px">${IN_CSS}
   <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px"><div><div style="font-family:'Song Myung',serif;font-size:34px">첫 화면 전환 · 한지 통일 시안</div><div style="color:#62625F;font-size:14px;margin-top:4px">왼쪽 = 지금 웹 · 오른쪽 = 시안 A·B·C (폰 화면이 저절로 되풀이). 마지막 장면은 지금 웹의 실제 지도 사진이다. 크레딧 0.</div></div><button class="in-btn" data-inreplay="1">↻ 세 시안 처음부터 같이 보기</button></div>
   <div style="display:grid;grid-template-columns:330px repeat(3,minmax(0,1fr));gap:18px;align-items:start">
@@ -2362,35 +2377,50 @@ add({ id:'zm_all', code:'ZM-00', t:'확대 지도 · 이름 넣기 vs 네이버 
 </div>` });
 
 /* ═════════ 보드 배치 ═════════ */
+// 11-12 캐릭터 줄 나누기 (사용자 「디자인 소스·시안은 페이지를 따로 · 카테고리별 바로가기」). 새 캐릭터 카드는 아래 표에 번호를 더하거나 lane 을 CHD·CHT·CHR·CHA 로 바로 적는다
+const CH_LANE = { 10:'CHT', 13:'CHT', 14:'CHD', 15:'CHD', 16:'CHD', 17:'CHD', 18:'CHR', 19:'CHR' };
+S.forEach(s => { if (s.lane === 'CH') s.lane = CH_LANE[+s.code.slice(3)] || 'CHA'; });
 const AW = 390, AH = 844, GX = 190, TOP_PAD = 180, LANE_GAP = 220, SUB_GAP = 0;
 const byId = Object.fromEntries(S.map(s => [s.id, s]));
 const W = s => s.w || AW, H = s => s.h || AH;
-let y = 0; const laneY = {};
-LANES.forEach(L => {
-  laneY[L.id] = y + TOP_PAD;
-  const ls = S.filter(s => s.lane === L.id), lh = Math.max(...ls.map(H));
-  y += TOP_PAD + lh + LANE_GAP;
-});
-S.forEach(s => { s.x = s.col * (W(s) + GX); s.y = laneY[s.lane]; });
-LANES.filter(L => L.flow).forEach(L => { let x = 0; S.filter(s => s.lane === L.id).forEach(s => { s.x = x; x += W(s) + GX; }); });
-const WORLD_W = Math.max(...S.map(s => s.x + W(s))), WORLD_H = y;
+// 페이지 둘: main = 화면 흐름·기획 · src = 디자인 소스·시안 (LANES 의 page). 카드는 한 번만 만들고, 페이지를 바꾸면 그 페이지 줄만 다시 배치한다
+let page = 'main';
+const pageOf = s => (LANES.find(l => l.id === s.lane) || {}).page || 'main';
+const pageLanes = () => LANES.filter(L => (L.page || 'main') === page);
+const laneCards = L => { const ls = S.filter(s => s.lane === L.id); return L.sort ? ls.sort((a, b) => a.code.localeCompare(b.code)) : ls; };
+let laneY = {}, WORLD_W = 0, WORLD_H = 0;
+function layout() {
+  let y = 0; laneY = {};
+  pageLanes().forEach(L => {
+    laneY[L.id] = y + TOP_PAD;
+    y += TOP_PAD + Math.max(...laneCards(L).map(H)) + LANE_GAP;
+  });
+  S.forEach(s => { s.on = s.lane in laneY; if (s.on) { s.x = s.col * (W(s) + GX); s.y = laneY[s.lane]; } });
+  pageLanes().filter(L => L.flow).forEach(L => { let x = 0; laneCards(L).forEach(s => { s.x = x; x += W(s) + GX; }); });
+  WORLD_W = Math.max(...S.filter(s => s.on).map(s => s.x + W(s))); WORLD_H = y;
+}
+layout();
 
 const world = document.getElementById('world'), stage = document.getElementById('stage'), wires = document.getElementById('wires');
 let view = { x: 40, y: 40, k: .3 }, sel = null, wireMode = 'clean';
-LANES.forEach(L => {
-  const d = document.createElement('div'); d.className = 'lane-t';
-  d.style.left = '0px'; d.style.top = (laneY[L.id] - 130) + 'px';
-  d.innerHTML = `${L.t}<small>${L.s}</small>`; world.appendChild(d);
-});
+function placeCards() {
+  world.querySelectorAll('.lane-t').forEach(d => d.remove());
+  pageLanes().forEach(L => {
+    const d = document.createElement('div'); d.className = 'lane-t';
+    d.style.left = '0px'; d.style.top = (laneY[L.id] - 130) + 'px';
+    d.innerHTML = `${L.t}<small>${L.s}</small>`; world.appendChild(d);
+  });
+  S.forEach(s => { const d = document.getElementById('ab-' + s.id); d.style.display = s.on ? '' : 'none'; if (s.on) { d.style.left = s.x + 'px'; d.style.top = s.y + 'px'; } });
+}
 S.forEach(s => {
   const d = document.createElement('div'); d.className = 'ab'; d.id = 'ab-' + s.id;
-  d.style.left = s.x + 'px'; d.style.top = s.y + 'px';
   d.style.width = W(s) + 'px';
   d.innerHTML = `<div class="lbl">${s.code}<b>${s.t}</b></div><div class="frame" style="width:${W(s)}px;height:${H(s)}px">${s.html()}</div>`;
   d.querySelector('.frame').addEventListener('click', e => { e.stopPropagation(); select(s.id); });
   d.querySelector('.frame').addEventListener('dblclick', e => { e.stopPropagation(); if (s.isDoc) focus(s.id); else openProto(s.isV1 ? s.to : s.id); });
   world.appendChild(d);
 });
+placeCards();
 
 function apply() {
   world.style.transform = `translate(${view.x}px,${view.y}px) scale(${view.k})`;
@@ -2408,9 +2438,38 @@ function zoomAt(f, cx, cy) {
   view.x = cx - (cx - view.x) * (k / view.k); view.y = cy - (cy - view.y) * (k / view.k); view.k = k; apply();
 }
 function focus(id) {
+  if (byId[id] && pageOf(byId[id]) !== page) setPage(pageOf(byId[id]));
   const s = byId[id], r = stage.getBoundingClientRect();
   const k = Math.min(1, (r.height - 120) / Math.min(H(s), 900), (r.width - 80) / W(s));
   view.k = k; view.x = r.width / 2 - (s.x + W(s) / 2) * k; view.y = r.height / 2 - (s.y + Math.min(H(s), 900) / 2) * k; apply(); select(id);
+}
+// 바로가기: 그 줄(갈래) 전체가 한 화면에 들어오게
+function jumpLane(id) {
+  const L = LANES.find(l => l.id === id); if (!L) return;
+  if ((L.page || 'main') !== page) setPage(L.page || 'main');
+  const cs = laneCards(L), r = stage.getBoundingClientRect();
+  const x0 = Math.min(...cs.map(s => s.x)), x1 = Math.max(...cs.map(s => s.x + W(s)));
+  const y0 = laneY[id] - 140, y1 = laneY[id] + Math.min(Math.max(...cs.map(H)), 1400);
+  const k = Math.min(1, (r.width - 80) / (x1 - x0), (r.height - 60) / (y1 - y0));
+  view.k = k; view.x = 40 - x0 * k; view.y = 30 - y0 * k; apply(); select(null);
+}
+const BRAND_MAIN = document.getElementById('brandSub').textContent;
+const BRAND_SRC = '디자인 소스 · 시안 — 글꼴 · 맵기 표시 · 도장이 · 호랑이 · 떡 캐릭터 · 캐릭터 시안 · 기존 v1 (11-12)';
+function syncPageUI() {
+  document.getElementById('mDesign').classList.toggle('on', mode !== 'proto' && page === 'main');
+  document.getElementById('mSrc').classList.toggle('on', mode !== 'proto' && page === 'src');
+  document.body.classList.toggle('pg-src', page === 'src');
+  document.getElementById('brandSub').textContent = page === 'src' ? BRAND_SRC : BRAND_MAIN;
+}
+function setPage(p) {
+  if (p === page) return;
+  page = p; sel = null;
+  layout(); placeCards(); syncPageUI(); renderLayers(); renderInsp();
+  const k0 = view.k; view.k = 1; apply(); buildLinks(); view.k = k0; apply();
+}
+// 주소에 페이지를 남겨 새로 고쳐도 그 페이지로 (?page=src)
+function syncUrl() {
+  try { const u = new URL(location.href); if (page === 'src') u.searchParams.set('page', 'src'); else u.searchParams.delete('page'); u.searchParams.delete('focus'); history.replaceState(null, '', u); } catch (e) {}
 }
 
 /* 연결선 (데이팅 앱 보드와 같은 방식) */
@@ -2419,10 +2478,10 @@ function buildLinks() {
   links = [];
   const wr = world.getBoundingClientRect();
   S.forEach(s => {
-    if (s.isV1 || s.isDoc) return;
+    if (s.isV1 || s.isDoc || !s.on) return;
     document.getElementById('ab-' + s.id).querySelectorAll('[data-go]').forEach(el => {
       const to = el.dataset.go;
-      if (to === 'back' || !byId[to] || to === s.id || el.closest('.nav, .chips')) return;
+      if (to === 'back' || !byId[to] || !byId[to].on || to === s.id || el.closest('.nav, .chips')) return;
       const r = el.getBoundingClientRect();
       links.push({ from: s.id, to, ex: (r.left - wr.left) / view.k, ey: (r.top - wr.top) / view.k, ew: r.width / view.k, eh: r.height / view.k, label: (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 24) });
     });
@@ -2479,21 +2538,28 @@ function select(id) {
 }
 function renderInsp() {
   const el = document.getElementById('insp');
+  if (!sel && page === 'src') {
+    el.innerHTML = `<div class="code">사용법</div><h3>디자인 소스 · 시안</h3>
+    <div class="empty">· 카드를 <b>클릭</b>하면 설명이 여기에<br>· <b>더블클릭</b>하면 그 카드로 확대<br>· 빈 곳을 <b>끌면</b> 이동 · 휠 = 확대·축소 · <kbd>0</kbd> 전체<br><br>
+    위쪽 <b>바로가기</b>를 누르면 그 갈래 줄로 가요: 글꼴 · 맵기 표시 · 도장 스튜디오 · 도장이 · 호랑이·로딩 · 떡 캐릭터 · 캐릭터 방향·시안 · 기존 v1.<br>왼쪽 <b>글꼴 고르기</b> · <b>맵기 도장 스튜디오</b>도 여기서 그대로 돼요.<br><br>
+    화면 흐름 · MVP · 웹 1차는 위 <b>디자인</b> 탭에 있어요.</div>`;
+    return;
+  }
   if (!sel) {
     el.innerHTML = `<div class="code">사용법</div><h3>화면 설계 보드</h3>
     <div class="empty">· 화면을 <b>클릭</b>하면 설명이 여기에<br>· <b>더블클릭</b>하면 그 화면부터 프로토타입<br>· 빈 곳을 <b>끌면</b> 이동 · 휠 = 확대·축소<br>· <kbd>0</kbd> 전체 · <kbd>W</kbd> 연결선 · <kbd>P</kbd> 프로토타입<br><br>
-    <b>왼쪽 팔레트</b>를 누르면 v2 화면 전부가 바로 바뀌어요. <b>직접 고르기</b>로 바탕색까지 바꿀 수 있어요.<br>셋째 줄 <b>v3 초기판</b>은 단순 흐름(11-02), 그 아래 줄은 <b>기존 v1</b> 화면이에요.<br><br>
+    <b>왼쪽 팔레트</b>를 누르면 v2 화면 전부가 바로 바뀌어요. <b>직접 고르기</b>로 바탕색까지 바꿀 수 있어요.<br>셋째 줄 <b>v3 초기판</b>은 단순 흐름(11-02).<br>글꼴 · 맵기 표시 · 캐릭터 시안 · <b>기존 v1</b> 화면은 위 <b>디자인 소스</b> 탭에 모았어요.<br><br>
     <span class="tag-note">빨강은 로고·맵기 도장·제보 버튼(포인트)에만 — 주 버튼은 옥빛 (슬랙 #design 10-28)</span><br><span class="tag-note">실제 지도 그림은 네이버 지도가 들어갈 자리 예시</span><br><span class="tag-note">가게 이름·가격·거리·제보 수는 설명용 예시</span><br><span class="tag-note">근거: 화면시안_v2 README · 기획안 v5 · 팀피드백_v1 6절</span></div>`;
     return;
   }
   const s = byId[sel], L = LANES.find(l => l.id === s.lane);
   if (s.isDoc) {
-    const ch = s.lane === 'CH';
+    const ch = /^CH/.test(s.lane);
     const next = s.next || (ch ? ['방향을 고르면 그 방향만 그림 생성 (매그니픽 크레딧 · 장수 정해서 승인 후)', '고른 캐릭터를 빈 화면·제보 끝 화면에 넣어 프로토타입에 반영'] : []);
-    const rel = ch ? S.filter(x => x.lane === 'CH' && x.id !== s.id) : (s.rel || []).map(id => byId[id]);
+    const rel = ch ? S.filter(x => x.lane === s.lane && x.id !== s.id) : (s.rel || []).map(id => byId[id]);
     el.innerHTML = `<div class="code">${s.code}</div><h3>${s.t}</h3><div class="flow">${L.t}</div><h5>기획 메모</h5><ul>${s.spec.map(x => `<li>${x}</li>`).join('')}</ul>
       ${next.length ? `<h5>다음 단계</h5><ul>${next.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}
-      ${rel.length ? `<h5>${ch ? '다른 방향' : '관련 화면'}</h5><div class="go">${rel.map(x => `<a data-f="${x.id}">${x.code} ${x.t}</a>`).join('')}</div>` : ''}`;
+      ${rel.length ? `<h5>${ch ? '같은 갈래' : '관련 화면'}</h5><div class="go">${rel.map(x => `<a data-f="${x.id}">${x.code} ${x.t}</a>`).join('')}</div>` : ''}`;
     el.querySelectorAll('[data-f]').forEach(a => a.onclick = () => focus(a.dataset.f));
     return;
   }
@@ -2519,8 +2585,8 @@ function renderInsp() {
   el.querySelector('[data-play]').onclick = () => openProto(s.id);
 }
 function renderLayers() {
-  document.getElementById('layers').innerHTML = LANES.map(L => `<h4>${L.t}</h4>` +
-    S.filter(s => s.lane === L.id).sort((a, b) => a.col - b.col).map(s => `<a data-id="${s.id}"><span>${s.code}</span>${s.t}</a>`).join('')).join('');
+  document.getElementById('layers').innerHTML = pageLanes().map(L => `<h4>${L.t}</h4>` +
+    laneCards(L).sort((a, b) => (a.col || 0) - (b.col || 0)).map(s => `<a data-id="${s.id}"><span>${s.code}</span>${s.t}</a>`).join('')).join('');
   document.querySelectorAll('#layers a').forEach(a => {
     a.onclick = () => { const s = byId[a.dataset.id]; if (s.isDoc) { if (mode === 'proto') closeProto(); focus(s.id); } else if (mode === 'proto') go(s.isV1 ? s.to : s.id, 'r'); else focus(s.id); };
   });
@@ -2556,13 +2622,13 @@ let mode = 'design', cur = null, hist = [], hotspots = false;
 const vp = document.getElementById('vp'), vp1 = document.getElementById('vp1'), proto = document.getElementById('proto'), phones = document.getElementById('phones');
 function openProto(id) {
   mode = 'proto'; hist = [];
-  document.getElementById('mDesign').classList.remove('on'); document.getElementById('mProto').classList.add('on');
+  document.getElementById('mDesign').classList.remove('on'); document.getElementById('mSrc').classList.remove('on'); document.getElementById('mProto').classList.add('on');
   proto.classList.add('on'); go(id || 'intro', null);
 }
-function closeProto() {
+function closeProto(stay) { // stay = 지금 페이지에 머묾 (바로가기·디자인 소스 탭)
   mode = 'design'; proto.classList.remove('on');
-  document.getElementById('mProto').classList.remove('on'); document.getElementById('mDesign').classList.add('on');
-  if (cur) focus(cur);
+  document.getElementById('mProto').classList.remove('on'); syncPageUI();
+  if (cur && !stay) { focus(cur); syncUrl(); }
 }
 function go(id, dir) {
   if (id === 'back') { if (hist.length) render(hist.pop(), 'l'); return; }
@@ -2633,20 +2699,25 @@ function fitPhone() {
 }
 
 /* ═════════ 상단 버튼 · 키 ═════════ */
-document.getElementById('mDesign').onclick = () => mode === 'proto' && closeProto();
+document.getElementById('mDesign').onclick = () => { if (mode === 'proto') closeProto(); else if (page !== 'main') { setPage('main'); fit(true); } syncUrl(); };
+document.getElementById('mSrc').onclick = () => { if (mode === 'proto') closeProto(true); if (page !== 'src') { setPage('src'); fit(); } syncUrl(); };
 // 11-08 화면 스튜디오: 기획 캔버스와 따로, 모바일·PC 실제 화면을 각각 모아 파트별 색을 바꿔 본다 (screens.html)
 // ?v= 는 브라우저가 옛 스튜디오 파일을 붙들고 있지 않게 하려는 것
 document.getElementById('mMobile').onclick = () => { location.href = 'screens.html?v=' + Date.now() + '#mobile'; };
 document.getElementById('mPc').onclick = () => { location.href = 'screens.html?v=' + Date.now() + '#pc'; };
 document.getElementById('mProto').onclick = () => mode !== 'proto' && openProto(!sel || byId[sel].isDoc ? 'intro' : (byId[sel].isV1 ? byId[sel].to : sel));
-document.getElementById('tChar').onclick = () => { if (mode === 'proto') closeProto(); focus('ch_all'); };
-document.getElementById('tV3').onclick = () => { if (mode === 'proto') closeProto(); focus('v3_home'); };
-document.getElementById('tTiger').onclick = () => { if (mode === 'proto') closeProto(); focus('ch_tiger'); };
-document.getElementById('tMvp').onclick = () => { if (mode === 'proto') closeProto(); focus('mv_all'); };
-document.getElementById('tWeb').onclick = () => { if (mode === 'proto') closeProto(); focus('wb_all'); };
-document.getElementById('tFont').onclick = () => { if (mode === 'proto') closeProto(); PAL.fontOpen = true; applyPalette(); showAllFonts(); focus('ft_all'); };
-document.getElementById('tSpicy').onclick = () => { if (mode === 'proto') closeProto(); focus('sp_all'); };
-document.getElementById('tStudio').onclick = () => { if (mode === 'proto') closeProto(); PAL.studioOpen = true; applyPalette(); focus('sp_studio'); };
+const toDesign = () => { if (mode === 'proto') closeProto(true); };
+document.getElementById('tV3').onclick = () => { toDesign(); focus('v3_home'); };
+document.getElementById('tMvp').onclick = () => { toDesign(); focus('mv_all'); };
+document.getElementById('tWeb').onclick = () => { toDesign(); focus('wb_all'); };
+document.getElementById('tFont').onclick = () => { toDesign(); PAL.fontOpen = true; applyPalette(); showAllFonts(); focus('ft_all'); };
+document.getElementById('tSpicy').onclick = () => { toDesign(); focus('sp_all'); };
+document.getElementById('tStudio').onclick = () => { toDesign(); PAL.studioOpen = true; applyPalette(); focus('sp_studio'); };
+document.getElementById('tDojang').onclick = () => { toDesign(); jumpLane('CHD'); };
+document.getElementById('tTiger').onclick = () => { toDesign(); jumpLane('CHT'); };
+document.getElementById('tDdeok').onclick = () => { toDesign(); jumpLane('CHR'); };
+document.getElementById('tChar').onclick = () => { toDesign(); jumpLane('CHA'); };
+document.getElementById('tV1').onclick = () => { toDesign(); jumpLane('V1'); };
 document.getElementById('tFit').onclick = () => mode === 'proto' ? null : fit();
 document.getElementById('tIn').onclick = () => { const r = stage.getBoundingClientRect(); zoomAt(1.25, r.width / 2, r.height / 2); };
 document.getElementById('tOut').onclick = () => { const r = stage.getBoundingClientRect(); zoomAt(.8, r.width / 2, r.height / 2); };
@@ -2669,7 +2740,7 @@ addEventListener('keydown', e => {
 addEventListener('resize', () => { if (mode === 'proto') fitPhone(); });
 
 /* 시작 */
-applyPalette(); renderLayers(); renderInsp(); apply();
+applyPalette(); syncPageUI(); renderLayers(); renderInsp(); apply();
 const start = () => {
   const k0 = view.k; view.k = 1; apply(); buildLinks(); view.k = k0;
   fit(true);
@@ -2685,6 +2756,7 @@ const start = () => {
   // 비교판이 화면에 들어오면 글꼴을 받는다
   const ftEl = document.getElementById('ab-ft_all');
   if (ftEl && 'IntersectionObserver' in window) new IntersectionObserver((en, ob) => { if (en.some(x => x.isIntersecting)) { showAllFonts(); ob.disconnect(); } }, { root:stage }).observe(ftEl);
+  if (q.get('page') === 'src') { setPage('src'); fit(); }
   if (q.get('focus') && byId[q.get('focus')]) focus(q.get('focus'));
   const h = location.hash.slice(1); if (h && byId[h]) openProto(h);
 };
