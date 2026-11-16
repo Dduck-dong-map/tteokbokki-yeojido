@@ -70,3 +70,6 @@ next-env.d.ts
 # Playwright 산출물 (tests/e2e)
 /test-results/
 /playwright-report/
+
+# 가게 자료 만들 때 쓴 스크립트·DB 백업 (이 컴퓨터에만, 11-16) — 만든_스크립트/README.md
+/만든_스크립트/
