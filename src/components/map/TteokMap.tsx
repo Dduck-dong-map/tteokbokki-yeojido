@@ -30,12 +30,15 @@ type Props = {
   showName?: boolean; // 도장 밑 글자를 가격 대신 가게 이름으로
 };
 
-// 첫 화면 중심: 가게들의 한가운데 (11-15 실제 가게 = 강남). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
+// 첫 화면 중심: 가게가 가장 많은 구의 한가운데 (11-16 강남 + 마포 → 둘 사이 한강 위가 되지 않게). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
 const START: [number, number] = [126.928, 37.5555];
 function storesCenter(stores: Store[]): [number, number] {
   if (!stores.length) return START;
-  const lngs = stores.map((s) => s.lng);
-  const lats = stores.map((s) => s.lat);
+  const byGu = new Map<string, Store[]>();
+  for (const s of stores) byGu.set(s.gu, [...(byGu.get(s.gu) ?? []), s]);
+  const top = [...byGu.values()].sort((a, b) => b.length - a.length)[0];
+  const lngs = top.map((s) => s.lng);
+  const lats = top.map((s) => s.lat);
   return [(Math.min(...lngs) + Math.max(...lngs)) / 2, (Math.min(...lats) + Math.max(...lats)) / 2];
 }
 // 한글 지명·이름표 = 조선100년체 (app/layout.tsx 에서 이 이름으로 불러온다)
