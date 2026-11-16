@@ -334,6 +334,20 @@ body {
       intro-zoom 1.1s cubic-bezier(0.5, 0, 0.3, 1) 0.5s forwards;
   }
   .intro-map img { display: block; width: 100%; height: 100%; transform-origin: 38% 54%; }
+  /* 한양 둘레 고화질 조각 (11-16): 3,840px 판의 가로 21~55% · 세로 44~64% 를 같은 자리에 겹친다.
+     가운데가 확대 중심(38%, 54%)이라 걷힐 때 함께 커져도(intro-push) 어긋나지 않는다.
+     폰은 8배에서 가로 ±7% · 세로 ±9%, PC 지도 칸은 가로 ±16% · 세로 ±8% 쯤 보여서 그 바깥은 960px 전도가 받친다 */
+  .intro-map .intro-hires {
+    position: absolute;
+    left: 20.9896%;
+    top: 44.0074%;
+    width: 34.0104%;
+    height: 19.9907%;
+    transform-origin: 50% 50%;
+    /* 1배 전도에서는 960px 와 획 굵기가 달라 조각 자리가 살짝 옅어 보인다 → 확대가 3배쯤 된 뒤(0.9초) 움직이는 중에 나타나게 */
+    opacity: 0;
+    animation: intro-hires-in 0.3s ease-out 0.9s forwards;
+  }
   .intro-logo {
     position: absolute;
     top: calc(env(safe-area-inset-top) + 24px);
@@ -359,15 +373,19 @@ body {
   }
   .intro-leaving { animation: intro-out 0.35s ease-in forwards; }
   .intro-leaving .intro-map img { animation: intro-push 0.35s ease-in forwards; }
+  /* 걷힐 때 위 줄이 조각의 나타나기 움직임을 덮어써서 투명으로 돌아가지 않게 */
+  .intro-leaving .intro-map .intro-hires { opacity: 1; animation: intro-push 0.35s ease-in forwards; }
 }
 @keyframes intro-ink { from { opacity: 0; filter: blur(4px); } to { opacity: 1; filter: none; } }
 @keyframes intro-zoom { from { transform: none; } to { transform: translate(12%, -4%) scale(8); } }
 @keyframes intro-push { to { transform: scale(1.25); } }
+@keyframes intro-hires-in { to { opacity: 1; } }
 @keyframes intro-out { to { opacity: 0; } }
 @keyframes intro-stop { to { opacity: 0; visibility: hidden; pointer-events: none; } }
 @media (prefers-reduced-motion: reduce) {
   .intro-map { animation: intro-ink 0.4s ease-out forwards; }
   .intro-leaving .intro-map img { animation: none; }
+  .intro-map .intro-hires { display: none; }
 }
 
 /* 가게 상세의 맵기 도장 뒤집기 (슬랙 10-28: 누르면 휙 돌아가며 표정) */
