@@ -23,13 +23,14 @@ export const SECTIONS: Section[] = [
     menu: [
       { href: "/admin/stores", label: "전체 가게" },
       { href: "/admin/stores?view=hidden", label: "내림·숨김" },
+      { href: "/admin/stores/new", label: "직접 등록" },
     ],
   },
   {
     key: "check", href: "/admin/freshness", label: "점검", icon: "clock", group: "점검",
     menu: [
       { href: "/admin/freshness", label: "신선도 점검", count: 3 },
-      { href: "/admin/candidates", label: "후보 가져오기", spec: "M4" },
+      { href: "/admin/candidates", label: "후보 가져오기" },
     ],
   },
   { key: "flags", href: "/admin/flags", label: "신고", icon: "message", group: "신고·요청", menu: [{ href: "/admin/flags", label: "신고·요청", count: 3 }] },
