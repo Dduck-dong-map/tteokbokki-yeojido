@@ -40,7 +40,7 @@ export default function RoomBoardView({ posts, cat, storeNames, now, sample, onC
                 onClick={() => onCatChange(key)}
                 className={cn(
                   "hit h-8 shrink-0 rounded-full border px-3 text-[13px] whitespace-nowrap",
-                  on ? "border-foreground bg-foreground font-semibold text-background" : "border-input bg-card text-muted-foreground hover:bg-muted",
+                  on ? "border-primary bg-primary font-semibold text-primary-foreground" : "border-input bg-card text-muted-foreground hover:bg-muted",
                 )}
               >
                 {label}
@@ -63,7 +63,7 @@ export default function RoomBoardView({ posts, cat, storeNames, now, sample, onC
               <li key={p.id}>
                 <Link href={`/room/${p.id}`} className="block min-h-11 px-4 py-3.5 hover:bg-muted">
                   <p className="flex items-center gap-1.5">
-                    <Badge variant="outline" className="shrink-0 rounded-md border-input px-1.5 text-[11px] font-normal text-muted-foreground">
+                    <Badge variant="outline" className="shrink-0 rounded-full border-transparent bg-muted px-2 text-[12px] font-normal text-muted-foreground">
                       {BOARD_CATS[p.cat]}
                     </Badge>
                     <span className="min-w-0 truncate text-[15px] font-semibold text-foreground">{p.title}</span>

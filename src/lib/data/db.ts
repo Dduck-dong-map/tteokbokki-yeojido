@@ -54,7 +54,7 @@ export type Db = {
   goes: GoRow[];
 };
 
-const isoDay = (t = Date.now()) => new Date(t + 9 * 3_600_000).toISOString().slice(0, 10);
+export const isoDay = (t = Date.now()) => new Date(t + 9 * 3_600_000).toISOString().slice(0, 10);
 const daysAgo = (n: number) => isoDay(Date.now() - n * 86_400_000);
 const isoAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
 const SEED_MARK: Mark = { device: "seed", ip: "seed" };
@@ -99,7 +99,8 @@ function seed(): Db {
 const PG = !!process.env.DATABASE_URL;
 const prepare = (raw: Db | null) => withCommunity(raw ?? seed());
 
-async function load(): Promise<Db> {
+// 어드민(lib/data/admin.ts)도 같은 읽기·쓰기 줄을 쓴다
+export async function load(): Promise<Db> {
   if (PG) return (await import("./pg")).pgRead(prepare);
   try {
     return withCommunity(JSON.parse(await readFile(DB_FILE, "utf8")) as Db);
@@ -126,7 +127,7 @@ async function save(db: Db) {
 
 // 쓰기는 한 번에 하나씩 (읽고 → 고치고 → 저장). 개발 서버는 모듈을 다시 불러오므로 줄은 전역에 둔다.
 const g = globalThis as unknown as { __ddyQueue?: Promise<unknown> };
-function mutate<T>(fn: (db: Db) => T | Promise<T>): Promise<T> {
+export function mutate<T>(fn: (db: Db) => T | Promise<T>): Promise<T> {
   if (PG) return import("./pg").then((m) => m.pgMutate(prepare, fn));
   const run = (g.__ddyQueue ?? Promise.resolve()).catch(() => undefined).then(async () => {
     const db = await load();

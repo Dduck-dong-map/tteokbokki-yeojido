@@ -53,9 +53,10 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  /* 우리 것: 제보·등록 버튼(이름은 옛 고추장 포인트에서 왔다) · 링크색 · 지도 종이 · 이름 글씨 */
+  /* 우리 것: 고추장 빨강(찜 하트, 토큰 --brand-red 그대로) · 제보·등록 버튼(report) · 링크색 · 지도 종이 · 이름 글씨 */
   --color-brand-red: var(--brand-red);
-  --color-brand-red-foreground: var(--brand-red-foreground);
+  --color-report: var(--report);
+  --color-report-foreground: var(--report-foreground);
   --color-link: var(--link);
   --color-map-paper: var(--map-paper);
   --color-wordmark: var(--text-wordmark);
@@ -65,8 +66,10 @@
   --color-stampbg: var(--stampbg);
   --color-loc: var(--loc);
 
-  /* 글꼴은 조선100년체 하나(font-sans · font-serif · font-heading 모두). 이름 「떡볶여지도」만 font-wordmark */
-  --font-sans: var(--font-family-base);
+  /* 글꼴 (11-13 수정판): 제목(h1~h3 · font-heading · font-serif) = 조선100년체(토큰 --font-family-base), 본문·작은 글자 = Pretendard.
+     조선100년체는 굵기가 하나뿐이고 14px 아래에서 「전→컨」「누들→누둘」처럼 읽혀 본문에는 쓰지 않는다 (11-04 「제목만」 · 11-13 점검).
+     이름 「떡볶여지도」만 font-wordmark */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
   --font-serif: var(--font-family-base);
   --font-heading: var(--font-family-base);
   --font-wordmark: var(--font-family-wordmark);
@@ -107,10 +110,12 @@
   --sidebar-accent-foreground: var(--text-primary);
   --sidebar-border: var(--border-default);
   --sidebar-ring: var(--border-focus);
-  /* 제보·등록 버튼과 등록 화면 가운데 핀 = 제보 갈색(P3) */
-  --brand-red: var(--interactive-accent);
-  --brand-red-foreground: var(--text-on-accent);
-  --link: var(--text-link);
+  /* 제보·등록 버튼과 등록 화면 가운데 핀 = 제보 갈색(P3).
+     예전엔 이 자리에서 --brand-red 를 덮어써 이름 글씨·찜 하트까지 갈색이 됐다 (11-13 점검). 토큰 --brand-red(#C00000)는 덮지 않는다. */
+  --report: var(--interactive-accent);
+  --report-foreground: var(--text-on-accent);
+  /* 링크 = 옥빛 글자 (누르는 것은 옥빛 한 가지 · 갈색은 등록 하나만, 11-13 게슈탈트 「갈색 세 가지 뜻」) */
+  --link: var(--text-brand);
   --map-paper: var(--background-primary);
   /* 맵기 경고색(태그 spicy) · 내 위치(쪽빛) */
   --spicybg: #f6dcd9;
@@ -142,6 +147,20 @@
   html {
     @apply font-sans;
   }
+  /* 제목만 조선100년체. 굵기가 하나라 font-bold 를 붙여도 보통 굵기로 나온다 (가짜 굵게는 body 에서 막는다) */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+  }
+  /* 제목 안의 덧붙임 글(「선택」·「확인 중」·「가격 확인 4주 전」처럼 작은 글자)은 본문 글꼴. .wordmark 는 자기 글꼴이 이긴다 */
+  :is(h1, h2, h3) span {
+    font-family: var(--font-sans);
+  }
+  /* 관리자 화면은 제목도 본문 글꼴 — 조선100년체(1.1MB)를 받지 않는다 */
+  .admin-root :is(h1, h2, h3) {
+    font-family: var(--font-sans);
+  }
 }
 
 /* 바탕·글자색은 shadcn 변수가 정한다 */
@@ -153,7 +172,7 @@ body {
 
 body {
   font-family: var(--font-sans);
-  /* 조선100년체는 굵기가 Regular 하나뿐이다. 브라우저가 획을 덧그려 만드는 가짜 굵게를 막는다(강조는 크기·색·자간으로) */
+  /* 조선100년체(제목)는 굵기가 Regular 하나뿐이다. 브라우저가 획을 덧그려 만드는 가짜 굵게를 막는다. 본문 Pretendard 는 굵기가 다 있어 상관없다 */
   font-synthesis-weight: none;
   -webkit-tap-highlight-color: transparent;
   word-break: keep-all;
@@ -315,6 +334,20 @@ body {
       intro-zoom 1.1s cubic-bezier(0.5, 0, 0.3, 1) 0.5s forwards;
   }
   .intro-map img { display: block; width: 100%; height: 100%; transform-origin: 38% 54%; }
+  /* 한양 둘레 고화질 조각 (11-16): 3,840px 판의 가로 21~55% · 세로 44~64% 를 같은 자리에 겹친다.
+     가운데가 확대 중심(38%, 54%)이라 걷힐 때 함께 커져도(intro-push) 어긋나지 않는다.
+     폰은 8배에서 가로 ±7% · 세로 ±9%, PC 지도 칸은 가로 ±16% · 세로 ±8% 쯤 보여서 그 바깥은 960px 전도가 받친다 */
+  .intro-map .intro-hires {
+    position: absolute;
+    left: 20.9896%;
+    top: 44.0074%;
+    width: 34.0104%;
+    height: 19.9907%;
+    transform-origin: 50% 50%;
+    /* 1배 전도에서는 960px 와 획 굵기가 달라 조각 자리가 살짝 옅어 보인다 → 확대가 3배쯤 된 뒤(0.9초) 움직이는 중에 나타나게 */
+    opacity: 0;
+    animation: intro-hires-in 0.3s ease-out 0.9s forwards;
+  }
   .intro-logo {
     position: absolute;
     top: calc(env(safe-area-inset-top) + 24px);
@@ -340,15 +373,19 @@ body {
   }
   .intro-leaving { animation: intro-out 0.35s ease-in forwards; }
   .intro-leaving .intro-map img { animation: intro-push 0.35s ease-in forwards; }
+  /* 걷힐 때 위 줄이 조각의 나타나기 움직임을 덮어써서 투명으로 돌아가지 않게 */
+  .intro-leaving .intro-map .intro-hires { opacity: 1; animation: intro-push 0.35s ease-in forwards; }
 }
 @keyframes intro-ink { from { opacity: 0; filter: blur(4px); } to { opacity: 1; filter: none; } }
 @keyframes intro-zoom { from { transform: none; } to { transform: translate(12%, -4%) scale(8); } }
 @keyframes intro-push { to { transform: scale(1.25); } }
+@keyframes intro-hires-in { to { opacity: 1; } }
 @keyframes intro-out { to { opacity: 0; } }
 @keyframes intro-stop { to { opacity: 0; visibility: hidden; pointer-events: none; } }
 @media (prefers-reduced-motion: reduce) {
   .intro-map { animation: intro-ink 0.4s ease-out forwards; }
   .intro-leaving .intro-map img { animation: none; }
+  .intro-map .intro-hires { display: none; }
 }
 
 /* 가게 상세의 맵기 도장 뒤집기 (슬랙 10-28: 누르면 휙 돌아가며 표정) */

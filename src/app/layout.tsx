@@ -1,16 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+// 본문 글꼴 Pretendard: 화면에 나온 글자가 든 조각만 받는다 (11-13 수정판, 예전 280~415KB)
+import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
 import { USING_SAMPLE_DATA } from "@/lib/data";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-// 글꼴 (디자인 시스템 11-12): 모든 글자 = 조선100년체, 이름 「떡볶여지도」만 을지로10년후체 서브셋.
+// 글꼴 (11-13 수정판): 제목 = 조선100년체, 본문·작은 글자 = Pretendard(위 import), 이름 「떡볶여지도」만 을지로10년후체 서브셋.
 // 이름을 tokens.css 의 --font-family-base · --font-family-wordmark 값과 같게 고정한다(지도 MapLibre 도 이 이름으로 부른다).
 // 조선100년체는 라이선스상 파일 수정 금지라 원본 그대로, 로고·브랜드명·슬로건에는 쓰지 않는다.
 const ChosunCentennial = localFont({
   src: "./fonts/ChosunCentennial.woff2",
   weight: "400",
+  // 미리 받지 않는다: 제목이 실제로 나오는 화면에서만 받는다 (관리자 화면 등은 0KB, 11-13 점검 「모든 페이지 1,164KB」)
+  preload: false,
   variable: "--font-chosun",
   declarations: [{ prop: "font-family", value: "ChosunCentennial" }],
   adjustFontFallback: "Times New Roman",

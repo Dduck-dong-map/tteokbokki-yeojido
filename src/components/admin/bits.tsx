@@ -42,3 +42,19 @@ export function Breadcrumb({ items }: { items: { label: string; href?: string }[
 export function Stamp({ n }: { n: number }) {
   return <span className={`stamp stamp--${n}`}>{n}</span>;
 }
+
+// 운영 권한이 없을 때 (lib/admin/access.ts). login = 열쇠로 로그인 · locked = 이 컴퓨터 밖이라 열쇠(ADMIN_KEY)가 있어야 열림
+export function Locked({ why }: { why: "login" | "locked" }) {
+  return (
+    <div className="empty">
+      <div className="empty__icon"><Icon name="alert" /></div>
+      <div className="empty__title">{why === "login" ? "운영 로그인이 필요해요" : "이 주소에서는 운영 화면이 잠겨 있어요"}</div>
+      <div className="empty__desc">
+        {why === "login"
+          ? "운영 열쇠를 넣은 브라우저에서만 가게 정보를 보고 고칠 수 있어요."
+          : "열쇠 없이 여는 건 이 컴퓨터(127.0.0.1)에서만 돼요. 밖에서 열려면 서버에 ADMIN_KEY 를 넣고 로그인해요."}
+      </div>
+      <Link href="/admin/login" className="btn btn--primary u-mt-4">운영 로그인</Link>
+    </div>
+  );
+}

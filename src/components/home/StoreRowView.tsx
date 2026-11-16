@@ -8,7 +8,7 @@ import type { StoreRowViewProps } from "./types";
 // 고른 줄은 폰에서만 「자세히 · 길찾기」 링크가 아래에 붙는다.
 export default function StoreRowView({ store, me, now, selected, onPick }: StoreRowViewProps) {
   return (
-    <li id={`row-${store.id}`} className={cn(selected && "bg-muted")}>
+    <li id={`row-${store.id}`} className={cn(selected && "bg-secondary shadow-[inset_3px_0_0_var(--primary)]")}>
       <button
         type="button"
         onClick={onPick}

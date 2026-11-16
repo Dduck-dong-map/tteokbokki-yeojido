@@ -27,7 +27,7 @@ export default function MineReportsView({ reports, now }: MineReportsViewProps) 
           {reports.map((r, i) => {
             const inner = (
               <>
-                <Badge variant="outline" className="shrink-0 rounded-full border-input bg-secondary px-2 text-[11px] font-normal text-muted-foreground">
+                <Badge variant="outline" className="shrink-0 rounded-full border-transparent bg-muted px-2 text-[12px] font-normal text-muted-foreground">
                   {KIND[r.kind]}
                 </Badge>
                 <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-foreground">{r.name}</span>

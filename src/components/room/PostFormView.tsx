@@ -37,7 +37,7 @@ export default function PostFormView({
                 onClick={() => onCatChange(k)}
                 className={cn(
                   "hit h-9 rounded-full border px-3.5 text-[13px] whitespace-nowrap",
-                  on ? "border-foreground bg-foreground font-semibold text-background" : "border-input bg-card text-muted-foreground hover:bg-muted",
+                  on ? "border-primary bg-primary font-semibold text-primary-foreground" : "border-input bg-card text-muted-foreground hover:bg-muted",
                 )}
               >
                 {v}

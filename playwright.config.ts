@@ -10,7 +10,9 @@ const browser = existsSync(chromium.executablePath()) ? {} : { channel: "chrome"
 const E2E_PORT = 3101;
 const E2E_URL = `http://127.0.0.1:${E2E_PORT}`;
 // 네이버 키는 비운다: 시험이 네이버 사용량(한도)을 쓰지 않게, 실제 지도 자리는 임시 지도로 (11-13)
-const E2E_ENV = { DATA_DIR: ".data-e2e", PORT: String(E2E_PORT), DATABASE_URL: "", NEXT_PUBLIC_NAVER_MAP_KEY_ID: "" };
+// 예시 데이터는 늘 보인다(시험이 예시 가게로 돈다): .env.local 의 NEXT_PUBLIC_SAMPLE_DATA=off(11-15)를 빈 값으로 덮는다 — Next 는 이미 있는 값(빈 값 포함)을 .env 파일로 바꾸지 않는다.
+// 운영 열쇠도 비워서 어드민은 127.0.0.1 로 바로 열린다 (src/lib/admin/access.ts)
+const E2E_ENV = { DATA_DIR: ".data-e2e", PORT: String(E2E_PORT), DATABASE_URL: "", NEXT_PUBLIC_NAVER_MAP_KEY_ID: "", NEXT_PUBLIC_SAMPLE_DATA: "", ADMIN_KEY: "" };
 
 // Next 16 은 같은 프로젝트에서 `next dev` 를 둘 띄울 수 없다 (experimental.lockDistDir 기본 켜짐 → .next/dev/lock, 두 번째는 exit 1).
 // 개발 서버가 살아 있으면 프로덕션 빌드(`next build` + `next start`)로 돌린다 — 번들 문서(02-guides/testing/playwright.md)도 이 방식을 권한다.

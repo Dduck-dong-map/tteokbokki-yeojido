@@ -1,5 +1,4 @@
-import { Badge } from "@/components/ui/badge";
-import { PendingTag, SpiceStamp, Stars, StoreThumb } from "@/components/brand";
+import { PendingTag, SpiceStamp, Stars, StoreThumb, Tag } from "@/components/brand";
 import { distanceM, distanceText, won } from "@/lib/filters";
 import { confirmedAgo, freshness } from "@/lib/freshness";
 import { RICE_CAKES, SPICE_LEVELS, STYLES } from "@/lib/taxonomy";
@@ -39,14 +38,11 @@ export function StoreCardBody({ store: s, now, me = null, thumb = false, tags = 
         </p>
 
         {tags ? (
+          // 보기만 하는 태그 = Tag (테두리 없는 옅은 바탕). 테두리 알약은 누르는 칩에만 (11-13 수정판)
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-            <Badge variant="outline" className="h-6 rounded-full px-2.5 text-[12px]">
-              {STYLES[s.style]}
-            </Badge>
+            <Tag>{STYLES[s.style]}</Tag>
             {rice.map((r) => (
-              <Badge key={r} variant="outline" className="h-6 rounded-full px-2.5 text-[12px]">
-                {r}
-              </Badge>
+              <Tag key={r}>{r}</Tag>
             ))}
           </div>
         ) : (

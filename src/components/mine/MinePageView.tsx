@@ -47,7 +47,7 @@ export default function MinePageView(props: MinePageViewProps) {
                 onClick={() => onTabChange(t.key)}
                 className={cn(
                   "hit h-9 shrink-0 rounded-full border px-3.5 text-[13px] whitespace-nowrap",
-                  on ? "border-foreground bg-foreground font-semibold text-background" : "border-input bg-card text-muted-foreground hover:bg-muted",
+                  on ? "border-primary bg-primary font-semibold text-primary-foreground" : "border-input bg-card text-muted-foreground hover:bg-muted",
                 )}
               >
                 {t.label} <span className="tabular-nums opacity-70">{counts[t.key]}</span>
@@ -116,7 +116,7 @@ export default function MinePageView(props: MinePageViewProps) {
                     type="button"
                     aria-pressed={sort === o.key}
                     onClick={() => onSortChange(o.key)}
-                    className={cn("hit h-7 rounded-full px-2.5 text-[12px] whitespace-nowrap", sort === o.key ? "bg-foreground font-semibold text-background" : "text-muted-foreground/70 hover:bg-muted")}
+                    className={cn("hit h-7 rounded-full px-2.5 text-[12px] whitespace-nowrap", sort === o.key ? "bg-primary font-semibold text-primary-foreground" : "text-muted-foreground hover:bg-muted")}
                   >
                     {o.label}
                   </button>

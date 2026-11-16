@@ -9,7 +9,8 @@ const SANS = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo,
 // 확대하지 않고 둘러보기만 하는 사람은 0건이다. 그림 지도가 사라지기(REAL_FADE 15) 전에 미리 받아 둔다.
 export const PRELOAD_ZOOM = 14;
 // 네이버 지도가 드러났을 때 왼쪽 아래 저작권 표시 (네이버 로고는 지도 왼쪽 위에 따로 나온다)
-export const NAVER_CREDIT = '<a href="https://www.navercorp.com" target="_blank">© NAVER Corp.</a>';
+// 가게 좌표 일부는 OpenStreetMap(Nominatim)에서 찾았다 (강남 리서치 v1, 11-15) → 네이버 지도가 보일 때도 OSM 표시를 함께 둔다 (ODbL)
+export const NAVER_CREDIT = '<a href="https://www.navercorp.com" target="_blank">© NAVER Corp.</a> · 가게 좌표 <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a> contributors';
 const NAVER_KEY = process.env.NEXT_PUBLIC_NAVER_MAP_KEY_ID; // 빌드 때 박힌다 → .env.local 을 바꾸면 개발 서버를 다시 켠다
 
 export type RealMap = { follow: (center: LngLatLike, zoom: number) => void; remove: () => void; kind: () => "naver" | "temp" };

@@ -277,9 +277,9 @@ export function MapPicker({ stores, start, onChange, tall = false }: { stores: S
     <div>
       <div className={cn("relative h-56 overflow-hidden rounded-2xl border border-input", tall && "md:h-[330px]")}>
         <TteokMap stores={stores} selectedId={null} onSelect={() => undefined} me={null} focus={focus} onBoundsChange={onBounds} start={{ lat: start?.lat ?? 37.5555, lng: start?.lng ?? 126.928, zoom: start ? 17 : 15 }} />
-        {/* 가운데 핀: 끝이 지도 한가운데를 가리킨다. 색은 고추장 포인트(--brand-red) */}
+        {/* 가운데 핀: 끝이 지도 한가운데를 가리킨다. 색은 등록 버튼과 같은 제보 갈색(--report) */}
         <svg width="28" height="38" viewBox="0 0 28 38" aria-hidden="true" className="pointer-events-none absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-full">
-          <path d="M14 37C14 37 27 22 27 13.5a13 13 0 1 0-26 0C1 22 14 37 14 37Z" fill="var(--brand-red)" stroke="#fff" strokeWidth="2" />
+          <path d="M14 37C14 37 27 22 27 13.5a13 13 0 1 0-26 0C1 22 14 37 14 37Z" fill="var(--report)" stroke="#fff" strokeWidth="2" />
           <circle cx="14" cy="13.5" r="4.5" fill="#fff" />
         </svg>
         <button type="button" onClick={locate} className="absolute top-2 right-2 z-10 h-11 rounded-full border border-input bg-card px-3 text-[12px] font-semibold text-foreground shadow-sm md:h-9">

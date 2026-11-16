@@ -1,7 +1,12 @@
 import Link from "next/link";
-import { PageHeader, ProtoNote } from "@/components/admin/bits";
+import { Suspense } from "react";
+import DatasetImport from "@/components/admin/DatasetImport";
+import { Locked, PageHeader, ProtoNote } from "@/components/admin/bits";
 import { Icon } from "@/components/admin/Icon";
+import { adminAccess } from "@/lib/admin/access";
 import { CANDIDATES } from "@/lib/admin/sample";
+import { adminReadStores } from "@/lib/data/admin";
+import { DATASETS } from "@/lib/data/datasets";
 import { SAMPLE_STORES } from "@/lib/data/sample-stores";
 
 export const metadata = { title: "후보 가져오기" };
@@ -18,12 +23,17 @@ const STATUS = {
 export default function CandidatesPage() {
   return (
     <>
-      <PageHeader id="M-AD-06" title="후보 가져오기" desc="공공데이터포털 일반음식점 인허가 자료에서 분식·떡볶이 가게 후보를 골라, 크루가 확인한 것만 등록해요.">
+      <PageHeader id="M-AD-06" title="후보 가져오기" desc="리서치·공공데이터에서 모은 가게 후보를 확인해서 DB 에 넣어요. 이미 있는 가게는 덮어쓰지 않아요.">
         <button type="button" className="btn btn--primary" disabled>
           <Icon name="download" /> 공공데이터 파일 올리기
         </button>
       </PageHeader>
-      <ProtoNote>M4(첫 데이터 300곳)에서 여는 화면이에요. 지금은 흐름만 보여 주는 예시 후보예요.</ProtoNote>
+      <Suspense fallback={<div className="card u-mb-4"><div className="card__body u-muted">자료를 불러오는 중…</div></div>}>
+        <Datasets />
+      </Suspense>
+
+      <h2 className="section__title u-mt-6 u-mb-2">다음 단계 · 공공데이터 후보 (M4)</h2>
+      <ProtoNote>M4(첫 데이터 300곳)에서 여는 칸이에요. 아래는 흐름만 보여 주는 예시 후보예요. 위의 리서치 자료는 실제로 DB 에 들어가요.</ProtoNote>
 
       <div className="stat-grid u-mb-4">
         <div className="stat"><div className="stat__label">1. 고르기</div><div className="stat__value">업태 분식 · 이름에 떡볶이</div><div className="stat__delta">영업 중인 곳만</div></div>
@@ -66,6 +76,20 @@ export default function CandidatesPage() {
           </tbody>
         </table>
       </div>
+    </>
+  );
+}
+
+// 리서치 자료 묶음 (lib/data/datasets.ts) — 실제 DB 에 넣는 칸
+async function Datasets() {
+  const access = await adminAccess();
+  if (!access.ok) return <Locked why={access.why} />;
+  const ids = (await adminReadStores()).map((s) => s.id);
+  return (
+    <>
+      {DATASETS.map((d) => (
+        <DatasetImport key={d.id} dataset={d} inDb={ids.filter((id) => d.stores.some((r) => r.id === id))} />
+      ))}
     </>
   );
 }

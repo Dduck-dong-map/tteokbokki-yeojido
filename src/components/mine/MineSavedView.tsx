@@ -24,7 +24,7 @@ export default function MineSavedView({ saved, savedShown, onlyVisited, me, now,
           type="button"
           aria-pressed={onlyVisited}
           onClick={onToggleOnlyVisited}
-          className={cn("hit h-7 shrink-0 rounded-full border px-2.5 text-[12px] whitespace-nowrap", onlyVisited ? "border-foreground bg-card font-semibold text-foreground" : "border-input text-muted-foreground/70")}
+          className={cn("hit h-7 shrink-0 rounded-full border px-2.5 text-[12px] whitespace-nowrap", onlyVisited ? "border-primary bg-secondary font-semibold text-primary" : "border-input text-muted-foreground")}
         >
           다녀온 곳만
         </button>
@@ -60,7 +60,7 @@ export default function MineSavedView({ saved, savedShown, onlyVisited, me, now,
                   type="button"
                   onClick={() => onToggleVisited(s.id)}
                   aria-pressed={!!v.visited}
-                  className={cn("hit h-8 shrink-0 rounded-full border px-2.5 text-[12px] whitespace-nowrap", v.visited ? "border-foreground bg-card font-semibold text-foreground" : "border-input bg-card text-muted-foreground/70")}
+                  className={cn("hit h-8 shrink-0 rounded-full border px-2.5 text-[12px] whitespace-nowrap", v.visited ? "border-primary bg-secondary font-semibold text-primary" : "border-input bg-card text-muted-foreground")}
                 >
                   {v.visited ? "다녀옴 ✓" : "다녀옴"}
                 </button>

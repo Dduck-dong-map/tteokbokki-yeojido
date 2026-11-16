@@ -1,0 +1,47 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { cookies, headers } from "next/headers";
+
+// 운영 어드민에 누가 들어올 수 있나 (11-15). 어드민 화면·저장(app/admin/actions.ts)이 매번 이것을 먼저 본다.
+//  - ADMIN_KEY 가 있으면: 로그인 화면에서 그 열쇠를 넣은 브라우저만 (쿠키). 배포(Vercel·Supabase)는 반드시 이 방식.
+//  - ADMIN_KEY 가 없으면: 이 컴퓨터에서만 — 배포가 아니고(VERCEL 없음), DB 가 이 컴퓨터(파일·도커)이고,
+//    주소창이 127.0.0.1·localhost 일 때. 같은 와이파이의 폰(DDY_APP_HOST=0.0.0.0)으로는 열리지 않는다.
+// 실제 운영 로그인(이메일 링크 + 2단계, REQ-AD-01)은 Supabase 로 옮길 때 이 파일만 바꾼다.
+
+export const ADMIN_COOKIE = "ddy_admin";
+const LOCAL_HOST = /^(127\.0\.0\.1|localhost|\[::1\])(:\d+)?$/;
+
+const adminKey = () => process.env.ADMIN_KEY || "";
+export const tokenFor = (key: string) => createHmac("sha256", key).update("ddy-admin-v1").digest("hex");
+
+function sameText(a: string, b: string) {
+  const x = Buffer.from(a);
+  const y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+}
+
+function dbOnThisComputer() {
+  const url = process.env.DATABASE_URL;
+  if (!url) return true; // 파일 저장소 (.data/db.json)
+  try {
+    const host = new URL(url).hostname;
+    return host === "127.0.0.1" || host === "localhost" || host === "db";
+  } catch {
+    return false;
+  }
+}
+
+export type Access = { ok: true; mode: "key" | "local" } | { ok: false; why: "login" | "locked" };
+
+export async function adminAccess(): Promise<Access> {
+  const key = adminKey();
+  if (key) {
+    const got = (await cookies()).get(ADMIN_COOKIE)?.value ?? "";
+    return sameText(got, tokenFor(key)) ? { ok: true, mode: "key" } : { ok: false, why: "login" };
+  }
+  const host = (await headers()).get("host") ?? "";
+  if (!process.env.VERCEL && dbOnThisComputer() && LOCAL_HOST.test(host)) return { ok: true, mode: "local" };
+  return { ok: false, why: "locked" };
+}
+
+export const keyMode = () => !!adminKey();
+export const checkKey = (typed: string) => !!adminKey() && sameText(tokenFor(typed), tokenFor(adminKey()));

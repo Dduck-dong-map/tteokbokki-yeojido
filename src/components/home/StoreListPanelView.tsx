@@ -93,7 +93,7 @@ export default function StoreListPanelView({
                     disabled={s.key === "near" && !canSortNear}
                     onClick={() => onSortChange(s.key)}
                     aria-pressed={sort === s.key}
-                    className={cn("hit rounded-full px-2.5 py-1 whitespace-nowrap", sort === s.key ? "bg-foreground text-background" : "text-muted-foreground/70 disabled:opacity-40")}
+                    className={cn("hit rounded-full px-2.5 py-1 whitespace-nowrap", sort === s.key ? "bg-primary font-semibold text-primary-foreground" : "text-muted-foreground disabled:opacity-40")}
                   >
                     {s.label}
                   </button>

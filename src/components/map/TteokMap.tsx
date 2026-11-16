@@ -25,13 +25,22 @@ type Props = {
   focus: Focus | null; // n 이 바뀔 때마다 그곳으로 옮긴다
   onBoundsChange?: (b: Bounds) => void; // 지도를 움직일 때마다 보이는 범위 (「현재 지도에서 찾은 가게」)
   onSettled?: () => void; // 지도가 떴거나, 실패했거나, 8초가 지났을 때 (로딩 화면을 걷는다)
-  start?: { lat: number; lng: number; zoom: number }; // 처음 보여 줄 곳. 없으면 마포·서대문 13배
+  start?: { lat: number; lng: number; zoom: number }; // 처음 보여 줄 곳. 없으면 가게들의 한가운데 13배
   interactive?: boolean; // false = 움직이지 않는 작은 지도 (가게 상세, 위에서 밀어도 페이지가 스크롤된다)
   showName?: boolean; // 도장 밑 글자를 가격 대신 가게 이름으로
 };
 
-// 첫 화면 중심: 예시 데이터가 있는 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
+// 첫 화면 중심: 가게가 가장 많은 구의 한가운데 (11-16 강남 + 마포 → 둘 사이 한강 위가 되지 않게). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
 const START: [number, number] = [126.928, 37.5555];
+function storesCenter(stores: Store[]): [number, number] {
+  if (!stores.length) return START;
+  const byGu = new Map<string, Store[]>();
+  for (const s of stores) byGu.set(s.gu, [...(byGu.get(s.gu) ?? []), s]);
+  const top = [...byGu.values()].sort((a, b) => b.length - a.length)[0];
+  const lngs = top.map((s) => s.lng);
+  const lats = top.map((s) => s.lat);
+  return [(Math.min(...lngs) + Math.max(...lngs)) / 2, (Math.min(...lats) + Math.max(...lats)) / 2];
+}
 // 한글 지명·이름표 = 조선100년체 (app/layout.tsx 에서 이 이름으로 불러온다)
 const KOREAN_SERIF = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif";
 
@@ -98,7 +107,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         container: box.current,
         interactive: initial.current.interactive,
         style: dongyeoStyle(t.map, mode),
-        center: startAt.current ? [startAt.current.lng, startAt.current.lat] : START,
+        center: startAt.current ? [startAt.current.lng, startAt.current.lat] : storesCenter(latest.current.stores),
         zoom: startAt.current?.zoom ?? 13,
         minZoom: 10,
         maxZoom: 18.5,
@@ -196,13 +205,13 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
           "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.8, 1],
           "icon-allow-overlap": true,
         };
-        // 안 보이는 도장: 길·건물·상호 이름만 도장을 비켜 가게 한다. 역·동네 이름은 이 층보다 위라 밀려나지 않는다.
-        if (mode === "names") {
-          m.addLayer(
-            { id: "stamps-block", type: "symbol", source: "stores", minzoom: 15, filter: ["!", ["has", "point_count"]], layout: stampLayout, paint: { "icon-opacity": 0 } },
-            "water-name",
-          );
-        }
+        // 안 보이는 도장: 역·길·건물·상호 이름이 도장을 비켜 가게 한다. 동네·구 이름(이 층보다 위)은 그대로.
+        // 11-13 수정판(게슈탈트 「전경-배경」): 도장이 「홍대입구역」 같은 역 이름을 덮던 것 → 역 이름이 옆으로 비킨다(dongyeoStyle station).
+        // ① 은 15.8배부터 그림 지도 층이 꺼지므로 이 층도 그 아래에서만 일한다.
+        m.addLayer(
+          { id: "stamps-block", type: "symbol", source: "stores", minzoom: 12.5, filter: ["!", ["has", "point_count"]], layout: stampLayout, paint: { "icon-opacity": 0 } },
+          "place-dong",
+        );
         m.addLayer({
           id: "stamps", type: "symbol", source: "stores", filter: ["!", ["has", "point_count"]],
           layout: { ...stampLayout, "icon-ignore-placement": true, "symbol-sort-key": pinSort(selectedId) },
