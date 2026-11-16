@@ -1,0 +1,2732 @@
+{
+ "researched_at": "2026-11-15",
+ "geocoder": "OpenStreetMap Nominatim (© OpenStreetMap contributors)",
+ "stores": [
+  {
+   "name": "루비떡볶이",
+   "address": "서울 강남구 선릉로153길 21 1층",
+   "dong": "신사동",
+   "near_station": "압구정로데오역 5번 출구",
+   "grade": "specialist",
+   "rice": [
+    "rice"
+   ],
+   "style": "classic",
+   "spice": 3,
+   "spice_label": null,
+   "taste": [
+    "sweetsalty"
+   ],
+   "sides": [
+    "twigim",
+    "eomuk",
+    "gimbap",
+    "sundae"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "delivery",
+    "parking"
+   ],
+   "price": 7500,
+   "price_source_date": "2026-11-08",
+   "menu": [
+    {
+     "name": "새우깡떡볶이",
+     "price": 7500
+    },
+    {
+     "name": "루비떡볶이",
+     "price": 6000
+    },
+    {
+     "name": "치즈떡볶이",
+     "price": 7500
+    },
+    {
+     "name": "소세지김밥",
+     "price": 6000
+    },
+    {
+     "name": "모듬튀김",
+     "price": 8000
+    },
+    {
+     "name": "해물매운어묵",
+     "price": 5000
+    },
+    {
+     "name": "부산어묵",
+     "price": 4000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "11:40",
+    "close": "21:00"
+   },
+   "hours_note": "일 12:00-20:00. 브레이크 없음(2026-11 블로그)",
+   "last_evidence_date": "2026-11-08",
+   "last_evidence_source": "https://blog.naver.com/journey114/224469018869",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=QYThOZ0vZZgd",
+    "https://blog.naver.com/journey114/224469018869",
+    "https://www.vogue.co.kr/2025/02/05/%ed%95%9c%ea%b0%80%ec%9d%b8-%ec%b6%94%ec%b2%9c-%ea%b0%95%eb%82%a8-3%eb%8c%80-%eb%96%a1%eb%b3%b6%ec%9d%b4-%eb%a7%9b%ec%a7%91/",
+    "https://polle.com/place/2vjkzL/%EB%A3%A8%EB%B9%84%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   ],
+   "confidence": "high",
+   "basis": "2004년부터 영업(블로그). 대표=민물새우튀김 올린 새우깡떡볶이. 쌀떡(보그·폴레 태그). 맵기: '생각보다 맵다'는 후기가 여럿, '맵지 않다'도 있어 3. 짭짤+달큰 양념. 주차는 가게 앞 2대(블로그). 지번 신사동 653-2.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5246269,
+    "lng": 127.037639,
+    "type": "shop",
+    "district": "강남구",
+    "road": "선릉로153길",
+    "house": "21, 지상3층"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "서강쇠떡볶이",
+   "address": "서울 강남구 압구정로50길 22 1층",
+   "dong": "신사동",
+   "near_station": "압구정로데오역",
+   "grade": "specialist",
+   "rice": [
+    "garae"
+   ],
+   "style": "classic",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "eomuk",
+    "twigim",
+    "sundae"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout"
+   ],
+   "price": 6000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 6000
+    },
+    {
+     "name": "섞어(떡볶이+어묵)",
+     "price": 6000
+    },
+    {
+     "name": "어묵",
+     "price": 4000
+    },
+    {
+     "name": "튀김(모듬)",
+     "price": 5000
+    },
+    {
+     "name": "순대만",
+     "price": 7000
+    },
+    {
+     "name": "순대+내장",
+     "price": 7000
+    }
+   ],
+   "hours": {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "11:30",
+    "close": "22:00"
+   },
+   "hours_note": "다이닝코드 표기 매일 11:30-22:00. 옛 자료(식신 2023)는 10:30-00:30 이라 달라짐",
+   "last_evidence_date": "2026-11-05",
+   "last_evidence_source": "https://blog.naver.com/enimini0624/224465825177",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=ofO7b387j7dB",
+    "https://blog.naver.com/enimini0624/224465825177",
+    "https://www.vogue.co.kr/2025/02/05/%ed%95%9c%ea%b0%80%ec%9d%b8-%ec%b6%94%ec%b2%9c-%ea%b0%95%eb%82%a8-3%eb%8c%80-%eb%96%a1%eb%b3%b6%ec%9d%b4-%eb%a7%9b%ec%a7%91/",
+    "https://polle.com/place/1avnX1/%EC%84%9C%EA%B0%95%EC%87%A0%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   ],
+   "confidence": "high",
+   "basis": "통가래떡(매일 방앗간 쌀떡)을 졸여 주문 때 잘라 줌. 보그 2025-02 '맵지 않고 양념 강하지 않음' → 맵기 1. 후기 다수 '단맛'. 주차불가 후기. 가격은 다이닝코드·폴레 메뉴판(갱신일 미상). 지번 신사동 658-1.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5268588,
+    "lng": 127.0376961,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "압구정로50길",
+    "house": "22"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "도산분식 도산공원점",
+   "address": "서울 강남구 도산대로49길 10-6 젤로빌딩",
+   "dong": "신사동",
+   "near_station": "압구정로데오역",
+   "grade": "bunsik",
+   "rice": [
+    "wheat"
+   ],
+   "style": "soup",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "twigim",
+    "gimbap"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery",
+    "parking"
+   ],
+   "price": 7500,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "어묵튀김도산떡볶이",
+     "price": 7500
+    },
+    {
+     "name": "육회김밥",
+     "price": 10700
+    },
+    {
+     "name": "돈까스샌드",
+     "price": 11800
+    },
+    {
+     "name": "마라 김말이",
+     "price": 6400
+    },
+    {
+     "name": "순대튀김",
+     "price": 6300
+    },
+    {
+     "name": "칠리 탕수 김말이",
+     "price": 6400
+    },
+    {
+     "name": "누룽지 떡강정",
+     "price": 5300
+    }
+   ],
+   "hours": {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "11:30",
+    "close": "20:30"
+   },
+   "hours_note": "브레이크 15:00-17:00. 다이닝코드엔 월요일 11:30-15:00 만 표기",
+   "last_evidence_date": "2026-10-30",
+   "last_evidence_source": "https://blog.naver.com/podohh/224459436836",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=vRYGISSJWIPS",
+    "https://blog.naver.com/podohh/224459436836"
+   ],
+   "confidence": "high",
+   "basis": "분식 재해석형 가게(육회김밥 등). 떡은 밀떡, '아주 달짝지근', '안 매워요', '국물떡볶이' 후기 → soup·맵기 1. 무료주차·발렛·배달·1인석은 블로그·다이닝코드 표기. 가격은 메뉴판과 2026-10 블로그 일치. 지번 신사동 652-7.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5242662,
+    "lng": 127.0372102,
+    "type": "residential",
+    "district": "강남구",
+    "road": "도산대로49길",
+    "house": ""
+   },
+   "geo_quality": "rough"
+  },
+  {
+   "name": "한추",
+   "address": "서울 강남구 논현로175길 68",
+   "dong": "신사동",
+   "near_station": "압구정역(가로수길 북쪽 끝)",
+   "grade": "menu",
+   "rice": [
+    "rice"
+   ],
+   "style": "soup",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "twigim",
+    "eomuk"
+   ],
+   "shop_type": null,
+   "usage": [],
+   "price": null,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "한추떡볶이(1접시)",
+     "price": 23000
+    },
+    {
+     "name": "고추튀김",
+     "price": 24000
+    },
+    {
+     "name": "후라이드치킨",
+     "price": 24000
+    },
+    {
+     "name": "양념치킨",
+     "price": 26000
+    },
+    {
+     "name": "오뎅탕",
+     "price": 20000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "14:00",
+    "close": "00:00"
+   },
+   "hours_note": "금·토 14:00-01:00, 일 휴무(다이닝코드)",
+   "last_evidence_date": "2026-11-12",
+   "last_evidence_source": "https://blog.naver.com/ji_nnnn/224474529950",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=7ZSz8sJvF7Ln",
+    "https://blog.naver.com/ji_nnnn/224474529950",
+    "https://blog.naver.com/bbodegy1/224472412319"
+   ],
+   "confidence": "high",
+   "basis": "오래된 호프집(수요미식회), 떡볶이는 안주 메뉴라 grade=menu. 쌀떡, '옛날 국물떡볶이', '살짝 달콤·순한' 후기. 떡볶이가 나눠 먹는 1접시 23,000원이라 1인분 price 는 비움(23,000원은 2026-11-11 블로그). 주차불가 후기 다수. 지번 신사동 549-9.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5240779,
+    "lng": 127.023448,
+    "type": "shop",
+    "district": "강남구",
+    "road": "논현로175길",
+    "house": "68, 지상3층 8호"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "밀떡팩토리 신사(본점)",
+   "address": "서울 강남구 강남대로152길 64 지하1층",
+   "dong": "신사동",
+   "near_station": "신사역 8번 출구(도보 약 10분)",
+   "grade": "specialist",
+   "rice": [
+    "wheat",
+    "rice"
+   ],
+   "style": "instant",
+   "spice": 2,
+   "spice_label": "매콤달콤(기본) / 매콤불(불닭 수준)",
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "twigim"
+   ],
+   "shop_type": null,
+   "usage": [
+    "delivery"
+   ],
+   "price": 8000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "매콤달콤떡볶이 M(2인)",
+     "price": 16000
+    },
+    {
+     "name": "매콤달콤떡볶이 L(3~4인)",
+     "price": 23000
+    },
+    {
+     "name": "투움바떡볶이 M(2인)",
+     "price": 20000
+    },
+    {
+     "name": "투움바떡볶이 L(3~4인)",
+     "price": 29000
+    },
+    {
+     "name": "튀김 3P",
+     "price": 3000
+    },
+    {
+     "name": "고구마치즈그라탕",
+     "price": 5000
+    }
+   ],
+   "hours": {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "11:30",
+    "close": "21:20"
+   },
+   "hours_note": "브레이크 15:00-16:00, 라스트오더 20:50",
+   "last_evidence_date": "2026-11-07",
+   "last_evidence_source": "https://blog.naver.com/oneeyejjin/224468498748",
+   "status_note": "가까이에 '신사2호점'도 있음(같은 신사동). 다른 지역 지점은 다이닝코드에서 안 보임",
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=siVp6MCVcEY9",
+    "https://blog.naver.com/oneeyejjin/224468498748",
+    "https://blog.naver.com/kkyulog/224467569432"
+   ],
+   "confidence": "high",
+   "basis": "즉석떡볶이, 테이블마다 인덕션. 차돌떡볶이는 밀떡·쌀떡 반반(블로그). 기본 '매콤달달' → 2, '매콤불'은 직원 말로 불닭 정도라는 후기. price 는 M(2인) 16,000원 ÷ 2. 지번 신사동 539-2.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5187526,
+    "lng": 127.0243813,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "강남대로152길",
+    "house": "64"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "군밤먹을래꿀밤맞을래",
+   "address": "서울 강남구 논현로 874",
+   "dong": "신사동",
+   "near_station": "압구정역 2번 출구(약 50m)",
+   "grade": "bunsik",
+   "rice": [
+    "rice"
+   ],
+   "style": "classic",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "sundae",
+    "eomuk",
+    "gimbap"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "delivery"
+   ],
+   "price": 4500,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이(1인분)",
+     "price": 4500
+    }
+   ],
+   "hours": null,
+   "hours_note": "영업시간 공개 정보 못 찾음",
+   "last_evidence_date": "2026-11-11",
+   "last_evidence_source": "https://blog.naver.com/rihomommy/224472341541",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=53IyQyoFXJ30",
+    "https://blog.naver.com/rihomommy/224472341541",
+    "https://blog.naver.com/sunnyminini/224074589613"
+   ],
+   "confidence": "medium",
+   "basis": "군밤(생활의 달인)과 옛날 쌀떡볶이를 같이 파는 작은 가게, 간판에 '압구정떡볶이'. 쌀떡+어묵, '달달한 학교 앞 맛' 후기 → 맵기 1. 현금 선호하나 카드도 받았다는 후기라 cashonly 는 안 넣음. 4,500원은 다이닝코드에 걸린 블로그 후기(날짜 확인 못함). 지번 신사동 610-1.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5265601,
+    "lng": 127.028842,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "논현로",
+    "house": "874"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "신사시장 쌍둥이네",
+   "address": "서울 강남구 압구정로29길 72-1 신사상가 1층 11-1호",
+   "dong": "압구정동",
+   "near_station": "압구정역",
+   "grade": "bunsik",
+   "rice": [
+    "wheat"
+   ],
+   "style": "classic",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "sundae",
+    "twigim",
+    "eomuk"
+   ],
+   "shop_type": "market",
+   "usage": [
+    "takeout"
+   ],
+   "price": 5000,
+   "price_source_date": "2026-09-07",
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "순대",
+     "price": 6000
+    },
+    {
+     "name": "김말이(3개)",
+     "price": 2000
+    },
+    {
+     "name": "야끼만두(3개)",
+     "price": 2000
+    },
+    {
+     "name": "어묵(1줄)",
+     "price": 2000
+    },
+    {
+     "name": "라면",
+     "price": 5000
+    },
+    {
+     "name": "잔치국수",
+     "price": 4000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "10:00",
+    "close": "17:00"
+   },
+   "hours_note": "토 10:00-16:00. 일요일은 휴무(2023 기사)인데 다이닝코드엔 일 10:00-17:00 로 나와 있어 확인 필요",
+   "last_evidence_date": "2026-09-07",
+   "last_evidence_source": "https://blog.naver.com/hanip_note/224403357441",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=rcoZtc5PGodj",
+    "https://blog.naver.com/hanip_note/224403357441",
+    "https://polle.com/place/3sNTAg/%EC%8B%A0%EC%82%AC%EC%8B%9C%EC%9E%A5%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+    "https://the-edit.co.kr/57422"
+   ],
+   "confidence": "high",
+   "basis": "압구정 현대아파트 옆 신사시장(신사상가) 안 분식집, 폴레에선 '신사시장 떡볶이'로도 등록. 밀떡, '아주 달달·맵지 않음' 후기 다수 → 맵기 1. 매장 협소·포장 많음. 지번 압구정동 454.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5322776,
+    "lng": 127.0283897,
+    "type": "shop",
+    "district": "강남구",
+    "road": "압구정로29길",
+    "house": "72-1"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "압구정변강쇠떡볶이",
+   "address": "서울 강남구 도산대로46길 21 한진로즈힐아파트 101동 상가 117호",
+   "dong": "논현동",
+   "near_station": "강남구청역·학동역",
+   "grade": "specialist",
+   "rice": [
+    "garae"
+   ],
+   "style": "classic",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "eomuk",
+    "sundae",
+    "twigim"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery"
+   ],
+   "price": 5000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "쌀떡볶이(4줄, 1인분)",
+     "price": 5000
+    },
+    {
+     "name": "쌀떡볶이(6줄, 1인분 반)",
+     "price": 7500
+    },
+    {
+     "name": "부산어묵(4개)",
+     "price": 4500
+    },
+    {
+     "name": "찹쌀순대(1인분)",
+     "price": 5000
+    },
+    {
+     "name": "수제튀김(5개)",
+     "price": 5000
+    },
+    {
+     "name": "오섞어세트(떡2+어묵2)",
+     "price": 5000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "11:30",
+    "close": "23:30"
+   },
+   "hours_note": "토 11:30-23:00, 일 휴무, 브레이크 13:30-14:10(다이닝코드)",
+   "last_evidence_date": "2026-10-24",
+   "last_evidence_source": "https://blog.naver.com/ddmjk/224452612299",
+   "status_note": "서강쇠떡볶이와는 다른 가게(계보가 얽혀 있다는 블로그 설명만 있음). 옛 방송 기사엔 언주로148길 33 주소도 보임 — 지금 주소는 도산대로46길 21",
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=iRC6XTNh9tDu",
+    "https://blog.naver.com/ddmjk/224452612299",
+    "https://polle.com/place/5wtd5T/%EC%95%95%EA%B5%AC%EC%A0%95%20%EB%B3%80%EA%B0%95%EC%87%A0%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   ],
+   "confidence": "high",
+   "basis": "매일 뽑는 쌀 가래떡 떡볶이(줄 수로 주문). '너무 맵지 않은 옛날 스타일' 후기 다수 → 맵기 1. 맛 성향은 근거가 갈려 비움. 전화 주문 포장·배달 가능, 매장에선 계란찜 무료 후기. 주차는 도로변뿐이라는 후기라 parking 안 넣음. 지번 논현동 105-4.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5208333,
+    "lng": 127.0370792,
+    "type": "shop",
+    "district": "강남구",
+    "road": "도산대로46길",
+    "house": "21"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "다모아분식",
+   "address": "서울 강남구 논현로150길 41",
+   "dong": "논현동",
+   "near_station": "학동역·압구정로데오역",
+   "grade": "bunsik",
+   "rice": [
+    "wheat"
+   ],
+   "style": "classic",
+   "spice": 2,
+   "spice_label": null,
+   "taste": [
+    "sweet",
+    "pepper"
+   ],
+   "sides": [
+    "sundae",
+    "twigim",
+    "eomuk",
+    "gimbap",
+    "rabokki"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery"
+   ],
+   "price": 5000,
+   "price_source_date": "2026-11-07",
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "순대",
+     "price": 5000
+    },
+    {
+     "name": "튀김",
+     "price": 6000
+    },
+    {
+     "name": "부산어묵(1인분)",
+     "price": 5000
+    },
+    {
+     "name": "일반김밥",
+     "price": 4500
+    },
+    {
+     "name": "라면",
+     "price": 5000
+    },
+    {
+     "name": "쫄면",
+     "price": 9000
+    },
+    {
+     "name": "김치볶음밥",
+     "price": 9000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "open": "09:30",
+    "close": "21:00"
+   },
+   "hours_note": "라스트오더 20:30, 토·일 휴무",
+   "last_evidence_date": "2026-11-09",
+   "last_evidence_source": "https://blog.naver.com/hopedead/224470356597",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=qia4L2yeHXbc",
+    "https://blog.naver.com/hopedead/224470356597",
+    "https://blog.naver.com/qorrkfka1226/224464012013",
+    "https://www.vogue.co.kr/2025/02/05/%ed%95%9c%ea%b0%80%ec%9d%b8-%ec%b6%94%ec%b2%9c-%ea%b0%95%eb%82%a8-3%eb%8c%80-%eb%96%a1%eb%b3%b6%ec%9d%b4-%eb%a7%9b%ec%a7%91/"
+   ],
+   "confidence": "high",
+   "basis": "1993년부터 같은 자리(가게 메뉴판 설명), 생활의 달인. 밀떡, 무·멸치육수 양념(보그). '첫맛 달달 → 칼칼, 후추향' 후기 → 맵기 2, sweet+pepper. 국물 넉넉해 국물떡볶이에 가깝다는 후기도 있음. 지번 논현동 61-18.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5201538,
+    "lng": 127.0319077,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "논현로150길",
+    "house": "41"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "맛짱떡볶이",
+   "address": "서울 강남구 강남대로122길 17",
+   "dong": "논현동",
+   "near_station": "논현역·신논현역 사이(영동시장)",
+   "grade": "specialist",
+   "rice": [
+    "wheat"
+   ],
+   "style": "soup",
+   "spice": 2,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "sundae",
+    "twigim",
+    "eomuk",
+    "gimbap"
+   ],
+   "shop_type": "market",
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery"
+   ],
+   "price": 4000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 4000
+    },
+    {
+     "name": "순대",
+     "price": 5000
+    },
+    {
+     "name": "모둠튀김(5개)",
+     "price": 5000
+    },
+    {
+     "name": "부산어묵",
+     "price": 3000
+    },
+    {
+     "name": "꼬마김밥",
+     "price": 4000
+    },
+    {
+     "name": "야채김밥",
+     "price": 4000
+    },
+    {
+     "name": "라면",
+     "price": 5000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "11:00",
+    "close": "06:00"
+   },
+   "hours_note": "다음 날 새벽 06:00 까지, 일 휴무(다이닝코드·2026 블로그)",
+   "last_evidence_date": "2026-11-01",
+   "last_evidence_source": "https://blog.naver.com/merry-review/224460617653",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=RsDB1p4cGGdp",
+    "https://blog.naver.com/merry-review/224460617653",
+    "https://blog.naver.com/sanssrim/224453156069",
+    "https://polle.com/place/4yS1e4/%EB%A7%9B%EC%A7%B1%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   ],
+   "confidence": "high",
+   "basis": "영동전통시장 안 오래된 분식집, 새벽 영업·새벽 배달. 밀떡, '달달하면서 매콤한 국물떡볶이', '초등학교 앞 맛' 후기 → soup·맵기 2. 4,000원은 다이닝코드·폴레 메뉴판(갱신일 미상, 2026 블로그에선 떡볶이 가격 확인 못함). 지번 논현동 162-16.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5082508,
+    "lng": 127.0244356,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "강남대로122길",
+    "house": "17"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "양양불떡볶이",
+   "address": "서울 강남구 학동로4길 32 (영동시장)",
+   "dong": "논현동",
+   "near_station": "논현역",
+   "grade": "specialist",
+   "rice": [
+    "wheat"
+   ],
+   "style": "classic",
+   "spice": 2,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "twigim",
+    "sundae",
+    "eomuk",
+    "gimbap"
+   ],
+   "shop_type": "market",
+   "usage": [
+    "takeout",
+    "delivery"
+   ],
+   "price": 5000,
+   "price_source_date": "2026-10-11",
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "섞어순대",
+     "price": 5500
+    },
+    {
+     "name": "수제튀김 6개 세트",
+     "price": 7000
+    },
+    {
+     "name": "부산오뎅",
+     "price": 3000
+    },
+    {
+     "name": "참치김밥",
+     "price": 4000
+    }
+   ],
+   "hours": {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "10:50",
+    "close": "01:00"
+   },
+   "hours_note": "연중무휴로 표기. 2026-10 블로그는 '밤늦게 연 걸 못 봤다, 늦게 가면 전화 확인' — 마감 시각 불확실",
+   "last_evidence_date": "2026-10-11",
+   "last_evidence_source": "https://blog.naver.com/chupoo_/224438130261",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=qmLHkG7HqAh0",
+    "https://blog.naver.com/chupoo_/224438130261",
+    "https://hotplacehunter.co.kr/?p=87707"
+   ],
+   "confidence": "high",
+   "basis": "영동시장 안 분식집, 이찬원 단골로 방송(편스토랑). 밀떡, '이름과 달리 맵기 부담 없음·달콤' 후기 → 맵기 2. 떡볶이 5,000원·섞어순대 5,500원은 2026-10-11 블로그(다이닝코드 옛 메뉴판은 홀 4,000원). 부산오뎅·참치김밥 가격은 옛 메뉴판. 지번 논현동 144-15.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5094352,
+    "lng": 127.0236361,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "학동로4길",
+    "house": "32"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "박실장떡볶이 논현점",
+   "address": "서울 강남구 학동로30길 13 이담빌딩 1층",
+   "dong": "논현동",
+   "near_station": "학동역",
+   "grade": "specialist",
+   "rice": [],
+   "style": "instant",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [],
+   "sides": [],
+   "shop_type": null,
+   "usage": [],
+   "price": 7500,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "즉석떡볶이(2인)",
+     "price": 15000
+    },
+    {
+     "name": "즉석떡볶이(3인)",
+     "price": 19000
+    },
+    {
+     "name": "즉석떡볶이(4인)",
+     "price": 23000
+    },
+    {
+     "name": "사천짜장떡볶이(2인)",
+     "price": 17000
+    },
+    {
+     "name": "고기떡볶이(2인)",
+     "price": 18000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "open": "11:30",
+    "close": "21:00"
+   },
+   "hours_note": "브레이크 15:00-17:00, 라스트오더 20:30, 토·일 휴무(다이닝코드). 블로그는 '일 정기휴무'만 언급",
+   "last_evidence_date": "2026-10-22",
+   "last_evidence_source": "https://blog.naver.com/nothing_to_worry/224450405879",
+   "status_note": "'논현점'이란 이름이지만 다이닝코드에서 다른 지점은 안 보임",
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=LPRMcOw6i3OZ",
+    "https://blog.naver.com/nothing_to_worry/224450405879",
+    "https://polle.com/place/2WKBGl/%EB%B0%95%EC%8B%A4%EC%9E%A5"
+   ],
+   "confidence": "high",
+   "basis": "즉석떡볶이 + 버터갈릭 감자튀김으로 알려진 펍 느낌 가게. 기본 사리 떡·어묵·야채·라면·쫄면·계란(떡 종류는 확인 못함). '맵찔이도 같이 먹을 수준, 더 매웠으면' 후기 → 맵기 1. price 는 2인 15,000원 ÷ 2.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5133569,
+    "lng": 127.0322348,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "학동로30길",
+    "house": "13"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "무명떡볶이 본점",
+   "address": "서울 강남구 언주로138길 6 1층",
+   "dong": "논현동",
+   "near_station": "강남구청역·학동역",
+   "grade": "specialist",
+   "rice": [
+    "wheat"
+   ],
+   "style": "instant",
+   "spice": 1,
+   "spice_label": null,
+   "taste": [
+    "sweet"
+   ],
+   "sides": [
+    "twigim",
+    "sundae"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "delivery"
+   ],
+   "price": 8500,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "즉석떡볶이 M(2인분)",
+     "price": 17000
+    },
+    {
+     "name": "수제모듬튀김 M",
+     "price": 8000
+    },
+    {
+     "name": "찰순대 L(내장X)",
+     "price": 10000
+    },
+    {
+     "name": "고추만두튀김 M",
+     "price": 7000
+    },
+    {
+     "name": "김말이튀김 M",
+     "price": 7500
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "open": "11:00",
+    "close": "21:30"
+   },
+   "hours_note": "일 12:00-21:00, 토 휴무, 브레이크 14:30-16:30(다이닝코드). 2026-07 블로그는 평일 11:30-22:00·브레이크 15-17 로 적어 차이 있음",
+   "last_evidence_date": "2026-09-09",
+   "last_evidence_source": "https://blog.naver.com/777smji/224405657642",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=1djiAVJDchK5",
+    "https://blog.naver.com/777smji/224405657642",
+    "https://blog.naver.com/hee003613/224356958474"
+   ],
+   "confidence": "high",
+   "basis": "깻잎 들어간 즉석떡볶이(밀떡·어묵·깻잎·양배추·메추리알·라면 기본, 블로그). '자극적이지 않고 달달', '맵지 않아 호불호 없음' → 맵기 1. price 는 M(2인분) 17,000원 ÷ 2. 지번 논현동 106-12.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5177386,
+    "lng": 127.036008,
+    "type": "shop",
+    "district": "강남구",
+    "road": "언주로138길",
+    "house": "6"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "청담91떡볶이",
+   "address": "서울 강남구 도산대로57길 8",
+   "dong": "청담동",
+   "near_station": "압구정로데오역",
+   "grade": "bunsik",
+   "rice": [
+    "wheat"
+   ],
+   "style": "classic",
+   "spice": 2,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "sundae",
+    "twigim",
+    "eomuk",
+    "gimbap",
+    "rabokki"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery"
+   ],
+   "price": 5000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "라볶이",
+     "price": 6500
+    },
+    {
+     "name": "쫄볶이",
+     "price": 6500
+    },
+    {
+     "name": "91김밥",
+     "price": 5500
+    },
+    {
+     "name": "야채김밥",
+     "price": 4000
+    },
+    {
+     "name": "찰순대",
+     "price": 5000
+    },
+    {
+     "name": "모듬튀김",
+     "price": 5500
+    },
+    {
+     "name": "오뎅",
+     "price": 1500
+    },
+    {
+     "name": "땡초라면",
+     "price": 5000
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "07:00",
+    "close": "20:00"
+   },
+   "hours_note": "일 10:00-17:00(다이닝코드)",
+   "last_evidence_date": "2026-11-01",
+   "last_evidence_source": "https://blog.naver.com/jejelovelife/224461018532",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=YuZpAR8PzIfO",
+    "https://blog.naver.com/jejelovelife/224461018532",
+    "https://polle.com/place/4srjx5/%EC%B2%AD%EB%8B%B4%2091%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   ],
+   "confidence": "high",
+   "basis": "바 좌석 10석 안팎의 작은 분식집, 포장 손님 많음(폴레). 밀떡, '전형적인 분식집 떡볶이·살짝 매콤', '국물 많음' 후기 → 맵기 2. 배달앱 연결(폴레). 가격은 다이닝코드·폴레 메뉴판(갱신일 미상). 지번 청담동 91.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5240917,
+    "lng": 127.0415274,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "도산대로57길",
+    "house": "8"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "모퉁이(모퉁이김밥)",
+   "address": "서울 강남구 도산대로68길 15 1층",
+   "dong": "청담동",
+   "near_station": "압구정로데오역 4번·강남구청역 4번",
+   "grade": "bunsik",
+   "rice": [],
+   "style": null,
+   "spice": null,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "gimbap"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout"
+   ],
+   "price": 7000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 7000
+    },
+    {
+     "name": "모퉁이김밥",
+     "price": 4500
+    },
+    {
+     "name": "소세지김밥",
+     "price": 4500
+    },
+    {
+     "name": "땡초참치김밥",
+     "price": 5000
+    },
+    {
+     "name": "짜파게티",
+     "price": 6500
+    },
+    {
+     "name": "매운라면",
+     "price": 4500
+    }
+   ],
+   "hours": {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "07:00",
+    "close": "20:30"
+   },
+   "hours_note": "라스트오더 20:00",
+   "last_evidence_date": "2026-10-27",
+   "last_evidence_source": "https://blog.naver.com/tamasi38/224455040481",
+   "status_note": null,
+   "sources": [
+    "https://www.diningcode.com/profile.php?rid=jf6is3vy8zpT",
+    "https://blog.naver.com/tamasi38/224455040481",
+    "https://blog.naver.com/sshw0924/224443063425"
+   ],
+   "confidence": "medium",
+   "basis": "청담 웨딩거리 김밥·분식집(전참시), 김밥이 주력이고 떡볶이는 곁메뉴. 떡볶이 7,000원은 블로그 후기(다른 후기엔 6,000원, 날짜 확인 못함). 떡 종류·맵기·스타일 근거 없음 → 비움. 발렛 가능, 매장 주차 지원 없음(블로그). 지번 청담동 17-2.",
+   "_area": "강남구 북부",
+   "geo": {
+    "lat": 37.5226378,
+    "lng": 127.0448591,
+    "type": "building",
+    "district": "강남구",
+    "road": "도산대로68길",
+    "house": "15"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "튀김아저씨 (은마상가)",
+   "address": "서울 강남구 삼성로 212 은마아파트 상가동 지하1층",
+   "dong": "대치동",
+   "near_station": "대치역",
+   "grade": "specialist",
+   "rice": [
+    "wheat"
+   ],
+   "style": "soup",
+   "spice": 3,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "twigim",
+    "sundae",
+    "eomuk"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "parking"
+   ],
+   "price": 6000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 6000
+    },
+    {
+     "name": "순대",
+     "price": 6000
+    },
+    {
+     "name": "오징어튀김",
+     "price": 8000
+    },
+    {
+     "name": "새우튀김",
+     "price": 6000
+    },
+    {
+     "name": "모듬튀김",
+     "price": 6000
+    },
+    {
+     "name": "오징어+김말이(반반 튀김)",
+     "price": 7000
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2026-10-09",
+   "last_evidence_source": "https://polle.com/cutepotato1004/posts/917",
+   "status_note": "은마아파트 재건축: 2026-07 사업시행계획 인가, 이주는 2027년 상반기 목표, 조합이 상가 세입자 전원에 명도소송 예고(2026-07~09 보도). 2026-11 현재 영업 중이나 몇 년 안에 이전·폐업 가능성 있음.",
+   "sources": [
+    "https://polle.com/place/3YHkfX/%ED%8A%80%EA%B9%80%20%EC%95%84%EC%A0%80%EC%94%A8",
+    "https://polle.com/cutepotato1004/posts/917",
+    "https://polle.com/yy1011/posts/24",
+    "https://polle.com/marious/posts/1194",
+    "https://www.localnaeil.com/News/View/653741",
+    "https://news.mtn.co.kr/news-detail/2026090909161293645"
+   ],
+   "confidence": "high",
+   "basis": "국물떡볶이·밀떡은 2020 뽈레 리뷰와 2023 기사(국물이 넉넉한 떡볶이). 맵기 3은 2026-09-21 리뷰의 '칼칼한 어른 입맛' 표현으로 추정. 가격은 뽈레 메뉴판(날짜 없음, 예전 기사엔 5,000원). 주차 90분 무료·1인 메뉴는 2023년 기사 기준.",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.4954674,
+    "lng": 127.0634159,
+    "type": "shop",
+    "district": "강남구",
+    "road": "삼성로",
+    "house": "212"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "월드분식 대치본점",
+   "address": "서울 강남구 삼성로 301 하늘도시 본관 1층",
+   "dong": "대치동",
+   "near_station": "대치역(추정)",
+   "grade": "bunsik",
+   "rice": null,
+   "style": null,
+   "spice": null,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "gimbap",
+    "twigim",
+    "sundae",
+    "rabokki"
+   ],
+   "shop_type": null,
+   "usage": [
+    "takeout",
+    "delivery",
+    "parking"
+   ],
+   "price": 6800,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 6800
+    },
+    {
+     "name": "눈꽃치즈떡볶이",
+     "price": 9100
+    },
+    {
+     "name": "로제크림떡볶이",
+     "price": 9100
+    },
+    {
+     "name": "쫄볶이",
+     "price": 8000
+    },
+    {
+     "name": "라볶이",
+     "price": 7700
+    },
+    {
+     "name": "떡튀순세트 A",
+     "price": 16100
+    },
+    {
+     "name": "월드김밥",
+     "price": 4800
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2026-08-30",
+   "last_evidence_source": "https://polle.com/cutepotato1004/posts/874",
+   "status_note": "잠실 쪽에서 대치동으로 옮겨 왔다는 리뷰가 있음. '본점' 표기라 다른 지점이 있을 수 있음.",
+   "sources": [
+    "https://polle.com/place/3A8UZl/%EC%9B%94%EB%93%9C%EB%B6%84%EC%8B%9D",
+    "https://polle.com/cutepotato1004/posts/874"
+   ],
+   "confidence": "high",
+   "basis": "김밥·돈가스·라면까지 파는 종합 분식집이라 grade=bunsik. 2026-08 리뷰는 김밥·라면 이야기라 떡볶이 맛 근거는 없음. 가격은 뽈레 메뉴판(날짜 없음).",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.4990513,
+    "lng": 127.0604879,
+    "type": "building",
+    "district": "강남구",
+    "road": "삼성로",
+    "house": "301"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "작은공간",
+   "address": "서울 강남구 남부순환로359길 31",
+   "dong": "도곡동",
+   "near_station": "양재역",
+   "grade": "specialist",
+   "rice": null,
+   "style": "instant",
+   "spice": 2,
+   "spice_label": null,
+   "taste": [],
+   "sides": [],
+   "shop_type": "school",
+   "usage": [
+    "takeout",
+    "delivery",
+    "parking"
+   ],
+   "price": 8500,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "즉석떡볶이(2인)",
+     "price": 17000
+    },
+    {
+     "name": "즉석떡볶이(3인)",
+     "price": 23000
+    },
+    {
+     "name": "즉석떡볶이(4인)",
+     "price": 29000
+    },
+    {
+     "name": "즉석짜장떡볶이(2인)",
+     "price": 18000
+    },
+    {
+     "name": "즉석짜장떡볶이(3인)",
+     "price": 24000
+    },
+    {
+     "name": "즉석짜장떡볶이(4인)",
+     "price": 30000
+    },
+    {
+     "name": "계란(2개)",
+     "price": 2000
+    },
+    {
+     "name": "만두(2개)",
+     "price": 2000
+    }
+   ],
+   "hours": {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "11:00",
+    "close": "20:30"
+   },
+   "hours_note": "평일 11:00~20:50(마지막 주문 20:20), 주말 11:00~20:30(마지막 주문 20:00), 연중무휴. hours 칸은 매일 공통으로 이른 마감(20:30)을 넣음. 출처 ktriptips(2025-12-31 갱신). 전화 02-3462-3533.",
+   "last_evidence_date": "2026-10-18",
+   "last_evidence_source": "https://polle.com/oio/posts/68",
+   "status_note": null,
+   "sources": [
+    "https://polle.com/place/5qdFzb/%EC%9E%91%EC%9D%80%EA%B3%B5%EA%B0%84",
+    "https://polle.com/oio/posts/68",
+    "https://www.ktriptips.com/kor/food/2783356",
+    "https://www.allurekorea.com/?p=197610"
+   ],
+   "confidence": "high",
+   "basis": "은광여고 정문 앞 약 40년 된 즉석떡볶이집(얼루어 2023). 고추장/짜장 중 고름. 맵기 2는 얼루어의 '매콤한 맛'으로 추정. 떡 종류는 출처가 엇갈려(얼루어 2023: 밀떡, ktriptips: 쌀떡) null. 1인분 8,500원은 2인 17,000원을 나눈 값(뽈레 메뉴판, 날짜 없음; 2024년 블로그 기준은 16,000원).",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.4868084,
+    "lng": 127.0356298,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "남부순환로359길",
+    "house": "31"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "국미당",
+   "address": "서울 강남구 남부순환로359길 19 1층",
+   "dong": "도곡동",
+   "near_station": "양재역",
+   "grade": "bunsik",
+   "rice": [
+    "wheat"
+   ],
+   "style": null,
+   "spice": null,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "twigim",
+    "sundae",
+    "gimbap",
+    "eomuk"
+   ],
+   "shop_type": null,
+   "usage": [
+    "takeout"
+   ],
+   "price": 5000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "불고기김말이",
+     "price": 8500
+    },
+    {
+     "name": "치즈김말이",
+     "price": 7500
+    },
+    {
+     "name": "야채김말이",
+     "price": 6000
+    },
+    {
+     "name": "셋트김말이",
+     "price": 7000
+    },
+    {
+     "name": "모듬튀김",
+     "price": 9500
+    },
+    {
+     "name": "찰떡순대",
+     "price": 5000
+    },
+    {
+     "name": "국미당김밥",
+     "price": 5000
+    },
+    {
+     "name": "부산오뎅",
+     "price": 3500
+    },
+    {
+     "name": "군만두",
+     "price": 5500
+    },
+    {
+     "name": "라면",
+     "price": 5000
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2026-11-04",
+   "last_evidence_source": "https://polle.com/daesan/posts/1889",
+   "status_note": null,
+   "sources": [
+    "https://polle.com/place/1SaBms/%EA%B5%AD%EB%AF%B8%EB%8B%B9",
+    "https://polle.com/daesan/posts/1889",
+    "https://polle.com/cutepotato1004/posts/900"
+   ],
+   "confidence": "high",
+   "basis": "김말이(불고기·치즈)가 대표라 grade=bunsik. 밀떡은 2026-09-23 리뷰. 작은공간과 같은 은광여고 앞 골목. 가격은 뽈레 메뉴판(날짜 없음).",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.4862488,
+    "lng": 127.0362633,
+    "type": "residential",
+    "district": "강남구",
+    "road": "남부순환로359길",
+    "house": ""
+   },
+   "geo_quality": "rough"
+  },
+  {
+   "name": "빨간오뎅 부산어묵 (개포시장)",
+   "address": "서울 강남구 개포로82길 13-11 1층",
+   "dong": "개포동",
+   "near_station": "개포동역",
+   "grade": "specialist",
+   "rice": [
+    "garae",
+    "wheat"
+   ],
+   "style": "classic",
+   "spice": 2,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "eomuk",
+    "sundae",
+    "twigim"
+   ],
+   "shop_type": "market",
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery"
+   ],
+   "price": 5000,
+   "price_source_date": "2025-11-17",
+   "menu": [
+    {
+     "name": "쌀떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "밀떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "쌀반밀반",
+     "price": 5000
+    },
+    {
+     "name": "왕떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "토종찰순대",
+     "price": 5000
+    },
+    {
+     "name": "수제튀김 5개",
+     "price": 5000
+    },
+    {
+     "name": "매운빨간오뎅 1개",
+     "price": 1000
+    },
+    {
+     "name": "부산어묵 1개",
+     "price": 1000
+    },
+    {
+     "name": "수제어묵 1개",
+     "price": 1500
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2025-11-17",
+   "last_evidence_source": "https://polle.com/its_raypic/posts/2265",
+   "status_note": null,
+   "sources": [
+    "https://polle.com/place/1ShnDb/%EB%B9%A8%EA%B0%84%EC%98%A4%EB%8E%85%20%EB%B6%80%EC%82%B0%EC%96%B4%EB%AC%B5",
+    "https://polle.com/its_raypic/posts/2265",
+    "https://polle.com/marious/posts/639",
+    "https://m.cafe.daum.net/topokkilove/F39R/1705?listURI=/topokkilove/F39R",
+    "https://www.localnaeil.com/News/View/651129"
+   ],
+   "confidence": "medium",
+   "basis": "부산식으로 긴 가래떡을 통째 졸여 잘라 주고(뽈레 리뷰), 당일 뽑은 가래떡에 묽은 소스(2020 떡볶이 카페 글) → style=classic, rice=가래떡+밀떡(메뉴에 쌀·밀·반반). 맵기 2는 '산뜻한 매콤함' 리뷰로 추정(매운 소스 추가 메뉴 따로 있음). 서서 먹는 시장 가게라 solo. 개포동역 5·6번 출구 앞이 개포시장(지역내일). 2026년 근거는 못 찾아 medium.",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.4886504,
+    "lng": 127.0683323,
+    "type": "residential",
+    "district": "강남구",
+    "road": "개포로82길",
+    "house": ""
+   },
+   "geo_quality": "rough"
+  },
+  {
+   "name": "선릉역 매운 떡볶이 역삼점",
+   "address": "서울 강남구 강남대로94길 75 1층",
+   "dong": "역삼동",
+   "near_station": "강남역",
+   "grade": "specialist",
+   "rice": null,
+   "style": null,
+   "spice": 4,
+   "spice_label": "0단계·0.5단계·1단계… 단계 선택 (리뷰: 1단계 ≈ 불닭)",
+   "taste": [],
+   "sides": [
+    "twigim",
+    "sundae",
+    "gimbap"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery"
+   ],
+   "price": 6000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "매운 떡볶이",
+     "price": 6000
+    },
+    {
+     "name": "모듬튀김",
+     "price": 3000
+    },
+    {
+     "name": "순대",
+     "price": 3000
+    },
+    {
+     "name": "일반김밥",
+     "price": 3000
+    },
+    {
+     "name": "더블치즈김밥",
+     "price": 3500
+    },
+    {
+     "name": "나혼자 먹는다 set",
+     "price": 13000
+    },
+    {
+     "name": "떡M+튀김4개+순대",
+     "price": 15000
+    },
+    {
+     "name": "라면",
+     "price": 2500
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2026-10-15",
+   "last_evidence_source": "https://polle.com/s_so/posts/803",
+   "status_note": "선릉역 쪽 원래 가게(선릉로 416, 대치동 표기)는 뽈레에 폐점 표시. 지금은 이 역삼점이 남아 있음.",
+   "sources": [
+    "https://polle.com/place/2lVbI5/%EC%84%A0%EB%A6%89%EC%97%AD%20%EB%A7%A4%EC%9A%B4%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+    "https://polle.com/s_so/posts/803",
+    "https://polle.com/place/3OIdtR/%EC%84%A0%EB%A6%89%EC%97%AD%20%EB%A7%A4%EC%9A%B4%EB%96%A1%EB%B3%B6%EC%9D%B4",
+    "https://www.insight.co.kr/news/207969"
+   ],
+   "confidence": "high",
+   "basis": "'서울 4대 매운 떡볶이'(인사이트 2019)로 소개된 '매운 떡볶이'의 지점. 맵기 4는 리뷰(2026-10-15) '1단계가 불닭 정도'에서 1단계 기준으로 추정, 0단계도 있음. 분모자는 추가 토핑으로만 확인돼 rice 에 넣지 않음. 가격은 뽈레 메뉴판(날짜 없음).",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.5007417,
+    "lng": 127.0334052,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "강남대로94길",
+    "house": "75"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "응큼떡볶이 역삼본점",
+   "address": "서울 강남구 봉은사로 174 역삼 노블루체 1층 103호",
+   "dong": "역삼동",
+   "near_station": "언주역",
+   "grade": "specialist",
+   "rice": null,
+   "style": null,
+   "spice": 3,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "sundae"
+   ],
+   "shop_type": null,
+   "usage": [
+    "takeout",
+    "delivery"
+   ],
+   "price": 7900,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "응큼떡볶이(오리지널)",
+     "price": 7900
+    },
+    {
+     "name": "오뎅오뎅떡볶이",
+     "price": 8500
+    },
+    {
+     "name": "순한야채떡볶이",
+     "price": 9500
+    },
+    {
+     "name": "응큼로제떡볶이",
+     "price": 13800
+    },
+    {
+     "name": "엄마 김치볶음밥 해줘",
+     "price": 9000
+    },
+    {
+     "name": "태평양어묵우동",
+     "price": 9000
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2026-08-11",
+   "last_evidence_source": "https://polle.com/triplej23/posts/4111",
+   "status_note": "안양점 등 다른 지점이 있는 작은 브랜드의 본점. 뽈레 영업정보엔 '매장식사 불가'로 돼 있으나 2026-08 리뷰는 4인석 6개에서 먹었다고 함.",
+   "sources": [
+    "https://polle.com/place/2LSVkC/%EC%9D%91%ED%81%BC%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+    "https://polle.com/triplej23/posts/4111"
+   ],
+   "confidence": "high",
+   "basis": "맵기 3은 2026-08 리뷰 '기본 떡볶이가 제법 매움'으로 추정. 떡순 세트·내장 추가(+1,500원) 언급. 가격은 뽈레 메뉴판(날짜 없음).",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.5067636,
+    "lng": 127.0331066,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "봉은사로",
+    "house": "174"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "영차떡볶이",
+   "address": "서울 강남구 봉은사로4길 36 운현빌딩",
+   "dong": "역삼동",
+   "near_station": "신논현역",
+   "grade": "specialist",
+   "rice": null,
+   "style": "instant",
+   "spice": null,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "twigim",
+    "sundae",
+    "eomuk"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery"
+   ],
+   "price": 9000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "영차떡볶이(일반/1인)",
+     "price": 9000
+    },
+    {
+     "name": "영차떡볶이",
+     "price": 18000
+    },
+    {
+     "name": "영차1인세트(일반)",
+     "price": 18000
+    },
+    {
+     "name": "짜장떡볶이",
+     "price": 20000
+    },
+    {
+     "name": "불떡볶이",
+     "price": 19000
+    },
+    {
+     "name": "로제떡볶이",
+     "price": 23000
+    },
+    {
+     "name": "마라로제떡볶이",
+     "price": 23000
+    },
+    {
+     "name": "통통순대",
+     "price": 5500
+    },
+    {
+     "name": "부산어묵탕",
+     "price": 5000
+    },
+    {
+     "name": "날치알볶음밥",
+     "price": 3500
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2026-07-09",
+   "last_evidence_source": "https://polle.com/siasia66/posts/548",
+   "status_note": null,
+   "sources": [
+    "https://polle.com/place/3VsVMx/%EC%98%81%EC%B0%A8%EB%96%A1%EB%B3%B6%EC%9D%B4",
+    "https://polle.com/siasia66/posts/548",
+    "https://polle.com/parkgomat/posts/2"
+   ],
+   "confidence": "high",
+   "basis": "뽈레 분류 '즉석떡볶이', 볶음밥을 손님이 직접 볶는 방식(리뷰) → instant. 신논현역 5번 출구 도보 4분(리뷰). 1인 메뉴가 있어 solo. 가격은 뽈레 메뉴판(날짜 없음).",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.5025076,
+    "lng": 127.0268166,
+    "type": "shop",
+    "district": "강남구",
+    "road": "봉은사로4길",
+    "house": "36"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "고씨떡볶이 삼성점",
+   "address": "서울 강남구 봉은사로84길 34 지하1층",
+   "dong": "삼성동",
+   "near_station": "삼성역",
+   "grade": "specialist",
+   "rice": null,
+   "style": "instant",
+   "spice": null,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "twigim",
+    "eomuk"
+   ],
+   "shop_type": null,
+   "usage": [
+    "takeout",
+    "delivery"
+   ],
+   "price": null,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "야채 떡볶이(2~3인)",
+     "price": 13000
+    },
+    {
+     "name": "찰순대 떡볶이(2~3인)",
+     "price": 17000
+    },
+    {
+     "name": "차돌박이 떡볶이(2~3인)",
+     "price": 17000
+    },
+    {
+     "name": "왕새우튀김 떡볶이(2~3인)",
+     "price": 17000
+    },
+    {
+     "name": "오징어튀김 떡볶이(2~3인)",
+     "price": 19000
+    },
+    {
+     "name": "치킨모듬튀김",
+     "price": 10000
+    },
+    {
+     "name": "오뎅탕(소)",
+     "price": 10000
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2026-03-13",
+   "last_evidence_source": "https://polle.com/xnxoddl/posts/7",
+   "status_note": "'삼성점'이라 다른 지점이 있는 브랜드일 수 있으나 본점·체인 여부는 확인 못 함.",
+   "sources": [
+    "https://polle.com/place/1Tgc3D/%EA%B3%A0%EC%94%A8%EB%96%A1%EB%B3%B6%EC%9D%B4",
+    "https://polle.com/xnxoddl/posts/7"
+   ],
+   "confidence": "medium",
+   "basis": "즉석떡볶이집, 키오스크 주문, 코엑스 도심공항 건너편(리뷰). 메뉴가 2~3인 냄비 단위라 1인분 가격은 비움. 2026-03 리뷰는 내용이 거의 없어 medium.",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.5111611,
+    "lng": 127.0561536,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "봉은사로84길",
+    "house": "34"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "꺼벙이김밥 삼성동본점",
+   "address": "서울 강남구 테헤란로63길 12 LG선릉에클라트 B 1층 103·104호",
+   "dong": "삼성동",
+   "near_station": "선릉역",
+   "grade": "bunsik",
+   "rice": null,
+   "style": null,
+   "spice": null,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "gimbap",
+    "sundae",
+    "twigim"
+   ],
+   "shop_type": null,
+   "usage": [
+    "solo",
+    "takeout",
+    "delivery",
+    "parking"
+   ],
+   "price": 4500,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 4500
+    },
+    {
+     "name": "꺼벙이김밥",
+     "price": 3500
+    },
+    {
+     "name": "참치김밥",
+     "price": 4500
+    },
+    {
+     "name": "스팸김밥",
+     "price": 5500
+    },
+    {
+     "name": "순대",
+     "price": 4500
+    },
+    {
+     "name": "모듬튀김",
+     "price": 5500
+    }
+   ],
+   "hours": {
+    "days": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "open": "00:00",
+    "close": "24:00"
+   },
+   "hours_note": "24시간 영업·일요일 휴무(2025-11-09 리뷰, 뽈레 24시간 표시). 일요일 앞뒤 시간 경계는 모름.",
+   "last_evidence_date": "2025-11-09",
+   "last_evidence_source": "https://polle.com/adk777/posts/1940",
+   "status_note": null,
+   "sources": [
+    "https://polle.com/place/1jUYjs/%EA%BA%BC%EB%B2%99%EC%9D%B4%20%EA%B9%80%EB%B0%A5",
+    "https://polle.com/adk777/posts/1940"
+   ],
+   "confidence": "medium",
+   "basis": "김밥이 주력인 분식집(떡볶이는 메뉴 6개 중 하나), 리뷰에서 '선릉 떡볶이 맛집'으로 언급. 2025-11 리뷰는 돈가스·라면 이야기. 가격은 뽈레 메뉴판(날짜 없음).",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.5060824,
+    "lng": 127.0508954,
+    "type": "shop",
+    "district": "강남구",
+    "road": "테헤란로63길",
+    "house": "12"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "분식카페 얌얌",
+   "address": "서울 강남구 광평로31길 27 삼성아파트 상가 1층",
+   "dong": "수서동",
+   "near_station": "수서역(추정)",
+   "grade": "bunsik",
+   "rice": null,
+   "style": null,
+   "spice": null,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "gimbap",
+    "sundae"
+   ],
+   "shop_type": null,
+   "usage": [
+    "takeout",
+    "parking"
+   ],
+   "price": 5000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 5000
+    },
+    {
+     "name": "얌얌 김밥",
+     "price": 4500
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2025-04-01",
+   "last_evidence_source": "https://polle.com/jiyooong/posts/24",
+   "status_note": "같은 주소에 있던 한양분식은 뽈레에 폐점 표시 — 그 자리를 이은 가게로 보임.",
+   "sources": [
+    "https://polle.com/place/2TnjaM/%EB%B6%84%EC%8B%9D%EC%B9%B4%ED%8E%98%20%EC%96%8C%EC%96%8C",
+    "https://polle.com/jiyooong/posts/24"
+   ],
+   "confidence": "medium",
+   "basis": "아파트 상가 동네 분식(김밥·떡볶이·라면·순대·팝콘치킨·슬러시). 떡볶이는 주문 뒤 바로 조리한다는 후기(다이닝코드 검색 요약). 최근 근거가 2025-04 하나뿐이라 medium.",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.4847988,
+    "lng": 127.0897225,
+    "type": "shop",
+    "district": "강남구",
+    "road": "광평로31길",
+    "house": "27"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "호찬떡볶이 일원본점",
+   "address": "서울 강남구 광평로19길 15 목련타운아파트 상가 지하1층 8호",
+   "dong": "일원동",
+   "near_station": "일원역",
+   "grade": "specialist",
+   "rice": null,
+   "style": "instant",
+   "spice": null,
+   "spice_label": "보통맛 / 매운맛",
+   "taste": [],
+   "sides": [
+    "gimbap",
+    "eomuk"
+   ],
+   "shop_type": null,
+   "usage": [
+    "takeout",
+    "delivery"
+   ],
+   "price": null,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "호찬떡볶이",
+     "price": 14000
+    },
+    {
+     "name": "중독짜장떡볶이",
+     "price": 14000
+    },
+    {
+     "name": "깻잎순대떡볶이",
+     "price": 17000
+    },
+    {
+     "name": "오뎅탕",
+     "price": 4000
+    },
+    {
+     "name": "꼬마김밥",
+     "price": 3500
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": null,
+   "last_evidence_source": "https://polle.com/place/5nvQrv/%ED%98%B8%EC%B0%AC%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+   "status_note": "가장 최근 리뷰가 뽈레 기준 '3년 전'(2023년 무렵). 2025~2026 근거 못 찾음. 같은 상가의 짱구네 식당은 폐점.",
+   "sources": [
+    "https://polle.com/place/5nvQrv/%ED%98%B8%EC%B0%AC%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   ],
+   "confidence": "low",
+   "basis": "사장님이 끓여 주는 즉석떡볶이(뽈레 리뷰), 매운맛은 꽤 맵다는 후기. 메뉴는 냄비 단위라 1인분 가격 비움. 전화 02-445-6728(뽈레). 영업 여부 확인 필요.",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.4838803,
+    "lng": 127.0858431,
+    "type": "building",
+    "district": "강남구",
+    "road": "광평로19길",
+    "house": "15"
+   },
+   "geo_quality": "building"
+  },
+  {
+   "name": "선릉공원 떡볶이 (트럭 노점)",
+   "address": null,
+   "address_note": "옛 표기 '테헤란로 435 대종빌딩 앞'. 2025-04 리뷰 작성자 댓글로는 '삼성동 143-48 건물 옆'으로 옮김. 노점이라 위치가 바뀔 수 있음.",
+   "dong": "삼성동",
+   "near_station": "선릉역·선정릉역",
+   "grade": "specialist",
+   "rice": null,
+   "style": null,
+   "spice": 3,
+   "spice_label": null,
+   "taste": [],
+   "sides": [
+    "sundae",
+    "twigim",
+    "eomuk"
+   ],
+   "shop_type": "pojang",
+   "usage": [
+    "takeout"
+   ],
+   "price": 6000,
+   "price_source_date": null,
+   "menu": [
+    {
+     "name": "떡볶이",
+     "price": 6000
+    },
+    {
+     "name": "순대",
+     "price": 6000
+    },
+    {
+     "name": "수제튀김",
+     "price": 6000
+    },
+    {
+     "name": "오뎅",
+     "price": 6000
+    },
+    {
+     "name": "모둠세트",
+     "price": 13000
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2025-04-03",
+   "last_evidence_source": "https://polle.com/adk777/posts/1692",
+   "status_note": "트럭 노점. 근처 건물 옆으로 옮겼다는 2025-04 후기, 한강공원 푸드트럭 쪽으로 옮겼다는 예전 후기도 있어 지금 자리는 불확실.",
+   "sources": [
+    "https://polle.com/place/4yvDZV/%EC%84%A0%EB%A6%89%EA%B3%B5%EC%9B%90%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+    "https://polle.com/adk777/posts/1692",
+    "https://polle.com/marious/posts/1265"
+   ],
+   "confidence": "low",
+   "basis": "주문 즉시 만드는 떡볶이·수제튀김(2025-04 리뷰). 맵기 3은 '태양초 고춧가루로 맵다'는 리뷰 요약으로 추정. 지도 핀을 정확히 찍을 주소가 없어 low.",
+   "_area": "강남구 남부",
+   "geo": null,
+   "geo_quality": "none"
+  },
+  {
+   "name": "별미곳간",
+   "address": "서울 강남구 선릉로86길 18",
+   "dong": "대치동",
+   "near_station": "선릉역",
+   "grade": "specialist",
+   "rice": null,
+   "style": "instant",
+   "spice": null,
+   "spice_label": "1~3단계",
+   "taste": [],
+   "sides": [
+    "twigim",
+    "eomuk"
+   ],
+   "shop_type": null,
+   "usage": [],
+   "price": 7000,
+   "price_source_date": "2020-01-09",
+   "menu": [
+    {
+     "name": "별미 즉석떡볶이(1인, 2인분부터)",
+     "price": 7000
+    },
+    {
+     "name": "치킨바삭떡볶이",
+     "price": 15000
+    },
+    {
+     "name": "별미모둠튀김",
+     "price": 13000
+    }
+   ],
+   "hours": null,
+   "last_evidence_date": "2020-01-09",
+   "last_evidence_source": "https://www.localnaeil.com/News/View/642110/10",
+   "status_note": "2020년 기사 하나뿐. 영업 여부 모름(2020년 당시 매일 11:20~23:50, 주말·공휴일 23:00 마감, 주차 불가, 전화 02-6339-2227).",
+   "sources": [
+    "https://www.localnaeil.com/News/View/642110/10"
+   ],
+   "confidence": "low",
+   "basis": "직접 뽑은 떡(자가제떡)을 쓰는 즉석떡볶이 전문점(지역내일 2020). 떡 종류는 기사에 없음. 영업 확인 전에는 넣지 않는 편을 권함.",
+   "_area": "강남구 남부",
+   "geo": {
+    "lat": 37.5033259,
+    "lng": 127.0512433,
+    "type": "amenity",
+    "district": "강남구",
+    "road": "선릉로86길",
+    "house": "18"
+   },
+   "geo_quality": "building"
+  }
+ ],
+ "north": {
+  "area": "강남구 북부",
+  "researched_at": "2026-11-15",
+  "method_note": "주 근거 = 다이닝코드 가게 페이지(주소·지번·영업시간·메뉴판·블로그 후기 목록) + 잡지·폴레 등 공개 페이지. 네이버 블로그 본문은 도구에서 막혀 직접 열지 못했고, 블로그 날짜는 다이닝코드 후기 목록 표기를 그대로 씀(연도 없는 날짜 = 2026년, 'N일 전' = 2026-11-15 기준 환산). 지도 사이트는 열지 않음. rating 은 비워 둠.",
+  "franchise_seen": [
+   {
+    "name": "또보겠지떡볶이집 신사오후산책점",
+    "address": null,
+    "area": "신사동"
+   },
+   {
+    "name": "죠스떡볶이 압구정로데오점",
+    "address": null,
+    "area": "신사동·압구정로데오"
+   },
+   {
+    "name": "죠스떡볶이 학동사거리점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "청년다방 압구정점",
+    "address": null,
+    "area": "압구정"
+   },
+   {
+    "name": "청년다방 강남구청역점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "동대문엽기떡볶이 압구정점",
+    "address": null,
+    "area": "압구정"
+   },
+   {
+    "name": "동대문엽기떡볶이 청담동점",
+    "address": null,
+    "area": "청담동"
+   },
+   {
+    "name": "동대문엽기떡볶이 언주역점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "동대문엽기떡볶이 강남구청역점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "동대문엽기떡볶이 논현역점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "배떡 압구정점",
+    "address": null,
+    "area": "압구정"
+   },
+   {
+    "name": "신전떡볶이 논현동점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "우리할매떡볶이 압구정점",
+    "address": null,
+    "area": "압구정"
+   },
+   {
+    "name": "떡산 압구정점",
+    "address": null,
+    "area": "압구정"
+   },
+   {
+    "name": "스텔라떡볶이 서울강남논현점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "떡순튀 신논현점 / 강남점",
+    "address": null,
+    "area": "논현동·압구정"
+   },
+   {
+    "name": "스쿨푸드 딜리버리 논현점",
+    "address": null,
+    "area": "논현동"
+   },
+   {
+    "name": "청담동마녀김밥 청담본점",
+    "address": "서울 강남구 압구정로79길 32",
+    "area": "청담동",
+    "note": "여러 지점 있는 김밥 브랜드의 본점, 마녀떡볶이는 곁메뉴. 2026-10 블로그 있음"
+   }
+  ],
+  "extras": [
+   {
+    "name": "덕자네방앗간",
+    "address": "서울 서초구 서초대로77길 62 1층",
+    "note": "서초구. 신논현역 7·8번 출구 근처 수제 쌀떡볶이 + 감자샐러드 토핑, 떡볶이 6,000원(2025 지역내일 기사)",
+    "sources": [
+     "https://www.localnaeil.com/News/View/653550/10",
+     "https://polle.com/place/1Zbg0h/%EB%8D%95%EC%9E%90%EB%84%A4%20%EB%B0%A9%EC%95%97%EA%B0%84"
+    ]
+   },
+   {
+    "name": "찐분식",
+    "address": "서울 서초구 사평대로57길 96 1층",
+    "note": "서초구 반포동, 논현역 인근으로 소개되는 작은 노포. 주문 즉시 끓이는 옛날 떡볶이",
+    "sources": [
+     "https://hotplacehunter.co.kr/editorpick/article/62191/"
+    ]
+   }
+  ],
+  "not_included": [
+   {
+    "name": "빌라 드 스파이시 가로수길점",
+    "reason": "식신에 '운영 여부 확인 안 됨', 다이닝코드엔 영종도점만 남아 있음 → 폐업 추정"
+   },
+   {
+    "name": "슈퍼집(깻잎떡볶이·맥주)",
+    "reason": "언주로130길 14 로 알려졌으나 운영 여부 확인 안 됨, 다이닝코드 미등록, 2025~2026 근거 없음"
+   },
+   {
+    "name": "압구정곱떡",
+    "reason": "압구정로50길 28 로데오현대상가, 2020 기사뿐, 다이닝코드 미등록"
+   },
+   {
+    "name": "원더떡볶이 (청담동 삼성로146길 10)",
+    "reason": "최근 근거가 2023-11 블로그뿐"
+   },
+   {
+    "name": "은주네분식 (영동시장, 학동로4길 32)",
+    "reason": "최근 근거가 2022-02 블로그뿐"
+   },
+   {
+    "name": "깐주네 꼬마김밥 (논현동 강남대로128길 22)",
+    "reason": "꼬마김밥집, 떡볶이는 세트로만 확인(2026-05 블로그 있음). 넣으려면 grade=menu"
+   },
+   {
+    "name": "보슬보슬 압구정본점 / 리김밥 압구정본점 / 소풍",
+    "reason": "김밥·국수 위주 가게, 떡볶이 전문 아님"
+   }
+  ]
+ },
+ "south": {
+  "area": "강남구 남부",
+  "researched_at": "2026-11-15",
+  "notes": "지도 사이트(네이버·카카오 지도)는 열지 않음. 출처는 뽈레(polle.com) 장소·리뷰 페이지, 잡지·지역신문 기사, ktriptips. 뽈레 메뉴판에는 날짜가 없어 그 가격은 price_source_date=null 로 두고 basis 에 적음. 네이버 블로그·다이닝코드·식신은 이 환경에서 막혀 못 읽음.",
+  "franchise_seen": [
+   {
+    "name": "레드175 한티역점",
+    "address": "서울 강남구 도곡로 413 삼환 SO GOOD 1층",
+    "note": "대치동 학원가에서 오래된 가게, 뽈레는 '소규모 체인'으로 소개. 리뷰 7개월 전"
+   },
+   {
+    "name": "레드 175 대치점",
+    "address": "서울 강남구 남부순환로 2942 풍림프라자 1층",
+    "note": null
+   },
+   {
+    "name": "두끼 한티역점",
+    "address": "서울 강남구 선릉로 314 지하1층",
+    "note": "떡볶이 뷔페"
+   },
+   {
+    "name": "죠스떡볶이 한티역점",
+    "address": "서울 강남구 선릉로64길 5 라이온스빌딩 1층",
+    "note": null
+   },
+   {
+    "name": "동대문엽기떡볶이 대치점",
+    "address": "서울 강남구 선릉로 340 1층",
+    "note": null
+   },
+   {
+    "name": "할머니가래떡볶이 강남대치점",
+    "address": "서울 강남구 영동대로 221 1층",
+    "note": null
+   },
+   {
+    "name": "오마뎅 대치점",
+    "address": null,
+    "note": "부산어묵·떡볶이 브랜드 매장"
+   },
+   {
+    "name": "신전떡볶이 도곡점",
+    "address": "서울 강남구 남부순환로359길 27 1층",
+    "note": null
+   },
+   {
+    "name": "랜떡 (도곡동)",
+    "address": "서울 강남구 남부순환로359길 24 1층 1호",
+    "note": "리뷰에 '양재 직영점' 표현 — 체인으로 보임. 2026-09 리뷰 있음"
+   },
+   {
+    "name": "청년다방 강남역삼점",
+    "address": "서울 강남구 역삼로 133 2층 2호",
+    "note": null
+   },
+   {
+    "name": "또보겠지 떡볶이집 강남헬로몽키점",
+    "address": "서울 강남구 봉은사로6길 30 2층",
+    "note": null
+   },
+   {
+    "name": "반장 즉석떡볶이 강남점",
+    "address": "서울 강남구 테헤란로4길 25 지하1층",
+    "note": "지점 표기, 체인 여부 미확인"
+   },
+   {
+    "name": "사이드쇼 코엑스점",
+    "address": "서울 강남구 테헤란로87길 22 한국도심공항터미널 지하1층 Q124",
+    "note": "즉석떡볶이, 용산·홍대 등 여러 지점 있는 브랜드. 리뷰 1개월 전"
+   },
+   {
+    "name": "스텔라떡볶이 개포점",
+    "address": null,
+    "note": null
+   },
+   {
+    "name": "우리할매떡볶이 강남세곡점",
+    "address": null,
+    "note": null
+   },
+   {
+    "name": "신참떡볶이 강남자곡점",
+    "address": "자곡동 636 (지번, 자료마다 세곡동 615로도 표기)",
+    "note": null
+   },
+   {
+    "name": "신전떡볶이 자곡점",
+    "address": "자곡동 658 (지번)",
+    "note": null
+   },
+   {
+    "name": "마성떡볶이 SRT수서역점",
+    "address": null,
+    "note": null
+   },
+   {
+    "name": "신전떡볶이 수서역점",
+    "address": null,
+    "note": null
+   },
+   {
+    "name": "신전떡볶이 개포수서점",
+    "address": null,
+    "note": null
+   },
+   {
+    "name": "동대문엽기떡볶이 수서역점",
+    "address": null,
+    "note": null
+   }
+  ],
+  "extras": [
+   {
+    "name": "신떡",
+    "address": "서울 서초구 강남대로 359 대우도씨에빛2",
+    "dong": "서초동",
+    "note": "강남역 서쪽(서초구). 쟁반 떡볶이·맵기 단계. 영업 확인 안 함",
+    "source": "https://polle.com/place/4CrGE2/%EC%8B%A0%EB%96%A1"
+   },
+   {
+    "name": "덕자네 방앗간",
+    "address": "서울 서초구 사평대로56길 7",
+    "dong": "반포동",
+    "note": "매일 아침 쌀떡을 뽑는 쌀떡볶이(얼루어 2022). 서초구라 범위 밖. 영업 확인 안 함",
+    "source": "https://www.allurekorea.com/2022/06/01/%eb%b0%80%eb%96%a1-%eb%a7%90%ea%b3%a0-%ec%8c%80%eb%96%a1%eb%b3%b6%ec%9d%b4/"
+   },
+   {
+    "name": "서강쇠떡볶이",
+    "address": "서울 강남구 압구정로50길 22",
+    "dong": "신사동",
+    "note": "북부 담당 확인용. 2022년엔 강남대로66길 11(역삼동 쪽, 식신은 지금도 '역삼동'으로 표기)이었으나 2025 보그·뽈레는 압구정로50길 22 — 북부로 옮긴 것으로 보여 남부 목록에서 뺌",
+    "source": "https://www.vogue.co.kr/2025/02/05/%ed%95%9c%ea%b0%80%ec%9d%b8-%ec%b6%94%ec%b2%9c-%ea%b0%95%eb%82%a8-3%eb%8c%80-%eb%96%a1%eb%b3%b6%ec%9d%b4-%eb%a7%9b%ec%a7%91/"
+   }
+  ],
+  "excluded": [
+   {
+    "name": "만나분식 (은마상가 A-63)",
+    "dong": "대치동",
+    "reason": "2024-01-08 폐업(30여 년 영업, 사장 건강 사유)",
+    "source": "https://www.hankookilbo.com/news/article/A2024010509390001077"
+   },
+   {
+    "name": "한양분식",
+    "dong": "수서동",
+    "reason": "뽈레 폐점 표시. 같은 주소(광평로31길 27)에 지금 분식카페 얌얌",
+    "source": "https://polle.com/place/5gyIPJ/%ED%95%9C%EC%96%91%EB%B6%84%EC%8B%9D"
+   },
+   {
+    "name": "짱구네 식당",
+    "dong": "일원동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/19ousy/%EC%A7%B1%EA%B5%AC%EB%84%A4%20%EC%8B%9D%EB%8B%B9"
+   },
+   {
+    "name": "영동 떡볶이 (도곡로51길 31)",
+    "dong": "역삼동",
+    "reason": "재개발로 영업 종료(뽈레)",
+    "source": "https://polle.com/place/4UuP67/%EC%98%81%EB%8F%99%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   },
+   {
+    "name": "영이네 (도곡로4길 19)",
+    "dong": "도곡동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/5ytXOc/%EC%98%81%EC%9D%B4%EB%84%A4"
+   },
+   {
+    "name": "그린네 은쟁반 (남부순환로359길 16)",
+    "dong": "도곡동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/43pc7L/%EA%B7%B8%EB%A6%B0%EB%84%A4%20%EC%9D%80%EC%9F%81%EB%B0%98"
+   },
+   {
+    "name": "선릉역 매운떡볶이 (선릉로 416, 원래 자리)",
+    "dong": "대치동",
+    "reason": "뽈레 폐점 표시(역삼점은 영업 중)",
+    "source": "https://polle.com/place/3OIdtR/%EC%84%A0%EB%A6%89%EC%97%AD%20%EB%A7%A4%EC%9A%B4%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   },
+   {
+    "name": "이식일사 1993 (봉은사로4길 17)",
+    "dong": "역삼동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/516P9r/%EC%9D%B4%EC%8B%9D%EC%9D%BC%EC%82%AC%201993"
+   },
+   {
+    "name": "곱스떡스 (강남대로102길 20)",
+    "dong": "역삼동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/474PTi/%EA%B3%B1%EC%8A%A4%EB%96%A1%EC%8A%A4"
+   },
+   {
+    "name": "홍낭자와 김도령 (논현로 425)",
+    "dong": "역삼동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/2dGPq4/%ED%99%8D%EB%82%AD%EC%9E%90%EC%99%80%20%EA%B9%80%EB%8F%84%EB%A0%B9"
+   },
+   {
+    "name": "신가네 솥뚜껑 볶음밥 (테헤란로 147)",
+    "dong": "역삼동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/1vjZmh/%EC%8B%A0%EA%B0%80%EB%84%A4%20%EC%86%A5%EB%9A%9C%EA%BB%91%20%EB%B3%B6%EC%9D%8C%EB%B0%A5"
+   },
+   {
+    "name": "그윽 떡볶이 (테헤란로20길 11)",
+    "dong": "역삼동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/1gIlfj/%EA%B7%B8%EC%9C%BD%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   },
+   {
+    "name": "마리짱 강남역점 (강남역 지하상가)",
+    "dong": "역삼동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/2G1znA/%EB%A7%88%EB%A6%AC%EC%A7%B1"
+   },
+   {
+    "name": "맛쟁이 떡볶이 삼성직영점 · 즉석떡볶이 88",
+    "dong": "삼성동",
+    "reason": "뽈레 폐점 표시",
+    "source": "https://polle.com/place/4YXPyd/%EB%A7%9B%EC%9F%81%EC%9D%B4%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+   },
+   {
+    "name": "은마전 & 금강족발 (은마상가)",
+    "dong": "대치동",
+    "reason": "예전 '은마상가 쌀떡볶이'로 알려졌으나 지금 메뉴·2026 리뷰엔 전만 있고 떡볶이 판매 확인 안 됨",
+    "source": "https://polle.com/place/2N0TNr/%EC%9D%80%EB%A7%88%EC%A0%84%20%26%20%EA%B8%88%EA%B0%95%EC%A1%B1%EB%B0%9C"
+   },
+   {
+    "name": "명가분식 (코엑스몰 B17)",
+    "dong": "삼성동",
+    "reason": "2021년 기사뿐, 최근 근거 없음",
+    "source": "https://www.localnaeil.com/News/View/646194/10"
+   },
+   {
+    "name": "자매분식 (삼성로103길 12)",
+    "dong": "삼성동",
+    "reason": "종합 분식(떡볶이 4,000원), 최근 근거 2024-12 리뷰 하나",
+    "source": "https://polle.com/place/5jVbTc/%EC%9E%90%EB%A7%A4%EB%B6%84%EC%8B%9D"
+   },
+   {
+    "name": "청춘 닭볶이 (선릉로76길 23)",
+    "dong": "대치동",
+    "reason": "닭볶이 위주, 최근 근거 2023년 무렵",
+    "source": "https://polle.com/place/4tPDaI/%EC%B2%AD%EC%B6%98%20%EB%8B%AD%EB%B3%B6%EC%9D%B4"
+   }
+  ]
+ }
+}
