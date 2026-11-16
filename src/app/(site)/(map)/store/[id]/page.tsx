@@ -19,7 +19,9 @@ import { cn } from "@/lib/utils";
 import { isPending, updateReasons } from "@/lib/wiki";
 
 export async function generateStaticParams() {
-  return (await getStores()).map((s) => ({ id: s.id }));
+  const ids = (await getStores()).map((s) => ({ id: s.id }));
+  // Cache Components 는 빈 목록을 받지 않는다. 예시를 숨기고(NEXT_PUBLIC_SAMPLE_DATA=off) 빌드하면 빌드 때 가게가 0곳이라 자리 하나를 둔다 (요청 때는 없는 가게 = 404)
+  return ids.length ? ids : [{ id: "none" }];
 }
 
 export async function generateMetadata({ params }: PageProps<"/store/[id]">): Promise<Metadata> {
