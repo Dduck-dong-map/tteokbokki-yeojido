@@ -164,4 +164,17 @@ describe("자료 묶음 넣기", () => {
     expect(res.added.length).toBe(ready.length);
     expect(new Set(ds.stores.map((r) => r.id)).size).toBe(26);
   });
+
+  it("마포 v1 자료: 빈 칸 없는 가게는 모두 검사를 통과하고 강남 id 와 겹치지 않는다", async () => {
+    const { DATASETS } = await import("@/lib/data/datasets");
+    const ds = DATASETS.find((d) => d.id === "mapo-v1")!;
+    expect(ds.stores.length).toBe(19);
+    const ready = ds.stores.filter((r) => !r.missing.length);
+    expect(ready.length).toBe(14);
+    for (const r of ready) expect([r.id, admin.checkAdminStore(admin.pickInput(r.store))]).toEqual([r.id, null]);
+    const all = DATASETS.flatMap((d) => d.stores.map((r) => r.id));
+    expect(new Set(all).size).toBe(all.length);
+    const res = await admin.adminImport(ds.stores, ds.who);
+    expect(res.added.length).toBe(ready.length);
+  });
 });
