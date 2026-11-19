@@ -5,7 +5,7 @@ import { GRADES, MAX_TASTES, RICE_CAKES, SHOP_TYPES, SIDES, SPICE_LEVELS, STYLES
 import type { Change, Fail, HistoryItem, HistoryKind, Hours, MenuItem, Store, StoreStatus } from "../types";
 import { GU_SLUGS } from "../wiki";
 import { REGIONS } from "./sample-stores";
-import { type Db, hash, isoDay, load, mutate } from "./db";
+import { type Db, hash, isoDay, load, mutate, stamp } from "./db";
 
 // 운영 어드민의 가게 관리 (11-15). 화면 = /admin/stores · /admin/candidates · /admin/logs, 부르는 곳 = app/admin/actions.ts.
 // 이용자 쓰기 규칙(db.ts: 하루 한도·중복 막기·「확인 중」)은 운영자에게 걸지 않는다. 대신 모든 변경은 이력(store_logs)에 남긴다.
@@ -148,7 +148,7 @@ export function diffStore(before: AdminStoreInput, after: AdminStoreInput): Chan
 }
 
 function addLog(db: Db, storeId: string, kind: HistoryKind, changes?: Change[], who = ADMIN_NICK) {
-  db.logs.push({ id: randomUUID(), storeId, at: new Date().toISOString(), who, ...ADMIN_MARK(), kind, changes });
+  db.logs.push({ id: randomUUID(), storeId, at: stamp(), who, ...ADMIN_MARK(), kind, changes });
 }
 
 const fail = (error: string, status = 422): Fail => ({ ok: false, error, status });

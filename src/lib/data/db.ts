@@ -64,6 +64,13 @@ export type Db = {
 };
 
 export const isoDay = (t = Date.now()) => new Date(t + 9 * 3_600_000).toISOString().slice(0, 10);
+// 기록 시각은 한 서버 안에서 늘 앞으로만 간다. 같은 1ms 에 되살리기와 신고가 찍히면 restoredAt 의 `at > since` 가
+// 되살린 뒤의 신고를 빼먹어서, 앞 시각과 같으면 1ms 뒤로 민다 (11-19 CI 에서 admin-status 시험이 가끔 실패).
+let lastStamp = 0;
+export function stamp() {
+  lastStamp = Math.max(Date.now(), lastStamp + 1);
+  return new Date(lastStamp).toISOString();
+}
 const daysAgo = (n: number) => isoDay(Date.now() - n * 86_400_000);
 const isoAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
 const SEED_MARK: Mark = { device: "seed", ip: "seed" };
@@ -198,7 +205,7 @@ const restoredAt = (db: Db, storeId: string) =>
     .filter((l) => l.storeId === storeId && l.kind === "edit" && l.changes?.some((c) => c.field === "상태" && c.to.startsWith("보임")))
     .reduce((a, l) => (l.at > a ? l.at : a), "");
 const log = (db: Db, storeId: string, who: { nick: string } & Mark, kind: HistoryKind, changes?: Change[]) =>
-  db.logs.push({ id: randomUUID(), storeId, at: new Date().toISOString(), who: who.nick, device: who.device, ip: who.ip, kind, changes });
+  db.logs.push({ id: randomUUID(), storeId, at: stamp(), who: who.nick, device: who.device, ip: who.ip, kind, changes });
 // 지도가 저절로 내릴 때(달라요 · 신고) 그 줄에 까닭을 남긴다 (11-19). 가게 상세의 안내(lib/wiki.ts goneNotice)가 이것을 읽어
 // 내린 판정과 같은 기준으로 문구를 고른다. 표 구조는 그대로 두고 이력의 「바뀐 칸」(changes) 하나로 남긴다 — 변경 이력 화면에도 보인다.
 const goneLog = (db: Db, storeId: string, kind: "hidden" | "closed", by: string) =>
@@ -310,7 +317,7 @@ export function addStore(input: NewStoreInput, who: Who) {
     };
     db.stores.push(store);
     log(db, id, { nick: who.nick, ...m }, "new");
-    if (input.stars) db.reviews.push({ ...m, id: randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars });
+    if (input.stars) db.reviews.push({ ...m, id: randomUUID(), storeId: id, at: stamp(), who: who.nick, stars: input.stars });
     return { ok: true, id };
   });
 }
@@ -409,7 +416,7 @@ export function recordGo(id: string, app: GoApp, who: Who) {
     const m = mark(who);
     const today = isoDay();
     if (!db.goes.some((g) => g.storeId === id && same(g, m) && isoDay(new Date(g.at).getTime()) === today))
-      db.goes.push({ ...m, id: randomUUID(), storeId: id, app, at: new Date().toISOString() });
+      db.goes.push({ ...m, id: randomUUID(), storeId: id, app, at: stamp() });
     return { ok: true };
   });
 }
@@ -442,7 +449,7 @@ export function verifyStore(id: string, ok: boolean, who: Who) {
     if (!isPending(s, new Date())) return fail("이미 확인이 끝난 가게예요", 409);
     const m = mark(who);
     if (db.votes.some((v) => v.storeId === id && same(v, m))) return fail("이미 알려 주셨어요. 고마워요!", 409);
-    db.votes.push({ ...m, storeId: id, ok, at: new Date().toISOString() });
+    db.votes.push({ ...m, storeId: id, ok, at: stamp() });
     const verify = { yes: s.verify?.yes ?? 0, no: s.verify?.no ?? 0 };
     if (ok) verify.yes += 1;
     else verify.no += 1;
@@ -481,7 +488,7 @@ export function reviewStore(id: string, input: { stars: number; text?: string },
     s.rating = rating.count ? { avg: Math.round((rating.total / rating.count) * 10) / 10, count: rating.count } : undefined;
 
     const text = input.text?.trim() || undefined;
-    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars, spice: old?.spice, text }; // 예전 맵기 표는 그대로 남긴다
+    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: stamp(), who: who.nick, stars: input.stars, spice: old?.spice, text }; // 예전 맵기 표는 그대로 남긴다
     if (old) db.reviews[db.reviews.indexOf(old)] = row;
     else db.reviews.push(row);
     return { ok: true };
@@ -495,7 +502,7 @@ export function flagStore(id: string, reason: FlagReason, who: Who) {
     if (!s) return fail("가게를 찾지 못했어요", 404);
     const m = mark(who);
     if (db.flags.some((f) => f.storeId === id && same(f, m))) return fail("이미 신고해 주셨어요. 고마워요!", 409);
-    db.flags.push({ ...m, storeId: id, reason, at: new Date().toISOString() });
+    db.flags.push({ ...m, storeId: id, reason, at: stamp() });
     // 운영자가 되살린 가게는 되살린 뒤에 들어온 신고만 센다 (되살린 뒤 신고 1건으로 곧바로 다시 내려가지 않게, F012 — restoredAt).
     const since = restoredAt(db, id);
     const flags = db.flags.filter((f) => f.storeId === id && f.at > since);
@@ -533,7 +540,7 @@ export function takePhotoSlot(id: string, who: Who) {
     db.photoUploads = db.photoUploads.filter((p) => within24h(p.at));
     const over = overDaily(db.photoUploads, m, DAILY_PHOTOS, DAILY_PHOTOS_PER_IP);
     if (over) return fail(over === "me" ? "오늘은 사진을 많이 올리셨어요. 내일 다시 부탁드려요" : ipLimitMsg("사진이"), 429);
-    db.photoUploads.push({ ...m, id, at: new Date().toISOString() });
+    db.photoUploads.push({ ...m, id, at: stamp() });
     return { ok: true };
   });
 }
@@ -613,7 +620,7 @@ export function addPost(input: { cat: BoardCat; title: string; body: string; sto
     if (over) return fail(over === "me" ? "오늘은 글을 많이 써 주셨어요. 내일 다시 부탁드려요" : ipLimitMsg("글이"), 429);
     if (input.storeId && !db.stores.some((s) => s.id === input.storeId)) return fail("붙인 가게를 찾지 못했어요");
     const id = `p-${randomUUID().slice(0, 8)}`;
-    db.posts.push({ ...m, id, at: new Date().toISOString(), who: who.nick, cat: input.cat, title: input.title.trim(), body: input.body.trim(), storeId: input.storeId || undefined, comments: 0, likes: 0 });
+    db.posts.push({ ...m, id, at: stamp(), who: who.nick, cat: input.cat, title: input.title.trim(), body: input.body.trim(), storeId: input.storeId || undefined, comments: 0, likes: 0 });
     return { ok: true, id };
   });
 }
@@ -643,7 +650,7 @@ export function addComment(postId: string, text: string, who: Who) {
     const over = overDaily(recentWrites(db, "comment", db.comments), m, DAILY_COMMENTS, DAILY_COMMENTS_PER_IP);
     if (over) return fail(over === "me" ? "오늘은 댓글을 많이 써 주셨어요. 내일 다시 부탁드려요" : ipLimitMsg("댓글이"), 429);
     const id = `c-${randomUUID().slice(0, 8)}`;
-    db.comments.push({ ...m, id, postId, at: new Date().toISOString(), who: who.nick, text: text.trim() });
+    db.comments.push({ ...m, id, postId, at: stamp(), who: who.nick, text: text.trim() });
     p.comments = countComments(db, postId);
     return { ok: true, id };
   });
@@ -676,7 +683,7 @@ export function likePost(id: string, who: Who) {
       db.postLikes.splice(db.postLikes.indexOf(old), 1);
       p.likes = Math.max(0, p.likes - 1);
     } else {
-      db.postLikes.push({ ...m, postId: id, at: new Date().toISOString() });
+      db.postLikes.push({ ...m, postId: id, at: stamp() });
       p.likes += 1;
     }
     return { ok: true, liked: !old, likes: p.likes };
@@ -732,7 +739,7 @@ export function createList(input: { title: string; desc?: string; visibility: Li
     if (over) return fail(over === "me" ? "오늘은 리스트를 많이 만들어 주셨어요. 내일 다시 부탁드려요" : ipLimitMsg("리스트가"), 429);
     const known = new Set(db.stores.map((s) => s.id));
     const storeIds = [...new Set(input.storeIds ?? [])].filter((s) => known.has(s)).slice(0, MAX_LIST_STORES);
-    const now = new Date().toISOString();
+    const now = stamp();
     const id = `l-${randomUUID().slice(0, 8)}`;
     db.lists.push({ ...m, id, title: input.title.trim(), desc: input.desc?.trim() || undefined, storeIds, who: who.nick, createdAt: now, updatedAt: now, visibility: input.visibility, likes: 0 });
     return { ok: true, id };
@@ -746,7 +753,7 @@ export function updateList(id: string, patch: { title?: string; desc?: string | 
     if (patch.title !== undefined) l.title = patch.title.trim();
     if (patch.desc !== undefined) l.desc = patch.desc?.trim() || undefined;
     if (patch.visibility !== undefined) l.visibility = patch.visibility;
-    l.updatedAt = new Date().toISOString();
+    l.updatedAt = stamp();
     return { ok: true };
   });
 }
@@ -772,7 +779,7 @@ export function editListStores(id: string, op: ListStoreOp, who: Who) {
       if (at < 0 || to < 0 || to >= l.storeIds.length) return fail("더 옮길 수 없어요");
       [l.storeIds[at], l.storeIds[to]] = [l.storeIds[to], l.storeIds[at]];
     }
-    l.updatedAt = new Date().toISOString();
+    l.updatedAt = stamp();
     return { ok: true, storeIds: l.storeIds };
   });
 }
@@ -802,7 +809,7 @@ export function likeList(id: string, who: Who) {
       db.likes.splice(db.likes.indexOf(old), 1);
       l.likes = Math.max(0, l.likes - 1);
     } else {
-      db.likes.push({ ...m, listId: id, at: new Date().toISOString() });
+      db.likes.push({ ...m, listId: id, at: stamp() });
       l.likes += 1;
     }
     return { ok: true, liked: !old, likes: l.likes };
