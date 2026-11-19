@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { adminAccess } from "@/lib/admin/access";
-import { Locked } from "./bits";
+import { Empty, Locked } from "./bits";
 
 // 어드민 화면 내용을 열쇠 검사 뒤에 둔다 (F010). 가게 관리(/admin/stores)와 같은 방식:
 // 쿠키·Host 를 읽는 검사는 요청 때 하므로 <Suspense> 안에서 돌고, 머리글(PageHeader)의 제목·설명은 밖에서 먼저 그려진다
@@ -9,11 +9,7 @@ import { Locked } from "./bits";
 export default function AdminGate({ children, loading = "불러오는 중…" }: { children: React.ReactNode; loading?: string }) {
   return (
     <Suspense
-      fallback={
-        <div className="empty">
-          <div className="empty__desc">{loading}</div>
-        </div>
-      }
+      fallback={<Empty desc={loading} />}
     >
       <Gate>{children}</Gate>
     </Suspense>

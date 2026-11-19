@@ -123,7 +123,7 @@ export default function RegisterStepsView({ step, draft, stores, mapKey, sending
             <PhotoPicker ids={draft.photos} onChange={(photos) => onChange({ photos })} hint="사람 얼굴이 크게 나오지 않게 찍어 주세요. 찍은 위치 정보는 지워서 올려요." />
           </div>
           <NickField />
-          <p className="rounded-xl bg-secondary px-3 py-2 text-body-small leading-relaxed break-keep text-muted-foreground [overflow-wrap:anywhere]">
+          <p className="rounded-xl bg-secondary px-3 py-2 text-body-small break-keep text-muted-foreground [overflow-wrap:anywhere]">
             올리면 바로 지도에 나오고, {VERIFY_DAYS}일 동안 「확인 중」으로 보여요. 사실과 다르면 다른 사람이 고치거나 신고할 수 있어요.
           </p>
           {/* 768 이상: 올리기 단추는 여기. 폰은 RegisterFormView 의 아래 고정 줄이 맡는다 */}

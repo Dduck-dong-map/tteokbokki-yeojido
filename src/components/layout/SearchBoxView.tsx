@@ -9,6 +9,7 @@ export default function SearchBoxView({ value, onChange, onClear }: SearchBoxVie
   return (
     <label className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border border-input bg-card px-3 focus-within:border-ring md:h-10">
       <Search size={16} strokeWidth={2.2} className="shrink-0 text-muted-foreground/70" aria-hidden="true" />
+      {/* eslint-disable-next-line no-restricted-syntax -- 검색창: 테두리 · 포커스는 바깥 label 이 그린다. ui/input 은 자체 테두리 · 링이 겹친다 */}
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}

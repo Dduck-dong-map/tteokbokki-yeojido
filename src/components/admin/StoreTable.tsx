@@ -3,21 +3,35 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { won } from "@/lib/filters";
 import { daysSince, freshness } from "@/lib/freshness";
 import { GRADES, STYLES } from "@/lib/taxonomy";
 import type { Region, Store } from "@/lib/types";
-import { Stamp } from "./bits";
+import { cn } from "@/lib/utils";
+import { CELL_MAIN, CELL_NUM, Empty, IdBadge, LINK, Stamp, StatusBadge, TableFrame, type Tone } from "./bits";
+import { PickSelect, SearchInput, type Option } from "./controls";
 import { Icon } from "./Icon";
 
-const FRESH = {
-  fresh: { label: "올라감", cls: "badge--success" },
-  stale: { label: "흐림 (180일+)", cls: "badge--warning" },
-  expired: { label: "내림 (365일+)", cls: "badge--danger" },
-} as const;
+const FRESH: Record<"fresh" | "stale" | "expired", { label: string; tone: Tone }> = {
+  fresh: { label: "올라감", tone: "success" },
+  stale: { label: "흐림 (180일+)", tone: "warning" },
+  expired: { label: "내림 (365일+)", tone: "danger" },
+};
 
 type Show = "all" | "active" | "down";
 type Kind = "real" | "sample" | "both";
+const SHOW_OPTIONS: Option<Show>[] = [
+  { value: "all", label: "모든 상태" },
+  { value: "active", label: "지도에 보임" },
+  { value: "down", label: "내림·숨김·폐업" },
+];
+const KIND_OPTIONS: Option<Kind>[] = [
+  { value: "real", label: "실제 가게" },
+  { value: "sample", label: "예시 가게" },
+  { value: "both", label: "실제 + 예시" },
+];
 
 // M-AD-03 가게 목록 (11-15 실제 DB): 찾기 → 편집. 삭제는 없고 숨김·폐업만 (REQ-AD-09)
 // 예시 가게(isSample)는 「예시」 표시 — 실제 가게를 넣은 뒤엔 기본으로 실제 가게만 보인다.
@@ -40,6 +54,8 @@ export default function StoreTable({ stores, regions, now: nowIso }: { stores: S
       .sort((a, b) => b.d - a.d);
   }, [stores, q, gu, show, kind, now]);
 
+  const guOptions: Option[] = [{ value: "", label: "모든 지역" }, ...regions.map((r) => ({ value: r.gu, label: r.name })), { value: "etc", label: "기타" }];
+
   // 내보내기: 지금 보이는 가게를 JSON 파일로 (팀 공유·백업용)
   const exportJson = () => {
     const blob = new Blob([JSON.stringify(rows.map((r) => r.s), null, 1)], { type: "application/json" });
@@ -51,87 +67,82 @@ export default function StoreTable({ stores, regions, now: nowIso }: { stores: S
   };
 
   return (
-    <div className="table-wrap">
-      <div className="table-toolbar" style={{ flexWrap: "wrap" }}>
-        <div className="input-search">
-          <Icon name="search" />
-          <input className="input" placeholder="이름·동·주소·id 찾기" value={q} onChange={(e) => setQ(e.target.value)} />
-        </div>
-        <select className="select" style={{ width: 120 }} value={gu} onChange={(e) => setGu(e.target.value)} aria-label="지역">
-          <option value="">모든 지역</option>
-          {regions.map((r) => (
-            <option key={r.gu} value={r.gu}>{r.name}</option>
-          ))}
-          <option value="etc">기타</option>
-        </select>
-        <select className="select" style={{ width: 130 }} value={show} onChange={(e) => setShow(e.target.value as Show)} aria-label="상태">
-          <option value="all">모든 상태</option>
-          <option value="active">지도에 보임</option>
-          <option value="down">내림·숨김·폐업</option>
-        </select>
-        <select className="select" style={{ width: 130 }} value={kind} onChange={(e) => setKind(e.target.value as Kind)} aria-label="실제·예시">
-          <option value="real">실제 가게</option>
-          <option value="sample">예시 가게</option>
-          <option value="both">실제 + 예시</option>
-        </select>
-        <div className="table-toolbar__spacer" />
-        <span className="u-caption">총 {rows.length}곳 · 오래 확인 안 한 순</span>
-        <button type="button" className="btn btn--default btn--sm" onClick={exportJson} disabled={!rows.length}>
-          <Icon name="download" /> 내보내기
-        </button>
-      </div>
+    <TableFrame
+      toolbar={
+        <>
+          <SearchInput value={q} onChange={setQ} placeholder="이름·동·주소·id 찾기" />
+          <PickSelect value={gu} onChange={setGu} options={guOptions} ariaLabel="지역" className="w-32" />
+          <PickSelect value={show} onChange={setShow} options={SHOW_OPTIONS} ariaLabel="상태" className="w-36" />
+          <PickSelect value={kind} onChange={setKind} options={KIND_OPTIONS} ariaLabel="실제·예시" className="w-32" />
+          <div className="flex-1" />
+          <span className="text-caption text-muted-foreground">총 {rows.length}곳 · 오래 확인 안 한 순</span>
+          <Button type="button" variant="outlined" size="compact" onClick={exportJson} disabled={!rows.length}>
+            <Icon name="download" /> 내보내기
+          </Button>
+        </>
+      }
+    >
       {rows.length === 0 ? (
-        <div className="empty">
-          <div className="empty__icon"><Icon name="search" /></div>
-          <div className="empty__title">찾는 가게가 없어요</div>
-          <div className="empty__desc">
-            {hasReal ? "이름을 줄여서 찾거나, 위의 고르기를 바꿔 보세요." : "아직 실제 가게가 없어요. 「후보 가져오기」에서 강남 리서치 자료를 넣을 수 있어요."}
-          </div>
-        </div>
+        <Empty
+          icon="search"
+          title="찾는 가게가 없어요"
+          desc={hasReal ? "이름을 줄여서 찾거나, 위의 고르기를 바꿔 보세요." : "아직 실제 가게가 없어요. 「후보 가져오기」에서 강남 리서치 자료를 넣을 수 있어요."}
+        />
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>가게</th>
-                <th>등급</th>
-                <th>동</th>
-                <th>스타일</th>
-                <th>맵기</th>
-                <th className="cell--num">1인분</th>
-                <th className="cell--num">마지막 확인</th>
-                <th>상태</th>
-                <th style={{ width: 120 }} />
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(({ s, f, d, st }) => (
-                <tr key={s.id}>
-                  <td className="cell--primary">
-                    <Link href={`/admin/stores/${s.id}`}>{s.name}</Link>
-                    {s.isSample && <span className="badge badge--outline" style={{ marginLeft: 6 }}>예시</span>}
-                  </td>
-                  <td>{GRADES[s.grade]}</td>
-                  <td>{s.dong}</td>
-                  <td>{STYLES[s.style]}</td>
-                  <td><Stamp n={s.spice} /></td>
-                  <td className="cell--num">{won(s.price)}</td>
-                  <td className="cell--num u-muted">{s.lastConfirmedAt} · {d}일</td>
-                  <td>
-                    {st === "hidden" ? <span className="badge">숨김</span> : st === "closed" ? <span className="badge badge--danger">폐업</span> : <span className={`badge ${FRESH[f].cls}`}>{FRESH[f].label}</span>}
-                  </td>
-                  <td>
-                    <div className="row-actions">
-                      <Link href={`/admin/stores/${s.id}`}>편집</Link>
-                      <Link href={`/store/${s.id}`} target="_blank">서비스</Link>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>가게</TableHead>
+              <TableHead>등급</TableHead>
+              <TableHead>동</TableHead>
+              <TableHead>스타일</TableHead>
+              <TableHead>맵기</TableHead>
+              <TableHead className={CELL_NUM}>1인분</TableHead>
+              <TableHead className={CELL_NUM}>마지막 확인</TableHead>
+              <TableHead>상태</TableHead>
+              <TableHead className="w-32">
+                <span className="sr-only">바로가기</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map(({ s, f, d, st }) => (
+              <TableRow key={s.id}>
+                <TableCell className={CELL_MAIN}>
+                  <span className="flex flex-wrap items-center gap-1.5">
+                    <Link href={`/admin/stores/${s.id}`} className={LINK}>
+                      {s.name}
+                    </Link>
+                    {s.isSample && <IdBadge className="font-sans">예시</IdBadge>}
+                  </span>
+                </TableCell>
+                <TableCell>{GRADES[s.grade]}</TableCell>
+                <TableCell>{s.dong}</TableCell>
+                <TableCell>{STYLES[s.style]}</TableCell>
+                <TableCell>
+                  <Stamp n={s.spice} />
+                </TableCell>
+                <TableCell className={CELL_NUM}>{won(s.price)}</TableCell>
+                <TableCell className={cn(CELL_NUM, "text-muted-foreground")}>
+                  {s.lastConfirmedAt} · {d}일
+                </TableCell>
+                <TableCell>{st === "hidden" ? <StatusBadge>숨김</StatusBadge> : st === "closed" ? <StatusBadge tone="danger">폐업</StatusBadge> : <StatusBadge tone={FRESH[f].tone}>{FRESH[f].label}</StatusBadge>}</TableCell>
+                <TableCell>
+                  {/* 예전에는 줄에 마우스를 올려야 보였다. 터치 · 키보드에서도 쓰게 늘 보인다 */}
+                  <span className="flex gap-3 whitespace-nowrap">
+                    <Link href={`/admin/stores/${s.id}`} className={LINK}>
+                      편집
+                    </Link>
+                    <Link href={`/store/${s.id}`} target="_blank" className={LINK}>
+                      서비스
+                    </Link>
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
-    </div>
+    </TableFrame>
   );
 }

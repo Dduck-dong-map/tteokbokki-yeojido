@@ -19,7 +19,7 @@ import { SpiceStamp } from "@/components/brand";
 // 맛집 등록 · 정보 고치기(· 평가 남기기의 StarInput·NickField)가 함께 쓰는 입력칸들.
 // 색은 shadcn 변수(border-input · bg-card · text-foreground · text-muted-foreground …)만 쓴다.
 // 입력칸은 디자인 시스템 TextField 의 칸(Input · Textarea 의 variant="field": 56px · 18px)이다. 18px 이라 아이폰 사파리가 화면을 확대하지 않는다.
-// 고르는 단추는 ui/chip, 누르는 단추는 ui/button 을 쓴다. 별점 · 맵기 칸 · 점선 「추가」 · 지도 위 단추만 날 <button> 으로 남긴다.
+// 고르는 단추는 ui/chip, 누르는 단추는 ui/button 을 쓴다. 별점 · 맵기 칸 · 숨긴 파일 선택만 날 요소로 남긴다(자리마다 까닭을 적었다).
 
 // 고르는 칩(떡 · 스타일 · 등급 · 이용). 켜짐은 Chip 이 aria-pressed 와 체크 아이콘으로 알린다. 누를 때마다 onClick 을 그대로 부른다
 export function Choice({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
@@ -34,6 +34,7 @@ export function StarInput({ value, onChange, hint = "안 골라도 돼요" }: { 
   return (
     <div className="flex items-center gap-1" role="radiogroup" aria-label="가게 평점">
       {([1, 2, 3, 4, 5] as const).map((v) => (
+        // eslint-disable-next-line no-restricted-syntax -- 별점 고르기: role="radio" 인 별 다섯 개 (brand/StarGlyph 색)
         <button
           key={v}
           type="button"
@@ -41,7 +42,7 @@ export function StarInput({ value, onChange, hint = "안 골라도 돼요" }: { 
           aria-checked={value === v}
           aria-label={`별 ${v}개`}
           onClick={() => onChange(value === v ? undefined : v)}
-          className={cn("grid h-11 w-10 place-items-center text-heading-2 leading-none", value && v <= value ? "text-[#D98E04]" : "text-input")}
+          className={cn("grid h-11 w-10 place-items-center text-heading-2 leading-none", value && v <= value ? "text-star" : "text-input")}
         >
           ★
         </button>
@@ -55,10 +56,10 @@ export function SpiceInput({ value, onChange }: { value?: number; onChange: (v: 
   return (
     <div className="flex justify-between gap-1">
       {([1, 2, 3, 4, 5] as Spice[]).map((lv) => (
-        // Chip(shape="tile")은 안쪽 svg 크기를 20px 로 맞춰 도장 속 고추 그림이 커진다 → 이 칸은 날 버튼으로 둔다
+        // eslint-disable-next-line no-restricted-syntax -- 맵기 칸: Chip(shape="tile")은 도장 속 고추 그림을 20px 로 키워 버린다
         <button key={lv} type="button" onClick={() => onChange(lv)} aria-pressed={value === lv} className={cn("flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl border py-2", value === lv ? "border-primary" : "border-transparent")}>
           <SpiceStamp n={lv} size={32} />
-          <span className="text-center text-caption leading-tight break-keep text-muted-foreground/70 [overflow-wrap:anywhere]">{SPICE_LEVELS[lv].ref.replace(" 정도", "")}</span>
+          <span className="text-center text-caption break-keep text-muted-foreground/70 [overflow-wrap:anywhere]">{SPICE_LEVELS[lv].ref.replace(" 정도", "")}</span>
         </button>
       ))}
     </div>
@@ -116,10 +117,10 @@ export function MenuEditor({ menu, onChange }: { menu: MenuItem[]; onChange: (m:
         </div>
       ))}
       {menu.length < MAX_MENU && (
-        <button type="button" onClick={() => onChange([...menu, { name: "", price: 0 }])} className="inline-flex h-11 items-center justify-center gap-1 rounded-xl border border-dashed border-input text-caption text-muted-foreground">
-          <Plus className="size-4" strokeWidth={2} aria-hidden="true" />
+        <Button type="button" variant="outlined" size="md" onClick={() => onChange([...menu, { name: "", price: 0 }])} className="w-full border-dashed text-muted-foreground">
+          <Plus strokeWidth={2} aria-hidden="true" />
           다른 메뉴 더하기
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -153,9 +154,9 @@ export function PhotoPicker({ ids, onChange, hint }: { ids: string[]; onChange: 
           <div key={id} className="relative aspect-square overflow-hidden rounded-xl border border-border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`/api/photos/${id}`} alt="올린 사진" className="h-full w-full object-cover" />
-            <button type="button" onClick={() => onChange(ids.filter((x) => x !== id))} aria-label="이 사진 빼기" className="hit absolute top-1 right-1 grid h-6 w-6 place-items-center rounded-full bg-foreground/70 text-background">
+            <Button type="button" variant="ghost" size="icon-xs" onClick={() => onChange(ids.filter((x) => x !== id))} aria-label="이 사진 빼기" className="hit absolute top-1 right-1 rounded-full bg-foreground/70 text-background hover:bg-foreground hover:text-background">
               <X className="size-4" strokeWidth={2} aria-hidden="true" />
-            </button>
+            </Button>
           </div>
         ))}
         {ids.length < MAX_PHOTOS && (
@@ -181,8 +182,9 @@ export function PhotoPicker({ ids, onChange, hint }: { ids: string[]; onChange: 
                   사진
                 </span>
               )}
-              {!busy && <span className="mt-1 hidden text-caption leading-tight break-keep md:block">끌어다 놓거나 누르기</span>}
+              {!busy && <span className="mt-1 hidden text-caption break-keep md:block">끌어다 놓거나 누르기</span>}
             </span>
+            {/* eslint-disable-next-line no-restricted-syntax -- 숨긴 파일 선택: 바깥 label 이 눌리는 칸이라 꾸밈이 없다 */}
             <input ref={input} type="file" accept="image/*" multiple className="hidden" disabled={busy} onChange={(e) => pick(e.target.files)} />
           </label>
         )}
@@ -286,9 +288,10 @@ export function MapPicker({ stores, start, onChange, tall = false }: { stores: S
           strokeWidth={2}
           className="pointer-events-none absolute top-1/2 left-1/2 z-10 size-10 -translate-x-1/2 -translate-y-[calc(100%-3px)] fill-report text-report-foreground"
         />
-        <button type="button" onClick={locate} className="absolute top-2 right-2 z-10 h-11 rounded-full border border-input bg-card px-3 text-caption font-semibold text-foreground shadow-sm md:h-9">
+        {/* 지도 위에 뜨는 단추: 카드 면 + elevation-1 */}
+        <Button type="button" variant="outlined" size="compact" onClick={locate} className="absolute top-2 right-2 z-10 bg-card shadow-elevation-1">
           내 위치로
-        </button>
+        </Button>
       </div>
       <p className="mt-1.5 text-body-small text-muted-foreground/70">{msg ?? "지도를 움직여 핀을 가게 자리에 맞춰 주세요"}</p>
     </div>
@@ -300,10 +303,10 @@ const DEFAULT_HOURS: Hours = { days: [1, 2, 3, 4, 5, 6], open: "11:00", close: "
 export function HoursField({ value, onChange }: { value: Hours | null; onChange: (h: Hours | null) => void }) {
   if (!value)
     return (
-      <button type="button" onClick={() => onChange(DEFAULT_HOURS)} className="inline-flex h-11 w-full items-center justify-center gap-1 rounded-xl border border-dashed border-input text-caption text-muted-foreground">
-        <Plus className="size-4" strokeWidth={2} aria-hidden="true" />
+      <Button type="button" variant="outlined" size="md" onClick={() => onChange(DEFAULT_HOURS)} className="w-full border-dashed text-muted-foreground">
+        <Plus strokeWidth={2} aria-hidden="true" />
         영업시간 채우기
-      </button>
+      </Button>
     );
   const toggle = (d: number) => onChange({ ...value, days: value.days.includes(d) ? value.days.filter((x) => x !== d) : [...value.days, d].sort() });
   return (

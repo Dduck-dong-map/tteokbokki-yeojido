@@ -52,7 +52,7 @@ export function StoreCardBody({ store: s, now, me = null, thumb = false, tags = 
         )}
 
         <p className="mt-1 flex items-center gap-2 text-caption">
-          <Stars rating={s.rating} size={12} />
+          <Stars rating={s.rating} />
           {tags && <span className="text-muted-foreground/70">· 맵기 {SPICE_LEVELS[s.spice].ref.replace(" 정도", "")}</span>}
         </p>
       </div>
@@ -60,7 +60,7 @@ export function StoreCardBody({ store: s, now, me = null, thumb = false, tags = 
       <div className="flex shrink-0 flex-col items-end justify-between">
         <SpiceStamp n={s.spice} size={26} faded={stale} face />
         <div className="text-right">
-          <b className="block text-body-medium leading-tight text-foreground">{won(s.price)}</b>
+          <b className="block text-body-medium text-foreground">{won(s.price)}</b>
           {s.menu[0] && <span className="block max-w-[96px] truncate text-caption text-muted-foreground/70">{s.menu[0].name}</span>}
         </div>
       </div>

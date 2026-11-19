@@ -10,6 +10,7 @@ import type { StoreRowViewProps } from "./types";
 export default function StoreRowView({ store, me, now, selected, onPick }: StoreRowViewProps) {
   return (
     <li id={`row-${store.id}`} className={cn(selected && "bg-secondary shadow-[inset_3px_0_0_var(--primary)]")}>
+      {/* eslint-disable-next-line no-restricted-syntax -- 디자인 시스템 StoreListItem 의 구현: 줄 전체가 단추인 모양이라 Button(한 줄 알약)이 아니다 */}
       <button
         type="button"
         onClick={onPick}

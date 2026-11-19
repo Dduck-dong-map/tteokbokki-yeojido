@@ -21,6 +21,7 @@ export default function StorePickerView({ query, hits, placeholder = "가게 이
           {hits.length ? (
             hits.map((s) => (
               <li key={s.id}>
+                {/* eslint-disable-next-line no-restricted-syntax -- 찾은 가게 목록의 줄 전체가 단추 */}
                 <button type="button" onClick={() => onPick(s.id)} className="flex h-11 w-full items-center gap-2 px-3 text-left text-body-small hover:bg-ghost-hover">
                   <span className="min-w-0 flex-1 truncate font-semibold">{s.name}</span>
                   <span className="shrink-0 text-caption text-muted-foreground/70">{s.dong}</span>

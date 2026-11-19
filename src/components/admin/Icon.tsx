@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  ArrowUp,
   Bell,
   Book,
   Check,
@@ -7,6 +8,7 @@ import {
   Clock,
   Database,
   Download,
+  ExternalLink,
   FileText,
   Funnel,
   Inbox,
@@ -30,9 +32,10 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // 어드민 아이콘. shadcn 아이콘(lucide-react, components.json 의 iconLibrary)을 쓴다.
-// 화면은 이름으로만 고른다(<Icon name="inbox" />). 크기는 CSS(.admin-root … svg)가 정하고, 색은 currentColor 를 따른다.
+// 화면은 이름으로만 고른다(<Icon name="inbox" />). 크기는 className(size-4 · size-icon-sm 등)으로 주고, 안 주면 16px. 색은 currentColor 를 따른다.
 // lucide 에 없는 우리만의 그림이 필요해지면 이 표에 넣지 말고 따로 부품으로 둔다.
 const ICONS = {
   grid: LayoutGrid,
@@ -52,6 +55,8 @@ const ICONS = {
   tools: Wrench,
   refresh: RefreshCw,
   "arrow-right": ArrowRight,
+  "arrow-up": ArrowUp,
+  external: ExternalLink,
   "chevron-right": ChevronRight,
   plus: Plus,
   search: Search,
@@ -68,8 +73,8 @@ const ICONS = {
 
 export type IconName = keyof typeof ICONS;
 
-export function Icon({ name }: { name: IconName }) {
+export function Icon({ name, className }: { name: IconName; className?: string }) {
   const Glyph = ICONS[name];
-  // 굵기 1.8 은 예전 어드민 아이콘과 같다
-  return <Glyph strokeWidth={1.8} aria-hidden />;
+  // 굵기 1.8 은 예전 어드민 아이콘과 같다. Button 안에서는 크기 클래스를 안 주면 Button 이 정한 크기가 된다
+  return <Glyph strokeWidth={1.8} aria-hidden className={cn("shrink-0", className ?? "size-4")} />;
 }

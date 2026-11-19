@@ -149,3 +149,13 @@ export async function submitRegister(page: Page, until: ReturnType<Page["getByRo
     await expect(until).toBeVisible({ timeout: 20_000 });
   }).toPass({ timeout: 60_000 });
 }
+
+// 어드민 로그인 (F010). E2E 서버의 운영 열쇠(playwright.config.ts E2E_ENV.ADMIN_KEY)와 같은 값.
+// 열쇠를 넣으면 가게 관리로 옮겨 간다. 쿠키는 이 브라우저 컨텍스트에 남는다
+export const E2E_ADMIN_KEY = "e2e-admin-key";
+export async function adminLogin(page: Page, key = E2E_ADMIN_KEY) {
+  await page.goto("/admin/login");
+  await page.getByLabel(/운영 열쇠/).fill(key);
+  await page.getByRole("button", { name: "들어가기" }).click();
+  await page.waitForURL("**/admin/stores");
+}

@@ -71,7 +71,8 @@ export default function MineSavedView({ saved, savedShown, onlyVisited, me, now,
             <>찜한 가게 옆 「다녀옴」 을 누르면 여기 모여요.</>
           ) : (
             <>
-              지도에서 가게를 열고 ♡ 를 누르면 여기 모여요.
+              지도에서 가게를 열고 <Heart className="inline size-4 align-text-bottom" strokeWidth={2} aria-hidden="true" />
+              <span className="sr-only">찜</span> 를 누르면 여기 모여요.
               <br />
               <Link href="/" className="hit mt-3 inline-block font-semibold text-foreground underline underline-offset-4">
                 지도로 가기

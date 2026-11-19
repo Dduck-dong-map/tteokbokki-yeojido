@@ -19,8 +19,6 @@ export default function AddToListView({ lists, loaded, open, title, busyId, mess
         size="md"
         onClick={onToggleOpen}
         aria-expanded={open}
-        // 기호를 lucide 아이콘으로 바꿨어도 접근성 이름은 예전 글자 그대로 둔다(E2E 가 「내 리스트에 담기」로 찾는다)
-        aria-label={count ? `✓ 내 리스트 ${count}곳에 담김` : "＋ 내 리스트에 담기"}
         className={cn("w-full min-w-0 px-3", count > 0 && "border-primary text-primary")}
       >
         {count ? <Check className="size-5" strokeWidth={2} aria-hidden="true" /> : <Plus className="size-5" strokeWidth={2} aria-hidden="true" />}
@@ -36,6 +34,7 @@ export default function AddToListView({ lists, loaded, open, title, busyId, mess
                 const on = has(l.id);
                 return (
                   <li key={l.id}>
+                    {/* eslint-disable-next-line no-restricted-syntax -- 목록 줄 전체가 켜고 끄는 단추(체크 칸 + 이름 + 곳 수) */}
                     <button
                       type="button"
                       disabled={busyId === l.id}

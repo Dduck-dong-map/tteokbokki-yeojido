@@ -27,7 +27,7 @@ async function Loader({ children }: { children: React.ReactNode }) {
   // 지도·목록에 안 쓰는 긴 글은 빼고 보낸다 (가게가 늘어도 페이지가 무거워지지 않게)
   const light = stores.map((s) => ({ ...s, memo: undefined, introBy: undefined, introAt: undefined, spiceVotes: undefined }));
   return (
-    <MapShell stores={light} recentReports={recentReports} sample={USING_SAMPLE_DATA}>
+    <MapShell stores={light} recentReports={recentReports} sample={USING_SAMPLE_DATA} nowIso={new Date().toISOString()}>
       {children}
     </MapShell>
   );

@@ -18,7 +18,7 @@ const MOVE = "size-8 text-muted-foreground";
 export default function ListStoreRowsView({ stores, mine, selectedId, onSelect, onMove, onRemove }: ListStoreRowsViewProps) {
   if (!stores.length)
     return (
-      <p className="rounded-xl border border-dashed border-input px-4 py-8 text-center text-body-small leading-relaxed text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
+      <p className="rounded-xl border border-dashed border-input px-4 py-8 text-center text-body-small text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
         아직 담긴 가게가 없어요.
         {mine ? <> 아래에서 가게를 찾아 넣거나, 가게 화면의 「리스트에 담기」를 눌러 주세요.</> : null}
       </p>

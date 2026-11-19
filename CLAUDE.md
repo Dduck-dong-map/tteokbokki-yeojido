@@ -14,7 +14,7 @@ pnpm 만 쓴다 (`packageManager: pnpm@10.33.0`).
 pnpm dev            # 개발 서버. predev 가 MapLibre 일꾼 파일·공유 HTML 을 public/ 에 복사한다
 pnpm build          # prebuild 도 같은 복사를 한다
 pnpm typecheck      # next typegen && tsc --noEmit (라우트 타입 PageProps 등을 먼저 만든다)
-pnpm lint           # eslint
+pnpm lint           # eslint — 디자인 시스템 금지 규칙도 본다 (임의 글자 크기 · 임의 색 · ui/ 밖 날 입력 요소 · 어드민 CSS)
 pnpm test           # vitest — tests/unit/**/*.test.ts (규칙 함수 · 저장소 쓰기 규칙 · 쓰기 입구 · 어드민 접근 · 사진 저장소. pg.test.ts 는 DATABASE_URL 이 있을 때만)
 pnpm e2e            # Playwright — 라우트 열림 + 저장 흐름 + 수용 기준(acceptance.spec.ts) × 폭 390·768·1280
 pnpm tokens         # docs/design-system/tokens.json → src/app/tokens.css 생성
@@ -40,7 +40,7 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 
 **화면 = 컨테이너 + View.** (자세한 작성 규칙은 컴포넌트 패턴 가이드 2장) 화면마다 `X.tsx`(상태·데이터·라우터·브라우저 API)와 `XView.tsx`(props 만 받아 그리는 정적 마크업)로 나뉜다. View 의 props 계약은 `src/components/<screen>/types.ts` 에 둔다. 예: `components/home/MapShell.tsx` → `MapShellView.tsx`. 공용 부품은 `components/ui/`(shadcn, base-nova · `@base-ui/react`), `brand/`(도장·별점·로고 등 우리 것), `layout/`(헤더·아래 메뉴·격자)에 둔다.
 
-**라우트 묶음.** `src/app/(site)/` 이 사용자 화면이다. `(site)/(map)/layout.tsx` 는 지도 홈 `/` 와 가게 상세 `/store/[id]` 가 함께 쓰는 틀이다. PC 에서 상세를 열어도 큰 지도가 이어지도록 지도를 레이아웃에 둔다. `src/app/admin/` 은 운영 어드민이다. 가게 관리 · 후보 가져오기 · 운영 기록은 실제 저장소를 읽고 고치고(Server Action `admin/actions.ts` → `lib/data/admin.ts`), 홈 · 신고 · 요청 · 신선도 · 설정은 시안이다. 어드민 CSS 는 `.admin-root` 안에서만 듣고 색은 디자인 토큰에 이어져 있다. 접근은 `src/lib/admin/access.ts` 가 막는다(`ADMIN_KEY` 가 비면 개발 서버의 localhost 만, production 은 늘 잠김). 화면 내용은 `components/admin/AdminGate.tsx` 의 `AdminGate` 뒤에, 머리글의 단추·링크는 `AdminOnly` 뒤에 둔다.
+**라우트 묶음.** `src/app/(site)/` 이 사용자 화면이다. `(site)/(map)/layout.tsx` 는 지도 홈 `/` 와 가게 상세 `/store/[id]` 가 함께 쓰는 틀이다. PC 에서 상세를 열어도 큰 지도가 이어지도록 지도를 레이아웃에 둔다. `src/app/admin/` 은 운영 어드민이다. 가게 관리 · 후보 가져오기 · 운영 기록은 실제 저장소를 읽고 고치고(Server Action `admin/actions.ts` → `lib/data/admin.ts`), 홈 · 신고 · 요청 · 신선도 · 설정은 시안이다. 어드민도 사용자 화면과 같은 스택(Tailwind · `ui/` 부품 · 디자인 토큰)으로 그린다. 전용 CSS 는 없다(11-19 에 지움). 공용 조각은 `components/admin/bits.tsx`(그리기) · `controls.tsx`(입력)이고, 글꼴만 다르다(어드민은 제목도 Pretendard). 접근은 `src/lib/admin/access.ts` 가 막는다(`ADMIN_KEY` 가 비면 개발 서버의 localhost 만, production 은 늘 잠김). 화면 내용은 `components/admin/AdminGate.tsx` 의 `AdminGate` 뒤에, 머리글의 단추·링크는 `AdminOnly` 뒤에 둔다.
 
 **데이터 흐름 (한 방향).**
 - 읽기: 화면은 `src/lib/data/index.ts` 로만 읽는다. 예시 데이터 숨김(`SHOW_SAMPLES`)과 가려진 가게 걸러내기가 여기서 일어난다.
@@ -66,6 +66,8 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 - 연결 층: `src/app/globals.css`. shadcn·우리 변수를 Semantic 토큰에 잇는다.
 - 규칙 문서는 `docs/design-system/` 에 있다. `src/lib/theme.ts` 는 지도 색 계산만 한다.
 - 아이콘은 `lucide-react` 를 쓰고 기호 글자(＋ ✓ ♡)를 아이콘으로 쓰지 않는다. 글자 크기는 임의 값(`text-[13px]`)이 아니라 글자 토큰(`text-body-medium` 등)으로 쓴다. 클래스는 `@/lib/utils` 의 `cn` 으로 합친다. 대응표와 규칙은 컴포넌트 패턴 가이드 9장에 있다.
+- `pnpm lint` 가 임의 글자 크기(`text-[13px]`) · 임의 색(`bg-[#…]`) · `ui/` 밖 날 `<button>` · `<input>` · `<select>` · `<textarea>` · 어드민의 CSS 가져오기와 `#hex` 를 막는다(`eslint.config.mjs`). 꼭 필요한 예외는 그 줄 위에 `eslint-disable-next-line no-restricted-syntax -- 까닭` 으로 까닭을 적는다.
+- `ui/` 의 모든 파일은 `@/lib/utils` 의 `cn` 을 쓴다. shadcn 파일을 새로 받으면 `import { cn } from "cn"` 을 `@/lib/utils` 로 바꾼다(기본 `cn` 은 `text-heading-4` 같은 토큰 클래스를 조용히 떨어뜨린다).
 
 **반응형 세 폭.** 폰 <768 은 지도 + 아래 시트 + 아래 메뉴, 768~1279 는 왼쪽 패널 + 지도, ≥1280 은 목록 + 상세 + 지도다. E2E 프로젝트도 이 세 폭(390·768·1280)이다.
 
@@ -77,7 +79,7 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 - Vercel 에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Supabase Storage 설정이 없으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다).
 - production(`pnpm start` · 도커 앱 · Vercel)에서는 `ADMIN_KEY` 가 없으면 어드민이 늘 잠긴다. 개발 서버만 `ADMIN_KEY` 없이 127.0.0.1 · localhost 로 열린다.
 - 접속 IP 는 `x-forwarded-for` 첫 주소다. Vercel 은 이 헤더를 덮어쓰지만, 프록시 없이 서버를 직접 열면 손님이 지어 보낼 수 있다(`src/lib/request.ts`).
-- `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 `.next` 를 지운다.
+- `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 개발 서버를 끄고 `.next/dev` 를 지운다(개발 캐시만 지우면 된다. `.next` 전체를 지우면 떠 있는 `pnpm start` 서버가 깨진다).
 - 기기·IP 는 해시로만 남기고 화면에 내보내지 않는다(`db.ts` 의 `Mark`).
 
 ## 작업 방식

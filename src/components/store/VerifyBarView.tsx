@@ -8,7 +8,7 @@ export default function VerifyBarView({ by, yes, no, verify }: VerifyBarViewProp
   return (
     <section className="rounded-2xl border border-dashed border-muted-foreground/70 bg-card p-4">
       <h3 className="text-body-medium">아직 확인 중인 가게예요</h3>
-      <p className="mt-1 text-body-small leading-relaxed text-muted-foreground break-keep [overflow-wrap:anywhere]">
+      <p className="mt-1 text-body-small text-muted-foreground break-keep [overflow-wrap:anywhere]">
         {by ? `${by} 님이 등록했어요. ` : ""}가 보신 적 있으면 알려 주세요. 「맞아요」 {VERIFY_YES}명이면 확인이 끝나고, 「달라요」 {HIDE_AT}명이면 지도에서 내려요.
       </p>
       <p className="mt-2 text-caption font-semibold">

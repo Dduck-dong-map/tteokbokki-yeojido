@@ -7,7 +7,6 @@ import { send, useMe } from "@/lib/me";
 import { refreshOwned, useOwned } from "@/lib/owned";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 
 // 글 아래: 내 글이면 「지우기」, 아니면 「신고」. 지우기는 화면 안에서 한 번 더 묻는다 (확인 창은 쓰지 않는다).
 export function PostActions({ id }: { id: string }) {
@@ -36,9 +35,9 @@ export function PostActions({ id }: { id: string }) {
         asking ? (
           <>
             <span className="text-muted-foreground">이 글을 지울까요?</span>
-            <button type="button" onClick={remove} className={cn("hit h-8 rounded-lg bg-spicybg px-3 font-semibold text-spicytext")}>
+            <Button type="button" variant="destructive" size="compact" onClick={remove}>
               지우기
-            </button>
+            </Button>
             <Button type="button" variant="outlined" size="compact" onClick={() => setAsking(false)}>
               그만두기
             </Button>
@@ -108,7 +107,7 @@ export function Comments({ postId, comments, nowIso }: { postId: string; comment
                   {data.comments.includes(c.id) ? "지우기" : "신고"}
                 </Button>
               </p>
-              <p className="mt-1 text-body-small leading-relaxed break-keep whitespace-pre-line [overflow-wrap:anywhere]">{c.text}</p>
+              <p className="mt-1 text-body-small break-keep whitespace-pre-line [overflow-wrap:anywhere]">{c.text}</p>
             </li>
           ))}
         </ul>

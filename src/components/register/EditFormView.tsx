@@ -12,7 +12,7 @@ import type { EditFormViewProps } from "./types";
 export default function EditFormView({ store, stores, values, moveOpen, error, sending, onChange, onOpenMove, onSubmit }: EditFormViewProps) {
   return (
     <div className="flex flex-col gap-6 px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+20px)] md:px-0">
-      <p className="rounded-xl bg-secondary px-3 py-2 text-body-small leading-relaxed text-muted-foreground">
+      <p className="rounded-xl bg-secondary px-3 py-2 text-body-small text-muted-foreground">
         고치면 바로 반영되고{" "}
         <Link href={`/store/${store.id}/history`} className="hit font-semibold underline underline-offset-2">
           변경 이력

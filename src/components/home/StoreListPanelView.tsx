@@ -36,7 +36,7 @@ export default function StoreListPanelView({
     <section
       aria-label="가게 목록"
       className={cn(
-        "absolute inset-x-0 bottom-0 z-20 flex h-[var(--sheet-h)] flex-col rounded-t-2xl border-t border-border bg-card shadow-lg transition-[height] duration-200",
+        "absolute inset-x-0 bottom-0 z-20 flex h-[var(--sheet-h)] flex-col rounded-t-2xl border-t border-border bg-card shadow-elevation-3 transition-[height] duration-200",
         "md:static md:order-1 md:h-full md:w-[360px] md:shrink-0 md:rounded-none md:border-t-0 md:border-r md:shadow-none md:transition-none",
         routeId ? "md:max-xl:hidden xl:w-[360px]" : "xl:w-[400px]",
       )}
@@ -71,6 +71,7 @@ export default function StoreListPanelView({
             onPointerUp={onHandlePointerUp}
             onPointerCancel={onHandlePointerCancel}
           >
+            {/* eslint-disable-next-line no-restricted-syntax -- 시트 손잡이(4px 막대): 끌기와 탭을 함께 받는 전용 모양이라 Button 을 쓰지 않는다 */}
             <button
               type="button"
               // 끌기 모드(onHandlePointerDown 있음)에서는 탭도 컨테이너의 PointerUp 이 처리하므로 onClick 을 걸지 않는다(두 번 토글 방지)

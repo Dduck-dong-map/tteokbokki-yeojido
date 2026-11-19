@@ -11,6 +11,7 @@ export default function FlipStamp({ n, size = 64, faded = false }: { n: Spice; s
   const [on, setOn] = useState(false);
   const pillH = Math.max(9, size * 0.3) + 2;
   return (
+    // eslint-disable-next-line no-restricted-syntax -- 맵기 도장 뒤집기: 3D 뒤집기 전용 모양(.flip)이고 그림이 곧 단추다
     <button
       type="button"
       onClick={() => setOn((v) => !v)}

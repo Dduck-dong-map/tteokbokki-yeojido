@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import AdminGate from "@/components/admin/AdminGate";
 import ReportQueue from "@/components/admin/ReportQueue";
 import { PageHeader, ProtoNote } from "@/components/admin/bits";
+import { SAMPLE_STORES } from "@/lib/data/sample-stores";
 
 export const metadata = { title: "제보 승인함" };
 
@@ -13,7 +14,8 @@ export default function ReportsPage() {
       <AdminGate>
         <ProtoNote />
         <Suspense>
-          <ReportQueue />
+          {/* 예시 가게는 서버에서 읽어 넘긴다 (클라이언트 부품이 @/lib/data 를 직접 가져오지 않게) */}
+          <ReportQueue stores={SAMPLE_STORES} />
         </Suspense>
       </AdminGate>
     </>

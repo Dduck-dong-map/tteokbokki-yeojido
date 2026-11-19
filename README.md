@@ -48,7 +48,7 @@ pnpm dev
 - Vercel 배포에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Supabase Storage 설정이 없으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다). Supabase 프로젝트와 버킷은 아직 없다.
 - Postgres 빈 DB 는 `SEED_SAMPLES=1` 일 때만 예시로 시작한다. 실제 가게는 어드민 「후보 가져오기」로 넣는다([`db/README.md`](db/README.md) 「가게 넣는 순서」).
 - `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 `.next` 를 지우고 켠다.
-- `AGENTS.md` 는 `next dev` 가 저절로 만드는 파일이다. 어드민 화면 CSS(`src/app/admin/*.css`)는 `.admin-root` 안에서만 듣고, 색은 디자인 토큰에 이어져 있다. 어드민 아이콘은 `lucide-react` 다(`src/components/admin/Icon.tsx`).
+- `AGENTS.md` 는 `next dev` 가 저절로 만드는 파일이다. 어드민 화면도 사용자 화면과 같은 스택(Tailwind · `ui/` 부품 · 디자인 토큰)으로 그린다. 전용 CSS 는 없고 공용 조각은 `src/components/admin/bits.tsx` · `controls.tsx` 다. 어드민 아이콘은 `lucide-react` 다(`src/components/admin/Icon.tsx`).
 
 ## 문서
 

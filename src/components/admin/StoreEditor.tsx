@@ -2,15 +2,24 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition, type ReactNode } from "react";
 import { confirmStore, createStore, saveStore, setStoreStatus } from "@/app/admin/actions";
+import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TextAreaField, TextField } from "@/components/ui/text-field";
 import type { AdminLog, AdminStoreInput } from "@/lib/data/admin";
 import type { Research } from "@/lib/data/datasets";
 import { DAY_NAMES } from "@/lib/freshness";
 import { GRADES, MAX_TASTES, RICE_CAKES, SHOP_TYPES, SIDES, SPICE_LEVELS, STYLES, TASTES, USAGES, keysOf, type Spice } from "@/lib/taxonomy";
 import type { Region, Store, StoreStatus } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { parseAddress } from "@/lib/wiki";
-import { Stamp } from "./bits";
+import { CELL_MAIN, CELL_NUM, CELL_WRAP, Field, KeyValue, LINK, Notice, Panel, Stamp, StatusBadge, TableFrame } from "./bits";
+import { CheckField, PickSelect, Toast, type Option } from "./controls";
 import { Icon } from "./Icon";
 
 type Tab = "basic" | "taste" | "menu" | "hours" | "history";
@@ -23,6 +32,31 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 const KIND_TEXT: Record<string, string> = { new: "등록", edit: "수정", still: "확인", hidden: "숨김", closed: "폐업", verified: "확인 완료" };
 const STATUS_TEXT: Record<StoreStatus, string> = { active: "지도에 보임", hidden: "숨김", closed: "폐업" };
+
+// 고르는 칸의 보기 (PickSelect). "" 은 「없음」이거나 아직 안 고른 것
+const GRADE_OPTIONS: Option<Store["grade"]>[] = keysOf(GRADES).map((g) => ({ value: g, label: GRADES[g] }));
+const SHOP_TYPE_OPTIONS: Option<NonNullable<Store["shopType"]> | "">[] = [{ value: "", label: "없음" }, ...keysOf(SHOP_TYPES).map((g) => ({ value: g, label: SHOP_TYPES[g] }))];
+const STYLE_OPTIONS: Option<Draft["style"]>[] = keysOf(STYLES).map((k) => ({ value: k, label: STYLES[k] }));
+const HIDE_REASONS = ["등재 기준 미달", "사장님 요청", "정보 확인 중", "중복 가게"];
+const CLOSE_REASONS = ["폐업 확인", "이전(다른 곳으로 옮김)", "장기 휴업"];
+// 폼 2열 (768 미만은 한 줄). 한 줄을 다 쓰는 칸은 md:col-span-2
+const FORM_GRID = "grid gap-4 md:grid-cols-2";
+
+// 저장이 막혔을 때 어느 칸인지 (F012 「저장되지 않고 그 칸이 표시된다」). 서버 검사 문구(lib/data/admin.ts checkAdminStore)의 앞머리로 찾는다.
+// 그 칸이 있는 탭으로 옮기고, 칸 아래에 같은 문구를 보인다
+type FieldKey = "name" | "grade" | "address" | "latlng" | "gu" | "dong" | "style" | "spice" | "price";
+const FIELD_OF: [string, Tab, FieldKey][] = [
+  ["가게 이름", "basic", "name"],
+  ["등재 등급", "basic", "grade"],
+  ["주소를", "basic", "address"],
+  ["위도·경도", "basic", "latlng"],
+  ["구를", "basic", "gu"],
+  ["동을", "basic", "dong"],
+  ["스타일", "taste", "style"],
+  ["맵기를", "taste", "spice"],
+  ["대표 떡볶이", "menu", "price"],
+];
+const fieldOf = (error: string | null) => (error ? FIELD_OF.find(([head]) => error.startsWith(head)) : undefined);
 
 const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 const today = () => new Date(Date.now() + 9 * 3_600_000).toISOString().slice(0, 10);
@@ -126,12 +160,23 @@ export default function StoreEditor({ initial, template, templateId, research, r
   const [start, setStart] = useState(() => toDraft(initial ?? { ...template, id: templateId }));
   const [d, setD] = useState<Draft>(start);
   const [tab, setTab] = useState<Tab>("basic");
-  const [confirmKind, setConfirmKind] = useState<"hidden" | "closed" | null>(null);
+  const uid = useId();
+  // 내리기 확인 팝업: 열림과 종류를 따로 든다 (닫히는 동안 제목 · 보기가 바뀌지 않게)
+  const [confirmKind, setConfirmKind] = useState<"hidden" | "closed">("hidden");
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [busy, startBusy] = useTransition();
   const dirty = JSON.stringify(d) !== JSON.stringify(start);
+  const bad = fieldOf(error)?.[2];
+  const errorAt = (key: FieldKey) => (bad === key ? (error ?? undefined) : undefined);
+  // 저장이 막히면 그 칸이 있는 탭을 연다
+  const refuse = (message: string) => {
+    setError(message);
+    const at = fieldOf(message);
+    if (at) setTab(at[1]);
+  };
   const status = initial?.status ?? "active";
 
   const set = (patch: Partial<Draft>) => setD((x) => ({ ...x, ...patch }));
@@ -145,12 +190,12 @@ export default function StoreEditor({ initial, template, templateId, research, r
       setError(null);
       if (isNew) {
         const r = await createStore(toInput(d), d.id);
-        if (!r.ok) return setError(r.error);
+        if (!r.ok) return refuse(r.error);
         router.push(`/admin/stores/${r.id}?saved=1`);
         return;
       }
       const r = await saveStore(initial.id, toInput(d));
-      if (!r.ok) return setError(r.error);
+      if (!r.ok) return refuse(r.error);
       setStart(d);
       flash(`저장했어요 · 바뀐 칸 ${r.changes}개가 이력에 남았어요`);
       router.refresh();
@@ -175,350 +220,430 @@ export default function StoreEditor({ initial, template, templateId, research, r
   const lngN = num(d.lng);
   const mapLink = latN && lngN ? `https://www.openstreetmap.org/?mlat=${latN}&mlon=${lngN}#map=18/${latN}/${lngN}` : null;
 
+  const askDown = (kind: "hidden" | "closed") => {
+    setReason("");
+    setConfirmKind(kind);
+    setConfirmOpen(true);
+  };
+  const guOptions: Option[] = [...regions.map((r) => ({ value: r.gu, label: r.name })), { value: "etc", label: "기타" }];
+  // 숨기기는 이유가 꼭 있어야 하고(고르기 전 안내 글), 폐업은 안 적어도 된다(「적지 않음」이 보기)
+  const reasonOptions: Option[] = confirmKind === "hidden" ? HIDE_REASONS.map((r) => ({ value: r, label: r })) : [{ value: "", label: "적지 않음" }, ...CLOSE_REASONS.map((r) => ({ value: r, label: r }))];
+  const researchRows: [ReactNode, ReactNode][] = research
+    ? [
+        ["근거", research.basis ?? "—"],
+        ...(research.gapNotes?.length ? [["빈칸 재조사", research.gapNotes.map((n, i) => <div key={i}>{n}</div>)] as [ReactNode, ReactNode]] : []),
+        ...(research.hoursNote ? [["영업시간 메모", research.hoursNote] as [ReactNode, ReactNode]] : []),
+        ...(research.statusNote ? [["상태 메모", research.statusNote] as [ReactNode, ReactNode]] : []),
+        ["최근 근거", research.lastEvidence ?? "—"],
+        ["좌표", research.geo === "building" ? "건물 번호까지 (OpenStreetMap)" : research.geo === "rough" ? "길 근처까지 — 핀 확인 필요" : "못 찾음"],
+        [
+          "출처",
+          research.sources.map((u) => (
+            <div key={u} className="truncate">
+              <a href={u} target="_blank" rel="noreferrer" className={LINK}>
+                {decodeURIComponent(u).replace(/^https?:\/\//, "").slice(0, 70)}
+              </a>
+            </div>
+          )),
+        ],
+      ]
+    : [];
+
   return (
     <>
       {exists && templateId && (
-        <div className="alert alert--warning u-mb-4">
-          <Icon name="alert" />
-          <div>
-            이 가게(<b>{templateId}</b>)는 이미 DB 에 있어요. <Link href={`/admin/stores/${templateId}`}>그 가게 편집으로 가기</Link>
-          </div>
-        </div>
+        <Notice tone="warning">
+          이 가게(<b>{templateId}</b>)는 이미 DB 에 있어요.{" "}
+          <Link href={`/admin/stores/${templateId}`} className={LINK}>
+            그 가게 편집으로 가기
+          </Link>
+        </Notice>
       )}
 
-      <div className="tabs u-mb-4">
-        {TABS.filter((t) => !isNew || t.key !== "history").map((t) => (
-          <button key={t.key} type="button" className={`tab${tab === t.key ? " is-active" : ""}`} onClick={() => setTab(t.key)}>
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-4">
+        {/* 탭이 폭을 넘으면 이 틀 안에서 옆으로 민다 (켜진 탭의 밑줄이 잘리지 않게 아래를 띄운다) */}
+        <div className="overflow-x-auto pb-1.5">
+          <TabsList variant="line">
+            {TABS.filter((t) => !isNew || t.key !== "history").map((t) => (
+              <TabsTrigger key={t.key} value={t.key} className="flex-none px-3">
+                {t.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
-      <div className="card">
-        <div className="card__body">
-          {error && (
-            <div className="alert alert--danger u-mb-4" role="alert">
-              <Icon name="alert" />
-              <div>{error}</div>
-            </div>
-          )}
+        <Panel
+          footer={
+            tab !== "history" ? (
+              <>
+                <span className="mr-auto text-caption text-muted-foreground">{dirty ? "저장하지 않은 변경이 있어요" : isNew ? "칸을 채우고 등록하세요" : "바뀐 것 없음"}</span>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  size="md"
+                  disabled={!dirty || busy}
+                  onClick={() => {
+                    setD(start);
+                    setError(null);
+                  }}
+                >
+                  되돌리기
+                </Button>
+                <Button type="button" variant="filled" size="md" disabled={busy || (!isNew && !dirty) || (isNew && !!exists)} onClick={save}>
+                  {busy ? "저장 중…" : isNew ? "등록" : "저장"}
+                </Button>
+              </>
+            ) : undefined
+          }
+        >
+          {/* 어느 칸인지 아는 오류는 그 칸 아래에 보인다. 그 밖의 오류만 위에 띄운다 */}
+          {error && !bad && <Notice tone="danger">{error}</Notice>}
 
-          {tab === "basic" && (
-            <div className="form-grid">
-              <div className="field">
-                <label className="field__label">가게 이름<span className="req">*</span></label>
-                <input className="input" value={d.name} maxLength={60} onChange={(e) => set({ name: e.target.value })} />
+          <TabsContent value="basic" className={FORM_GRID}>
+            <TextField label="가게 이름" required error={errorAt("name")} value={d.name} maxLength={60} onChange={(e) => set({ name: e.target.value })} />
+            <TextField
+              label="주소 이름 (id)"
+              className="font-mono"
+              value={isNew ? d.id : initial.id}
+              disabled={!isNew}
+              placeholder="비우면 자동 (예: gn-ruby)"
+              onChange={(e) => set({ id: e.target.value.toLowerCase() })}
+              help={isNew ? "서비스 주소 /store/<id> 에 쓰여요. 영어 소문자·숫자·- 만." : "만든 뒤에는 바꾸지 않아요 (공유된 주소가 깨지지 않게)."}
+            />
+            <Field label="등재 등급" required error={errorAt("grade")} htmlFor={`${uid}-grade`} hint="「메뉴에 있음」은 작은 도장, 필터에서 끌 수 있어요.">
+              <PickSelect id={`${uid}-grade`} size="field" value={d.grade} onChange={(v) => set({ grade: v })} options={GRADE_OPTIONS} />
+            </Field>
+            <Field label="가게 유형" htmlFor={`${uid}-shop`}>
+              <PickSelect id={`${uid}-shop`} size="field" value={d.shopType ?? ""} onChange={(v) => set({ shopType: v })} options={SHOP_TYPE_OPTIONS} />
+            </Field>
+            <TextField
+              fieldClassName="md:col-span-2"
+              label="주소"
+              required
+              error={errorAt("address")}
+              value={d.address}
+              onChange={(e) => set({ address: e.target.value })}
+              onBlur={guessFromAddress}
+              placeholder="서울 강남구 압구정로50길 22"
+              help="주소 검색(도로명주소 승인키)을 받으면 고르기로 바뀌고 좌표도 자동으로 채워요. 지금은 좌표를 직접 넣어요."
+            />
+            <Field label="구" required error={errorAt("gu")} htmlFor={`${uid}-gu`}>
+              <PickSelect id={`${uid}-gu`} size="field" value={d.gu} onChange={(v) => set({ gu: v })} options={guOptions} placeholder="고르세요" />
+            </Field>
+            <TextField label="동" required error={errorAt("dong")} value={d.dong} onChange={(e) => set({ dong: e.target.value })} placeholder="신사동" />
+            <Field
+              label="위도 · 경도"
+              required
+              error={errorAt("latlng")}
+              hint={
+                mapLink ? (
+                  <a href={mapLink} target="_blank" rel="noreferrer" className={cn(LINK, "inline-flex items-center gap-1")}>
+                    이 좌표를 지도에서 보기 <Icon name="external" />
+                  </a>
+                ) : (
+                  "지도 앱에서 가게를 길게 눌러 나온 숫자를 넣어요."
+                )
+              }
+            >
+              <div className="flex items-center gap-2">
+                <Input variant="field" className="font-mono" inputMode="decimal" value={d.lat} onChange={(e) => set({ lat: e.target.value })} placeholder="37.5246" aria-label="위도" />
+                <Input variant="field" className="font-mono" inputMode="decimal" value={d.lng} onChange={(e) => set({ lng: e.target.value })} placeholder="127.0376" aria-label="경도" />
               </div>
-              <div className="field">
-                <label className="field__label">주소 이름 (id)</label>
-                <input className="input u-mono" value={isNew ? d.id : initial.id} disabled={!isNew} placeholder="비우면 자동 (예: gn-ruby)" onChange={(e) => set({ id: e.target.value.toLowerCase() })} />
-                <p className="field__hint">{isNew ? "서비스 주소 /store/<id> 에 쓰여요. 영어 소문자·숫자·- 만." : "만든 뒤에는 바꾸지 않아요 (공유된 주소가 깨지지 않게)."}</p>
-              </div>
-              <div className="field">
-                <label className="field__label">등재 등급<span className="req">*</span></label>
-                <select className="select" value={d.grade} onChange={(e) => set({ grade: e.target.value as Store["grade"] })}>
-                  {keysOf(GRADES).map((g) => <option key={g} value={g}>{GRADES[g]}</option>)}
-                </select>
-                <p className="field__hint">「메뉴에 있음」은 작은 도장, 필터에서 끌 수 있어요.</p>
-              </div>
-              <div className="field">
-                <label className="field__label">가게 유형</label>
-                <select className="select" value={d.shopType} onChange={(e) => set({ shopType: e.target.value as Draft["shopType"] })}>
-                  <option value="">없음</option>
-                  {keysOf(SHOP_TYPES).map((g) => <option key={g} value={g}>{SHOP_TYPES[g]}</option>)}
-                </select>
-              </div>
-              <div className="field" style={{ gridColumn: "1 / -1" }}>
-                <label className="field__label">주소<span className="req">*</span></label>
-                <input className="input" value={d.address} onChange={(e) => set({ address: e.target.value })} onBlur={guessFromAddress} placeholder="서울 강남구 압구정로50길 22" />
-                <p className="field__hint">주소 검색(도로명주소 승인키)을 받으면 고르기로 바뀌고 좌표도 자동으로 채워요. 지금은 좌표를 직접 넣어요.</p>
-              </div>
-              <div className="field">
-                <label className="field__label">구<span className="req">*</span></label>
-                <select className="select" value={d.gu} onChange={(e) => set({ gu: e.target.value })}>
-                  <option value="" disabled>고르세요</option>
-                  {regions.map((r) => <option key={r.gu} value={r.gu}>{r.name}</option>)}
-                  <option value="etc">기타</option>
-                </select>
-              </div>
-              <div className="field">
-                <label className="field__label">동<span className="req">*</span></label>
-                <input className="input" value={d.dong} onChange={(e) => set({ dong: e.target.value })} placeholder="신사동" />
-              </div>
-              <div className="field">
-                <label className="field__label">위도 · 경도<span className="req">*</span></label>
-                <div className="u-row">
-                  <input className="input u-mono" inputMode="decimal" value={d.lat} onChange={(e) => set({ lat: e.target.value })} placeholder="37.5246" aria-label="위도" />
-                  <input className="input u-mono" inputMode="decimal" value={d.lng} onChange={(e) => set({ lng: e.target.value })} placeholder="127.0376" aria-label="경도" />
-                </div>
-                <p className="field__hint">
-                  {mapLink ? <a href={mapLink} target="_blank" rel="noreferrer">이 좌표를 지도에서 보기 ↗</a> : "지도 앱에서 가게를 길게 눌러 나온 숫자를 넣어요."}
-                </p>
-              </div>
-              <div className="field">
-                <label className="field__label">마지막 확인일<span className="req">*</span></label>
-                <input className="input u-mono" type="date" value={d.lastConfirmedAt} onChange={(e) => set({ lastConfirmedAt: e.target.value })} />
-                <p className="field__hint">180일이 넘으면 흐리게, 365일이 넘으면 지도에서 내려가요.</p>
-              </div>
-              <div className="field" style={{ gridColumn: "1 / -1" }}>
-                <label className="field__label">소개글 (서비스에 그대로 보여요)</label>
-                <textarea className="textarea" value={d.memo} maxLength={500} onChange={(e) => set({ memo: e.target.value })} placeholder="비워 두면 안 보여요" />
-              </div>
-            </div>
-          )}
+            </Field>
+            <TextField
+              label="마지막 확인일"
+              required
+              type="date"
+              className="font-mono"
+              value={d.lastConfirmedAt}
+              onChange={(e) => set({ lastConfirmedAt: e.target.value })}
+              help="180일이 넘으면 흐리게, 365일이 넘으면 지도에서 내려가요."
+            />
+            <TextAreaField fieldClassName="md:col-span-2" label="소개글 (서비스에 그대로 보여요)" value={d.memo} maxLength={500} onChange={(e) => set({ memo: e.target.value })} placeholder="비워 두면 안 보여요" />
+          </TabsContent>
 
-          {tab === "taste" && (
-            <>
-              <div className="field">
-                <label className="field__label">떡 · 여러 개</label>
-                <div className="chips">
-                  {keysOf(RICE_CAKES).map((k) => (
-                    <label key={k} className="check"><input type="checkbox" checked={d.rice.includes(k)} onChange={() => set({ rice: toggle(d.rice, k) })} /> {RICE_CAKES[k]}</label>
+          <TabsContent value="taste" className="flex flex-col gap-4">
+            <Field label="떡 · 여러 개">
+              <div className="flex flex-wrap gap-2">
+                {keysOf(RICE_CAKES).map((k) => (
+                  <Chip key={k} size="lg" selected={d.rice.includes(k)} onChange={() => set({ rice: toggle(d.rice, k) })}>
+                    {RICE_CAKES[k]}
+                  </Chip>
+                ))}
+              </div>
+            </Field>
+            <div className={FORM_GRID}>
+              <Field label="스타일 · 하나" required error={errorAt("style")} htmlFor={`${uid}-style`}>
+                <PickSelect id={`${uid}-style`} size="field" value={d.style} onChange={(v) => set({ style: v })} options={STYLE_OPTIONS} placeholder="고르세요" />
+              </Field>
+              <Field label="맵기 · 신라면 = 3" required error={errorAt("spice")} hint={d.spice ? SPICE_LEVELS[d.spice].ref : "대표 메뉴 기준으로 골라요"}>
+                <div className="flex flex-wrap gap-2">
+                  {([1, 2, 3, 4, 5] as Spice[]).map((n) => (
+                    <Chip key={n} size="lg" selected={d.spice === n} onChange={() => set({ spice: n })} aria-label={`맵기 ${n} · ${SPICE_LEVELS[n].ref}`} title={SPICE_LEVELS[n].ref}>
+                      <Stamp n={n} />
+                    </Chip>
                   ))}
                 </div>
+              </Field>
+              <TextField label="가게가 부르는 맵기 이름" value={d.spiceLabel} maxLength={20} onChange={(e) => set({ spiceLabel: e.target.value })} placeholder="예: 초보맛 · 1단계" />
+            </div>
+            <Field label={`맛 결 · 최대 ${MAX_TASTES}개`}>
+              <div className="flex flex-wrap gap-2">
+                {keysOf(TASTES).map((k) => (
+                  <Chip key={k} size="lg" selected={d.taste.includes(k)} disabled={!d.taste.includes(k) && d.taste.length >= MAX_TASTES} onChange={() => set({ taste: toggle(d.taste, k) })}>
+                    {TASTES[k]}
+                  </Chip>
+                ))}
               </div>
-              <div className="form-grid u-mt-4">
-                <div className="field">
-                  <label className="field__label">스타일 · 하나<span className="req">*</span></label>
-                  <select className="select" value={d.style} onChange={(e) => set({ style: e.target.value as Draft["style"] })}>
-                    <option value="" disabled>고르세요</option>
-                    {keysOf(STYLES).map((k) => <option key={k} value={k}>{STYLES[k]}</option>)}
-                  </select>
+            </Field>
+            <div className={FORM_GRID}>
+              <Field label="같이 먹기">
+                <div className="flex flex-wrap gap-2">
+                  {keysOf(SIDES).map((k) => (
+                    <Chip key={k} size="lg" selected={d.sides.includes(k)} onChange={() => set({ sides: toggle(d.sides, k) })}>
+                      {SIDES[k]}
+                    </Chip>
+                  ))}
                 </div>
-                <div className="field">
-                  <label className="field__label">맵기 · 신라면 = 3<span className="req">*</span></label>
-                  <div className="chips">
-                    {([1, 2, 3, 4, 5] as Spice[]).map((n) => (
-                      <label key={n} className="check" title={SPICE_LEVELS[n].ref}><input type="radio" name="spice" checked={d.spice === n} onChange={() => set({ spice: n })} /> <Stamp n={n} /></label>
+              </Field>
+              <Field label="이용">
+                <div className="flex flex-wrap gap-2">
+                  {keysOf(USAGES).map((k) => (
+                    <Chip key={k} size="lg" selected={d.usage.includes(k)} onChange={() => set({ usage: toggle(d.usage, k) })}>
+                      {USAGES[k]}
+                    </Chip>
+                  ))}
+                </div>
+              </Field>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="menu" className="flex flex-col gap-4">
+            <div className={FORM_GRID}>
+              <TextField
+                label="대표 떡볶이 1인분 (필터·도장에 쓰는 값)"
+                required
+                error={errorAt("price")}
+                className="font-mono"
+                inputMode="numeric"
+                value={d.price}
+                onChange={(e) => set({ price: e.target.value.replace(/[^\d]/g, "") })}
+                placeholder="5000"
+                help="여럿이 나눠 먹는 냄비·안주만 있으면 1인분으로 나눈 값을 넣고, 메뉴에는 실제 가격을 적어요."
+              />
+              <TextField label="가격 확인일" required type="date" className="font-mono" value={d.priceCheckedAt} onChange={(e) => set({ priceCheckedAt: e.target.value })} />
+            </div>
+            <TableFrame compact>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>메뉴</TableHead>
+                    <TableHead className={cn(CELL_NUM, "w-36")}>가격 (원)</TableHead>
+                    <TableHead className="w-28">
+                      <span className="sr-only">순서 바꾸기 · 빼기</span>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {d.menu.map((m, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        <Input className="h-10 min-w-32 bg-card text-body-small" value={m.name} aria-label={`메뉴 ${i + 1} 이름`} onChange={(e) => set({ menu: d.menu.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)) })} />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          className="h-10 bg-card text-right font-mono text-body-small"
+                          inputMode="numeric"
+                          value={m.price}
+                          aria-label={`메뉴 ${i + 1} 가격`}
+                          onChange={(e) => set({ menu: d.menu.map((x, j) => (j === i ? { ...x, price: e.target.value.replace(/[^\d]/g, "") } : x)) })}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          <Button
+                            type="button"
+                            variant="text"
+                            size="icon-md"
+                            disabled={i === 0}
+                            aria-label={`메뉴 ${i + 1} 위로`}
+                            onClick={() => {
+                              const m2 = [...d.menu];
+                              [m2[i - 1], m2[i]] = [m2[i], m2[i - 1]];
+                              set({ menu: m2 });
+                            }}
+                          >
+                            <Icon name="arrow-up" className="size-icon-sm" />
+                          </Button>
+                          <Button type="button" variant="text" size="icon-md" aria-label={`메뉴 ${i + 1} 빼기`} onClick={() => set({ menu: d.menu.filter((_, j) => j !== i) })}>
+                            <Icon name="close" className="size-icon-sm" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableFrame>
+            <div>
+              <Button type="button" variant="outlined" size="compact" onClick={() => set({ menu: [...d.menu, { name: "", price: "" }] })}>
+                <Icon name="plus" /> 메뉴 더하기
+              </Button>
+            </div>
+            <p className="text-body-small text-muted-foreground">맨 위 메뉴가 대표 메뉴예요. 이용자가 메뉴를 고치면 대표 가격은 맨 위 메뉴 가격으로 바뀌어요.</p>
+          </TabsContent>
+
+          <TabsContent value="hours" className="flex flex-col gap-4">
+            <CheckField checked={!d.hasHours} onChange={() => set({ hasHours: !d.hasHours })}>
+              영업시간을 아직 몰라요 (가게 상세에 「아직 몰라요」로 나와요)
+            </CheckField>
+            {d.hasHours && (
+              <div className={FORM_GRID}>
+                <Field label="여는 요일">
+                  <div className="flex flex-wrap gap-2">
+                    {DAY_NAMES.map((n, i) => (
+                      <Chip key={n} size="lg" selected={d.hours.days.includes(i)} onChange={() => set({ hours: { ...d.hours, days: toggle(d.hours.days, i).sort() } })}>
+                        {n}
+                      </Chip>
                     ))}
                   </div>
-                  <p className="field__hint">{d.spice ? SPICE_LEVELS[d.spice].ref : "대표 메뉴 기준으로 골라요"}</p>
-                </div>
-                <div className="field">
-                  <label className="field__label">가게가 부르는 맵기 이름</label>
-                  <input className="input" value={d.spiceLabel} maxLength={20} onChange={(e) => set({ spiceLabel: e.target.value })} placeholder="예: 초보맛 · 1단계" />
-                </div>
-              </div>
-              <div className="field u-mt-4">
-                <label className="field__label">맛 결 · 최대 {MAX_TASTES}개</label>
-                <div className="chips">
-                  {keysOf(TASTES).map((k) => (
-                    <label key={k} className="check">
-                      <input type="checkbox" checked={d.taste.includes(k)} disabled={!d.taste.includes(k) && d.taste.length >= MAX_TASTES} onChange={() => set({ taste: toggle(d.taste, k) })} /> {TASTES[k]}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <div className="form-grid u-mt-4">
-                <div className="field">
-                  <label className="field__label">같이 먹기</label>
-                  <div className="chips">
-                    {keysOf(SIDES).map((k) => <label key={k} className="check"><input type="checkbox" checked={d.sides.includes(k)} onChange={() => set({ sides: toggle(d.sides, k) })} /> {SIDES[k]}</label>)}
+                </Field>
+                <Field label="여는 시간 ~ 닫는 시간" hint="닫는 시간이 여는 시간보다 이르면 자정을 넘기는 가게로 봐요. 요일마다 다른 시간은 아직 한 줄로만 적어요.">
+                  <div className="flex items-center gap-2">
+                    <Input variant="field" type="time" className="font-mono" aria-label="여는 시간" value={d.hours.open} onChange={(e) => set({ hours: { ...d.hours, open: e.target.value } })} />
+                    <span aria-hidden="true">~</span>
+                    <Input variant="field" type="time" className="font-mono" aria-label="닫는 시간" value={d.hours.close} onChange={(e) => set({ hours: { ...d.hours, close: e.target.value } })} />
                   </div>
-                </div>
-                <div className="field">
-                  <label className="field__label">이용</label>
-                  <div className="chips">
-                    {keysOf(USAGES).map((k) => <label key={k} className="check"><input type="checkbox" checked={d.usage.includes(k)} onChange={() => set({ usage: toggle(d.usage, k) })} /> {USAGES[k]}</label>)}
-                  </div>
-                </div>
+                </Field>
               </div>
-            </>
-          )}
+            )}
+          </TabsContent>
 
-          {tab === "menu" && (
-            <>
-              <div className="form-grid u-mb-4">
-                <div className="field">
-                  <label className="field__label">대표 떡볶이 1인분 (필터·도장에 쓰는 값)<span className="req">*</span></label>
-                  <input className="input u-mono" inputMode="numeric" value={d.price} onChange={(e) => set({ price: e.target.value.replace(/[^\d]/g, "") })} placeholder="5000" />
-                  <p className="field__hint">여럿이 나눠 먹는 냄비·안주만 있으면 1인분으로 나눈 값을 넣고, 메뉴에는 실제 가격을 적어요.</p>
-                </div>
-                <div className="field">
-                  <label className="field__label">가격 확인일<span className="req">*</span></label>
-                  <input className="input u-mono" type="date" value={d.priceCheckedAt} onChange={(e) => set({ priceCheckedAt: e.target.value })} />
-                </div>
-              </div>
-              <table className="table u-mb-2">
-                <thead><tr><th>메뉴</th><th className="cell--num" style={{ width: 140 }}>가격 (원)</th><th style={{ width: 96 }} /></tr></thead>
-                <tbody>
-                  {d.menu.map((m, i) => (
-                    <tr key={i}>
-                      <td><input className="input" value={m.name} aria-label={`메뉴 ${i + 1} 이름`} onChange={(e) => set({ menu: d.menu.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)) })} /></td>
-                      <td><input className="input u-mono" inputMode="numeric" value={m.price} aria-label={`메뉴 ${i + 1} 가격`} onChange={(e) => set({ menu: d.menu.map((x, j) => (j === i ? { ...x, price: e.target.value.replace(/[^\d]/g, "") } : x)) })} /></td>
-                      <td>
-                        <div style={{ display: "flex", gap: 8 }}>
-                          <button type="button" className="btn btn--text btn--sm" disabled={i === 0} aria-label="위로" onClick={() => { const m2 = [...d.menu]; [m2[i - 1], m2[i]] = [m2[i], m2[i - 1]]; set({ menu: m2 }); }}>↑</button>
-                          <button type="button" className="btn btn--text btn--sm" aria-label="빼기" onClick={() => set({ menu: d.menu.filter((_, j) => j !== i) })}><Icon name="close" /></button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button type="button" className="btn btn--default btn--sm" onClick={() => set({ menu: [...d.menu, { name: "", price: "" }] })}>
-                <Icon name="plus" /> 메뉴 더하기
-              </button>
-              <p className="field__hint u-mt-2">맨 위 메뉴가 대표 메뉴예요. 이용자가 메뉴를 고치면 대표 가격은 맨 위 메뉴 가격으로 바뀌어요.</p>
-            </>
-          )}
-
-          {tab === "hours" && (
-            <>
-              <label className="check u-mb-4">
-                <input type="checkbox" checked={!d.hasHours} onChange={() => set({ hasHours: !d.hasHours })} /> 영업시간을 아직 몰라요 (가게 상세에 「아직 몰라요」로 나와요)
-              </label>
-              {d.hasHours && (
-                <div className="form-grid">
-                  <div className="field">
-                    <label className="field__label">여는 요일</label>
-                    <div className="chips">
-                      {DAY_NAMES.map((n, i) => (
-                        <label key={n} className="check"><input type="checkbox" checked={d.hours.days.includes(i)} onChange={() => set({ hours: { ...d.hours, days: toggle(d.hours.days, i).sort() } })} /> {n}</label>
+          {!isNew && (
+            <TabsContent value="history">
+              {history.length ? (
+                <TableFrame compact>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-36">언제</TableHead>
+                        <TableHead className="w-28">누가</TableHead>
+                        <TableHead className="w-20">무엇을</TableHead>
+                        <TableHead>이전 → 새 값</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {history.map((h) => (
+                        <TableRow key={h.id}>
+                          <TableCell className="font-mono text-muted-foreground">
+                            {new Date(h.at).toLocaleString("ko-KR", { timeZone: "Asia/Seoul", year: "2-digit", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                          </TableCell>
+                          <TableCell>{h.who}</TableCell>
+                          <TableCell className={CELL_MAIN}>{KIND_TEXT[h.kind] ?? h.kind}</TableCell>
+                          <TableCell className={CELL_WRAP}>
+                            {h.changes?.length ? (
+                              h.changes.map((c, i) => (
+                                <div key={i}>
+                                  <b>{c.field}</b> <span className="text-muted-foreground">{c.from}</span> → {c.to}
+                                </div>
+                              ))
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </div>
-                  </div>
-                  <div className="field">
-                    <label className="field__label">여는 시간 ~ 닫는 시간</label>
-                    <div className="u-row">
-                      <input className="input u-mono" type="time" value={d.hours.open} onChange={(e) => set({ hours: { ...d.hours, open: e.target.value } })} />
-                      <span>~</span>
-                      <input className="input u-mono" type="time" value={d.hours.close} onChange={(e) => set({ hours: { ...d.hours, close: e.target.value } })} />
-                    </div>
-                    <p className="field__hint">닫는 시간이 여는 시간보다 이르면 자정을 넘기는 가게로 봐요. 요일마다 다른 시간은 아직 한 줄로만 적어요.</p>
-                  </div>
-                </div>
+                    </TableBody>
+                  </Table>
+                </TableFrame>
+              ) : (
+                <p className="text-muted-foreground">아직 이력이 없어요.</p>
               )}
-            </>
+            </TabsContent>
           )}
-
-          {tab === "history" && (
-            history.length ? (
-              <table className="table table--compact">
-                <thead><tr><th style={{ width: 130 }}>언제</th><th style={{ width: 120 }}>누가</th><th style={{ width: 70 }}>무엇을</th><th>이전 → 새 값</th></tr></thead>
-                <tbody>
-                  {history.map((h) => (
-                    <tr key={h.id}>
-                      <td className="u-muted u-mono">{new Date(h.at).toLocaleString("ko-KR", { timeZone: "Asia/Seoul", year: "2-digit", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}</td>
-                      <td>{h.who}</td>
-                      <td className="cell--primary">{KIND_TEXT[h.kind] ?? h.kind}</td>
-                      <td>
-                        {h.changes?.length
-                          ? h.changes.map((c, i) => (
-                              <div key={i}><b>{c.field}</b> <span className="u-muted">{c.from}</span> → {c.to}</div>
-                            ))
-                          : <span className="u-muted">—</span>}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="u-muted">아직 이력이 없어요.</p>
-            )
-          )}
-        </div>
-        {tab !== "history" && (
-          <div className="card__foot">
-            <span className="u-caption">{dirty ? "저장하지 않은 변경이 있어요" : isNew ? "칸을 채우고 등록하세요" : "바뀐 것 없음"}</span>
-            <span className="u-spacer" />
-            <button type="button" className="btn btn--default" disabled={!dirty || busy} onClick={() => { setD(start); setError(null); }}>되돌리기</button>
-            <button type="button" className="btn btn--primary" disabled={busy || (!isNew && !dirty) || (isNew && !!exists)} onClick={save}>
-              {busy ? "저장 중…" : isNew ? "등록" : "저장"}
-            </button>
-          </div>
-        )}
-      </div>
+        </Panel>
+      </Tabs>
 
       {initial && (
-        <div className="card u-mt-4">
-          <div className="card__head"><h3 className="card__title">확인과 내리기</h3></div>
-          <div className="card__body">
-            <div className="u-row u-mb-4">
-              <span>마지막 확인 <b>{initial.lastConfirmedAt}</b></span>
-              <span className="u-spacer" />
-              <button type="button" className="btn btn--default btn--sm" disabled={busy} onClick={() => act(() => confirmStore(initial.id), "확인일을 오늘로 새로 고쳤어요")}>
-                <Icon name="check" /> 오늘 확인함
-              </button>
-            </div>
-            <div className="u-row">
-              <span>
-                지금 <b>{STATUS_TEXT[status]}</b>
-                <span className="u-muted"> · 지우지 않아요. 내려도 언제든 되살릴 수 있어요</span>
-              </span>
-              <span className="u-spacer" />
-              {status !== "active" && (
-                <button type="button" className="btn btn--primary btn--sm" disabled={busy} onClick={() => act(() => setStoreStatus(initial.id, "active"), "되살렸어요 · 지도에 다시 보여요")}>되살리기</button>
-              )}
-              {status !== "hidden" && <button type="button" className="btn btn--default btn--sm" disabled={busy} onClick={() => { setReason(""); setConfirmKind("hidden"); }}>숨기기</button>}
-              {status !== "closed" && <button type="button" className="btn btn--danger btn--sm" disabled={busy} onClick={() => { setReason(""); setConfirmKind("closed"); }}>폐업 처리</button>}
-            </div>
+        <Panel title="확인과 내리기" className="mt-4">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span>
+              마지막 확인 <b>{initial.lastConfirmedAt}</b>
+            </span>
+            <span className="flex-1" />
+            <Button type="button" variant="outlined" size="compact" disabled={busy} onClick={() => act(() => confirmStore(initial.id), "확인일을 오늘로 새로 고쳤어요")}>
+              <Icon name="check" /> 오늘 확인함
+            </Button>
           </div>
-        </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span>
+              지금 <b>{STATUS_TEXT[status]}</b>
+              <span className="text-muted-foreground"> · 지우지 않아요. 내려도 언제든 되살릴 수 있어요</span>
+            </span>
+            <span className="flex-1" />
+            {status !== "active" && (
+              <Button type="button" variant="tonal" size="compact" disabled={busy} onClick={() => act(() => setStoreStatus(initial.id, "active"), "되살렸어요 · 지도에 다시 보여요")}>
+                되살리기
+              </Button>
+            )}
+            {status !== "hidden" && (
+              <Button type="button" variant="outlined" size="compact" disabled={busy} onClick={() => askDown("hidden")}>
+                숨기기
+              </Button>
+            )}
+            {status !== "closed" && (
+              <Button type="button" variant="destructive" size="compact" disabled={busy} onClick={() => askDown("closed")}>
+                폐업 처리
+              </Button>
+            )}
+          </div>
+        </Panel>
       )}
 
       {research && (
-        <div className="card u-mt-4">
-          <div className="card__head">
-            <h3 className="card__title">리서치 근거</h3>
-            <span className={`badge ${research.confidence === "high" ? "badge--success" : "badge--warning"}`}>확신도 {research.confidence === "high" ? "높음" : research.confidence === "medium" ? "보통" : research.confidence ?? "?"}</span>
-          </div>
-          <div className="card__body">
-            <dl className="kv">
-              <dt>근거</dt><dd>{research.basis ?? "—"}</dd>
-              {research.gapNotes?.length ? <><dt>빈칸 재조사</dt><dd>{research.gapNotes.map((n, i) => <div key={i}>{n}</div>)}</dd></> : null}
-              {research.hoursNote && <><dt>영업시간 메모</dt><dd>{research.hoursNote}</dd></>}
-              {research.statusNote && <><dt>상태 메모</dt><dd>{research.statusNote}</dd></>}
-              <dt>최근 근거</dt><dd>{research.lastEvidence ?? "—"}</dd>
-              <dt>좌표</dt><dd>{research.geo === "building" ? "건물 번호까지 (OpenStreetMap)" : research.geo === "rough" ? "길 근처까지 — 핀 확인 필요" : "못 찾음"}</dd>
-              <dt>출처</dt>
-              <dd>
-                {research.sources.map((u) => (
-                  <div key={u} className="u-truncate"><a href={u} target="_blank" rel="noreferrer">{decodeURIComponent(u).replace(/^https?:\/\//, "").slice(0, 70)}</a></div>
-                ))}
-              </dd>
-            </dl>
-          </div>
-        </div>
+        <Panel
+          className="mt-4"
+          title="리서치 근거"
+          actions={<StatusBadge tone={research.confidence === "high" ? "success" : "warning"}>확신도 {research.confidence === "high" ? "높음" : research.confidence === "medium" ? "보통" : research.confidence ?? "?"}</StatusBadge>}
+        >
+          <KeyValue items={researchRows} />
+        </Panel>
       )}
 
-      {confirmKind && initial && (
-        <div className="modal-backdrop" onClick={() => setConfirmKind(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-label={confirmKind === "closed" ? "폐업 처리" : "숨기기"}>
-            <div className="modal__head">
-              <h3 className="modal__title">{confirmKind === "closed" ? "폐업 처리할까요?" : "숨길까요?"}</h3>
-              <button type="button" className="modal__close" onClick={() => setConfirmKind(null)} aria-label="닫기"><Icon name="close" /></button>
-            </div>
-            <div className="modal__body">
-              <p>「{initial.name}」이 지도·목록·검색에서 내려가요. 가게 정보와 이력은 남고, 「되살리기」로 다시 올릴 수 있어요.</p>
-              <div className="field u-mt-4">
-                <label className="field__label">이유{confirmKind === "hidden" && <span className="req">*</span>}</label>
-                <select className="select" value={reason} onChange={(e) => setReason(e.target.value)}>
-                  <option value="">{confirmKind === "hidden" ? "고르세요" : "적지 않음"}</option>
-                  {(confirmKind === "hidden" ? ["등재 기준 미달", "사장님 요청", "정보 확인 중", "중복 가게"] : ["폐업 확인", "이전(다른 곳으로 옮김)", "장기 휴업"]).map((r) => <option key={r}>{r}</option>)}
-                </select>
-              </div>
-            </div>
-            <div className="modal__foot">
-              <button type="button" className="btn btn--default" onClick={() => setConfirmKind(null)}>취소</button>
-              <button
+      {initial && (
+        <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              {/* 팝업은 어드민 틀 밖에 그려진다 — 어드민 제목 글꼴(Pretendard)을 여기서 준다 */}
+              <DialogTitle className="font-sans">{confirmKind === "closed" ? "폐업 처리할까요?" : "숨길까요?"}</DialogTitle>
+              <DialogDescription>「{initial.name}」이 지도·목록·검색에서 내려가요. 가게 정보와 이력은 남고, 「되살리기」로 다시 올릴 수 있어요.</DialogDescription>
+            </DialogHeader>
+            <Field label="이유" required={confirmKind === "hidden"} htmlFor={`${uid}-reason`}>
+              <PickSelect id={`${uid}-reason`} size="field" value={reason} onChange={setReason} options={reasonOptions} placeholder={confirmKind === "hidden" ? "고르세요" : undefined} />
+            </Field>
+            <DialogFooter>
+              <Button type="button" variant="outlined" size="md" onClick={() => setConfirmOpen(false)}>
+                취소
+              </Button>
+              <Button
                 type="button"
-                className="btn btn--danger"
+                variant="destructive"
+                size="md"
                 disabled={busy || (confirmKind === "hidden" && !reason)}
                 onClick={() => {
                   const kind = confirmKind;
-                  setConfirmKind(null);
+                  setConfirmOpen(false);
                   act(() => setStoreStatus(initial.id, kind, reason), kind === "closed" ? "폐업 처리했어요 · 되살리기 가능" : "숨겼어요 · 되살리기 가능");
                 }}
               >
                 {confirmKind === "closed" ? "폐업 처리" : "숨기기"}
-              </button>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
 
-      {toast && <div className="toast" role="status">{toast}</div>}
+      {toast && <Toast>{toast}</Toast>}
     </>
   );
 }

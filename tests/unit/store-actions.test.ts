@@ -171,7 +171,7 @@ describe("checkPatch · editStore — 정보 고치기 (F018)", () => {
     expect(after.lastConfirmedAt).toBe(db.isoDay());
     const [h] = await db.readHistory(s.id);
     expect(h.kind).toBe("edit");
-    // 지금 코드의 이력 모양: 「3 · 신라면 정도 → 4 · …」 (PRD 의 「맵기 3 → 4」 보다 길다 — PRD 를 코드에 맞춰 고칠 예정)
+    // 지금 코드의 이력 모양: 「3 · 신라면 정도 → 4 · …」 (PRD F018 수용 기준과 같다)
     expect(h.changes).toEqual([{ field: "맵기", from: `3 · ${SPICE_LEVELS[3].ref}`, to: `4 · ${SPICE_LEVELS[4].ref}` }]);
   });
 });

@@ -50,7 +50,7 @@ export function SpiceStamp({ n, size = 28, faded = false, pill = true, face = fa
       )}
       {pill && (
         <span
-          className="mt-[2px] inline-flex items-center gap-[1px] rounded-full border border-black/15 bg-card px-[3px]"
+          className="mt-[2px] inline-flex items-center gap-[1px] rounded-full border border-foreground/15 bg-card px-[3px]"
           style={{ height: pillH }}
         >
           {Array.from({ length: n }, (_, i) => (

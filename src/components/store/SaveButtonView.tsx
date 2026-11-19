@@ -1,5 +1,6 @@
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Snackbar } from "@/components/ui/snackbar";
 import { cn } from "@/lib/utils";
 import type { SaveButtonViewProps } from "./types";
 
@@ -20,8 +21,9 @@ export default function SaveButtonView({ name, on, toast, onPress }: SaveButtonV
         <Heart className={cn("size-6", on && "fill-current")} strokeWidth={2} aria-hidden="true" />
       </Button>
       {toast && (
-        <div role="status" className="pointer-events-none fixed inset-x-0 bottom-24 z-30 flex justify-center px-4">
-          <span className="rounded-full bg-foreground/85 px-4 py-2 text-caption font-medium text-background break-keep [overflow-wrap:anywhere]">{toast}</span>
+        <div className="pointer-events-none fixed inset-x-0 bottom-24 z-30 flex justify-center px-4">
+          {/* 디자인 시스템 Snackbar: role="status" 는 부품이 준다 */}
+          <Snackbar className="break-keep [overflow-wrap:anywhere]">{toast}</Snackbar>
         </div>
       )}
     </>

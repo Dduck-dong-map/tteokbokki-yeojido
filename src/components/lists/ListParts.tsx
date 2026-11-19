@@ -14,15 +14,15 @@ import { Button } from "@/components/ui/button";
 export function ListCard({ list, stores, now, showVisibility = false }: { list: PlaceList; stores: Map<string, Store>; now: Date; showVisibility?: boolean }) {
   const inList = list.storeIds.map((id) => stores.get(id)).filter((s): s is Store => !!s);
   return (
-    <Link href={`/lists/${list.id}`} className="flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-3.5 transition-shadow hover:shadow-md">
+    <Link href={`/lists/${list.id}`} className="flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-3.5 transition-colors duration-100 hover:border-input">
       <div className="flex items-start gap-2">
-        <h3 className="min-w-0 flex-1 text-body-medium leading-snug break-keep [overflow-wrap:anywhere]">{list.title}</h3>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-secondary px-2 text-caption leading-6 font-semibold text-muted-foreground" aria-label={`추천 ${list.likes}`}>
+        <h3 className="min-w-0 flex-1 text-body-medium break-keep [overflow-wrap:anywhere]">{list.title}</h3>
+        <span className="inline-flex shrink-0 items-center gap-1 h-6 rounded-full bg-secondary px-2 text-caption font-semibold text-muted-foreground" aria-label={`추천 ${list.likes}`}>
           <ThumbsUp className="size-4" strokeWidth={2} aria-hidden="true" />
           {list.likes}
         </span>
       </div>
-      {list.desc && <p className="line-clamp-2 text-body-small leading-relaxed break-keep [overflow-wrap:anywhere] text-muted-foreground">{list.desc}</p>}
+      {list.desc && <p className="line-clamp-2 text-body-small break-keep [overflow-wrap:anywhere] text-muted-foreground">{list.desc}</p>}
       <div className="flex items-center gap-1.5" aria-hidden="true">
         {inList.slice(0, 6).map((s) => (
           <SpiceStamp key={s.id} n={s.spice} size={22} pill={false} />

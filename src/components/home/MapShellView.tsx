@@ -6,6 +6,8 @@ import MapLoading from "@/components/loading/MapLoading";
 import TteokMap from "@/components/map/TteokMap";
 import SearchBox from "@/components/SearchBox";
 import { Button } from "@/components/ui/button";
+import { fabVariants } from "@/components/ui/fab";
+import { Snackbar } from "@/components/ui/snackbar";
 import { freshness } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
 import FilterSheetView from "./FilterSheetView";
@@ -61,7 +63,7 @@ export default function MapShellView(p: MapShellViewProps) {
             )}
             <MapLoading settled={mapSettled} />
             {hasStale && mapSettled && (
-              <p className="pointer-events-none absolute bottom-[calc(var(--attrib-bottom)+30px)] left-2 z-10 flex items-center gap-1.5 rounded-full bg-card/90 px-2.5 py-1 text-caption text-muted-foreground shadow-sm">
+              <p className="pointer-events-none absolute bottom-[calc(var(--attrib-bottom)+30px)] left-2 z-10 flex items-center gap-1.5 rounded-full bg-card/90 px-2.5 py-1 text-caption text-muted-foreground shadow-elevation-1">
                 <span aria-hidden="true" className="inline-block h-3 w-3 rounded-full bg-chart-3 opacity-45" />
                 흐린 도장 = 반년 넘게 확인 안 됨
               </p>
@@ -70,9 +72,7 @@ export default function MapShellView(p: MapShellViewProps) {
             <div className="pointer-events-none absolute inset-x-0 top-2 z-10 flex flex-col items-center gap-1.5">
               {sample && <SampleRibbon />}
               {toast && (
-                <span role="status" className="rounded-full bg-foreground px-3 py-1.5 text-caption text-background">
-                  {toast}
-                </span>
+                <Snackbar>{toast}</Snackbar>
               )}
             </div>
 
@@ -83,20 +83,12 @@ export default function MapShellView(p: MapShellViewProps) {
                 sheet === "full" && "max-md:pointer-events-none max-md:opacity-0",
               )}
             >
-              <button
-                type="button"
-                onClick={p.onLocate}
-                aria-label="내 위치"
-                title="내 위치"
-                className="grid h-11 w-11 place-items-center rounded-full border border-input bg-card text-loc shadow-md"
-              >
-                <LocateFixed size={20} strokeWidth={2.2} aria-hidden="true" />
-              </button>
-              <Link
-                href="/register"
-                aria-label="맛집 등록"
-                className="grid h-14 w-14 place-items-center rounded-full bg-report text-caption leading-tight font-bold text-report-foreground shadow-lg md:hidden"
-              >
+              {/* 지도 위에 뜨는 단추: 카드 면 + elevation-1. 누르는 영역 48px */}
+              <Button type="button" variant="outlined" size="icon-xl" onClick={p.onLocate} aria-label="내 위치" title="내 위치" className="self-end bg-card text-loc shadow-elevation-1">
+                <LocateFixed className="size-icon-sm" strokeWidth={2} aria-hidden="true" />
+              </Button>
+              {/* 제보 FAB (디자인 시스템 Fab: 제보 갈색 · radius-12 · 56px · elevation-3). 지도 화면에 하나만 */}
+              <Link href="/register" aria-label="맛집 등록" className={cn(fabVariants({ size: "icon" }), "md:hidden")}>
                 등록
               </Link>
             </div>
@@ -116,7 +108,7 @@ export default function MapShellView(p: MapShellViewProps) {
       <div
         key={routeId ?? "home"}
         className={cn(
-          routeId ? "bg-card md:order-2 md:h-full md:w-[360px] md:shrink-0 md:overflow-y-auto md:border-r md:border-border md:shadow-lg xl:w-[420px]" : "hidden",
+          routeId ? "bg-card md:order-2 md:h-full md:w-[360px] md:shrink-0 md:overflow-y-auto md:border-r md:border-border md:shadow-elevation-3 xl:w-[420px]" : "hidden",
         )}
       >
         {children}

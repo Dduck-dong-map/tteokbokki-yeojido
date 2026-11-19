@@ -3,6 +3,7 @@ import { SampleRibbon } from "@/components/brand";
 import { BottomNav } from "@/components/layout";
 import ListInfoFormView from "@/components/lists/ListInfoFormView";
 import { ListCard } from "@/components/lists/ListParts";
+import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { cn } from "@/lib/utils";
 import MineEmpty from "./MineEmpty";
@@ -76,14 +77,10 @@ export default function MinePageView(props: MinePageViewProps) {
                 <ListInfoFormView {...createForm} />
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => onCreatingChange(true)}
-                className="flex h-12 w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-input bg-card text-body-small font-bold text-foreground hover:bg-ghost-hover md:max-w-[520px]"
-              >
-                <Plus className="size-5" strokeWidth={2} aria-hidden="true" />
+              <Button type="button" variant="outlined" size="xl" onClick={() => onCreatingChange(true)} className="w-full border-dashed bg-card md:max-w-[520px]">
+                <Plus strokeWidth={2} aria-hidden="true" />
                 새 리스트 만들기
-              </button>
+              </Button>
             )}
             {!ownedLoaded ? (
               <MineEmpty>내 리스트를 불러오는 중…</MineEmpty>

@@ -2,15 +2,19 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ADMIN_REPORTS, FLAG_LABEL, KIND_LABEL, REJECT_REASONS, ageText, type AdminReport, type ReportFields } from "@/lib/admin/sample";
-import { SAMPLE_STORES } from "@/lib/data/sample-stores";
 import { won } from "@/lib/filters";
 import { hoursText } from "@/lib/freshness";
 import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
 import type { Store } from "@/lib/types";
-import { Stamp } from "./bits";
-import { Icon } from "./Icon";
+import { cn } from "@/lib/utils";
+import { Empty, Field, Kbd, KeyValue, LINK, LinkButton, Notice, Panel, Stamp, StatusBadge, TableFrame, type Tone } from "./bits";
+import { CheckField, RadioList, Toast } from "./controls";
 
 type Tab = "pending" | "agree" | "done";
 const TABS: { key: Tab; label: string }[] = [
@@ -19,8 +23,8 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "done", label: "처리 완료" },
 ];
 
-const storeOf = (id?: string) => SAMPLE_STORES.find((s) => s.id === id);
-const titleOf = (r: AdminReport) => r.fields.name ?? storeOf(r.storeId)?.name ?? `제보 #${r.id}`;
+const KIND_TONE: Record<AdminReport["kind"], Tone> = { new: "info", edit: "neutral", closed: "danger" };
+const CLOSE_METHODS = ["가게에 전화", "지도 앱 거리뷰·리뷰", "크루가 방문"];
 
 // 승인 대기 정렬 (REQ-AD-03): 같은 내용 3건 이상 → 폐업 신고 → 새 가게 → 정보 수정, 같은 칸 안에서는 오래된 것부터
 const rank = (r: AdminReport) => ((r.sameCount ?? 0) >= 3 ? 0 : r.kind === "closed" ? 1 : r.kind === "new" ? 2 : 3);
@@ -46,7 +50,8 @@ function fieldRows(f: ReportFields, s?: Store) {
   return rows;
 }
 
-export default function ReportQueue() {
+// stores = 가게 이름 · 지금 값을 찾는 데 쓰는 예시 가게 (서버 페이지가 넘긴다 — 클라이언트 부품이 @/lib/data 를 직접 가져오지 않는다)
+export default function ReportQueue({ stores }: { stores: Store[] }) {
   const params = useSearchParams();
   const router = useRouter();
   const tab = (params.get("tab") as Tab) || "pending";
@@ -55,10 +60,15 @@ export default function ReportQueue() {
   const [selected, setSelected] = useState<number | null>(null);
   const [checks, setChecks] = useState<Record<number, boolean[]>>({});
   const [method, setMethod] = useState<Record<number, string>>({});
+  // 반려 팝업: 열림과 대상을 따로 든다 (닫히는 동안 내용이 사라지지 않게)
   const [rejecting, setRejecting] = useState<AdminReport | null>(null);
+  const [rejectOpen, setRejectOpen] = useState(false);
   const [reason, setReason] = useState<string>("");
   const [blockDevice, setBlockDevice] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
+  const storeOf = (id?: string) => stores.find((s) => s.id === id);
+  const titleOf = (r: AdminReport) => r.fields.name ?? storeOf(r.storeId)?.name ?? `제보 #${r.id}`;
 
   const list = useMemo(() => {
     const inTab = items.filter((r) => (tab === "pending" ? r.status === "pending" : tab === "agree" ? r.status === "agree" : ["approved", "rejected", "auto"].includes(r.status)));
@@ -96,12 +106,13 @@ export default function ReportQueue() {
     setRejecting(r);
     setReason(r.flags?.includes("spam_device") ? "장난·도배" : "");
     setBlockDevice(!!r.flags?.includes("spam_device"));
+    setRejectOpen(true);
   };
 
-  // 키보드: A 승인 · R 반려 · J/K 아래·위 (REQ-AD-16, 하루 20분 목표)
+  // 키보드: A 승인 · R 반려 · J/K 아래·위 (REQ-AD-16, 하루 20분 목표). 칸(글 입력 · 체크 · 고르기)을 만지는 동안에는 듣지 않는다
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (rejecting || (e.target instanceof HTMLElement && e.target.closest("input, textarea, select"))) return;
+      if (rejectOpen || (e.target instanceof HTMLElement && e.target.closest("input, textarea, select, [role=checkbox], [role=radio], [role=combobox], [role=tab]"))) return;
       const idx = list.findIndex((r) => r.id === selected);
       if (e.key === "j" || e.key === "ArrowDown") setSelected(list[Math.min(list.length - 1, idx + 1)]?.id ?? null);
       else if (e.key === "k" || e.key === "ArrowUp") setSelected(list[Math.max(0, idx - 1)]?.id ?? null);
@@ -122,243 +133,276 @@ export default function ReportQueue() {
   const store = current ? storeOf(current.storeId) : undefined;
   const dupStore = current?.dupOf ? storeOf(current.dupOf) : undefined;
 
+  const detailRows: [ReactNode, ReactNode][] = current
+    ? [
+        ["제보 번호", <span key="id" className="font-mono">#{current.id}</span>],
+        ["접수", `${current.at} (${ageText(current.at)})`],
+        [
+          "보낸 기기",
+          <span key="device">
+            <span className="font-mono">{current.device}…</span> <span className="text-caption text-muted-foreground">(해시 일부 · 사람은 알 수 없음)</span>
+          </span>,
+        ],
+        ...(current.photo ? [["사진", "1장 (시안에는 없음)"] as [ReactNode, ReactNode]] : []),
+        ...(current.handledBy ? [["처리", `${current.handledBy}${current.rejectReason ? ` · 반려 사유: ${current.rejectReason}` : ""}`] as [ReactNode, ReactNode]] : []),
+      ]
+    : [];
+
   return (
     <>
-      <div className="tabs u-mb-4">
-        {TABS.map((t) => (
-          <button key={t.key} type="button" className={`tab${tab === t.key ? " is-active" : ""}`} onClick={() => setTab(t.key)}>
-            {t.label} {t.key !== "done" && <span className="u-muted">{items.filter((r) => r.status === t.key).length}</span>}
-          </button>
-        ))}
-        <span className="u-spacer" />
-        <span className="u-caption kbd-hint">
-          <span className="kbd">J</span>/<span className="kbd">K</span> 이동 · <span className="kbd">A</span> 승인 · <span className="kbd">R</span> 반려
+      <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
+          <TabsList variant="line">
+            {TABS.map((t) => (
+              <TabsTrigger key={t.key} value={t.key} className="flex-none px-3">
+                {t.label} {t.key !== "done" && <span className="text-muted-foreground tabular-nums">{items.filter((r) => r.status === t.key).length}</span>}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+        <span className="flex-1" />
+        <span className="hidden items-center gap-1 text-caption text-muted-foreground sm:flex">
+          <Kbd>J</Kbd>/<Kbd>K</Kbd> 이동 · <Kbd>A</Kbd> 승인 · <Kbd>R</Kbd> 반려
         </span>
       </div>
 
-      <div className={`queue${current ? " is-detail" : ""}`}>
-        <div className="queue__list card card--flush">
+      {/* 왼쪽 목록 · 오른쪽 상세. 1024px 미만에서는 하나씩: 고르면 상세만, 「목록으로」를 누르면 목록만 */}
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(17.5rem,23.75rem)_1fr]">
+        <Panel flush className={cn(current && "max-lg:hidden")}>
           {list.length === 0 ? (
-            <div className="empty">
-              <div className="empty__icon"><Icon name="inbox" /></div>
-              <div className="empty__title">{tab === "pending" ? "오늘 할 일 끝!" : "비어 있어요"}</div>
-              <div className="empty__desc">{tab === "pending" ? "승인 대기 제보가 없어요. 신고·요청함을 확인해 보세요." : "여기에 올 제보가 아직 없어요."}</div>
-              {tab === "pending" && <Link href="/admin/flags" className="btn btn--default">신고·요청 보기</Link>}
-            </div>
+            <Empty icon="inbox" title={tab === "pending" ? "오늘 할 일 끝!" : "비어 있어요"} desc={tab === "pending" ? "승인 대기 제보가 없어요. 신고·요청함을 확인해 보세요." : "여기에 올 제보가 아직 없어요."}>
+              {tab === "pending" && (
+                <LinkButton href="/admin/flags" variant="outlined">
+                  신고·요청 보기
+                </LinkButton>
+              )}
+            </Empty>
           ) : (
-            list.map((r) => (
-              <button key={r.id} type="button" className={`queue__item${r.id === selected ? " is-selected" : ""}`} onClick={() => setSelected(r.id)}>
-                <div className="u-row">
-                  <span className={`badge ${r.kind === "closed" ? "badge--danger" : r.kind === "new" ? "badge--info" : ""}`}>{KIND_LABEL[r.kind]}</span>
-                  <span className="queue__title u-truncate">{titleOf(r)}</span>
-                </div>
-                <div className="queue__meta">
-                  <span>#{r.id}</span>
-                  <span>{ageText(r.at)}</span>
-                  {r.status === "agree" && <span>동의 {r.agreements}/2</span>}
-                  {r.status === "auto" && <span className="badge badge--success">자동 반영</span>}
-                  {r.status === "approved" && <span className="badge badge--success">승인</span>}
-                  {r.status === "rejected" && <span className="badge badge--danger">반려</span>}
-                  {r.flags?.map((f) => (
-                    <span key={f} className={`badge ${f === "spam_device" ? "badge--danger" : "badge--warning"}`}>{FLAG_LABEL[f]}</span>
-                  ))}
-                </div>
-              </button>
-            ))
-          )}
-        </div>
-
-        <div className="queue__detail">
-          {!current ? (
-            <div className="card">
-              <div className="empty">
-                <div className="empty__icon"><Icon name="arrow-right" /></div>
-                <div className="empty__title">왼쪽에서 제보를 고르세요</div>
-                <div className="empty__desc">J 를 누르면 맨 위 제보부터 열려요.</div>
-              </div>
-            </div>
-          ) : (
-            <div className="card">
-              <div className="card__head">
-                <h3 className="card__title">
-                  <span className={`badge ${current.kind === "closed" ? "badge--danger" : current.kind === "new" ? "badge--info" : ""}`}>{KIND_LABEL[current.kind]}</span> {titleOf(current)}
-                </h3>
-                <div className="card__actions">
-                  <button type="button" className="btn btn--text btn--sm" onClick={() => setSelected(null)}>목록으로</button>
-                </div>
-              </div>
-              <div className="card__body">
-                <dl className="kv u-mb-4">
-                  <dt>제보 번호</dt><dd className="u-mono">#{current.id}</dd>
-                  <dt>접수</dt><dd>{current.at} ({ageText(current.at)})</dd>
-                  <dt>보낸 기기</dt><dd className="u-mono">{current.device}… <span className="u-caption">(해시 일부 · 사람은 알 수 없음)</span></dd>
-                  {current.photo && (<><dt>사진</dt><dd>1장 (시안에는 없음)</dd></>)}
-                  {current.handledBy && (<><dt>처리</dt><dd>{current.handledBy}{current.rejectReason && ` · 반려 사유: ${current.rejectReason}`}</dd></>)}
-                </dl>
-
-                {current.flags?.includes("many_same") && (
-                  <div className="alert u-mb-4"><Icon name="info" /><div>같은 폐업 신고가 <b>{current.sameCount}건</b> 모였어요. 그래서 맨 위에 올라왔어요.</div></div>
-                )}
-                {current.flags?.includes("dup_suspect") && dupStore && (
-                  <div className="alert alert--warning u-mb-4">
-                    <Icon name="alert" />
-                    <div>
-                      150m 안에 비슷한 이름의 가게가 있어요: <b>{dupStore.name}</b>. 같은 가게면 새로 올리지 말고 기존 가게에 합치세요.
-                      <div className="u-mt-2 u-row">
-                        <Link href={`/admin/stores/${dupStore.id}`} className="btn btn--default btn--sm">기존 가게 보기</Link>
-                        <button type="button" className="btn btn--default btn--sm" onClick={() => finish(current, "rejected", "기존 가게에 합쳤어요", { rejectReason: "이미 있는 가게(중복)" })}>기존 가게에 합치기</button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {current.flags?.includes("spam_device") && (
-                  <div className="alert alert--danger u-mb-4">
-                    <Icon name="alert" />
-                    <div>이 기기는 오늘 <b>11건</b>을 보냈어요. 하루 한도(10건)를 넘어서 새 제보는 자동으로 막혔어요.</div>
-                  </div>
-                )}
-
-                {current.kind === "closed" && store && (
-                  <>
-                    <dl className="kv u-mb-4">
-                      <dt>가게</dt><dd><Link href={`/admin/stores/${store.id}`}>{store.name}</Link></dd>
-                      <dt>마지막 확인</dt><dd>{store.lastConfirmedAt}</dd>
-                    </dl>
-                    {current.status === "pending" && (
-                      <div className="field">
-                        <label className="field__label">어떻게 확인했나요?<span className="req">*</span></label>
-                        <div className="chips">
-                          {["가게에 전화", "지도 앱 거리뷰·리뷰", "크루가 방문"].map((m) => (
-                            <label key={m} className="check">
-                              <input type="radio" name={`m-${current.id}`} checked={method[current.id] === m} onChange={() => setMethod({ ...method, [current.id]: m })} /> {m}
-                            </label>
-                          ))}
-                        </div>
-                        <p className="field__hint">폐업 처리하면 지도·목록에서 내려가요. 나중에 「아직 있어요」가 들어오면 자동 알림이 와요.</p>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {current.kind !== "closed" && (
-                  <table className="table diff u-mb-4">
-                    <thead>
-                      <tr><th style={{ width: 110 }}>항목</th>{current.kind === "edit" && <th>지금</th>}<th>{current.kind === "edit" ? "제보" : "제보 내용"}</th></tr>
-                    </thead>
-                    <tbody>
-                      {fieldRows(current.fields, current.kind === "edit" ? store : undefined).map((row) => (
-                        <tr key={row.label}>
-                          <td className="u-muted">{row.label}</td>
-                          {current.kind === "edit" && <td>{row.label === "맵기" && store ? <Stamp n={store.spice} /> : row.now}</td>}
-                          <td className={current.kind === "edit" ? "is-changed" : ""}>{row.label === "맵기" ? <Stamp n={Number(row.next)} /> : row.next}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-
-                {current.status === "agree" && (
-                  <div className="alert u-mb-4">
-                    <Icon name="info" />
-                    <div>
-                      가격·맵기 수정은 다른 기기 2곳이 「맞아요」를 누르면 자동으로 반영돼요. 지금 <b>{current.agreements}/2</b>. 이상하면 「막기」로 승인 대기에 넣으세요.
-                    </div>
-                  </div>
-                )}
-                {current.status === "auto" && (
-                  <div className="alert alert--success u-mb-4"><Icon name="check" /><div>동의 2곳이 모여 자동 반영됐어요. 잘못됐으면 가게 편집의 변경 이력에서 되돌리세요.</div></div>
-                )}
-
-                {current.kind === "new" && current.status === "pending" && (
-                  <div className="field">
-                    <label className="field__label">승인 전 확인<span className="req">*</span></label>
-                    <div className="checklist">
-                      {NEW_CHECKS.map((c, i) => (
-                        <label key={c} className="check">
-                          <input
-                            type="checkbox"
-                            checked={!!checks[current.id]?.[i]}
-                            onChange={(e) => {
-                              const arr = [...(checks[current.id] ?? NEW_CHECKS.map(() => false))];
-                              arr[i] = e.target.checked;
-                              setChecks({ ...checks, [current.id]: arr });
-                            }}
-                          />
-                          {c}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {current.status === "pending" && (
-                <div className="card__foot">
-                  <button type="button" className="btn btn--default" onClick={() => openReject(current)}>반려 <span className="kbd">R</span></button>
-                  {current.kind !== "closed" && (
-                    current.kind === "edit" && store ? (
-                      <Link href={`/admin/stores/${store.id}?from=${current.id}`} className="btn btn--default">고쳐서 승인</Link>
-                    ) : (
-                      <button type="button" className="btn btn--default" onClick={() => flash("고쳐서 승인: 가게 편집 화면(M-AD-04)에서 값을 고친 뒤 승인해요 (시안에서는 생략)")}>고쳐서 승인</button>
-                    )
+            list.map((r) => {
+              const on = r.id === selected;
+              return (
+                // 줄 전체가 단추. 고른 줄은 왼쪽 막대 + 옅은 옥빛 바탕 + aria-current 로 알린다
+                <Button
+                  key={r.id}
+                  type="button"
+                  variant="ghost"
+                  aria-current={on ? "true" : undefined}
+                  onClick={() => setSelected(r.id)}
+                  className={cn(
+                    "h-auto w-full flex-col items-stretch justify-start gap-0.5 rounded-none border-0 border-b border-l-4 border-border border-l-transparent px-4 py-3 text-left text-body-small font-normal whitespace-normal last:border-b-0 hover:bg-ghost-hover",
+                    on && "border-l-primary bg-secondary hover:bg-secondary-hover",
                   )}
-                  <button type="button" className="btn btn--primary" disabled={!canApprove(current)} onClick={() => approve(current)}>
-                    {current.kind === "new" ? "승인하고 지도에 올리기" : current.kind === "closed" ? "폐업 처리" : "승인해서 반영"} <span className="kbd">A</span>
-                  </button>
-                </div>
+                >
+                  <span className="flex items-center gap-2">
+                    <StatusBadge tone={KIND_TONE[r.kind]}>{KIND_LABEL[r.kind]}</StatusBadge>
+                    <span className="truncate font-medium text-foreground">{titleOf(r)}</span>
+                  </span>
+                  <span className="flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
+                    <span>#{r.id}</span>
+                    <span>{ageText(r.at)}</span>
+                    {r.status === "agree" && <span>동의 {r.agreements}/2</span>}
+                    {r.status === "auto" && <StatusBadge tone="success">자동 반영</StatusBadge>}
+                    {r.status === "approved" && <StatusBadge tone="success">승인</StatusBadge>}
+                    {r.status === "rejected" && <StatusBadge tone="danger">반려</StatusBadge>}
+                    {r.flags?.map((f) => (
+                      <StatusBadge key={f} tone={f === "spam_device" ? "danger" : "warning"}>
+                        {FLAG_LABEL[f]}
+                      </StatusBadge>
+                    ))}
+                  </span>
+                </Button>
+              );
+            })
+          )}
+        </Panel>
+
+        <div className={cn(!current && "max-lg:hidden")}>
+          {!current ? (
+            <Panel>
+              <Empty icon="arrow-right" title="왼쪽에서 제보를 고르세요" desc="J 를 누르면 맨 위 제보부터 열려요." />
+            </Panel>
+          ) : (
+            <Panel
+              title={
+                <span className="flex flex-wrap items-center gap-2">
+                  <StatusBadge tone={KIND_TONE[current.kind]}>{KIND_LABEL[current.kind]}</StatusBadge> {titleOf(current)}
+                </span>
+              }
+              actions={
+                <Button type="button" variant="text" size="compact" onClick={() => setSelected(null)}>
+                  목록으로
+                </Button>
+              }
+              footer={
+                current.status === "pending" ? (
+                  <>
+                    <Button type="button" variant="outlined" size="md" onClick={() => openReject(current)}>
+                      반려 <Kbd>R</Kbd>
+                    </Button>
+                    {current.kind !== "closed" &&
+                      (current.kind === "edit" && store ? (
+                        <LinkButton href={`/admin/stores/${store.id}?from=${current.id}`} variant="outlined">
+                          고쳐서 승인
+                        </LinkButton>
+                      ) : (
+                        <Button type="button" variant="outlined" size="md" onClick={() => flash("고쳐서 승인: 가게 편집 화면(M-AD-04)에서 값을 고친 뒤 승인해요 (시안에서는 생략)")}>
+                          고쳐서 승인
+                        </Button>
+                      ))}
+                    <Button type="button" variant="filled" size="md" disabled={!canApprove(current)} onClick={() => approve(current)}>
+                      {current.kind === "new" ? "승인하고 지도에 올리기" : current.kind === "closed" ? "폐업 처리" : "승인해서 반영"} <Kbd>A</Kbd>
+                    </Button>
+                  </>
+                ) : current.status === "agree" ? (
+                  <>
+                    <Button type="button" variant="outlined" size="md" onClick={() => finish(current, "pending", "막았어요. 승인 대기로 옮겼어요")}>
+                      막기 (승인 대기로)
+                    </Button>
+                    <Button type="button" variant="filled" size="md" onClick={() => approve(current)}>
+                      지금 반영
+                    </Button>
+                  </>
+                ) : undefined
+              }
+            >
+              <KeyValue items={detailRows} className="mb-4" />
+
+              {current.flags?.includes("many_same") && (
+                <Notice>
+                  같은 폐업 신고가 <b>{current.sameCount}건</b> 모였어요. 그래서 맨 위에 올라왔어요.
+                </Notice>
               )}
+              {current.flags?.includes("dup_suspect") && dupStore && (
+                <Notice tone="warning">
+                  150m 안에 비슷한 이름의 가게가 있어요: <b>{dupStore.name}</b>. 같은 가게면 새로 올리지 말고 기존 가게에 합치세요.
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <LinkButton href={`/admin/stores/${dupStore.id}`} variant="outlined" size="compact">
+                      기존 가게 보기
+                    </LinkButton>
+                    <Button type="button" variant="outlined" size="compact" onClick={() => finish(current, "rejected", "기존 가게에 합쳤어요", { rejectReason: "이미 있는 가게(중복)" })}>
+                      기존 가게에 합치기
+                    </Button>
+                  </div>
+                </Notice>
+              )}
+              {current.flags?.includes("spam_device") && (
+                <Notice tone="danger">
+                  이 기기는 오늘 <b>11건</b>을 보냈어요. 하루 한도(10건)를 넘어서 새 제보는 자동으로 막혔어요.
+                </Notice>
+              )}
+
+              {current.kind === "closed" && store && (
+                <>
+                  <KeyValue
+                    className="mb-4"
+                    items={[
+                      [
+                        "가게",
+                        <Link key="store" href={`/admin/stores/${store.id}`} className={LINK}>
+                          {store.name}
+                        </Link>,
+                      ],
+                      ["마지막 확인", store.lastConfirmedAt],
+                    ]}
+                  />
+                  {current.status === "pending" && (
+                    <Field label="어떻게 확인했나요?" required hint="폐업 처리하면 지도·목록에서 내려가요. 나중에 「아직 있어요」가 들어오면 자동 알림이 와요." className="mb-4">
+                      <RadioList row ariaLabel="어떻게 확인했나요?" value={method[current.id] ?? ""} onChange={(m) => setMethod({ ...method, [current.id]: m })} options={CLOSE_METHODS} />
+                    </Field>
+                  )}
+                </>
+              )}
+
+              {current.kind !== "closed" && (
+                <TableFrame className="mb-4">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-28">항목</TableHead>
+                        {current.kind === "edit" && <TableHead>지금</TableHead>}
+                        <TableHead>{current.kind === "edit" ? "제보" : "제보 내용"}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {fieldRows(current.fields, current.kind === "edit" ? store : undefined).map((row) => (
+                        <TableRow key={row.label}>
+                          <TableCell className="text-muted-foreground">{row.label}</TableCell>
+                          {current.kind === "edit" && <TableCell className="whitespace-normal">{row.label === "맵기" && store ? <Stamp n={store.spice} /> : row.now}</TableCell>}
+                          {/* 고치자는 값(제보 열)은 옅은 갈색 바탕으로도 띄운다. 열 제목 「제보」가 뜻을 말한다 */}
+                          <TableCell className={cn("whitespace-normal", current.kind === "edit" && "bg-report/10 font-medium text-foreground")}>{row.label === "맵기" ? <Stamp n={Number(row.next)} /> : row.next}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableFrame>
+              )}
+
               {current.status === "agree" && (
-                <div className="card__foot">
-                  <button type="button" className="btn btn--default" onClick={() => finish(current, "pending", "막았어요. 승인 대기로 옮겼어요")}>막기 (승인 대기로)</button>
-                  <button type="button" className="btn btn--primary" onClick={() => approve(current)}>지금 반영</button>
-                </div>
+                <Notice>
+                  가격·맵기 수정은 다른 기기 2곳이 「맞아요」를 누르면 자동으로 반영돼요. 지금 <b>{current.agreements}/2</b>. 이상하면 「막기」로 승인 대기에 넣으세요.
+                </Notice>
               )}
-            </div>
+              {current.status === "auto" && <Notice tone="success">동의 2곳이 모여 자동 반영됐어요. 잘못됐으면 가게 편집의 변경 이력에서 되돌리세요.</Notice>}
+
+              {current.kind === "new" && current.status === "pending" && (
+                <Field label="승인 전 확인" required>
+                  <div className="grid gap-2">
+                    {NEW_CHECKS.map((c, i) => (
+                      <CheckField
+                        key={c}
+                        checked={!!checks[current.id]?.[i]}
+                        onChange={(on) => {
+                          const arr = [...(checks[current.id] ?? NEW_CHECKS.map(() => false))];
+                          arr[i] = on;
+                          setChecks({ ...checks, [current.id]: arr });
+                        }}
+                      >
+                        {c}
+                      </CheckField>
+                    ))}
+                  </div>
+                </Field>
+              )}
+            </Panel>
           )}
         </div>
       </div>
 
-      {rejecting && (
-        <div className="modal-backdrop" onClick={() => setRejecting(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="반려 사유">
-            <div className="modal__head">
-              <h3 className="modal__title">#{rejecting.id} 반려</h3>
-              <button type="button" className="modal__close" onClick={() => setRejecting(null)} aria-label="닫기"><Icon name="close" /></button>
-            </div>
-            <div className="modal__body">
-              <p className="u-mb-4">익명 제보라 보낸 사람에게 알릴 수는 없어요. 사유는 통계와 도배 판단에 써요.</p>
-              <div className="checklist">
-                {REJECT_REASONS.map((x) => (
-                  <label key={x} className="check">
-                    <input type="radio" name="reason" checked={reason === x} onChange={() => setReason(x)} /> {x}
-                  </label>
-                ))}
-              </div>
-              {reason === "장난·도배" && (
-                <label className="check u-mt-4">
-                  <input type="checkbox" checked={blockDevice} onChange={(e) => setBlockDevice(e.target.checked)} /> 이 기기({rejecting.device}…) 7일 동안 제보 막기
-                </label>
-              )}
-            </div>
-            <div className="modal__foot">
-              <button type="button" className="btn btn--default" onClick={() => setRejecting(null)}>취소</button>
-              <button
-                type="button"
-                className="btn btn--danger"
-                disabled={!reason}
-                onClick={() => {
-                  finish(rejecting, "rejected", blockDevice ? "반려하고 기기를 7일 막았어요" : "반려했어요", { rejectReason: reason });
-                  setRejecting(null);
-                }}
-              >
-                반려
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            {/* 팝업은 어드민 틀 밖에 그려진다 — 어드민 제목 글꼴(Pretendard)을 여기서 준다 */}
+            <DialogTitle className="font-sans">#{rejecting?.id} 반려</DialogTitle>
+            <DialogDescription>익명 제보라 보낸 사람에게 알릴 수는 없어요. 사유는 통계와 도배 판단에 써요.</DialogDescription>
+          </DialogHeader>
+          <RadioList ariaLabel="반려 사유" value={reason} onChange={setReason} options={REJECT_REASONS} />
+          {reason === "장난·도배" && (
+            <CheckField checked={blockDevice} onChange={setBlockDevice}>
+              이 기기({rejecting?.device}…) 7일 동안 제보 막기
+            </CheckField>
+          )}
+          <DialogFooter>
+            <Button type="button" variant="outlined" size="md" onClick={() => setRejectOpen(false)}>
+              취소
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="md"
+              disabled={!reason || !rejecting}
+              onClick={() => {
+                if (!rejecting) return;
+                finish(rejecting, "rejected", blockDevice ? "반려하고 기기를 7일 막았어요" : "반려했어요", { rejectReason: reason });
+                setRejectOpen(false);
+              }}
+            >
+              반려
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {toast && <div className="toast">{toast}</div>}
+      {toast && <Toast>{toast}</Toast>}
     </>
   );
 }

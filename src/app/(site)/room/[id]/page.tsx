@@ -52,12 +52,12 @@ async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
           <Badge variant="outline" className="rounded-full border-transparent bg-muted px-2 text-caption font-normal text-muted-foreground">
             {BOARD_CATS[post.cat]}
           </Badge>
-          <h1 className="mt-1.5 text-heading-4 leading-snug text-balance break-keep [overflow-wrap:anywhere]">{post.title}</h1>
+          <h1 className="mt-1.5 text-heading-4 text-balance break-keep [overflow-wrap:anywhere]">{post.title}</h1>
           <p className="mt-1 text-caption text-muted-foreground/70">
             {post.who} · {timeAgo(post.at, now)}
           </p>
         </header>
-        <p className="border-t border-border pt-3 text-body-medium leading-relaxed whitespace-pre-line break-keep [overflow-wrap:anywhere]">{post.body}</p>
+        <p className="border-t border-border pt-3 text-body-medium whitespace-pre-line break-keep [overflow-wrap:anywhere]">{post.body}</p>
         {store && (
           // 붙인 가게 카드: 도장 · 이름 · 동 · 대표 메뉴 가격 → 가게 상세
           <Link

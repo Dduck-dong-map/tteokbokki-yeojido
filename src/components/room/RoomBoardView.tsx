@@ -81,7 +81,7 @@ export default function RoomBoardView({ posts, cat, storeNames, now, sample, onC
           </ul>
         ) : (
           <div className="mt-16 px-4 text-center">
-            <p className="text-body-small leading-relaxed text-muted-foreground/70">아직 글이 없어요.</p>
+            <p className="text-body-small text-muted-foreground/70">아직 글이 없어요.</p>
             <Link href="/room/write" className="hit mt-3 inline-block text-body-small font-semibold text-foreground underline underline-offset-4">
               첫 글 쓰기
             </Link>

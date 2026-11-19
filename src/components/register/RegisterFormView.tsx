@@ -21,7 +21,7 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
           🍢
         </p>
         <h2 className="mt-3 text-heading-4 break-keep [overflow-wrap:anywhere]">지도에 올렸어요. 서비스 어묵 하나 드려요</h2>
-        <p className="mt-2 text-body-small leading-relaxed text-muted-foreground">
+        <p className="mt-2 text-body-small text-muted-foreground">
           일주일 동안 「확인 중」으로 보여요.
           <br />가 본 사람 {VERIFY_YES}명이 「맞아요」를 누르면 확인이 끝나요.
         </p>
@@ -71,7 +71,7 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
         {steps.map((s, i) => (
           <li key={s} className="flex-1">
             <span className={cn("block h-1 rounded-full", i <= step ? "bg-primary" : "bg-border")} />
-            <span className={cn("mt-1 block text-caption leading-tight break-keep", i === step ? "font-bold text-foreground" : "text-muted-foreground/70")}>{s}</span>
+            <span className={cn("mt-1 block text-caption break-keep", i === step ? "font-bold text-foreground" : "text-muted-foreground/70")}>{s}</span>
           </li>
         ))}
       </ol>
@@ -86,11 +86,11 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
           {steps.map((s, i) => (
             <a key={s} href={`#reg-${i}`} className={cn("inline-flex items-center gap-1", i === done.indexOf(false) ? "font-bold text-foreground" : "text-muted-foreground/70")}>
               {i + 1}. {s}
-              {/* 채운 칸 표시. 읽는 이름은 예전 그대로(「… ✓」) 남긴다 */}
+              {/* 채운 칸 표시. 아이콘은 장식이고 스크린 리더에는 글자로 알린다 */}
               {done[i] && (
                 <>
                   <Check className="size-4" strokeWidth={2} aria-hidden="true" />
-                  <span className="sr-only">✓</span>
+                  <span className="sr-only">(채움)</span>
                 </>
               )}
             </a>

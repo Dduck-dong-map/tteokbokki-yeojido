@@ -3,7 +3,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { SAMPLE_LISTS, SAMPLE_POSTS } from "../../src/lib/data/sample-community";
 import { SAMPLE_STORES } from "../../src/lib/data/sample-stores";
-import { collectErrors } from "./helpers";
+import { adminLogin, collectErrors } from "./helpers";
 
 // 라우트 전부 × 폭 셋: 200 · 콘솔 오류 0 · 가로 스크롤 0.
 // 손으로 쓴 목록 대신 src/app/**/page.tsx 를 훑어 만든다 (계획 9절: 23개, 어드민 10개 포함).
@@ -53,6 +53,8 @@ test("page.tsx 23개를 찾는다 (어드민 10개 포함)", () => {
 
 for (const { file, url } of ROUTES) {
   test(`${url}  ←  ${file}`, async ({ page }) => {
+    // 어드민 화면은 열쇠로 들어간 뒤에 연다 — 잠김 안내가 아니라 실제 내용의 폭 · 오류를 본다 (로그인 화면은 그대로 연다)
+    if (url.startsWith("/admin") && url !== "/admin/login") await adminLogin(page);
     const errors = collectErrors(page);
     const res = await page.goto(url, { waitUntil: "load" });
     expect(res, "응답 없음").not.toBeNull();

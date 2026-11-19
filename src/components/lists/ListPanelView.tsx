@@ -31,8 +31,8 @@ export default function ListPanelView({
           <ListInfoFormView {...info} />
         ) : (
           <header className="flex flex-col gap-2">
-            <h1 className="text-heading-3 leading-snug text-balance break-keep [overflow-wrap:anywhere]">{list.title}</h1>
-            {list.desc && <p className="text-body-small leading-relaxed whitespace-pre-line text-muted-foreground break-keep [overflow-wrap:anywhere]">{list.desc}</p>}
+            <h1 className="text-heading-3 text-balance break-keep [overflow-wrap:anywhere]">{list.title}</h1>
+            {list.desc && <p className="text-body-small whitespace-pre-line text-muted-foreground break-keep [overflow-wrap:anywhere]">{list.desc}</p>}
             <p className="text-caption text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
               {list.who} 님의 리스트 · {stores.length}곳 · {timeAgo(list.updatedAt, now)} 고침
               {list.visibility === "link" && (
@@ -83,9 +83,9 @@ export default function ListPanelView({
               {askDelete ? (
                 <>
                   <span className="min-w-0 text-muted-foreground break-keep [overflow-wrap:anywhere]">이 리스트를 지울까요? 받은 추천도 함께 사라져요.</span>
-                  <button type="button" onClick={onDelete} className="hit h-8 shrink-0 rounded-full bg-spicybg px-3 font-semibold text-spicytext">
+                  <Button type="button" variant="destructive" size="compact" onClick={onDelete} className="shrink-0">
                     지우기
-                  </button>
+                  </Button>
                   <Button type="button" variant="outlined" size="compact" onClick={() => onAskDelete(false)}>
                     그만두기
                   </Button>

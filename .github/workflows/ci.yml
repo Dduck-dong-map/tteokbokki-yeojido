@@ -99,7 +99,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Chromium 설치
         run: pnpm exec playwright install --with-deps chromium
-      # 개발 서버 모드로 띄운다: 시험은 ADMIN_KEY 를 비우고 돌고, 그때 어드민은 개발 서버의 127.0.0.1 에서만 열린다 (src/lib/admin/access.ts)
+      # 개발 서버 모드로 띄운다 (빌드 시간을 아낀다). 어드민은 시험용 열쇠로 로그인해서 연다 (playwright.config.ts E2E_ADMIN_KEY)
       - name: E2E
         run: pnpm e2e
         env:

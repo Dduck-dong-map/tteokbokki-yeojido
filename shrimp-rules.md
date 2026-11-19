@@ -24,7 +24,8 @@
 | 위치 | 용도 |
 | --- | --- |
 | `src/app/(site)/` | 사용자 화면. `(site)/(map)/layout.tsx` 는 `/` 와 `/store/[id]` 가 함께 쓰는 지도 틀 |
-| `src/app/admin/` | 운영 어드민. Server Action 은 `admin/actions.ts`, CSS 는 `.admin-root` 안에서만 |
+| `src/app/admin/` | 운영 어드민. Server Action 은 `admin/actions.ts`. 전용 CSS 없음 — 사용자 화면과 같은 Tailwind · `ui/` 부품 · 토큰 |
+| `src/components/admin/` | 어드민 화면 부품. 공용 조각 `bits.tsx`(그리기) · `controls.tsx`(입력 · "use client") · `Icon.tsx` · `AdminGate.tsx` |
 | `src/app/api/*` | 사용자 쓰기 route handler (`stores` · `room` · `lists` · `photos` · `me`) |
 | `src/components/ui/` | shadcn 파일 + 디자인 시스템 기본 부품(`chip` · `fab` · `snackbar` · `text-field`). 도메인을 모른다 |
 | `src/components/brand/` | 고유 부품: `Logo` · `SpiceStamp` · `Chili` · `Stars` · `StoreThumb` · `PendingTag` · `Tag` |
@@ -38,7 +39,7 @@
 | `docs/` | 기획 · 리서치 · 디자인 · 캐릭터 · 개발 · 공유 · `design-system/` · `guide/` · `PRD.md` · `ROADMAP.md` · `작업기록.md` |
 | `scripts/` | `build-tokens.mjs` · `copy-maplibre-worker.mjs` · `copy-share.mjs` |
 
-- 부품을 `src/app/` 안에 두지 않는다. 어드민 CSS(`src/app/admin/*.css`)만 예외다.
+- 부품과 CSS 를 `src/app/` 안에 두지 않는다(전역 `globals.css` · `tokens.css` 만 있다). 어드민 전용 CSS 는 만들지 않는다.
 - 한 화면에서만 쓰는 부품은 `<screen>/` 에 둔다. 두 번째 화면이 쓰게 되면 `ui/`(도메인 없음)나 `brand/`(도메인 있음)로 옮긴다.
 
 ## 3. 작업 시작 전 필수
@@ -225,7 +226,12 @@ export async function POST(req: Request) {
 | `import { cn } from "cn"` (새 파일) | `@/lib/utils` |
 | 제목에 `font-bold` | 크기 · 색 · 자간 |
 | 템플릿 문자열로 클래스 합치기 | `cn()` |
-| 맵기 도장 · 별점 · 로고 다시 그리기 | `brand/` 부품 |
+| 맵기 도장 · 별점 · 로고 다시 그리기 | `brand/` 부품 (별은 `StarGlyph`, 색은 `text-star`) |
+| `ui/` 밖 날 `<button>` · `<input>` · `<select>` · `<textarea>` | `ui/` 의 `Button` · `Chip` · `Input` · `TextField` · `Select`. 꼭 필요한 예외는 `eslint-disable-next-line no-restricted-syntax -- 까닭` |
+| `shadow-sm` · `shadow-md` · `shadow-lg` | 지도 위에 뜨는 면에만 `shadow-elevation-1`~`3` |
+| 손으로 만든 토스트 · 가림막 `bg-black/…` | `ui/snackbar` · `bg-scrim` |
+| 글자 토큰 옆에 `leading-*` | 줄 높이는 글자 토큰에 들어 있다 |
+| 어드민 화면에 옛 클래스(`btn` · `card` · `table` …) · 전용 CSS | `components/admin/bits.tsx` · `controls.tsx` 의 조각과 `ui/` 부품 |
 | 오류 빨강과 맵기 빨강을 서로 대신 쓰기 | `text-destructive` / `chart-*` · `spicy*` 구분 |
 
 ## 8. 함께 고쳐야 하는 파일
@@ -245,7 +251,8 @@ export async function POST(req: Request) {
 | 환경 변수 추가 | `.env.example` · `docs/개발/기술스택_v1_2026-10-28.md` |
 | 스택 · 저장 · 보안 · 배포 상태 변경 | `docs/개발/기술스택_v1_2026-10-28.md` · `CLAUDE.md` |
 | `docs/공유/` 의 공유 HTML | `scripts/copy-share.mjs` 의 경로 확인 (`public/share/` 는 복사본이라 직접 고치지 않는다) |
-| shadcn 파일 다시 받기 | `pnpm exec shadcn add <name>` 전에 `git diff` 로 우리가 고친 줄 확인. 고친 파일: `button` · `badge` · `input` · `textarea` |
+| shadcn 파일 받기 · 다시 받기 | `pnpm exec shadcn add <name>` 전에 `git diff` 로 우리가 고친 줄 확인. 받은 뒤 `import { cn } from "cn"` 을 `@/lib/utils` 로 바꾼다(`ui/` 의 모든 파일이 프로젝트 `cn` 을 쓴다). 고친 파일: `button` · `badge` · `input` · `textarea` · `dialog` · `sheet` · `tabs` |
+| ESLint 금지 규칙(`eslint.config.mjs`) | 예외 주석을 더하거나 빼면 `docs/ROADMAP.md` Phase 2 의 예외 곳 수 |
 | 로드맵 항목을 끝냄 | `docs/ROADMAP.md` 의 체크 · 「부록: 기능별 상태」 (4.5절) |
 | PRD 의 기능 · 수용 기준 변경 | `docs/ROADMAP.md` 의 대상 기능 · 완료 기준 · 부록, `tests/e2e/acceptance.spec.ts` |
 | 표 개수 · 라우트 개수 · 시험 개수 변경 | `docs/ROADMAP.md` 의 해당 숫자 |
@@ -334,7 +341,8 @@ export async function POST(req: Request) {
 - ❌ 권한 확인 없는 Server Action, `AdminGate` 밖의 어드민 내용
 - ❌ 화면에서 저장소 직접 읽기, 컴포넌트에서 규칙 다시 구현하기
 - ❌ `export const dynamic = "force-dynamic"`
-- ❌ 임의 글자 크기 · 하드코딩 색 · 기호 글자 아이콘
+- ❌ 임의 글자 크기 · 하드코딩 색 · 기호 글자 아이콘 · `ui/` 밖 날 입력 요소(`pnpm lint` 가 막는다)
+- ❌ 어드민 전용 CSS 파일 만들기, 어드민 파일에서 CSS 가져오기
 - ❌ 측정 없이 `memo` · `useCallback` 추가 (비싼 계산 · 지도 콜백에만)
 - ❌ 기획안 · 시안 파일 덮어쓰기
 - ❌ 요청받지 않은 커밋 · 푸시 · 범위 확장

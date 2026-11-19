@@ -94,7 +94,7 @@ function FilterBody({ value: f, resultCount: n, inline = false, onChange, onClos
               >
                 <SpiceStamp n={lv} size={30} />
                 {/* 좁은 칸(폭 360 에서 60px 남짓)이라 긴 이름은 줄을 바꾼다 */}
-                <span className="max-w-full text-center text-caption leading-tight text-muted-foreground [overflow-wrap:anywhere]">{SPICE_LEVELS[lv].ref.replace(" 정도", "")}</span>
+                <span className="max-w-full text-center text-caption text-muted-foreground [overflow-wrap:anywhere]">{SPICE_LEVELS[lv].ref.replace(" 정도", "")}</span>
               </UiChip>
             );
           })}

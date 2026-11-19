@@ -314,12 +314,12 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         <div ref={box} className="h-full w-full" aria-label="떡볶이 가게 지도" role="region" />
       </div>
       {failed && (
-        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-border bg-card px-3 py-2 text-center text-body-small text-muted-foreground shadow-sm">
+        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-border bg-card px-3 py-2 text-center text-body-small text-muted-foreground shadow-elevation-1">
           지도를 불러오지 못했어요. 주소와 길찾기는 그대로 쓸 수 있어요.
         </p>
       )}
       {realOn && interactive && (
-        <span className="pointer-events-none absolute top-11 left-1/2 z-10 max-w-[calc(100%-1rem)] -translate-x-1/2 truncate rounded-full border border-input bg-card px-3 py-1 text-caption text-muted-foreground shadow-sm">
+        <span className="pointer-events-none absolute top-11 left-1/2 z-10 max-w-[calc(100%-1rem)] -translate-x-1/2 truncate rounded-full border border-input bg-card px-3 py-1 text-caption text-muted-foreground shadow-elevation-1">
           {realOn === "naver" ? "실제 지도 · 축소하면 그림 지도" : "실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도"}
         </span>
       )}

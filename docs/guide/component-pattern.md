@@ -27,7 +27,8 @@
 | 클래스 합치기 | `@/lib/utils` 의 `cn`(`createCn` 으로 우리 토큰 이름을 등록) | 새 파일은 `"cn"` 패키지가 아니라 `@/lib/utils` 에서 가져온다(9.4절) |
 | 아이콘 | `lucide-react`(`components.json` 의 `iconLibrary`). 어드민도 같다(`components/admin/Icon.tsx`) | 기호 글자(＋ ✓ ♡)를 아이콘으로 쓰지 않는다(9.7절) |
 | 글자 크기 | 글자 토큰 유틸(`text-body-medium` 등) | 임의 크기 `text-[Npx]` 를 쓰지 않는다(9.8절) |
-| 어드민 화면 | 내용은 `AdminGate`, 머리글의 단추·링크는 `AdminOnly` 뒤(`components/admin/AdminGate.tsx`) | 권한은 화면과 Server Action마다 확인한다(6.2절) |
+| 어드민 화면 | 내용은 `AdminGate`, 머리글의 단추·링크는 `AdminOnly` 뒤(`components/admin/AdminGate.tsx`). 사용자 화면과 같은 스택으로 그린다 — 전용 CSS 는 없고 공용 조각은 `components/admin/bits.tsx`(그리기) · `controls.tsx`(입력) | 권한은 화면과 Server Action마다 확인한다(6.2절). 제목 글꼴만 다르다: 어드민은 `h1`~`h3` 도 Pretendard(`app/admin/layout.tsx`) |
+| 린트 | `pnpm lint` 가 디자인 시스템 금지 규칙을 본다(`eslint.config.mjs`) | 임의 글자 크기 · 임의 색 · `ui/` 밖 날 입력 요소 · 어드민 CSS 가 오류다. 예외는 그 줄에 까닭을 적는다(14장) |
 | 지도 | MapLibre 6, 브라우저에서만 | `TteokMap` 이 effect 안에서 `import("maplibre-gl")` 로 불러온다(8.2절) |
 
 ---
@@ -71,11 +72,12 @@ export { SectionTitle }
 | `src/components/<screen>/` | 한 화면의 컨테이너 · View · 계약(`types.ts`). `home` · `store` · `register` · `room` · `lists` · `mine` · `admin` · `loading` |
 
 - `src/components/ui/` 의 shadcn 파일을 다시 받으려면 설치된 CLI 로 `pnpm exec shadcn add <name>` 을 쓴다. **덮어쓰기 전에** 우리가 고친 줄이 있는지 `git diff` 로 확인한다.
-  - 우리가 고친 shadcn 파일: `button` · `badge` · `input` · `textarea`(`@/lib/utils` 의 `cn` 을 쓴다).
-  - 받은 그대로인 shadcn 파일: `card` · `dialog` · `label` · `select` · `separator` · `sheet` · `skeleton` · `tabs`(`"cn"` 패키지를 직접 가져온다). `sonner` 는 `cn` 을 쓰지 않는다.
-- 어드민 부품은 `src/components/admin/` 에 있다. 아이콘은 `Icon.tsx`(lucide), 잠금은 `AdminGate.tsx` 다.
+  - `ui/` 의 모든 파일은 `@/lib/utils` 의 `cn` 을 쓴다(11-19). 새로 받은 파일은 `import { cn } from "cn"` 을 `@/lib/utils` 로 바꾼다. `sonner` 는 `cn` 을 쓰지 않는다.
+  - 우리가 고친 shadcn 파일: `button`(디자인 시스템 종류 · 크기) · `badge` · `input` · `textarea`(`variant="field"`) · `dialog` · `sheet`(가림막 `bg-scrim` · 「닫기」) · `tabs`(줄 탭의 켜진 탭 = 옥빛).
+  - import 만 바꾼 shadcn 파일: `card` · `checkbox` · `label` · `radio-group` · `select` · `separator` · `skeleton` · `switch` · `table`.
+- 어드민 부품은 `src/components/admin/` 에 있다. 아이콘은 `Icon.tsx`(lucide), 잠금은 `AdminGate.tsx`, 공용 조각은 `bits.tsx`(`PageHeader` · `Panel` · `TableFrame` · `StatusBadge` · `Notice` · `Field` · `Empty` · `Stat` 등, 서버 컴포넌트에서도 쓴다)와 `controls.tsx`(`PickSelect` · `SearchInput` · `CheckField` · `RadioList` · `SwitchField` · `Toast`, `"use client"`)다. 어드민 화면은 이 조각과 `ui/` 부품으로만 그린다.
 - 한 화면에서만 쓰는 부품은 `<screen>/` 에 둔다. 두 번째 화면에서 쓰이게 되면 그때 `ui/`(도메인 없음)나 `brand/`(도메인 있음)로 옮긴다.
-- `app/` 안의 파일은 `page`·`route` 가 아니면 공개되지 않지만, 이 저장소는 부품을 `app/` 안에 두지 않는다. 어드민 CSS(`src/app/admin/*.css`)만 예외다.
+- `app/` 안의 파일은 `page`·`route` 가 아니면 공개되지 않지만, 이 저장소는 부품을 `app/` 안에 두지 않는다. CSS 도 전역 `globals.css` · `tokens.css` 뿐이다(어드민 전용 CSS 는 11-19 에 지웠다).
 
 ---
 
@@ -504,9 +506,9 @@ Tailwind 는 `@theme` 에 없는 이름의 클래스를 **아무 경고 없이 �
 | 묶음 | 쓸 수 있는 클래스 | 정의된 곳 |
 | --- | --- | --- |
 | 색 (shadcn) | `bg-background` `text-foreground` `bg-card` `bg-popover` `bg-primary` `text-primary-foreground` `bg-secondary` `text-secondary-foreground` `bg-muted` `text-muted-foreground` `bg-accent` `text-destructive` `border-border` `border-input` `ring-ring` | `globals.css` `@theme inline` |
-| 색 (우리 것) | `bg-brand-red`(찜 하트·이름 글씨 빨강) `bg-report` `text-report-foreground`(제보·등록) `text-link` `bg-map-paper` `text-wordmark` `bg-spicybg` `text-spicytext` `bg-stampbg` `text-loc` · 맵기 `bg-chart-1`~`5` | 같은 곳 |
+| 색 (우리 것) | `bg-brand-red`(찜 하트·이름 글씨 빨강) `bg-report` `text-report-foreground`(제보·등록) `text-link` `bg-map-paper` `text-wordmark` `bg-spicybg` `text-spicytext` `bg-stampbg` `text-loc` `text-star`(별점의 별) · 맵기 `bg-chart-1`~`5` | 같은 곳 |
 | 색 (hover · active 단계) | `bg-primary-hover` `bg-primary-active`(주 행동) `bg-secondary-hover` `bg-secondary-active`(두 번째 행동) `bg-report-hover` `bg-report-active`(제보) `bg-ghost-hover` `bg-ghost-active`(투명 버튼·목록 칸·안 고른 칩) | 같은 곳 |
-| 색 (상태 · 뒤집힌 면) | `bg-disabled` `text-disabled-foreground`(쓸 수 없음) `bg-inverse` `text-inverse-foreground` `text-inverse-action`(스낵바) `border-invalid`(오류 테두리) | 같은 곳 |
+| 색 (상태 · 뒤집힌 면) | `bg-disabled` `text-disabled-foreground`(쓸 수 없음) `bg-inverse` `text-inverse-foreground` `text-inverse-action`(스낵바) `border-invalid`(오류 테두리) `bg-scrim`(시트 · 다이얼로그 뒤 가림막) | 같은 곳 |
 | 그림자 | `shadow-elevation-1`(검색창·카드) `shadow-elevation-2`(아래 막대) `shadow-elevation-3`(FAB·시트·스낵바). 고대비 테마에서는 값이 `none` 이다 | 같은 곳 |
 | 글자 | `text-display-large` `text-display-medium` `text-heading-1`~`4` `text-body-large` `text-body-medium` `text-body-small` `text-caption` `text-overline` `text-wordmark` `text-map-label` `text-stamp-number`(크기는 9.8절) | `tokens.css` `@theme inline`(생성) |
 | 글꼴 | `font-sans`(Pretendard) `font-heading`·`font-serif`(조선100년체) `font-wordmark` | `globals.css` |
@@ -532,7 +534,7 @@ Tailwind 는 `@theme` 에 없는 이름의 클래스를 **아무 경고 없이 �
 - 강한 테두리(`border-strong`)는 `border-input`, 포커스(`border-focus`)는 `ring-ring` · `outline-ring` 이다.
 - `rounded-md` 는 9.6px, `rounded-xl` 은 16.8px 이다(`--radius` 12px 의 배수). `radius-8` 은 `rounded-control` 이다.
 - 고대비 테마에서 `shadow-elevation-N` 의 값은 `none` 이고, 같은 요소의 `ring-*` · `inset-ring-*` 도 함께 사라진다(둘 다 `box-shadow` 한 속성에 들어간다). `ui/fab.tsx` · `chip.tsx` 는 포커스를 `outline-*` 으로 그린다.
-- Semantic 토큰 가운데 유틸이 없는 것: `text-link` · `text-link-hover` · `text-link-active`(갈색. 유틸 `text-link` 는 `text-brand` 옥빛을 가리킨다) · `background-brand` · `background-error` · `icon-*` · `map-water` · `text-on-spicy-*` · `overlay-scrim`.
+- Semantic 토큰 가운데 유틸이 없는 것: `text-link` · `text-link-hover` · `text-link-active`(갈색. 유틸 `text-link` 는 `text-brand` 옥빛을 가리킨다) · `background-brand` · `background-error` · `icon-*` · `map-water` · `text-on-spicy-*`.
 - `tokens.css` 는 손으로 고치지 않는다. 값은 `docs/design-system/tokens.json` 에서 고치고 `pnpm tokens` 를 돌린다.
 - 하드코딩 색(`#…`, `bg-[#…]`)과 Tailwind 기본 팔레트(`bg-red-500`)는 쓰지 않는다. 맵기 도장의 `--sNf`·`--sNe` 같은 기존 값은 예외로, `globals.css` 에만 있다.
 
@@ -548,7 +550,7 @@ Tailwind 는 `@theme` 에 없는 이름의 클래스를 **아무 경고 없이 �
 | 치수 | `target-min` `field` `fab` `navbar` `icon-md` `icon-sm` | `h-8` 과 `h-field`, `size-4` 와 `size-icon-sm` 은 뒤에 온 것이 남는다 |
 
 - `text-wordmark` 는 색과 글자 크기 양쪽에 정의된 이름이라 등록하지 않았다.
-- **새 파일과 우리가 고치는 파일은 `@/lib/utils` 의 `cn` 을 쓴다.** `ui/` 에서 `button` · `badge` · `input` · `textarea` · `chip` · `fab` · `snackbar` · `text-field` 가 그렇다. 받은 그대로인 shadcn 파일(`card` · `dialog` · `label` · `select` · `separator` · `sheet` · `skeleton` · `tabs`)은 `"cn"` 패키지의 기본 `cn` 을 직접 가져온다. 기본 `cn` 은 우리 글자 유틸을 글자색으로 본다. 이 파일들에 우리 토큰 유틸을 넣게 되면 import 를 `@/lib/utils` 로 바꾼다.
+- **모든 파일이 `@/lib/utils` 의 `cn` 을 쓴다.** `ui/` 의 shadcn 파일도 그렇다(11-19 에 모두 바꿨다). `"cn"` 패키지의 기본 `cn` 은 우리 글자 유틸을 글자색으로 봐서 `text-heading-4 text-foreground` 를 넘기면 크기를 조용히 버리고, `rounded-control` · `h-field` 는 앞의 값과 합치지 못한다. shadcn 파일을 새로 받으면 import 부터 `@/lib/utils` 로 바꾼다.
 - `@theme` 에 새 토큰 유틸 이름을 더하면 `src/lib/utils.ts` 의 목록에도 더한다.
 - 템플릿 문자열로 클래스를 합치지 않는다. 조건부 클래스도 `cn()` 안에 쓴다.
 
@@ -689,9 +691,16 @@ Tailwind 는 `@theme` 에 없는 이름의 클래스를 **아무 경고 없이 �
 | 기호 글자(＋ ✓ ♡)를 아이콘으로 | `lucide-react` 의 `Plus` · `Check` · `Heart` | 9.7절 |
 | 새 파일에서 `import { cn } from "cn"` | `import { cn } from "@/lib/utils"` | 9.4절 |
 | 입력칸마다 라벨·오류 마크업을 다시 짜기 | `TextField` · `TextAreaField` | 9.3절 |
+| `ui/` 밖에서 날 `<button>` · `<input>` · `<select>` · `<textarea>` (린트 오류) | `ui/` 의 `Button` · `Chip` · `Input` · `TextField` · `Select`. 줄 전체가 단추인 목록 줄 · 숨긴 파일 선택 · 브랜드 그림 단추처럼 부품이 맞지 않는 곳만 그 줄 위에 `eslint-disable-next-line no-restricted-syntax -- 까닭` | 9.3절 |
+| `shadow-sm` · `shadow-md` · `shadow-lg`, 목록 카드의 hover 그림자 | 지도 위에 뜨는 면에만 `shadow-elevation-1`~`3`. hover 는 `hover:border-input` · `hover:bg-ghost-hover` | 10장 |
+| 손으로 만든 토스트(`rounded-full bg-foreground …`) · 가림막 `bg-black/10` | `ui/snackbar` 의 `Snackbar` · `bg-scrim` | 9.3절 |
+| 글자 토큰 옆에 `leading-relaxed` · `leading-tight` | 줄 높이는 글자 토큰에 들어 있다. 글리프 하나를 맞추는 `leading-none` 만 예외 | 9.8절 |
+| 별을 `★` 와 색 값으로 다시 그리기 | `brand` 의 `StarGlyph` · `Stars`(색 `text-star`) | 9.6절 |
 | 컴포넌트에서 `fetch` 로 직접 쓰기 POST | `send()` · `uploadPhoto()`(기기 표시 헤더가 붙는다) | 6.1절 |
 | 쓰기 route handler 에서 `req.json()` 을 바로 읽기 | `readJson()` → `whoFrom()` | 6.1절 |
 | 어드민 화면 내용·단추를 잠금 밖에 두기 | 내용은 `AdminGate`, 머리글 단추·링크는 `AdminOnly` | 6.2절 |
+| 어드민 전용 CSS · 옛 클래스(`btn` · `card` · `table` …) (CSS 가져오기는 린트 오류) | `components/admin/bits.tsx` · `controls.tsx` 의 조각과 `ui/` 부품 | 1.2절 |
+| `min-[900px]:` 처럼 px 로 쓴 임의 폭을 `sm:` · `lg:` 와 섞기(단위가 달라 순서가 뒤집힌다) | `md:` · `lg:` · `xl:` 같은 이름 있는 폭 | 0장 |
 | `bg-red-500`, `#RRGGBB`, `tokens.css` 손 고치기 | 시맨틱 토큰, `tokens.json` + `pnpm tokens` | 9.3절 |
 | 제목에 `font-bold`, 조선100년체로 16px 미만 | 크기·색·자간으로 강조, 작은 글자는 Pretendard | 10장 |
 | 화면에 옥빛 버튼 여럿 | 주 행동 하나만 `bg-primary` | 10장 |

@@ -26,6 +26,7 @@ export default function AddPhotoView({ busy, message, large = false, onFiles }: 
         )}
         {message && <span className="mt-1 block text-caption text-spicytext">{message}</span>}
       </span>
+      {/* eslint-disable-next-line no-restricted-syntax -- 숨긴 파일 선택: 바깥 label 이 눌리는 칸이라 꾸밈이 없다 */}
       <input type="file" accept="image/*" multiple className="hidden" disabled={busy} onChange={(e) => onFiles(e.target.files)} />
     </label>
   );

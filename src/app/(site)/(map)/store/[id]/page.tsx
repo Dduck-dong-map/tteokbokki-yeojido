@@ -9,7 +9,7 @@ import FlipStamp from "@/components/store/FlipStamp";
 import SaveButton from "@/components/store/SaveButton";
 import { AddPhoto, CopyAddress, FlagReviewButton, GoLinks, MoreActions, ReviewForm, StillHere, VerifyBar } from "@/components/store/StoreActions";
 import { CloseStore, ShareButton, StoreDistance, StoreMiniMap } from "@/components/store/StoreLocation";
-import { PendingTag, SampleRibbon, Stars, Tag } from "@/components/brand";
+import { PendingTag, SampleRibbon, StarGlyph, Stars, Tag } from "@/components/brand";
 import { getHistory, getRegion, getReviews, getStore, getStores } from "@/lib/data";
 import { kakaoDirections, naverDirections } from "@/lib/directions";
 import { won } from "@/lib/filters";
@@ -126,7 +126,7 @@ async function StoreDetail({ id }: { id: string }) {
           <FlipStamp n={s.spice} size={44} faded={fresh !== "fresh"} />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-              <h1 className="text-heading-3 leading-tight break-keep [overflow-wrap:anywhere]">{s.name}</h1>
+              <h1 className="text-heading-3 break-keep [overflow-wrap:anywhere]">{s.name}</h1>
               <span className="inline-flex h-6 items-center rounded-full bg-muted px-2.5 text-caption font-medium whitespace-nowrap text-muted-foreground">
                 {GRADES[s.grade]}
                 {s.shopType && ` · ${SHOP_TYPES[s.shopType]}`}
@@ -180,7 +180,7 @@ async function StoreDetail({ id }: { id: string }) {
           <h2 className={cn(H2)}>소개글</h2>
           {s.memo ? (
             <>
-              <p className="text-body-small leading-relaxed whitespace-pre-line break-keep [overflow-wrap:anywhere]">{s.memo}</p>
+              <p className="text-body-small whitespace-pre-line break-keep [overflow-wrap:anywhere]">{s.memo}</p>
               <p className="text-caption text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
                 {s.introBy && `처음 쓴 사람 ${s.introBy} · `}
                 {s.introAt && `${confirmedAgo(s.introAt, now)} 고침 · `}
@@ -252,7 +252,7 @@ async function StoreDetail({ id }: { id: string }) {
         {/* 평가: 별 + 한 줄 후기. 맵기 투표는 메뉴별 구조와 함께 나중에 (ADR-W06) */}
         <section className={cn(SECTION)}>
           <h2 className={cn(H2)}>가 본 사람들의 평가</h2>
-          <Stars rating={s.rating} size={14} />
+          <Stars rating={s.rating} />
           <ReviewForm id={s.id} />
           {written.length > 0 && (
             <ul className="mt-1 divide-y divide-border">
@@ -260,8 +260,13 @@ async function StoreDetail({ id }: { id: string }) {
                 <li key={r.id} className="py-2.5">
                   <p className="flex flex-wrap items-center gap-x-1.5 text-caption text-muted-foreground/70">
                     <b className="font-semibold text-muted-foreground">{r.who}</b>
-                    {/* 별 색은 brand/Stars 와 같은 값 */}
-                    {r.stars && <span className="text-[#D98E04]">★{r.stars}</span>}
+                    {r.stars && (
+                      <span className="inline-flex items-center text-star">
+                        <StarGlyph />
+                        <span className="sr-only">별점</span>
+                        {r.stars}
+                      </span>
+                    )}
                     <span>· {confirmedAgo(r.at.slice(0, 10), now)}</span>
                     <span className="ml-auto">
                       <FlagReviewButton storeId={s.id} reviewId={r.id} />
@@ -292,7 +297,7 @@ async function StoreDetail({ id }: { id: string }) {
               <p className="text-body-small text-muted-foreground break-keep [overflow-wrap:anywhere]">빠졌거나 오래된 정보가 있어요. 아시는 만큼만 채워 주세요.</p>
               <p className="flex flex-wrap gap-1">
                 {why.map((w) => (
-                  <span key={w} className="rounded-full bg-secondary px-2 text-caption leading-6 text-muted-foreground">
+                  <span key={w} className="inline-flex h-6 items-center rounded-full bg-secondary px-2 text-caption text-muted-foreground">
                     {w}
                   </span>
                 ))}
