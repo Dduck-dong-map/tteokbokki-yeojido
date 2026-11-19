@@ -2,7 +2,8 @@
 #  - check: 타입 · 린트 · 단위 시험 (파일 저장소 모드, DATABASE_URL 없음 → PG 시험은 건너뜀)
 #  - postgres: Postgres 16 + PostGIS 3.4 서비스(로컬 도커와 같은 이미지)에 db/init/*.sql 이 오류 없이 도는지 보고,
 #              DATABASE_URL 을 붙여 PG 모드 저장 흐름 · 예시 넣기 · 잠금(RLS) 시험(tests/unit/pg.test.ts)까지 돈다
-# E2E(Playwright)는 아직 넣지 않았다 (브라우저 설치 · 빌드 시간). 슬랙 알림은 slack-notify.yml 이 따로 한다.
+#  - e2e: Playwright 를 폭 390 · 768 · 1280 세 프로젝트로 돈다 (파일 저장소 모드, 3101 포트 — playwright.config.ts)
+# 슬랙 알림은 slack-notify.yml 이 따로 한다.
 name: 시험
 
 on:
@@ -83,3 +84,30 @@ jobs:
       # 다른 단위 시험은 저마다 DATABASE_URL 을 비우고 파일 모드로 돈다
       - name: 단위 시험 (Postgres 모드 포함)
         run: pnpm test
+
+  e2e:
+    name: E2E (폭 390 · 768 · 1280)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Chromium 설치
+        run: pnpm exec playwright install --with-deps chromium
+      # 개발 서버 모드로 띄운다: 시험은 ADMIN_KEY 를 비우고 돌고, 그때 어드민은 개발 서버의 127.0.0.1 에서만 열린다 (src/lib/admin/access.ts)
+      - name: E2E
+        run: pnpm e2e
+        env:
+          E2E_SERVER: dev
+      - name: 실패 기록 올리기
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          retention-days: 7

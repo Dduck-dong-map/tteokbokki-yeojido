@@ -13,7 +13,7 @@ pnpm 만 쓴다 (`packageManager: pnpm@10.33.0`).
 ```bash
 pnpm dev            # 개발 서버. predev 가 MapLibre 일꾼 파일·공유 HTML 을 public/ 에 복사한다
 pnpm build          # prebuild 도 같은 복사를 한다
-pnpm typecheck      # tsc --noEmit
+pnpm typecheck      # next typegen && tsc --noEmit (라우트 타입 PageProps 등을 먼저 만든다)
 pnpm lint           # eslint
 pnpm test           # vitest — tests/unit/**/*.test.ts (규칙 함수 · 저장소 쓰기 규칙 · 쓰기 입구 · 어드민 접근 · 사진 저장소. pg.test.ts 는 DATABASE_URL 이 있을 때만)
 pnpm e2e            # Playwright — 라우트 열림 + 저장 흐름 + 수용 기준(acceptance.spec.ts) × 폭 390·768·1280
@@ -30,7 +30,7 @@ pnpm app:up         # 빌드한 앱까지 도커로 (standalone)
 
 E2E 는 3101 포트에 **파일 저장소 모드**(`DATA_DIR=.data-e2e`)로 따로 띄우고 `DATABASE_URL`·네이버 키·`ADMIN_KEY` 를 비운다. 개발 DB 는 건드리지 않는다. 개발 서버가 떠 있으면 Next 16 의 dev 잠금(`.next/dev/lock`) 때문에 저절로 `next build` + `next start` 로 돈다. `E2E_SERVER=dev|start` 로 고를 수 있다(`playwright.config.ts`).
 
-CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · 단위 시험을 돌리고, Postgres 서비스에 `db/init/*.sql` 을 적용해 PG 시험(`tests/unit/pg.test.ts`)까지 돈다. E2E 는 CI 에 없다.
+CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · 단위 시험을 돌리고, Postgres 서비스에 `db/init/*.sql` 을 적용해 PG 시험(`tests/unit/pg.test.ts`)까지 돈다. E2E 도 세 폭으로 돈다(개발 서버 모드).
 
 ## Next.js 주의
 

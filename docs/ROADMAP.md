@@ -1,16 +1,16 @@
 # 떡볶여지도 MVP 개발 로드맵
 
-떡·스타일·맵기 취향으로 실제 떡볶이 가게를 지도에서 골라 길찾기까지 가게 하고, 가입 없이 누구나 올리고 고치는 「모두가 고치는 지도」를 청년부(3청) 1차 사용자에게 Vercel + Supabase 로 내놓는다. 기능 정의와 수용 기준은 [PRD](PRD.md), 배포 절차와 환경 변수는 [기술 스택](개발/기술스택_v1_2026-10-28.md) 문서에 있다. 1차 MVP 코드는 대부분 구현되어 있어 Phase 마다 끝난 일(`[x]`)과 남은 일(`[ ]`)이 함께 있다. 예상 소요 시간은 남은 일 기준 추정치이고, 단위는 한 사람과 AI 코딩 에이전트가 함께 일하는 작업일이다.
+떡·스타일·맵기 취향으로 실제 떡볶이 가게를 지도에서 골라 길찾기까지 가게 하고, 가입 없이 누구나 올리고 고치는 「모두가 고치는 지도」를 청년부(3청) 1차 사용자에게 Vercel + Supabase 로 내놓는다. 기능 정의와 수용 기준은 [PRD](PRD.md), 배포 절차와 환경 변수는 [기술 스택](개발/기술스택_v1_2026-10-28.md) 문서에 있다. 1차 MVP 코드는 대부분 구현되어 있어 Phase 마다 끝난 일(✅)과 남은 일(`[ ]`)이 함께 있다. 예상 소요 시간은 남은 일 기준 추정치이고, 단위는 한 사람과 AI 코딩 에이전트가 함께 일하는 작업일이다.
 
 ## Phase 1: 프로젝트 초기 설정 (남은 일 0.5~1일)
 
-- [x] Next.js 16.4 App Router · TypeScript · pnpm · Tailwind CSS v4 · shadcn 앱 골격
-- [x] 라우트 묶음: 사용자 화면 `(site)` 13개 · 어드민 `admin` 10개 · `api` route handler 8개
-- [x] 디자인 토큰 파이프라인(`tokens.json` → `pnpm tokens` → `tokens.css` → `globals.css`)
-- [x] 로컬 DB(도커 Postgres 16 + PostGIS)와 표 SQL `db/init/001~004`(표 11개 · RLS 켬)
-- [x] 시험 도구: Vitest 단위 시험, Playwright E2E(폭 390 · 768 · 1280, 파일 저장소 모드)
-- [x] 환경 변수 설명 `.env.example`, 도커 앱 서버(`pnpm app:up`)
-- [x] CI 워크플로 `ci.yml` 작성: `check`(typecheck · lint · 단위 시험) · `postgres`(표 적용 · PG 시험)
+- ✅ Next.js 16.4 App Router · TypeScript · pnpm · Tailwind CSS v4 · shadcn 앱 골격
+- ✅ 라우트 묶음: 사용자 화면 `(site)` 13개 · 어드민 `admin` 10개 · `api` route handler 8개
+- ✅ 디자인 토큰 파이프라인(`tokens.json` → `pnpm tokens` → `tokens.css` → `globals.css`)
+- ✅ 로컬 DB(도커 Postgres 16 + PostGIS)와 표 SQL `db/init/001~004`(표 13개 · RLS 켬)
+- ✅ 시험 도구: Vitest 단위 시험, Playwright E2E(폭 390 · 768 · 1280, 파일 저장소 모드)
+- ✅ 환경 변수 설명 `.env.example`, 도커 앱 서버(`pnpm app:up`)
+- ✅ CI 워크플로 `ci.yml` 작성: `check`(typecheck · lint · 단위 시험) · `postgres`(표 적용 · PG 시험)
 - [ ] `ci.yml` 을 깃허브에 올려 `check` · `postgres` 두 작업 통과 확인
 - [ ] CI 에 E2E(Playwright) 작업 넣기
 - 이유: 앱 골격 · 표 설계 · 시험 도구가 없으면 뒤 Phase 의 모듈과 화면을 올릴 자리가 없고, CI 가 돌지 않으면 뒤 Phase 의 완료 기준(시험 통과)을 푸시마다 확인할 수 없다.
@@ -22,11 +22,11 @@
 
 ## Phase 2: 공통 모듈/컴포넌트 개발 (남은 일 5~8일)
 
-- [x] 데이터 계층: 읽기 `data/index.ts` · 쓰기 `db.ts` · Postgres `pg.ts` · 어드민 `admin.ts`, 요청당 읽기 1번
-- [x] 규칙 모듈: `taxonomy.ts` · `wiki.ts` · `community.ts` · `filters.ts` · `freshness.ts`
-- [x] 쓰기 입구 검사 `request.ts`(다른 출처 403 · JSON 아님 415 · 64KB 초과 413)
-- [x] 사진 저장 모듈 `photos.ts`(Supabase Storage 비공개 버킷 / 로컬 폴더 / Vercel 설정 없으면 거절)
-- [x] 공용 부품 `ui/` 17개 · `brand/` · `layout/` · 지도 부품, 토큰 유틸 잇기 · `cn` 병합 설정
+- ✅ 데이터 계층: 읽기 `data/index.ts` · 쓰기 `db.ts` · Postgres `pg.ts` · 어드민 `admin.ts`, 요청당 읽기 1번
+- ✅ 규칙 모듈: `taxonomy.ts` · `wiki.ts` · `community.ts` · `filters.ts` · `freshness.ts`
+- ✅ 쓰기 입구 검사 `request.ts`(다른 출처 403 · JSON 아님 415 · 64KB 초과 413)
+- ✅ 사진 저장 모듈 `photos.ts`(Supabase Storage 비공개 버킷 / 로컬 폴더 / Vercel 설정 없으면 거절)
+- ✅ 공용 부품 `ui/` 17개 · `brand/` · `layout/` · 지도 부품, 토큰 유틸 잇기 · `cn` 병합 설정
 - [ ] `x-ddy-device` 헤더가 없는 쓰기를 거절하고, 하루 한도를 기기당 10건 + IP 당 50건으로 센다
 - [ ] 가게를 내리는 판정(달라요 3 · 가게 신고 3)은 서로 다른 IP 3개로, 맞아요 · 평가 · 찜 · 추천은 기기 기준으로 센다
 - [ ] 사진 하루 한도(IP 당 30장)를 서버 메모리에서 DB 표로 옮긴다. 표는 `db/init` 의 기존 표 정의 파일에 넣고 `pnpm db:reset` 으로 DB 를 새로 만든다
@@ -46,11 +46,11 @@
 
 **대상 기능:** F001 F002 F003 F004 F005 F006 F007 F016 F017 F018 F019 F020 F021
 
-- [x] 찾기: 떡볶이 지도 · 취향 필터 · 주변 가게 목록 · 가게 검색 · 지역·취향 목록(F001~F004 · F021)
-- [x] 가게 상세 · '아직 있어요' · 길찾기 연결(F005~F007)
-- [x] 가게 등록 · 맞아요·달라요 · 정보 고치기·변경 이력 · 신고·자동 내림 · 평가(F016~F020)
-- [x] 규칙 단위 시험(`pnpm test`: 145개 통과 · Postgres 시험 6개는 CI 에서만 돈다)
-- [x] E2E 시험 작성: `flows.spec.ts` 의 등록 · 중복 안내 · 고치기→이력, `acceptance.spec.ts` 의 핵심 기능 19개
+- ✅ 찾기: 떡볶이 지도 · 취향 필터 · 주변 가게 목록 · 가게 검색 · 지역·취향 목록(F001~F004 · F021)
+- ✅ 가게 상세 · '아직 있어요' · 길찾기 연결(F005~F007)
+- ✅ 가게 등록 · 맞아요·달라요 · 정보 고치기·변경 이력 · 신고·자동 내림 · 평가(F016~F020)
+- ✅ 규칙 단위 시험(`pnpm test`: 145개 통과 · Postgres 시험 6개는 CI 에서만 돈다)
+- ✅ E2E 시험 작성: `flows.spec.ts` 의 등록 · 중복 안내 · 고치기→이력, `acceptance.spec.ts` 의 핵심 기능 19개
 - [ ] `acceptance.spec.ts` 핵심 기능 시험 19개 통과 확인(실패하면 코드 또는 시험을 고친다)
 - [ ] Phase 2 판정 변경에 맞춰 F006 · F016~F020 단위 시험의 「서로 다른 사람」 조건을 다시 맞춘다
 - [ ] F007: 네이버 길찾기 링크를 결정대로 맞춘다(PRD 「그 가게 위치로」, 코드는 이름 + 주소 검색 주소)
@@ -67,11 +67,11 @@
 
 **대상 기능:** F010 F012 F015 F022 F023 F024 F025 F026
 
-- [x] 어드민 열쇠 접근 규칙과 로그인 화면, production 어드민 잠금(F010)
-- [x] 가게 관리 · 가게 편집 · 되살리기, 후보 가져오기(강남 v1 · 마포 v1), 운영 기록(F012 · F022 · F023)
-- [x] 길찾기 누름 기록 `store_directions`(같은 사람 · 같은 가게 · 한국 시간 같은 날 한 줄)(F015)
-- [x] 찜·내 등록 · 맛집 리스트 · 떡볶이방 게시판(F024~F026)
-- [x] 단위 시험(`access` · `admin` · `admin-status` · `community` · `db`)과 `acceptance.spec.ts` 지원 기능 시험 7개 작성
+- ✅ 어드민 열쇠 접근 규칙과 로그인 화면, production 어드민 잠금(F010)
+- ✅ 가게 관리 · 가게 편집 · 되살리기, 후보 가져오기(강남 v1 · 마포 v1), 운영 기록(F012 · F022 · F023)
+- ✅ 길찾기 누름 기록 `store_directions`(같은 사람 · 같은 가게 · 한국 시간 같은 날 한 줄)(F015)
+- ✅ 찜·내 등록 · 맛집 리스트 · 떡볶이방 게시판(F024~F026)
+- ✅ 단위 시험(`access` · `admin` · `admin-status` · `community` · `db`)과 `acceptance.spec.ts` 지원 기능 시험 7개 작성
 - [ ] `acceptance.spec.ts` 지원 기능 시험 7개(F023 1 · F024 1 · F025 2 · F026 3) 통과 확인
 - [ ] E2E 서버에 `ADMIN_KEY` 를 넣는다(지금은 비우고 돌며, production 서버에서는 어드민이 잠긴다)
 - [ ] F010 로그인 E2E: 열쇠 없이 `/admin/stores` → 로그인 → 맞는 열쇠로 가게 관리 열림
@@ -87,9 +87,9 @@
 
 ## Phase 5: 최적화 및 배포 (남은 일 4~6일)
 
-- [x] 배포 가드: Vercel 에서 `DATABASE_URL` · `HASH_SALT` 가 비면 서버가 시작하지 않는다
-- [x] 빈 Postgres DB 에는 `SEED_SAMPLES=1` 일 때만 예시를 넣는다
-- [x] Supabase 연결 코드(`pg.ts`: 포트 6543 이면 prepare 끔 · ssl · 연결 1개)와 옮기는 절차(`db/README.md`)
+- ✅ 배포 가드: Vercel 에서 `DATABASE_URL` · `HASH_SALT` 가 비면 서버가 시작하지 않는다
+- ✅ 빈 Postgres DB 에는 `SEED_SAMPLES=1` 일 때만 예시를 넣는다
+- ✅ Supabase 연결 코드(`pg.ts`: 포트 6543 이면 prepare 끔 · ssl · 연결 1개)와 옮기는 절차(`db/README.md`)
 - [ ] 읽기 최적화: 요청마다 표 전체를 읽는 것을 결정대로 바꾼다(화면 범위 조회 · 목록 페이지 캐시)
 - [ ] Supabase 프로젝트(서울)를 만들고 SQL Editor 에서 `db/init/*.sql` 을 차례로 실행한다
 - [ ] Storage 비공개 버킷 `photos` 를 만들고 사진 올리기 → 다시 읽기를 확인한다
