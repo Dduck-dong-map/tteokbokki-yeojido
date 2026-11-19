@@ -95,7 +95,8 @@ test("F003 폭 390 은 줄을 두 번 눌러 상세, 768 이상은 한 번에 �
   const first = rows(page).first();
   await expect(first).toBeVisible();
   const id = (await first.getAttribute("id"))!.replace(/^row-/, "");
-  const button = first.locator("button").first();
+  // 줄을 id 로 다시 잡는다: 지도가 자리를 잡으면 목록 순서가 바뀔 수 있어, 「첫 줄」로 누르면 느린 기계(CI)에서 다른 가게가 눌린다
+  const button = page.locator(`#row-${id} button`).first();
   await button.click();
   if (isMobile(page)) {
     await expect(button).toHaveAttribute("aria-current", "true");
@@ -158,8 +159,11 @@ test("F005 폭 390: 작은 지도 위를 세로로 밀면 페이지가 스크롤
   const box = (await mini.boundingBox())!;
   const before = await page.evaluate(() => window.scrollY);
   const cdp = await page.context().newCDPSession(page);
-  await cdp.send("Input.synthesizeScrollGesture", { x: box.x + box.width / 2, y: box.y + box.height / 2, yDistance: -300, gestureSourceType: "touch", speed: 800 });
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before + 100);
+  // 느린 기계(CI)에서는 화면이 자리를 잡기 전에 민 손짓이 버려질 수 있어, 스크롤될 때까지 다시 민다
+  await expect(async () => {
+    await cdp.send("Input.synthesizeScrollGesture", { x: box.x + box.width / 2, y: box.y + box.height / 2, yDistance: -300, gestureSourceType: "touch", speed: 800 });
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(before + 100);
+  }).toPass({ timeout: 30_000 });
 
   await mini.tap();
   await expect(page).toHaveURL(new RegExp(`/\\?store=${s.id}$`));
