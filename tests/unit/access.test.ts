@@ -70,12 +70,12 @@ describe("ADMIN_KEY 가 없을 때 — 이 컴퓨터의 개발 서버에서만",
     expect(access.checkKey("")).toBe(false);
   });
 
-  it("도커 DB(127.0.0.1 · db 호스트)면 열리고, 바깥 DB(Supabase)면 잠긴다", async () => {
+  it("이 컴퓨터의 DB(127.0.0.1 · db 호스트)면 열리고, 바깥 DB(Neon)면 잠긴다", async () => {
     vi.stubEnv("DATABASE_URL", "postgres://ddy:ddy_local@127.0.0.1:15432/tteok");
     expect(await access.adminAccess()).toEqual({ ok: true, mode: "local" });
     vi.stubEnv("DATABASE_URL", "postgres://ddy:ddy_local@db:5432/tteok");
     expect(await access.adminAccess()).toEqual({ ok: true, mode: "local" });
-    vi.stubEnv("DATABASE_URL", "postgres://postgres.abc:pw@aws-0-ap-northeast-2.pooler.supabase.com:6543/postgres");
+    vi.stubEnv("DATABASE_URL", "postgres://app:pw@ep-test-123456-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require");
     expect(await access.adminAccess()).toEqual({ ok: false, why: "locked" });
     vi.stubEnv("DATABASE_URL", "읽을 수 없는 주소");
     expect(await access.adminAccess()).toEqual({ ok: false, why: "locked" });

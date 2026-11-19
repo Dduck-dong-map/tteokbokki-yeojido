@@ -9,6 +9,15 @@ import { SAMPLE_POSTS } from "../fixtures/sample-community";
 import { SAMPLE_STORES } from "../fixtures/sample-stores";
 import { seedDataDir } from "../fixtures/seed";
 
+// 사진 저장소(Vercel Blob)는 늘 실패하는 가짜로 둔다 — 「저장에 실패하면 자리를 돌려준다」 시험만 Blob 길을 탄다
+vi.mock("@vercel/blob", () => ({
+  put: vi.fn(async () => {
+    throw new Error("blob down");
+  }),
+  get: vi.fn(async () => null),
+  BlobNotFoundError: class extends Error {},
+}));
+
 // 같은 사람 판정 · 도배 방지 (11-18 결정, lib/data/db.ts · lib/request.ts).
 //  - 내리는 판정(달라요 · 가게 신고 · 후기 · 글 · 댓글 신고)은 서로 다른 접속 위치(IP) HIDE_AT 곳이 모여야 한다
 //  - 좋은 쪽 판정(맞아요)은 기기 기준 그대로 — 같은 와이파이의 세 사람이면 확인 끝
@@ -346,9 +355,7 @@ describe("사진 하루 한도 — 저장소에 남는다", () => {
 
   it("저장에 실패하면 잡은 자리를 돌려준다 (한도를 깎지 않는다)", async () => {
     const photos = await import("@/lib/data/photos");
-    process.env.SUPABASE_URL = "https://abc.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service-key";
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("{}", { status: 500 })));
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_test";
     vi.spyOn(console, "error").mockImplementation(() => {});
     try {
       expect(await photos.addPhoto(JPEG, sameIp(1))).toMatchObject({ ok: false, status: 502 });
@@ -356,8 +363,7 @@ describe("사진 하루 한도 — 저장소에 남는다", () => {
     } finally {
       vi.unstubAllGlobals();
       vi.restoreAllMocks();
-      delete process.env.SUPABASE_URL;
-      delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+      delete process.env.BLOB_READ_WRITE_TOKEN;
     }
   });
 

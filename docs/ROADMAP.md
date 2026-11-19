@@ -1,6 +1,6 @@
 # 떡볶여지도 MVP 개발 로드맵
 
-떡·스타일·맵기 취향으로 실제 떡볶이 가게를 지도에서 골라 길찾기까지 가게 하고, 가입 없이 누구나 올리고 고치는 「모두가 고치는 지도」를 청년부(3청) 1차 사용자에게 Vercel + Supabase 로 내놓는다. 기능 정의와 수용 기준은 [PRD](PRD.md), 배포 절차와 환경 변수는 [기술 스택](개발/기술스택_v1_2026-10-28.md) 문서에 있다. 1차 MVP 코드는 대부분 구현되어 있어 Phase 마다 끝난 일(✅)과 남은 일(`[ ]`)이 함께 있다. 예상 소요 시간은 남은 일 기준 추정치이고, 단위는 한 사람과 AI 코딩 에이전트가 함께 일하는 작업일이다.
+떡·스타일·맵기 취향으로 실제 떡볶이 가게를 지도에서 골라 길찾기까지 가게 하고, 가입 없이 누구나 올리고 고치는 「모두가 고치는 지도」를 청년부(3청) 1차 사용자에게 Vercel + Neon 으로 내놓는다. 기능 정의와 수용 기준은 [PRD](PRD.md), 배포 절차와 환경 변수는 [기술 스택](개발/기술스택_v1_2026-10-28.md) 문서에 있다. 1차 MVP 코드는 대부분 구현되어 있어 Phase 마다 끝난 일(✅)과 남은 일(`[ ]`)이 함께 있다. 예상 소요 시간은 남은 일 기준 추정치이고, 단위는 한 사람과 AI 코딩 에이전트가 함께 일하는 작업일이다.
 
 ## Phase 1: 프로젝트 초기 설정 (남은 일 없음 · 11-19 완료)
 
@@ -25,7 +25,7 @@
 - ✅ 데이터 계층: 읽기 `data/index.ts` · 쓰기 `db.ts` · Postgres `pg.ts` · 어드민 `admin.ts`, 요청당 읽기 1번
 - ✅ 규칙 모듈: `taxonomy.ts` · `wiki.ts` · `community.ts` · `filters.ts` · `freshness.ts`
 - ✅ 쓰기 입구 검사 `request.ts`(다른 출처 403 · JSON 아님 415 · 64KB 초과 413)
-- ✅ 사진 저장 모듈 `photos.ts`(Supabase Storage 비공개 버킷 / 로컬 폴더 / Vercel 설정 없으면 거절)
+- ✅ 사진 저장 모듈 `photos.ts`(비공개 저장소 / 로컬 폴더 / Vercel 설정 없으면 거절. 저장소는 11-20 에 Supabase Storage 에서 Vercel Blob 으로 바꿨다)
 - ✅ 공용 부품 `ui/` 21개 · `brand/` · `layout/` · 지도 부품, 토큰 유틸 잇기 · `cn` 병합 설정(`ui/` 의 모든 파일이 프로젝트 `cn` 을 쓴다)
 - ✅ `x-ddy-device` 헤더가 없는 쓰기를 거절하고, 하루 한도를 기기당 10건 + IP 당 50건으로 센다
 - ✅ 가게를 내리는 판정(달라요 3 · 가게 신고 3)은 서로 다른 IP 3개로, 맞아요 · 평가 · 찜 · 추천은 기기 기준으로 센다
@@ -91,19 +91,19 @@
 
 - ✅ 배포 가드: Vercel 에서 `DATABASE_URL` · `HASH_SALT` 가 비면 서버가 시작하지 않는다
 - ✅ 저장소(Postgres · 파일)는 빈 채로 시작한다. 예시를 넣는 길(`SEED_SAMPLES`)은 11-19 에 지웠다
-- ✅ Supabase 연결 코드(`pg.ts`: 포트 6543 이면 prepare 끔 · ssl · 연결 1개)와 옮기는 절차(`db/README.md`)
-- ✅ 로컬 도커를 지운다(11-19): `Dockerfile` · `.dockerignore` · `docker-compose.yml`, `pnpm db:*` · `pnpm app:*` 스크립트 7개, `next.config.ts` 의 standalone 빌드. `db/README.md` · `.env.example` · `CLAUDE.md` · `README.md` · 기술 스택 문서를 Supabase 기준으로 고친다. Postgres 시험은 CI 의 `postgres` 작업이 돈다
+- ✅ DB 를 Neon, 사진을 Vercel Blob(임시)으로 정하고 코드를 맞췄다(11-20): `pg.ts` 가 풀러 주소(호스트에 `-pooler` · 포트 6543)면 prepare 를 끄고, `photos.ts` 가 `@vercel/blob` 비공개 저장소에 넣고 꺼낸다. 연결 절차는 `db/README.md` 「Neon 연결」. 까닭: Supabase 무료 플랜은 켜진 프로젝트가 계정당 2개라 자리가 없다
+- ✅ 로컬 도커를 지운다(11-19): `Dockerfile` · `.dockerignore` · `docker-compose.yml`, `pnpm db:*` · `pnpm app:*` 스크립트 7개, `next.config.ts` 의 standalone 빌드. `db/README.md` · `.env.example` · `CLAUDE.md` · `README.md` · 기술 스택 문서를 Supabase 기준으로 고친다(11-20 에 Neon 기준으로 다시 고쳤다). Postgres 시험은 CI 의 `postgres` 작업이 돈다
 - [ ] 표 설계를 마감한다: 별점 평균이 평가가 쌓일수록 어긋나는 것을 고치고(`db.ts` `reviewStore`), 칸 이름 정리안(`docs/디자인/분석/ERD_이름정리안_v1_2026-11-19.html`)을 결정대로 반영하고, 운영 데이터가 생긴 뒤 표를 바꾸는 방법(바꾸는 SQL 을 둘 자리 · 적용 순서)을 `db/README.md` 에 적는다 (11-19: 별점 수정 + 시험 2건, 표 바꾸는 방법 `db/migrations/` 절차까지 끝남. 남은 것은 칸 이름 정리안 결정)
 - ✅ 예시 데이터를 앱 코드에서 뺐다(11-19): `sample-stores.ts` · `sample-community.ts` 를 `tests/fixtures/` 로 옮기고 단위 시험 · E2E 가 `seed.ts` 로 저장소를 채워 돈다. `is_sample` 칸 3개 · `SEED_SAMPLES` · `NEXT_PUBLIC_SAMPLE_DATA` · `SampleRibbon` 을 지웠다. 어드민 시안 화면 5개(홈 · 제보 · 신고 · 설정 · 신선도 점검)와 그 자료(`src/lib/admin/sample.ts`)도 지우고 `/admin` 은 가게 관리로 넘긴다. 구 목록은 `src/lib/regions.ts` 로 옮겼다
-- [ ] Supabase 프로젝트(서울)를 만들고 SQL Editor 에서 `db/init/*.sql` 을 차례로 실행한다 (11-19 확인: 계정에 이 앱의 프로젝트가 아직 없다)
+- ✅ Neon 프로젝트(싱가포르)를 만들고 `db/init/*.sql` 을 차례로 실행했다(11-20): 프로젝트 `tteokbokki-yeojido`(id `round-fire-19486533` · Postgres 16), 표 13개 모두 RLS 켜짐, PostGIS 3.3.10 은 `extensions` 칸에. 서울 · 도쿄 지역은 없다. 확인 기록은 `db/README.md` 「확인한 것 (Neon)」
 - [ ] 읽기 최적화: 요청마다 표 전체를 읽는 것을 결정대로 바꾼다(화면 범위 조회 · 목록 페이지 캐시)
-- [ ] Storage 비공개 버킷 `photos` 를 만들고 사진 올리기 → 다시 읽기를 확인한다
-- [ ] Transaction pooler 주소(6543)를 `.env.local` 에 넣어 개발 서버로 읽기 · 쓰기를 확인한다
-- [ ] Vercel 환경 변수(`DATABASE_URL` · `HASH_SALT` · `ADMIN_KEY` · `SUPABASE_*` · `NEXT_PUBLIC_*`)를 넣고 배포한다
+- [ ] Vercel Blob 비공개 저장소(싱가포르)를 만들어 프로젝트에 잇고 사진 올리기 → 다시 읽기를 확인한다
+- [ ] Neon 의 Pooled connection 주소를 `.env.local` 에 넣어 개발 서버로 읽기 · 쓰기를 확인한다 (11-20: 주소를 넣었고, 앱과 같은 옵션으로 풀러에 붙어 읽기와 쓰기 잠금 `pg_advisory_xact_lock` 이 도는 것까지 봤다. 남은 것은 `ADMIN_KEY` · `HASH_SALT` 를 채우고 `pnpm dev` 화면에서 등록 · 맞아요 · 평가 · 길찾기를 해 보는 것. `HASH_SALT` 는 Vercel 에 넣을 값과 같게 한다)
+- [ ] Vercel 환경 변수(`DATABASE_URL` · `HASH_SALT` · `ADMIN_KEY` · `NEXT_PUBLIC_*`)를 넣고 함수 지역을 싱가포르로 맞춰 `vercel --prod` 로 배포한다 (조직 소유 저장소라 무료 플랜에서는 깃 연결이 안 된다)
 - [ ] 어드민 「후보 가져오기」로 실제 가게를 넣고, 청년부 1차 사용자(1~3명)에게 주소를 나눈다
 - [ ] PRD 9절 지표 셋을 `store_directions` · `store_logs` 질의로 7일마다 잰다
 - [ ] 공개 출시 전: 이용약관 · 개인정보 처리방침 페이지, 사장님 · 권리 침해 요청 창구, 쓰기에 Cloudflare Turnstile
-- 이유: 판정 · 한도 · 사진 저장(Phase 2)과 기능 시험(Phase 3 · 4)이 끝나기 전에 운영 DB 에 붙이면 틀린 표 · 내림 기록이 운영 데이터에 쌓이고, 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다. 도커는 Supabase 로 정한 뒤 쓰지 않는 길이라 지우고, 예시 데이터는 운영 번들과 표에 섞이지 않게 연결 전에 시험 쪽으로 옮긴다.
+- 이유: 판정 · 한도 · 사진 저장(Phase 2)과 기능 시험(Phase 3 · 4)이 끝나기 전에 운영 DB 에 붙이면 틀린 표 · 내림 기록이 운영 데이터에 쌓이고, 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다. 도커는 바깥 DB 로 정한 뒤 쓰지 않는 길이라 지우고, 예시 데이터는 운영 번들과 표에 섞이지 않게 연결 전에 시험 쪽으로 옮긴다.
 
 **완료 기준:**
 - `git ls-files | grep -iE "docker"` 가 0줄이고 `package.json` 에 `db:` · `app:` 스크립트가 없다
@@ -120,17 +120,17 @@
 |---|---|---|
 | 칸 이름 정리안(ERD 11-19) | 지금 이름 유지 / DB 칸 이름만 바꾸고 `pg.ts` 에 대응표 / 앱 값 이름까지 바꿈 | 5 |
 | 어드민 시안 화면(홈 · 제보 · 신고 · 설정 · 신선도)과 시안 자료 | 화면과 자료를 지움 / 그대로 둠(운영 메뉴에서는 이미 숨김) | 5 |
-| 운영 데이터가 생긴 뒤 표를 바꾸는 방법 | `db/migrations/` 에 번호 붙인 SQL 을 두고 SQL Editor 로 적용 / Supabase CLI 마이그레이션 | 5 |
 | 화면 범위 조회 | 전체를 읽어 앱에서 거르기 / PostGIS 함수 `stores_in_bounds` | 5 |
 | 목록 페이지 캐시 | 요청마다 읽기 / `"use cache"` + `cacheTag` 와 쓰기 때 무효화 | 5 |
 | 팀 기획과 다른 다섯 곳 · 「승인 후 공개」 스위치(PRD 12-1) | 현재 구현 유지 / 기획대로 되돌림 · 스위치 MVP 이후 / 지금 만듦 | 5 |
 | 배포 때 여는 구와 가게 수(PRD 12-2) | 「첫 300곳」 / 청년부 동선 30~50곳 / 실제 가게 36곳(강남 22 · 마포 14) | 5 |
 | '아직 있어요' 거리(PRD 12-3) | 200m 확정 / 다른 거리 | 5 |
 | 성공 지표 목표 값(PRD 12-4) | 새 등록·고치기 주 50건 / 다른 값 · 내려간 등록 비율 10% 이하 / 다른 값 | 5 |
-| 어드민 로그인 | `ADMIN_KEY` 열쇠 유지 / Supabase Auth | 5 |
+| 어드민 로그인 | `ADMIN_KEY` 열쇠 유지 / 이메일 링크 로그인 | 5 |
 | 분석 · 오류 도구 | GA4 / Vercel Analytics / Sentry / DB 표(`store_directions`)만 | 5 |
-| Vercel 요금제 · 함수 지역 | Hobby / Pro · 서울(`icn1`) / 기본값 | 5 |
-| Supabase 프로젝트 수 | 하나 / 시험 · 운영 둘 | 5 |
+| Vercel 요금제 · 함수 지역 | Hobby / Pro · 싱가포르(`sin1`, Neon DB 와 같은 지역) / 서울(`icn1`) / 기본값 | 5 |
+| Neon 프로젝트 수 | 하나(11-20 에 만든 `tteokbokki-yeojido`)로 감 / 시험용을 하나 더 만듦 | 5 |
+| 사진 저장 자리 | Vercel Blob 유지(무료 1GB · 올리기 월 2,000회) / 한도가 차기 전에 다른 저장소로 옮김 | 5 |
 | 배포 연결 방식 | CLI 수동 배포 / 깃허브 브랜치 자동 배포 | 5 |
 
 ## 범위 밖

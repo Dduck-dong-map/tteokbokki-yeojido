@@ -71,7 +71,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # 서비스 이미지는 처음 뜰 때 tteok 의 public 에 PostGIS 를 깔아 둔다. 우리 SQL 은 PostGIS 를 extensions 칸에 까므로
-      # (Supabase 와 같게) 빈 DB(template0)를 새로 만들어 차례로 돌린다 — Supabase SQL Editor 에 붙여 넣는 순서와 같다
+      # (운영 DB 와 같게) 빈 DB(template0)를 새로 만들어 차례로 돌린다 — Neon SQL Editor 에 붙여 넣는 순서와 같다
       - name: db/init/*.sql 적용 확인
         run: |
           psql -h 127.0.0.1 -U ddy -d tteok -v ON_ERROR_STOP=1 -c "create database tteok_init template template0"

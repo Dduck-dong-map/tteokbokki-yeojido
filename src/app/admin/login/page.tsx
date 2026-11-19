@@ -6,7 +6,7 @@ import { adminAccess, keyMode } from "@/lib/admin/access";
 export const metadata = { title: "로그인" };
 
 // M-AD-00 운영자 로그인 (REQ-AD-01). 11-15: 서버에 ADMIN_KEY 가 있으면 그 열쇠로 들어간다 (lib/admin/access.ts).
-// 열쇠가 없으면 이 컴퓨터(127.0.0.1)에서만 바로 들어간다. 이메일 링크 + 2단계 인증은 Supabase 로 옮길 때 붙인다.
+// 열쇠가 없으면 이 컴퓨터(127.0.0.1)에서만 바로 들어간다. 이메일 링크 + 2단계 인증은 아직 없다.
 export default function AdminLogin() {
   return (
     <div className="grid min-h-dvh place-items-center bg-background p-6">

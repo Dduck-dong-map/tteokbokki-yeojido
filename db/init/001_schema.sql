@@ -1,5 +1,5 @@
 -- 떡볶여지도 DB 표 (11-08) — 앱 데이터(src/lib/data/db.ts)를 그대로 담는다.
--- 새 DB(Supabase SQL Editor · CI 의 Postgres)에 001 → 004 를 차례로 돌린다. 로컬 도커 DB 는 11-19 에 지웠다.
+-- 새 DB(Neon SQL Editor · CI 의 Postgres)에 001 → 004 를 차례로 돌린다. 로컬 도커 DB 는 11-19 에 지웠다.
 -- 표를 바꾸는 방법은 db/README.md 「표가 바뀌면」.
 -- 이름은 앱 값의 이름을 snake_case 로 옮긴 것 (lastConfirmedAt → last_confirmed_at). 앱 쪽 연결: src/lib/data/pg.ts
 -- 로그인이 없어서 「누가」는 기기 표시·접속 위치의 해시(device · ip)로만 남긴다. 화면에는 내보내지 않는다.

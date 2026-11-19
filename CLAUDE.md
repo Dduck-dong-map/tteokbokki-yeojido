@@ -24,7 +24,7 @@ pnpm exec vitest run tests/unit/wiki.test.ts -t "테스트 이름"
 pnpm exec playwright test tests/e2e/flows.spec.ts --project=mobile-390 -g "테스트 이름"
 ```
 
-DB 는 Supabase 다(`db/README.md`). 로컬 도커 DB · 도커 앱 서버와 `pnpm db:*` · `pnpm app:*` 명령은 11-19 에 지웠다. `DATABASE_URL` 이 없으면 파일 저장소로 돈다.
+DB 는 Neon(Postgres), 사진은 Vercel Blob 이다(11-20 결정, `db/README.md`). 로컬 도커 DB · 도커 앱 서버와 `pnpm db:*` · `pnpm app:*` 명령은 11-19 에 지웠다. `DATABASE_URL` 이 없으면 파일 저장소로 돈다.
 
 E2E 는 3101 포트에 **파일 저장소 모드**(`DATA_DIR=.data-e2e`, 시험 자료로 채움)로 따로 띄우고 `DATABASE_URL`·네이버 키를 비우고 시험용 `ADMIN_KEY` 를 넣는다. 개발 DB 는 건드리지 않는다. 개발 서버가 떠 있으면 Next 16 의 dev 잠금(`.next/dev/lock`) 때문에 저절로 `next build` + `next start` 로 돈다. `E2E_SERVER=dev|start` 로 고를 수 있다(`playwright.config.ts`).
 
@@ -44,8 +44,8 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 - 읽기: 화면은 `src/lib/data/index.ts` 로만 읽는다. 가려진 가게 걸러내기가 여기서 일어난다.
 - 쓰기: route handler(`src/app/api/*`) → `src/lib/data/db.ts`. 규칙 검사와 쓰기가 지나가는 길은 이 파일 하나다. route handler 는 `src/lib/request.ts` 의 `readJson()`(다른 출처 403 · JSON 아님 415 · 64KB 초과 413)과 `whoFrom()`(기기 표시 `x-ddy-device` 없으면 400)을 먼저 지난다.
 - 저장: `DATABASE_URL` 이 있으면 `pg.ts`(Postgres), 없으면 `.data/db.json` 파일이다. 저장 방식은 `db.ts` 안에서만 바꾼다. 화면 요청 하나에 저장소 읽기는 한 번이다(`db.ts` 의 `shared()`, `React.cache`).
-- 사진: `src/lib/data/photos.ts` 가 둘 곳을 정한다. `SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY` 가 있으면 Supabase Storage 비공개 버킷(서버 경유), 없으면 서버 폴더(`.data/photos`), Vercel 에서 없으면 올리기를 거절한다.
-- 표 설계: `db/init/*.sql` (표 13개, 새 DB 에서 차례로 돈다). Supabase 에는 SQL Editor 로 차례로 적용한다. 표가 바뀌면 `db/README.md` 「표가 바뀌면」을 따른다. 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다.
+- 사진: `src/lib/data/photos.ts` 가 둘 곳을 정한다. Vercel Blob 저장소가 이어져 있으면(`BLOB_STORE_ID` 또는 `BLOB_READ_WRITE_TOKEN`) 비공개로 거기에(서버 경유, 임시 자리), 없으면 서버 폴더(`.data/photos`), Vercel 에서 없으면 올리기를 거절한다.
+- 표 설계: `db/init/*.sql` (표 13개, 새 DB 에서 차례로 돈다). Neon 에는 SQL Editor 로 차례로 적용한다. 표가 바뀌면 `db/README.md` 「표가 바뀌면」을 따른다. 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다.
 
 **규칙·체계는 `lib/` 에 모은다.** 화면·서버·DB 가 함께 쓴다.
 - `taxonomy.ts`: 태그 체계 (떡·스타일·맵기 등)
@@ -73,7 +73,7 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 
 - 키가 없어도 돈다. 저장소는 빈 채로 시작하고 저장은 `.data/` 파일에 된다. 예시 데이터는 앱에 없다(11-19 에 뺌). 시험만 `tests/fixtures/`(가게 16곳 · 글 · 리스트)로 저장소를 채워 돈다(`seed.ts` 의 `seedDataDir`). 환경 변수 설명은 `.env.example` 에 있다.
 - `NEXT_PUBLIC_*` 값(`SITE_URL`, `NAVER_MAP_KEY_ID`)은 빌드 때 코드에 박힌다. 바꾸면 개발 서버를 다시 켠다.
-- Vercel 에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Supabase Storage 설정이 없으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다).
+- Vercel 에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Vercel Blob 저장소가 이어져 있지 않으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다).
 - production(`pnpm start` · Vercel)에서는 `ADMIN_KEY` 가 없으면 어드민이 늘 잠긴다. 개발 서버만 `ADMIN_KEY` 없이 127.0.0.1 · localhost 로 열린다.
 - 접속 IP 는 `x-forwarded-for` 첫 주소다. Vercel 은 이 헤더를 덮어쓰지만, 프록시 없이 서버를 직접 열면 손님이 지어 보낼 수 있다(`src/lib/request.ts`).
 - `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 개발 서버를 끄고 `.next/dev` 를 지운다(개발 캐시만 지우면 된다. `.next` 전체를 지우면 떠 있는 `pnpm start` 서버가 깨진다).

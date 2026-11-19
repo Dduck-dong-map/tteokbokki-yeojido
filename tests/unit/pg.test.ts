@@ -9,7 +9,7 @@ import type { NewStoreInput } from "@/lib/wiki";
 //
 // 안전: DATABASE_URL 이 가리키는 DB 의 표는 건드리지 않는다. 그 서버에 시험용 DB(ddy_test_…)를 새로 만들어
 // db/init/*.sql 을 차례로 돌리고, 시험이 끝나면 지운다. 그래서 그 계정에 DB 를 만들 권한(CREATEDB)이 있어야 한다
-// (CI 의 계정은 주인이라 된다). Supabase 같은 바깥 DB 주소로는 돌리지 않는다.
+// (CI 의 계정은 주인이라 된다). Neon 같은 바깥 DB 주소로는 돌리지 않는다.
 
 const BASE = process.env.DATABASE_URL || "";
 const INIT_DIR = path.join(process.cwd(), "db", "init");

@@ -9,7 +9,7 @@ import { DAILY_LIMIT, DAILY_LIMIT_PER_IP, DAILY_PHOTOS, DAILY_PHOTOS_PER_IP, DUP
 import { DAILY_COMMENTS, DAILY_COMMENTS_PER_IP, DAILY_LISTS, DAILY_LISTS_PER_IP, DAILY_POSTS, DAILY_POSTS_PER_IP, MAX_LIST_STORES, type BoardCat, type ListVisibility, type Owned, type PlaceList, type Post, type PostComment } from "../community";
 
 // 저장소: 지금은 서버 폴더의 JSON 파일 하나다 (저장소 루트 .data/db.json · 깃에 안 올라간다).
-// 계정 없이 흐름 전체를 시험하려고 이렇게 뒀고, Supabase 키를 받으면 이 파일 안만 바꾼다.
+// 계정 없이 흐름 전체를 시험하려고 이렇게 뒀고, DATABASE_URL 을 넣으면 Postgres 로 간다(아래 PG).
 // 주의: Vercel 에서는 API 와 페이지가 임시 폴더를 함께 쓰지 못해 저장이 화면에 안 나타난다 (11-06 확인) → 공개 전에 반드시 바꿔야 한다.
 // 파일이 없으면 빈 저장소로 시작한다. 시험은 tests/fixtures/seed.ts 로 채운 저장소에서 돈다.
 
@@ -80,13 +80,13 @@ function withCommunity(db: Db): Db {
   return db;
 }
 
-// 11-08: DATABASE_URL 이 있으면 Postgres(Supabase, pg.ts)에 저장한다. 없으면 파일.
+// 11-08: DATABASE_URL 이 있으면 Postgres(Neon, pg.ts)에 저장한다. 없으면 파일.
 // 아래 규칙 함수들은 저장 방식과 상관없이 그대로 쓴다.
 const PG = !!process.env.DATABASE_URL;
 
 // 배포(Vercel)에서 DATABASE_URL 이 비면 파일 모드로 /tmp 에 쓰고, 응답은 성공인데 저장이 남지 않는다 (기술 스택 9절 #2).
 // HASH_SALT 와 같이 db.ts 를 불러올 때 멈춘다 → 서버가 시작하지 않는다. 로컬 개발 · E2E 는 VERCEL 이 없어 그대로 돈다.
-if (process.env.VERCEL && !PG) throw new Error("DATABASE_URL 환경 변수가 비어 있어요. Vercel 설정에 Supabase Transaction pooler 주소(포트 6543)를 넣어 주세요 (.env.example 참고)");
+if (process.env.VERCEL && !PG) throw new Error("DATABASE_URL 환경 변수가 비어 있어요. Vercel 설정에 Neon 의 Pooled connection 주소(호스트 이름에 -pooler)를 넣어 주세요 (.env.example 참고)");
 
 // 저장소는 빈 채로 시작한다 (11-19: 예시 데이터를 앱에서 뺐다). 가게는 등록 화면이나 어드민 「후보 가져오기」로 넣는다.
 const blank = (): Db => ({ stores: [], logs: [], reviews: [], votes: [], flags: [], posts: [], comments: [], lists: [], likes: [], postLikes: [], goes: [], photoUploads: [], deletedWrites: [] });

@@ -2,7 +2,7 @@ import { addPhoto } from "@/lib/data/photos";
 import { bad, checkOrigin, whoFrom } from "@/lib/request";
 
 // 사진 받기. 화면에서 줄이고 JPEG 로 다시 만들어 보낸다(찍은 위치 같은 정보가 함께 지워진다).
-// 어디에 저장하는지(Supabase Storage · 서버 폴더)와 하루 한도(저장소의 photo_uploads 표)는 lib/data/photos.ts 가 정한다.
+// 어디에 저장하는지(Vercel Blob · 서버 폴더)와 하루 한도(저장소의 photo_uploads 표)는 lib/data/photos.ts 가 정한다.
 const MAX_BYTES = 3 * 1024 * 1024;
 
 export async function POST(req: Request) {

@@ -4,14 +4,22 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { seedDataDir } from "../fixtures/seed";
 
-// 사진 저장소 (lib/data/photos.ts) — Supabase Storage 설정이 있을 때 · 없을 때 · Vercel 에서 없을 때.
+// 사진 저장소 (lib/data/photos.ts) — Vercel Blob 설정이 있을 때 · 없을 때 · Vercel 에서 없을 때.
+// Blob SDK 는 가짜로 바꿔 넣는다(실제 저장소에 올리지 않는다).
 // db.ts 가 DATA_DIR 을 처음 읽힐 때 고정하므로 db.test.ts 와 같이 env 를 먼저 바꾸고 새로 읽는다.
 
 type Photos = typeof import("@/lib/data/photos");
 
 const ID = "11111111-1111-4111-8111-111111111111";
 const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]);
-const ENV_KEYS = ["DATA_DIR", "DATABASE_URL", "VERCEL", "HASH_SALT", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_PHOTO_BUCKET"] as const;
+const ENV_KEYS = ["DATA_DIR", "DATABASE_URL", "VERCEL", "HASH_SALT", "BLOB_STORE_ID", "BLOB_READ_WRITE_TOKEN"] as const;
+
+// vi.resetModules 로 photos.ts 를 새로 읽어도 같은 가짜 함수를 쓰게 끌어올려 둔다
+const blob = vi.hoisted(() => ({ put: vi.fn(), get: vi.fn() }));
+vi.mock("@vercel/blob", () => {
+  class BlobNotFoundError extends Error {}
+  return { put: blob.put, get: blob.get, BlobNotFoundError };
+});
 
 let photos: Photos;
 let dir: string;
@@ -34,7 +42,9 @@ beforeEach(async () => {
   process.env.DATA_DIR = dir;
   seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
-  for (const k of ["VERCEL", "HASH_SALT", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_PHOTO_BUCKET"] as const) delete process.env[k];
+  for (const k of ["VERCEL", "HASH_SALT", "BLOB_STORE_ID", "BLOB_READ_WRITE_TOKEN"] as const) delete process.env[k];
+  blob.put.mockReset();
+  blob.get.mockReset();
   await load();
 });
 
@@ -47,7 +57,7 @@ afterEach(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-describe("Storage 설정 없음 → 서버 폴더", () => {
+describe("Blob 설정 없음 → 서버 폴더", () => {
   it("폴더에 쓰고 다시 읽는다", async () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal("fetch", fetchSpy);
@@ -72,13 +82,16 @@ describe("Storage 설정 없음 → 서버 폴더", () => {
     expect((await photos.savePhoto("../db", JPEG)).ok).toBe(false);
   });
 
-  it("URL 만 있고 키가 없으면 설정 없음으로 본다", async () => {
-    process.env.SUPABASE_URL = "https://abc.supabase.co";
+  it("빈 값은 설정 없음으로 본다", async () => {
+    process.env.BLOB_STORE_ID = "  ";
+    process.env.BLOB_READ_WRITE_TOKEN = "";
     expect(photos.photoStore()).toBe("file");
+    expect(await photos.savePhoto(ID, JPEG)).toEqual({ ok: true });
+    expect(blob.put).not.toHaveBeenCalled();
   });
 });
 
-describe("Vercel + Storage 설정 없음 → 올리기 거절", () => {
+describe("Vercel + Blob 설정 없음 → 올리기 거절", () => {
   it("503 으로 거절하고 /tmp 에 쓰지 않는다", async () => {
     process.env.VERCEL = "1";
     vercelDb();
@@ -91,76 +104,75 @@ describe("Vercel + Storage 설정 없음 → 올리기 거절", () => {
   });
 });
 
-describe("Storage 설정 있음 → Supabase Storage", () => {
+describe("Blob 설정 있음 → Vercel Blob 비공개 저장소", () => {
   beforeEach(() => {
-    process.env.SUPABASE_URL = "https://abc.supabase.co/";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service-key";
+    process.env.BLOB_STORE_ID = "store_test";
   });
 
-  it("올리기: POST /storage/v1/object/{bucket}/{id}.jpg · 헤더", async () => {
-    const fetchSpy = vi.fn(async () => new Response(JSON.stringify({ Key: `photos/${ID}.jpg` }), { status: 200 }));
-    vi.stubGlobal("fetch", fetchSpy);
+  it("올리기: photos/{id}.jpg 로 비공개 · JPEG · 덮어쓰지 않음", async () => {
+    blob.put.mockResolvedValue({ pathname: `photos/${ID}.jpg` });
     expect(photos.photoStore()).toBe("storage");
     expect(await photos.savePhoto(ID, JPEG)).toEqual({ ok: true });
 
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchSpy.mock.calls[0] as unknown as [string, RequestInit];
-    expect(url).toBe(`https://abc.supabase.co/storage/v1/object/photos/${ID}.jpg`);
-    expect(init.method).toBe("POST");
-    expect(init.headers).toMatchObject({
-      apikey: "service-key",
-      authorization: "Bearer service-key",
-      "content-type": "image/jpeg",
-      "x-upsert": "false",
-    });
-    expect(Buffer.from(init.body as Uint8Array).equals(JPEG)).toBe(true);
+    expect(blob.put).toHaveBeenCalledTimes(1);
+    const [pathname, body, opts] = blob.put.mock.calls[0] as [string, Buffer, Record<string, unknown>];
+    expect(pathname).toBe(`photos/${ID}.jpg`);
+    expect(Buffer.from(body).equals(JPEG)).toBe(true);
+    expect(opts).toMatchObject({ access: "private", contentType: "image/jpeg", addRandomSuffix: false });
+    expect(opts.allowOverwrite).toBeUndefined();
     // 서버 폴더에는 쓰지 않는다
     expect(existsSync(path.join(dir, "photos"))).toBe(false);
   });
 
-  it("버킷 이름을 바꿀 수 있다", async () => {
-    process.env.SUPABASE_PHOTO_BUCKET = "store-photos";
-    const fetchSpy = vi.fn(async () => new Response("{}", { status: 200 }));
-    vi.stubGlobal("fetch", fetchSpy);
-    await photos.savePhoto(ID, JPEG);
-    expect((fetchSpy.mock.calls[0] as unknown as [string])[0]).toBe(`https://abc.supabase.co/storage/v1/object/store-photos/${ID}.jpg`);
+  it("열쇠(BLOB_READ_WRITE_TOKEN)만 있어도 Blob 으로 간다 (Vercel 밖)", async () => {
+    delete process.env.BLOB_STORE_ID;
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_test";
+    blob.put.mockResolvedValue({});
+    expect(photos.photoStore()).toBe("storage");
+    expect(await photos.savePhoto(ID, JPEG)).toEqual({ ok: true });
+    expect(blob.put).toHaveBeenCalledTimes(1);
   });
 
-  it("Storage 가 거절하면 502", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("{}", { status: 500 })));
+  it("Blob 이 거절하면 502", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(await photos.savePhoto(ID, JPEG)).toMatchObject({ ok: false, status: 502 });
-    vi.stubGlobal("fetch", vi.fn(async () => { throw new Error("network"); }));
+    blob.put.mockRejectedValue(new Error("blob down"));
     expect(await photos.savePhoto(ID, JPEG)).toMatchObject({ ok: false, status: 502 });
   });
 
-  it("읽기: GET /storage/v1/object/authenticated/{bucket}/{id}.jpg", async () => {
-    const fetchSpy = vi.fn(async () => new Response(new Uint8Array(JPEG), { status: 200, headers: { "content-type": "image/jpeg" } }));
-    vi.stubGlobal("fetch", fetchSpy);
+  it("읽기: photos/{id}.jpg 를 비공개로 꺼낸다", async () => {
+    blob.get.mockResolvedValue({ statusCode: 200, stream: new Response(new Uint8Array(JPEG)).body, blob: { contentType: "image/jpeg" } });
     const r = await photos.readPhoto(ID);
     expect(r.ok).toBe(true);
-    const [url, init] = fetchSpy.mock.calls[0] as unknown as [string, RequestInit];
-    expect(url).toBe(`https://abc.supabase.co/storage/v1/object/authenticated/photos/${ID}.jpg`);
-    expect(init.method ?? "GET").toBe("GET");
-    expect(init.headers).toMatchObject({ apikey: "service-key", authorization: "Bearer service-key" });
-    if (r.ok) expect(Buffer.from(await new Response(r.body).arrayBuffer()).equals(JPEG)).toBe(true);
+    expect(blob.get).toHaveBeenCalledWith(`photos/${ID}.jpg`, { access: "private" });
+    if (r.ok) {
+      expect(r.contentType).toBe("image/jpeg");
+      expect(Buffer.from(await new Response(r.body).arrayBuffer()).equals(JPEG)).toBe(true);
+    }
   });
 
-  it("없는 사진은 404, Storage 장애는 502", async () => {
+  it("없는 사진은 404, Blob 장애는 502", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    vi.stubGlobal("fetch", vi.fn(async () => new Response('{"statusCode":"404","error":"not_found"}', { status: 400 })));
+    blob.get.mockResolvedValue(null);
     expect(await photos.readPhoto(ID)).toEqual({ ok: false, status: 404 });
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 404 })));
+    const { BlobNotFoundError } = await import("@vercel/blob");
+    blob.get.mockRejectedValue(new BlobNotFoundError());
     expect(await photos.readPhoto(ID)).toEqual({ ok: false, status: 404 });
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 503 })));
+    blob.get.mockRejectedValue(new Error("blob down"));
     expect(await photos.readPhoto(ID)).toEqual({ ok: false, status: 502 });
   });
 
-  it("Vercel 에서도 설정이 있으면 Storage 로 올린다", async () => {
+  it("이상한 id 는 Blob 을 부르지 않는다", async () => {
+    expect(await photos.readPhoto("../db")).toEqual({ ok: false, status: 404 });
+    expect((await photos.savePhoto("../db", JPEG)).ok).toBe(false);
+    expect(blob.get).not.toHaveBeenCalled();
+    expect(blob.put).not.toHaveBeenCalled();
+  });
+
+  it("Vercel 에서도 설정이 있으면 Blob 으로 올린다", async () => {
     process.env.VERCEL = "1";
     vercelDb();
     await load();
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("{}", { status: 200 })));
+    blob.put.mockResolvedValue({});
     expect(photos.photoStore()).toBe("storage");
     expect(await photos.savePhoto(ID, JPEG)).toEqual({ ok: true });
   });

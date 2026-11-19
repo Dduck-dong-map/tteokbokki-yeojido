@@ -2,11 +2,11 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies, headers } from "next/headers";
 
 // 운영 어드민에 누가 들어올 수 있나 (11-15). 어드민 화면·저장(app/admin/actions.ts)이 매번 이것을 먼저 본다.
-//  - ADMIN_KEY 가 있으면: 로그인 화면에서 그 열쇠를 넣은 브라우저만 (쿠키). 배포(Vercel·Supabase)는 반드시 이 방식.
+//  - ADMIN_KEY 가 있으면: 로그인 화면에서 그 열쇠를 넣은 브라우저만 (쿠키). 배포(Vercel · Neon)는 반드시 이 방식.
 //  - ADMIN_KEY 가 없으면: 이 컴퓨터의 개발 서버에서만 — 배포가 아니고(VERCEL 없음), production 빌드가 아니고(NODE_ENV),
-//    DB 가 이 컴퓨터(파일 · 이 컴퓨터의 Postgres)이고, 주소창이 127.0.0.1·localhost 일 때. 같은 와이파이의 폰으로는 열리지 않는다. DATABASE_URL 이 Supabase 면 개발 서버도 열쇠가 필요하다.
+//    DB 가 이 컴퓨터(파일 · 이 컴퓨터의 Postgres)이고, 주소창이 127.0.0.1·localhost 일 때. 같은 와이파이의 폰으로는 열리지 않는다. DATABASE_URL 이 바깥 DB(Neon)면 개발 서버도 열쇠가 필요하다.
 //    production(next start · Vercel)은 ADMIN_KEY 가 없으면 늘 잠근다 — Host 헤더는 요청한 쪽이 마음대로 보낼 수 있어서다 (기술 스택 9절 #5).
-// 실제 운영 로그인(이메일 링크 + 2단계, REQ-AD-01)은 Supabase 로 옮길 때 이 파일만 바꾼다.
+// 실제 운영 로그인(이메일 링크 + 2단계, REQ-AD-01)을 붙일 때는 이 파일만 바꾼다.
 
 export const ADMIN_COOKIE = "ddy_admin";
 const LOCAL_HOST = /^(127\.0\.0\.1|localhost|\[::1\])(:\d+)?$/;

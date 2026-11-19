@@ -433,7 +433,7 @@ React Compiler 가 꺼져 있어 자동 메모이제이션은 없다. 그래도 
 
 ### 8.3 이미지·폰트
 
-- 사진은 `/api/photos/[id]` 가 내려 준다. Supabase Storage(비공개 버킷)에 있어도 앱 서버가 받아 같은 주소로 내려 주므로 화면 코드의 사진 주소는 바뀌지 않는다(`src/lib/data/photos.ts`). `next/image` 로 바꾸면 `width`·`height` 를 직접 넣는다.
+- 사진은 `/api/photos/[id]` 가 내려 준다. Vercel Blob(비공개 저장소)에 있어도 앱 서버가 받아 같은 주소로 내려 주므로 화면 코드의 사진 주소는 바뀌지 않는다(`src/lib/data/photos.ts`). `next/image` 로 바꾸면 `width`·`height` 를 직접 넣는다.
 - 모든 이미지에 `alt` 를 둔다. 호랑이 로고는 혼자 쓰이면 `alt="떡볶여지도"`, 이름 글자 옆이면 `alt=""` 다(디자인 시스템 「로고와 이름 글씨」).
 - 폰트는 `src/app/layout.tsx` 의 `next/font/local`(조선100년체 · 이름 글씨) 설정과 `pretendard` 를 쓴다. 컴포넌트에서 새로 불러오지 않는다.
 

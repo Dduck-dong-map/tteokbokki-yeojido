@@ -14,10 +14,10 @@
 | 언어 · 스타일 | TypeScript · Tailwind CSS v4 · shadcn/ui (base-nova · `@base-ui/react`) |
 | 패키지 관리 | **pnpm 만** (`pnpm@10.33.0`). `npm` · `yarn` 금지 |
 | 저장 | `DATABASE_URL` 있으면 Postgres 16 + PostGIS(`pg.ts`), 없으면 `.data/db.json` |
-| 사진 | Supabase Storage 비공개 버킷(설정 있을 때) / `.data/photos` |
+| 사진 | Vercel Blob 비공개 저장소(이어져 있을 때) / `.data/photos` |
 | 지도 | MapLibre 6 + OpenFreeMap. `NEXT_PUBLIC_NAVER_MAP_KEY_ID` 있으면 네이버 지도 |
 | 시험 | Vitest(`tests/unit`) · Playwright(`tests/e2e`, 폭 390 · 768 · 1280) |
-| 배포 목표 | Vercel + Supabase |
+| 배포 목표 | Vercel + Neon |
 
 ## 2. 폴더 구조
 
@@ -61,12 +61,12 @@
 | 2 | 공통 모듈/컴포넌트 (데이터 계층 · 규칙 모듈 · 쓰기 입구 · 사진 · 공용 부품 · 디자인 시스템 맞춤) | — | Phase 1 |
 | 3 | 핵심 기능 (찾기 · 상세 · 등록 · 확인 · 신고 · 평가) | F001~F007 · F016~F021 | Phase 2 의 같은 사람 판정 · 하루 한도 |
 | 4 | 추가 기능 (어드민 · 길찾기 누름 기록 · 찜 · 리스트 · 떡볶이방) | F010 · F012 · F015 · F022~F026 | Phase 3 의 가게 데이터 · 가게 상세 |
-| 5 | 최적화 및 배포 (읽기 최적화 · Supabase · Vercel · 공개 출시 전 필수) | — | Phase 2~4 의 시험 통과 |
+| 5 | 최적화 및 배포 (읽기 최적화 · Neon · Vercel · 공개 출시 전 필수) | — | Phase 2~4 의 시험 통과 |
 
 - 작업을 계획하기 전에 `docs/ROADMAP.md` 에서 그 작업이 속한 Phase 의 항목 · 「이유」 · 「완료 기준」을 읽는다.
 - 기능 ID(F0NN)가 걸린 작업은 `docs/PRD.md` 의 그 기능 수용 기준(Given/When/Then)과 로드맵 「부록: 기능별 상태」의 메모를 읽는다.
 - 앞 Phase 의 남은 일이 뒤 Phase 작업의 선행 조건이면 앞의 것을 먼저 작업으로 만든다.
-- **Supabase · Vercel 연결(Phase 5)은 Phase 2~4 의 완료 기준이 끝나기 전에 하지 않는다.** 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다(`db/README.md` 「표가 바뀌면」).
+- **Neon · Vercel 연결(Phase 5)은 Phase 2~4 의 완료 기준이 끝나기 전에 하지 않는다.** 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다(`db/README.md` 「표가 바뀌면」).
 - 작업 하나는 로드맵의 항목 하나(`- [ ]` 한 줄)에 대응시킨다. 작업 설명에 Phase 번호와 기능 ID 를 적는다.
 
 ### 4.2 로드맵의 상태를 그대로 믿지 않는다
@@ -335,7 +335,7 @@ export async function POST(req: Request) {
 - ❌ `npm` · `yarn` 사용
 - ❌ `public/maplibre/` · `public/share/` 직접 고치기 (복사본, 깃 제외)
 - ❌ `.data/` · `.data-e2e/` · `.shrimp/` · `.env*` 커밋 (`.env.example` 만 올린다)
-- ❌ 운영 데이터가 생긴 뒤 표를 지우고 다시 만들기 · `tests/unit/pg.test.ts` 를 Supabase 주소로 돌리기
+- ❌ 운영 데이터가 생긴 뒤 표를 지우고 다시 만들기 · `tests/unit/pg.test.ts` 를 Neon 주소로 돌리기
 - ❌ 기기 · IP 해시를 화면이나 응답에 내보내기
 - ❌ 쓰기 입구(`readJson()` · `whoFrom()`)를 건너뛰는 route handler
 - ❌ 권한 확인 없는 Server Action, `AdminGate` 밖의 어드민 내용
@@ -347,4 +347,4 @@ export async function POST(req: Request) {
 - ❌ 기획안 · 시안 파일 덮어쓰기
 - ❌ 요청받지 않은 커밋 · 푸시 · 범위 확장
 - ❌ 로드맵 「결정이 필요한 것」을 스스로 정하기, 「범위 밖」 항목 구현하기
-- ❌ Phase 2~4 완료 기준이 끝나기 전에 운영 DB(Supabase) 연결하기
+- ❌ Phase 2~4 완료 기준이 끝나기 전에 운영 DB(Neon) 연결하기

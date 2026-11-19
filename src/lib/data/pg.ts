@@ -1,7 +1,7 @@
 import postgres from "postgres";
 import type { Db } from "./db";
 
-// Postgres 저장 칸 (11-08 · Supabase, CI 의 Postgres). DATABASE_URL 이 있으면 db.ts 가 파일 대신 이것을 쓴다.
+// Postgres 저장 칸 (11-08 · 11-20 부터 Neon, CI 의 Postgres). DATABASE_URL 이 있으면 db.ts 가 파일 대신 이것을 쓴다.
 // 규칙(누가 무엇을 할 수 있나)은 전부 db.ts 에 그대로 두고, 여기서는 「읽기 · 바뀐 줄만 쓰기」만 한다.
 //  - 읽기: 표를 db.ts 의 Db 모양으로 읽는다. 가게 · 글 · 리스트처럼 서비스 크기만큼만 있는 표는 전부,
 //    누를 때마다 쌓이는 기록 표(변경 이력 · 길찾기 누름 · 사진 올림)는 규칙에 필요한 최근 것만 읽는다 (Spec.window, 11-19).
@@ -67,7 +67,7 @@ type Client = postgres.Sql;
 // 빈 칸(null)은 앱에서처럼 아예 없는 값으로
 const clean = (r: Row) => Object.fromEntries(Object.entries(r).filter(([, v]) => v !== null));
 
-// 표 13개를 한 번에 (DB 와 한 번만 오간다, 11-09). 기록 표는 window 조건에 맞는 줄만 실린다. Supabase 처럼 DB 가 멀리 있으면 표마다 따로 읽을 때 화면이 그만큼 느려진다.
+// 표 13개를 한 번에 (DB 와 한 번만 오간다, 11-09). 기록 표는 window 조건에 맞는 줄만 실린다. Neon 처럼 DB 가 멀리 있으면 표마다 따로 읽을 때 화면이 그만큼 느려진다.
 // 각 표를 JSON 배열로 묶어 { stores: [...], logs: [...] } 하나로 받는다. 칸 이름·날짜 모양은 selectSql 그대로.
 const READ_ALL_SQL = `select json_build_object(${SPECS.map(
   ([k, sp]) => `'${k}', (select coalesce(json_agg(t), '[]'::json) from (${selectSql(sp)}) t)`,
@@ -130,9 +130,9 @@ async function saveDiff(tx: Client, before: Db, after: Db) {
 const EMPTY = (): Db => Object.fromEntries(SPECS.map(([k]) => [k, []])) as unknown as Db;
 
 // 개발 서버는 모듈을 다시 불러오므로 연결은 전역에 하나만
-// 이 컴퓨터의 Postgres(CI · 시험)가 아니면 = Supabase 같은 바깥 DB 로 보고 암호화 연결(ssl)을 쓴다.
-// Supabase 「Transaction pooler」 주소(포트 6543)는 미리 준비한 질의(prepared statement)를 못 쓰므로 끈다.
-// Vercel 처럼 서버가 잠깐 떴다 사라지는 곳에서는 서버 하나에 연결 하나(Supabase 권장)만 쓰고, 쉬는 연결을 빨리 돌려준다.
+// 이 컴퓨터의 Postgres(CI · 시험)가 아니면 = Neon 같은 바깥 DB 로 보고 암호화 연결(ssl)을 쓴다.
+// 풀러(연결을 나눠 쓰는 중간 서버) 주소로 붙으면 미리 준비한 질의(prepared statement)를 끈다 — 연결이 요청마다 바뀔 수 있어서다.
+// Vercel 처럼 서버가 잠깐 떴다 사라지는 곳에서는 서버 하나에 연결 하나만 쓰고, 쉬는 연결을 빨리 돌려준다.
 const g = globalThis as unknown as { __ddyPg?: Client };
 function client(): Client {
   if (!g.__ddyPg) {
@@ -144,11 +144,13 @@ function client(): Client {
       // 주소 모양을 못 읽으면 바깥 DB 로 본다 (연결 자체는 postgres 라이브러리가 판단)
     }
     const local = host === "127.0.0.1" || host === "localhost" || host === "db";
+    // 풀러 주소: Neon 은 호스트 이름에 -pooler 가 붙고(포트는 5432 그대로), Supabase Transaction pooler 는 포트 6543 이다
+    const pooled = host.includes("-pooler") || port === "6543";
     g.__ddyPg = postgres(url, {
       max: Number(process.env.DATABASE_POOL ?? (local ? 5 : 1)),
       onnotice: () => undefined,
       ssl: local ? false : "require",
-      prepare: port !== "6543",
+      prepare: !pooled,
       idle_timeout: local ? undefined : 20,
     });
   }
