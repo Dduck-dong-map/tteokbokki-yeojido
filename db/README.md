@@ -1,6 +1,6 @@
 # DB (Neon) — 표 정의와 연결 방법
 
-DB 는 Neon(Postgres + PostGIS), 사진은 Vercel Blob 비공개 저장소를 쓴다(11-20 결정 — Supabase 무료 플랜은 켜진 프로젝트가 계정당 2개라 자리가 없었다). 로컬 도커 DB 와 도커 앱 서버는 11-19 에 지웠다. Neon 프로젝트는 11-20 에 만들어 표 13개를 올렸다(프로젝트 `tteokbokki-yeojido` · id `round-fire-19486533` · 싱가포르 · Postgres 16 — 아래 「Neon 연결」 1~3 끝). Vercel 프로젝트와 Blob 저장소는 아직 만들지 않았다(4 번부터).
+DB 는 Neon(Postgres + PostGIS), 사진은 Vercel Blob 비공개 저장소를 쓴다(11-20 결정 — Supabase 무료 플랜은 켜진 프로젝트가 계정당 2개라 자리가 없었다). 로컬 도커 DB 와 도커 앱 서버는 11-19 에 지웠다. Neon 프로젝트는 11-20 에 만들어 표 13개를 올렸다(프로젝트 `tteokbokki-yeojido` · id `round-fire-19486533` · 싱가포르 · Postgres 16 — 아래 「Neon 연결」 1~3 끝). Vercel 프로젝트와 Blob 저장소도 11-20 에 만들어 사진 왕복을 확인했다(5 · 6). 배포와 환경 변수(7)는 아직이다.
 
 - **표:** 새 DB 에 아래 네 파일을 차례로 돌린다. CI(`.github/workflows/ci.yml` 의 `postgres` 작업)가 푸시마다 빈 Postgres 에 돌려 본다.
   - [`init/001_schema.sql`](init/001_schema.sql) — 가게 · 변경 이력 · 평가 · 맞아요/달라요 · 신고 · 떡볶이방 글·댓글·추천 · 맛집 리스트·추천 · 사진 하루 한도(`photo_uploads`) · 지운 글·댓글·리스트의 하루 한도 줄(`deleted_writes`) (표 12개)
@@ -74,7 +74,17 @@ pnpm dev                     # 앱 켜기 → http://localhost:3000
 - 표 13개 모두 RLS 켜짐 · 인덱스 22개 · 함수 3개(`stores_set_location` · `stores_in_bounds` · `stores_near`) · 트리거 `stores_location`.
 - PostGIS 는 `extensions` 칸에 3.3.10 으로 깔렸다(CI 는 3.4). `002_postgis.sql` 은 그대로 돈다.
 - 이 컴퓨터에서 앱과 같은 옵션(`postgres` · 연결 1개 · ssl · 미리 준비한 질의 끔)으로 풀러 주소에 붙어 읽기와 `pg_advisory_xact_lock` 이 통과했다.
-- 아직 안 본 것: `pnpm dev` 를 띄워 화면에서 등록 · 맞아요 · 평가 · 길찾기를 해 보는 것(「Neon 연결」 4).
+- 앱 서버로 쓰기 4종 확인: Neon 가지 `dev-check-2026-11-20`(id `br-rough-haze-b3ho10n2`)에 붙인 `pnpm build` + `next start` 에서 등록(1.5초) → 맞아요 → 평가 → 길찾기(각 0.4~0.6초)가 저장되고, 가게 상세 · 지도 홈에 다시 보인다. 가지의 `stores` 1 · `store_votes` 1 · `reviews` 1 · `store_directions` 1 · `location` 자동 채움. 본 DB 는 0줄 그대로다.
+- 찾은 버그: `.env.example` 을 복사하면 `DATABASE_POOL=` 이 빈 글자로 오는데 `pg.ts` 가 `??` 로 받아 연결 0개가 되고, 빌드(「Collecting page data」)와 모든 질의가 오류 없이 끝없이 멈췄다 → `||` 로 고쳤다.
+- 확인이 끝나 가지 `dev-check-2026-11-20` 는 지웠다.
+- 아직 안 본 것: 잠든 DB 가 깨는 첫 요청 시간 · `ADMIN_KEY` 를 넣은 어드민 화면.
+
+## 확인한 것 (Vercel Blob)
+
+**11-20**
+- Vercel 프로젝트 `lucetas-projects/tteokbokki-yeojido` 를 `vercel link` 로 만들었다(깃 연결은 조직 소유 저장소라 실패 — CLI 로 배포한다). 배포는 아직 하지 않았다.
+- 비공개 저장소 `tteokbokki-photos`(id `store_oj0OAZSco1hr9ayo` · `sin1`)를 `vercel blob create-store` 로 만들어 production · preview · development 에 이었다. 이 컴퓨터의 `.env.local` 에 `BLOB_READ_WRITE_TOKEN` 이 들어와 있어, 로컬에서 올리는 사진도 이 저장소로 간다(무료 한도를 쓴다). 로컬 폴더에 두려면 그 줄을 비운다.
+- `next start`(파일 저장소 모드)에서 사진 올리기 201(1.0초) → `/api/photos/<id>` 200 `image/jpeg` 내용 같음(0.7초). 저장소에 `photos/<id>.jpg` 로 있고 저장소 주소로 직접 열면 403. 시험 사진 1장(125B)이 저장소에 남아 있다.
 
 ## 확인한 것 (도커 시절 기록)
 

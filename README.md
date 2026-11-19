@@ -44,7 +44,7 @@ pnpm dev
 ## 알아 둘 것
 
 - MapLibre 6 은 지도 그리기 일꾼 파일을 따로 불러온다. `pnpm dev`·`pnpm build` 앞에서 `scripts/copy-maplibre-worker.mjs` 가 `public/maplibre/` 에 복사한다(깃 제외). `scripts/copy-share.mjs` 는 `docs/` 의 공유용 HTML 을 `public/share/` 로 복사한다.
-- Vercel 배포에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Vercel Blob 저장소가 이어져 있지 않으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다). Neon 프로젝트는 11-20 에 만들어 표 13개를 올렸고([`db/README.md`](db/README.md)), Vercel 프로젝트와 Blob 저장소는 아직 없다.
+- Vercel 배포에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Vercel Blob 저장소가 이어져 있지 않으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다). Neon 프로젝트는 11-20 에 만들어 표 13개를 올렸고([`db/README.md`](db/README.md)), Vercel 프로젝트와 Blob 저장소도 만들었다. 배포는 아직 하지 않았다.
 - 저장소는 빈 채로 시작한다. 실제 가게는 어드민 「후보 가져오기」로 넣는다([`db/README.md`](db/README.md) 「가게 넣는 순서」). 시험 자료(가게 16곳 · 글 · 리스트)는 `tests/fixtures/` 에 있고 시험만 쓴다.
 - `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 `.next` 를 지우고 켠다.
 - `AGENTS.md` 는 `next dev` 가 저절로 만드는 파일이다. 어드민 화면도 사용자 화면과 같은 스택(Tailwind · `ui/` 부품 · 디자인 토큰)으로 그린다. 전용 CSS 는 없고 공용 조각은 `src/components/admin/bits.tsx` · `controls.tsx` 다. 어드민 아이콘은 `lucide-react` 다(`src/components/admin/Icon.tsx`).

@@ -97,8 +97,8 @@
 - ✅ 예시 데이터를 앱 코드에서 뺐다(11-19): `sample-stores.ts` · `sample-community.ts` 를 `tests/fixtures/` 로 옮기고 단위 시험 · E2E 가 `seed.ts` 로 저장소를 채워 돈다. `is_sample` 칸 3개 · `SEED_SAMPLES` · `NEXT_PUBLIC_SAMPLE_DATA` · `SampleRibbon` 을 지웠다. 어드민 시안 화면 5개(홈 · 제보 · 신고 · 설정 · 신선도 점검)와 그 자료(`src/lib/admin/sample.ts`)도 지우고 `/admin` 은 가게 관리로 넘긴다. 구 목록은 `src/lib/regions.ts` 로 옮겼다
 - ✅ Neon 프로젝트(싱가포르)를 만들고 `db/init/*.sql` 을 차례로 실행했다(11-20): 프로젝트 `tteokbokki-yeojido`(id `round-fire-19486533` · Postgres 16), 표 13개 모두 RLS 켜짐, PostGIS 3.3.10 은 `extensions` 칸에. 서울 · 도쿄 지역은 없다. 확인 기록은 `db/README.md` 「확인한 것 (Neon)」
 - [ ] 읽기 최적화: 요청마다 표 전체를 읽는 것을 결정대로 바꾼다(화면 범위 조회 · 목록 페이지 캐시)
-- [ ] Vercel Blob 비공개 저장소(싱가포르)를 만들어 프로젝트에 잇고 사진 올리기 → 다시 읽기를 확인한다
-- [ ] Neon 의 Pooled connection 주소를 `.env.local` 에 넣어 개발 서버로 읽기 · 쓰기를 확인한다 (11-20: 주소를 넣었고, 앱과 같은 옵션으로 풀러에 붙어 읽기와 쓰기 잠금 `pg_advisory_xact_lock` 이 도는 것까지 봤다. 남은 것은 `ADMIN_KEY` · `HASH_SALT` 를 채우고 `pnpm dev` 화면에서 등록 · 맞아요 · 평가 · 길찾기를 해 보는 것. `HASH_SALT` 는 Vercel 에 넣을 값과 같게 한다)
+- ✅ Vercel Blob 비공개 저장소(싱가포르)를 만들어 프로젝트에 잇고 사진 올리기 → 다시 읽기를 확인했다(11-20): Vercel 프로젝트 `lucetas-projects/tteokbokki-yeojido`, 저장소 `tteokbokki-photos`(`sin1` · Private). 올리기 201 → `/api/photos/<id>` 200 내용 같음, 저장소 주소로 직접 열면 403. 배포는 아직 하지 않았다
+- ✅ Neon 의 Pooled connection 주소로 앱 서버의 읽기 · 쓰기를 확인했다(11-20): Neon 가지 `dev-check-2026-11-20` 에 붙인 `pnpm build` + `next start` 에서 등록 → 맞아요 → 평가 → 길찾기가 모두 저장되고 가게 상세 · 지도 홈에 다시 보인다(쓰기 잠금이 풀러에서 돈다). 본 DB 는 빈 채 그대로다. 도중에 `DATABASE_POOL=` 빈 값이 연결 0개가 되어 빌드와 질의가 멈추는 버그를 찾아 `pg.ts` 를 고쳤다. `.env.local` 의 `ADMIN_KEY` · `HASH_SALT` 는 아직 비어 있다(`HASH_SALT` 는 Vercel 에 넣을 값과 같게 한다)
 - [ ] Vercel 환경 변수(`DATABASE_URL` · `HASH_SALT` · `ADMIN_KEY` · `NEXT_PUBLIC_*`)를 넣고 함수 지역을 싱가포르로 맞춰 `vercel --prod` 로 배포한다 (조직 소유 저장소라 무료 플랜에서는 깃 연결이 안 된다)
 - [ ] 어드민 「후보 가져오기」로 실제 가게를 넣고, 청년부 1차 사용자(1~3명)에게 주소를 나눈다
 - [ ] PRD 9절 지표 셋을 `store_directions` · `store_logs` 질의로 7일마다 잰다

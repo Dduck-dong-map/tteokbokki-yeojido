@@ -147,7 +147,8 @@ function client(): Client {
     // 풀러 주소: Neon 은 호스트 이름에 -pooler 가 붙고(포트는 5432 그대로), Supabase Transaction pooler 는 포트 6543 이다
     const pooled = host.includes("-pooler") || port === "6543";
     g.__ddyPg = postgres(url, {
-      max: Number(process.env.DATABASE_POOL ?? (local ? 5 : 1)),
+      // || 로 고른다: .env.example 을 복사하면 DATABASE_POOL= 처럼 빈 글자가 오는데, ?? 는 빈 글자를 그대로 받아 연결 0개가 되고 질의가 끝없이 줄만 선다 (11-20)
+      max: Number(process.env.DATABASE_POOL) || (local ? 5 : 1),
       onnotice: () => undefined,
       ssl: local ? false : "require",
       prepare: !pooled,
