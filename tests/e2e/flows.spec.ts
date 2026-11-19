@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { SAMPLE_STORES } from "../../src/lib/data/sample-stores";
+import { SAMPLE_STORES } from "../fixtures/sample-stores";
 import { asNewDevice, asNewIp, fillSteps, submitRegister, tag, tinyJpeg, waitMap } from "./helpers";
 
 // 저장 흐름 다섯 (계획 7-3 회귀 계약). 파일 저장소(.data-e2e)에 쓰고, 테스트마다 새 기기·새 접속 위치로 시작한다.

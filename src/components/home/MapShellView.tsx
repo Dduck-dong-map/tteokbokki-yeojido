@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LocateFixed } from "lucide-react";
-import { Logo, SampleRibbon } from "@/components/brand";
+import { Logo } from "@/components/brand";
 import { BottomNav } from "@/components/layout";
 import MapLoading from "@/components/loading/MapLoading";
 import TteokMap from "@/components/map/TteokMap";
@@ -24,7 +24,7 @@ import type { MapShellViewProps, SheetState } from "./types";
 const SHEET_H: Record<SheetState, string> = { peek: "64px", half: "44%", full: "calc(100% - 8px)" };
 
 export default function MapShellView(p: MapShellViewProps) {
-  const { shown, recentReports, sample, selectedId, routeId, wide, sheet, mapOn, mapSettled, start, focus, me, toast, filterCount, filterOpen, children } = p;
+  const { shown, recentReports, selectedId, routeId, wide, sheet, mapOn, mapSettled, start, focus, me, toast, filterCount, filterOpen, children } = p;
   // 바랜 도장(마지막 확인 180일 넘음)이 지도에 있으면 뜻을 적어 둔다 (11-13 수정판, 게슈탈트 「흐린 핀, 뜻이 안 보임」)
   const hasStale = p.list.some((s) => freshness(s, p.now) === "stale"); // 지금 지도 범위 안에 있을 때만
 
@@ -70,7 +70,6 @@ export default function MapShellView(p: MapShellViewProps) {
             )}
 
             <div className="pointer-events-none absolute inset-x-0 top-2 z-10 flex flex-col items-center gap-1.5">
-              {sample && <SampleRibbon />}
               {toast && (
                 <Snackbar>{toast}</Snackbar>
               )}

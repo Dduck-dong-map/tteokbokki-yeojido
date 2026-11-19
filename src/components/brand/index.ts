@@ -5,4 +5,3 @@ export { Tag } from "./Tag";
 export { Logo } from "./Logo";
 export { PendingTag } from "./PendingTag";
 export { StoreThumb } from "./StoreThumb";
-export { SampleRibbon } from "./SampleRibbon";

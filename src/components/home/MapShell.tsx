@@ -53,7 +53,7 @@ function keepFilters() {
 
 // 지도 틀 (웹 1차 기획 3.2 · 지도 홈 + 가게 상세가 함께 쓴다). 폭 3단의 배치는 MapShellView 가 맡는다.
 // nowIso = 서버가 잰 현재 시각. 클라이언트에서 new Date() 로 다시 재면 서버 HTML 과 「확인 N일 전」이 달라질 수 있다 (가이드 2.2절)
-export default function MapShell({ stores, recentReports, sample, nowIso, children }: { stores: Store[]; recentReports: number; sample: boolean; nowIso: string; children: React.ReactNode }) {
+export default function MapShell({ stores, recentReports, nowIso, children }: { stores: Store[]; recentReports: number; nowIso: string; children: React.ReactNode }) {
   const params = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -247,7 +247,6 @@ export default function MapShell({ stores, recentReports, sample, nowIso, childr
       searching={searching}
       query={q}
       recentReports={recentReports}
-      sample={sample}
       now={now}
       selectedId={selected}
       routeId={routeId}

@@ -27,7 +27,6 @@ export type MapShellViewProps = {
   searching: boolean; // 검색어가 있으면 지도 범위를 무시했다는 뜻
   query: string;
   recentReports: number;
-  sample: boolean;
   now: Date; // 기준 시각 — 줄마다 「확인 N일 전」·확인 중 표를 계산할 때 StoreRowView 에 그대로 넘긴다 (렌더마다 새로 만들지 않도록 컨테이너가 한 번 정한다)
   // 선택 · 화면
   selectedId: string | null; // 목록·지도에서 고른 가게

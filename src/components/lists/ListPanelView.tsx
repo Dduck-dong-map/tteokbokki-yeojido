@@ -1,5 +1,4 @@
 import { Link2 } from "lucide-react";
-import { SampleRibbon } from "@/components/brand";
 import TteokMap from "@/components/map/TteokMap";
 import { Button } from "@/components/ui/button";
 import { LIST_VISIBILITY, MAX_LIST_STORES, timeAgo } from "@/lib/community";
@@ -20,12 +19,6 @@ export default function ListPanelView({
   return (
     <main className="flex-1 pb-10 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,300px)] md:gap-6 xl:grid-cols-[minmax(0,1fr)_520px]">
       <div className="flex min-w-0 flex-col gap-4 px-4 pt-3 md:px-0">
-        {list.isSample && (
-          <div className="flex justify-center">
-            <SampleRibbon />
-          </div>
-        )}
-
         {/* 머리: 이름 · 설명 · 누가 · 추천 · 공유 (고치는 중이면 폼) */}
         {editing ? (
           <ListInfoFormView {...info} />

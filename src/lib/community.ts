@@ -26,7 +26,6 @@ export type Post = {
   storeId?: string; // 글에 붙인 가게 (선택)
   comments: number;
   likes: number; // 추천(엄지척) 수
-  isSample?: boolean;
 };
 
 export type PostComment = { id: string; at: string; who: string; text: string };
@@ -69,7 +68,6 @@ export type PlaceList = {
   updatedAt: string; // ISO
   visibility: ListVisibility;
   likes: number; // 추천 수
-  isSample?: boolean;
 };
 
 export function checkListInfo(p: { title?: unknown; desc?: unknown; visibility?: unknown }, partial = false): string | null {

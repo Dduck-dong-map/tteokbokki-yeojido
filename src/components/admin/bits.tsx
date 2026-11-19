@@ -74,10 +74,6 @@ export function PageHeader({ title, desc, id, children }: { title: string; desc?
   );
 }
 
-export function ProtoNote({ children }: { children?: ReactNode }) {
-  return <Notice>{children ?? "시안이에요. 예시 데이터로 움직이고, 누른 결과는 저장되지 않아요."}</Notice>;
-}
-
 export function Breadcrumb({ items }: { items: { label: string; href?: string }[] }) {
   return (
     <nav aria-label="위치" className="mb-3 flex flex-wrap items-center gap-1 text-body-small text-muted-foreground">

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Suspense } from "react";
 import AdminNav from "@/components/admin/AdminNav";
 import { Icon } from "@/components/admin/Icon";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 // 어드민 화면 틀: 브랜드 · 헤더 · 아이콘 레일 · 보조 메뉴 · 내용
@@ -22,12 +21,6 @@ export default function ConsoleLayout({ children }: LayoutProps<"/admin">) {
         <span className="text-body-small whitespace-nowrap">
           <b className="font-semibold">떡볶여지도</b> 운영
         </span>
-        {/* 시안 메뉴는 개발 서버에서만 보인다 (AdminNav 의 HIDE_MOCK) — 이 표시도 그때만 */}
-        {process.env.NODE_ENV !== "production" && (
-          <Badge className="hidden h-6 rounded-badge bg-inverse-foreground/10 px-2 text-caption text-inverse-foreground sm:inline-flex" title="가게 관리 · 후보 가져오기 · 운영 기록은 실제 DB 를 읽고 고쳐요. 나머지 화면은 아직 시안이에요.">
-            가게는 실제 DB · 나머지는 시안
-          </Badge>
-        )}
         <span className="flex-1" />
         <Link href="/" className={HEADER_ACTION} target="_blank">
           <Icon name="map" />

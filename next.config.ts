@@ -5,8 +5,6 @@ const nextConfig: NextConfig = {
   // 문서대로 partialPrefetching을 함께 켠다(cacheComponents 없이 켜면 오류).
   cacheComponents: true,
   partialPrefetching: true,
-  // 도커 앱 서버(Dockerfile)만 standalone 으로 빌드한다. 평소 빌드·Vercel·E2E(next start)는 그대로.
-  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   // 개발 전용: 개발 서버는 localhost 만 허용한다. 127.0.0.1 로 열면 React 가 안 붙어 지도가 안 뜨므로 허용 목록에 넣는다.
   allowedDevOrigins: ["127.0.0.1"],
   // 공유 허브(public/share/, scripts/copy-share.mjs): Next 는 폴더 주소에 index.html 을 붙여 주지 않아서 넘겨 준다

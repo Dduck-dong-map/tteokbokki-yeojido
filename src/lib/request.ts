@@ -12,7 +12,7 @@ export const NO_DEVICE_MSG = "이 브라우저를 알아보는 표시가 함께 
 //    돌려준 값이 Response 면 그대로 응답한다: const who = whoFrom(req, body.nick); if (who instanceof Response) return who;
 //  - 접속 위치는 x-forwarded-for 의 첫 주소다. Vercel 은 이 헤더를 손님이 보낸 값과 상관없이 실제 접속 주소로 덮어쓴다
 //    (Vercel 문서 Request headers 「we currently overwrite the X-Forwarded-For header … to prevent IP spoofing」) → 배포에서는 믿을 수 있다.
-//    앞에 프록시가 없는 서버(pnpm dev · pnpm start · 도커 앱을 밖에 바로 열 때)는 손님이 이 헤더를 지어 보낼 수 있다 (E2E 가 그렇게 서로 다른 사람을 흉내 낸다).
+//    앞에 프록시가 없는 서버(pnpm dev · pnpm start 를 밖에 바로 열 때)는 손님이 이 헤더를 지어 보낼 수 있다 (E2E 가 그렇게 서로 다른 사람을 흉내 낸다).
 export function whoFrom(req: Request, nick: unknown): Who | Response {
   const device = req.headers.get("x-ddy-device")?.trim().slice(0, 64);
   if (!device || device === "no-device") return bad(NO_DEVICE_MSG);

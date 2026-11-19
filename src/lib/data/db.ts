@@ -7,22 +7,16 @@ import { GRADES, RICE_CAKES, SPICE_LEVELS, STYLES, USAGES } from "../taxonomy";
 import type { Change, Fail, HistoryItem, HistoryKind, Review, Store } from "../types";
 import { DAILY_LIMIT, DAILY_LIMIT_PER_IP, DAILY_PHOTOS, DAILY_PHOTOS_PER_IP, DUP_RADIUS_M, GONE_BY_FLAGS, GONE_BY_VOTES, GONE_REASON_FIELD, HIDE_AT, MAX_PHOTOS, VERIFY_YES, isPending, parseAddress, type FlagReason, type NewStoreInput, type StorePatch } from "../wiki";
 import { DAILY_COMMENTS, DAILY_COMMENTS_PER_IP, DAILY_LISTS, DAILY_LISTS_PER_IP, DAILY_POSTS, DAILY_POSTS_PER_IP, MAX_LIST_STORES, type BoardCat, type ListVisibility, type Owned, type PlaceList, type Post, type PostComment } from "../community";
-import { SAMPLE_LISTS, SAMPLE_POSTS } from "./sample-community";
-import { SAMPLE_HISTORY, SAMPLE_NEW, SAMPLE_REVIEWS, SAMPLE_STORES } from "./sample-stores";
 
 // 저장소: 지금은 서버 폴더의 JSON 파일 하나다 (저장소 루트 .data/db.json · 깃에 안 올라간다).
 // 계정 없이 흐름 전체를 시험하려고 이렇게 뒀고, Supabase 키를 받으면 이 파일 안만 바꾼다.
 // 주의: Vercel 에서는 API 와 페이지가 임시 폴더를 함께 쓰지 못해 저장이 화면에 안 나타난다 (11-06 확인) → 공개 전에 반드시 바꿔야 한다.
-// 파일을 지우면 예시 데이터로 다시 시작한다.
+// 파일이 없으면 빈 저장소로 시작한다. 시험은 tests/fixtures/seed.ts 로 채운 저장소에서 돈다.
 
 // DATA_DIR 은 tests/unit/db.test.ts 가 격리 확인에 쓴다
 export const DATA_DIR = process.env.DATA_DIR ?? (process.env.VERCEL ? "/tmp/ddy-data" : path.join(process.cwd(), ".data"));
 const DB_FILE = path.join(DATA_DIR, "db.json");
 export const PHOTO_DIR = path.join(DATA_DIR, "photos");
-
-// 예시 데이터(가게 16곳 · 글 · 리스트)를 보여 줄지 (W1-1 · W1-2). 실제 가게를 넣으면 NEXT_PUBLIC_SAMPLE_DATA=off →
-// 예시를 화면에서 숨기고(지우지는 않는다) 검색엔진을 연다. 빌드 때 코드에 박히는 값이라 바꾼 뒤엔 다시 빌드한다.
-export const SHOW_SAMPLES = process.env.NEXT_PUBLIC_SAMPLE_DATA !== "off";
 
 export type Who = { nick: string; device: string; ip: string };
 
@@ -71,22 +65,13 @@ export function stamp() {
   lastStamp = Math.max(Date.now(), lastStamp + 1);
   return new Date(lastStamp).toISOString();
 }
-const daysAgo = (n: number) => isoDay(Date.now() - n * 86_400_000);
-const isoAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
-const SEED_MARK: Mark = { device: "seed", ip: "seed" };
+const SEED_MARK: Mark = { device: "seed", ip: "seed" }; // 「지도」가 남기는 기록(내림 · 확인 끝)의 표시
 
-// 예전 db.json 에는 게시판·리스트 칸이 없다 → 처음 읽을 때 예시로 채운다
+// 예전 db.json 에는 나중에 더한 칸(게시판 · 리스트 · 길찾기 · 사진 · 지운 것)이 없다 → 읽을 때 빈 목록으로 채운다
 function withCommunity(db: Db): Db {
-  if (!db.posts) {
-    db.posts = SAMPLE_POSTS.map((p) => ({ ...SEED_MARK, id: p.id, at: isoAgo(p.daysAgo), who: p.who, cat: p.cat, title: p.title, body: p.body, storeId: p.storeId, comments: p.comments.length, likes: p.likes, isSample: true }));
-    db.comments = SAMPLE_POSTS.flatMap((p) =>
-      p.comments.map((c, i) => ({ ...SEED_MARK, id: `${p.id}-c${i}`, postId: p.id, at: isoAgo(p.daysAgo - 0.1 * (i + 1)), who: c.who, text: c.text })),
-    );
-  }
+  db.posts ??= [];
   db.comments ??= [];
-  if (!db.lists) {
-    db.lists = SAMPLE_LISTS.map((l) => ({ ...SEED_MARK, id: l.id, title: l.title, desc: l.desc, storeIds: l.storeIds, who: l.who, createdAt: isoAgo(l.daysAgo), updatedAt: isoAgo(l.daysAgo), visibility: l.visibility, likes: l.likes, isSample: true }));
-  }
+  db.lists ??= [];
   db.likes ??= [];
   db.postLikes ??= []; // 글 추천 (11-08 추가)
   db.goes ??= []; // 길찾기 누름 (11-11 추가)
@@ -95,38 +80,18 @@ function withCommunity(db: Db): Db {
   return db;
 }
 
-function seed(): Db {
-  const stores: Store[] = SAMPLE_STORES.map((s) => {
-    const fresh = SAMPLE_NEW[s.id];
-    return fresh ? { ...s, createdAt: daysAgo(fresh.daysAgo), lastConfirmedAt: daysAgo(fresh.daysAgo), by: fresh.by, verify: fresh.verify } : { ...s };
-  });
-  return {
-    stores,
-    logs: [
-      ...Object.entries(SAMPLE_NEW).map(([storeId, n]) => ({ ...SEED_MARK, id: `seed-new-${storeId}`, storeId, at: `${daysAgo(n.daysAgo)}T12:00:00+09:00`, who: n.by, kind: "new" as const })),
-      ...SAMPLE_HISTORY.map((h, i) => ({ ...SEED_MARK, id: `seed-log-${i}`, storeId: h.storeId, at: `${daysAgo(h.daysAgo)}T12:00:00+09:00`, who: h.who, kind: "edit" as const, changes: h.changes })),
-    ],
-    reviews: SAMPLE_REVIEWS.map((r, i) => ({ ...SEED_MARK, id: `seed-rev-${i}`, storeId: r.storeId, at: `${daysAgo(r.daysAgo)}T12:00:00+09:00`, who: r.who, stars: r.stars, spice: r.spice, text: r.text })),
-    votes: [],
-    flags: [],
-  } as unknown as Db;
-}
-
-// 11-08: .env.local 에 DATABASE_URL 이 있으면 로컬 DB(도커 Postgres, pg.ts)에 저장한다. 없으면 지금처럼 파일.
+// 11-08: DATABASE_URL 이 있으면 Postgres(Supabase, pg.ts)에 저장한다. 없으면 파일.
 // 아래 규칙 함수들은 저장 방식과 상관없이 그대로 쓴다.
 const PG = !!process.env.DATABASE_URL;
 
 // 배포(Vercel)에서 DATABASE_URL 이 비면 파일 모드로 /tmp 에 쓰고, 응답은 성공인데 저장이 남지 않는다 (기술 스택 9절 #2).
-// HASH_SALT 와 같이 db.ts 를 불러올 때 멈춘다 → 서버가 시작하지 않는다. 로컬 개발 · E2E · 도커 앱은 VERCEL 이 없어 그대로 돈다.
+// HASH_SALT 와 같이 db.ts 를 불러올 때 멈춘다 → 서버가 시작하지 않는다. 로컬 개발 · E2E 는 VERCEL 이 없어 그대로 돈다.
 if (process.env.VERCEL && !PG) throw new Error("DATABASE_URL 환경 변수가 비어 있어요. Vercel 설정에 Supabase Transaction pooler 주소(포트 6543)를 넣어 주세요 (.env.example 참고)");
 
-// Postgres 모드에서 빈 DB 를 만났을 때 예시(가게 16곳 · 글 · 리스트)를 넣을지 (기술 스택 9절 #4).
-// SEED_SAMPLES=1 일 때만 넣는다 — 운영 DB(Supabase)에 예시가 들어가지 않게. 로컬 도커 DB 를 처음 켤 때는 .env.local 에 SEED_SAMPLES=1.
-// 파일 모드(개발 · E2E · 단위 시험)는 이 값과 상관없이 늘 예시로 시작한다.
-const SEED_SAMPLES = process.env.SEED_SAMPLES === "1";
+// 저장소는 빈 채로 시작한다 (11-19: 예시 데이터를 앱에서 뺐다). 가게는 등록 화면이나 어드민 「후보 가져오기」로 넣는다.
 const blank = (): Db => ({ stores: [], logs: [], reviews: [], votes: [], flags: [], posts: [], comments: [], lists: [], likes: [], postLikes: [], goes: [], photoUploads: [], deletedWrites: [] });
 // raw = null: 저장소가 아직 비어 있음 (파일 없음 · PG 는 표가 모두 빔)
-const prepare = (raw: Db | null) => withCommunity(raw ?? (PG && !SEED_SAMPLES ? blank() : seed()));
+const prepare = (raw: Db | null) => withCommunity(raw ?? blank());
 
 // 어드민(lib/data/admin.ts)도 같은 읽기·쓰기 줄을 쓴다
 export async function load(): Promise<Db> {
@@ -134,7 +99,7 @@ export async function load(): Promise<Db> {
   try {
     return withCommunity(JSON.parse(await readFile(DB_FILE, "utf8")) as Db);
   } catch (e) {
-    if ((e as NodeJS.ErrnoException).code === "ENOENT") return withCommunity(seed());
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return blank();
     throw e;
   }
 }
@@ -183,7 +148,7 @@ const shared = () => loadShared(g.__ddyGen ?? 0);
 
 // 기기·접속 위치 해시에 섞는 소금. 배포(Vercel)에서 비어 있으면 기본값 "ddy" 로 해시가 역산될 수 있어 시작 때 멈춘다 (정리 보고서 2절 #2).
 // 로컬 pnpm build · E2E(next start) 는 VERCEL 이 없어 기본값으로 돈다.
-// 빈 값(HASH_SALT=)도 없는 것으로 본다 — 도커 앱 서버가 빈 값을 넘겨도 개발 서버와 같은 해시가 되고, Vercel 에서는 빈 값이면 멈춘다
+// 빈 값(HASH_SALT=)도 없는 것으로 본다 — 빈 값을 넘겨도 개발 서버와 같은 해시가 되고, Vercel 에서는 빈 값이면 멈춘다
 const HASH_SALT = process.env.HASH_SALT || (process.env.VERCEL ? null : "ddy");
 if (HASH_SALT === null) throw new Error("HASH_SALT 환경 변수가 비어 있어요. Vercel 설정에 아무도 모르는 긴 글자를 넣어 주세요 (.env.example 참고)");
 
@@ -240,22 +205,26 @@ export async function readReviews(storeId: string): Promise<Review[]> {
   return (await shared()).reviews
     .filter((r) => r.storeId === storeId && !r.hidden)
     .sort((a, b) => b.at.localeCompare(a.at))
-    .map(({ id, at, who, stars, spice, text }) => ({ id, at, who, stars, spice, text }));
+    .map(({ id, at, who, stars, text }) => ({ id, at, who, stars, text }));
+}
+
+// 변경 이력 줄을 최근 것부터 읽는다. 가게 하나만(storeId) · 몇 줄까지(limit).
+// 이력은 누를 때마다 쌓이는 표라 「전체 읽기」(shared · load)에는 최근 것만 실린다 (pg.ts 의 window, 11-19).
+// 오래된 줄까지 필요한 화면(변경 이력 · 운영 기록)은 이 함수로 따로 읽는다 — Postgres 는 조건을 걸어 그 줄만, 파일 저장소는 통째로 읽어 거른다
+export async function readLogs(opts: { storeId?: string; limit?: number } = {}): Promise<LogRow[]> {
+  if (PG) return (await import("./pg")).pgLogs(opts) as Promise<LogRow[]>;
+  const rows = (await shared()).logs.filter((l) => !opts.storeId || l.storeId === opts.storeId).sort((a, b) => b.at.localeCompare(a.at));
+  return opts.limit ? rows.slice(0, opts.limit) : rows;
 }
 
 export async function readHistory(storeId: string): Promise<HistoryItem[]> {
-  return (await shared()).logs
-    .filter((l) => l.storeId === storeId)
-    .sort((a, b) => b.at.localeCompare(a.at))
-    .map(({ id, at, who, kind, changes }) => ({ id, at, who, kind, changes }));
+  return (await readLogs({ storeId })).map(({ id, at, who, kind, changes }) => ({ id, at, who, kind, changes }));
 }
 
 export async function readRecentCount(days = 7) {
   const from = Date.now() - days * 86_400_000;
   const db = await shared();
-  // 예시를 숨기면 예시 가게의 기록도 세지 않는다
-  const hidden = SHOW_SAMPLES ? null : new Set(db.stores.filter((s) => s.isSample).map((s) => s.id));
-  return db.logs.filter((l) => (l.kind === "new" || l.kind === "edit") && new Date(l.at).getTime() > from && !hidden?.has(l.storeId)).length;
+  return db.logs.filter((l) => (l.kind === "new" || l.kind === "edit") && new Date(l.at).getTime() > from).length;
 }
 
 // ───────── 쓰기 ─────────
@@ -279,7 +248,7 @@ export function addStore(input: NewStoreInput, who: Who) {
     const name = input.name.trim();
     if (!input.notDuplicate) {
       // 숨긴 예시 가게와는 겹쳐도 막지 않는다 (화면에 없는 가게를 「이미 있어요」로 안내하게 되므로)
-      const dup = db.stores.find((s) => s.status !== "hidden" && (SHOW_SAMPLES || !s.isSample) && distanceM(s, input) <= DUP_RADIUS_M && (norm(s.name).includes(norm(name)) || norm(name).includes(norm(s.name))));
+      const dup = db.stores.find((s) => s.status !== "hidden" && distanceM(s, input) <= DUP_RADIUS_M && (norm(s.name).includes(norm(name)) || norm(name).includes(norm(s.name))));
       if (dup) return fail(`이미 지도에 있는 가게 같아요: ${dup.name}`, 409, dup.id);
     }
 
@@ -478,7 +447,13 @@ export function reviewStore(id: string, input: { stars: number; text?: string },
     const old = db.reviews.find((r) => r.storeId === id && same(r, m));
 
     // 별점: 기기마다 한 표. 다시 쓰면 이전 표를 빼고 더한다.
-    const rating = { total: (s.rating?.avg ?? 0) * (s.rating?.count ?? 0), count: s.rating?.count ?? 0 };
+    // 합계는 평가 줄의 별을 직접 더해 얻는다. 저장된 평균은 소수 한 자리로 반올림돼 있어서, 평균 × 개수로 합계를 되살리면
+    // 평가가 쌓일수록 어긋난다(5 · 4 · 4 · 4 가 4.2 로 저장됐다 — 11-19).
+    const rows = db.reviews.filter((r) => r.storeId === id && r.stars);
+    const stored = s.rating?.count ?? 0;
+    // 평가 줄 없이 평균 · 개수만 가져온 가게(예시 · 후보 자료)는 줄로 셀 수 없는 몫을 저장된 평균으로 어림한다
+    const extra = Math.max(0, stored - rows.length);
+    const rating = { total: rows.reduce((sum, r) => sum + (r.stars ?? 0), 0) + (s.rating?.avg ?? 0) * extra, count: rows.length + extra };
     if (old?.stars) {
       rating.total -= old.stars;
       rating.count -= 1;
@@ -488,7 +463,7 @@ export function reviewStore(id: string, input: { stars: number; text?: string },
     s.rating = rating.count ? { avg: Math.round((rating.total / rating.count) * 10) / 10, count: rating.count } : undefined;
 
     const text = input.text?.trim() || undefined;
-    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: stamp(), who: who.nick, stars: input.stars, spice: old?.spice, text }; // 예전 맵기 표는 그대로 남긴다
+    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: stamp(), who: who.nick, stars: input.stars, text };
     if (old) db.reviews[db.reviews.indexOf(old)] = row;
     else db.reviews.push(row);
     return { ok: true };
@@ -567,8 +542,8 @@ function noteDeleted(db: Db, kind: WriteKind, rows: (Mark & { id: string; at: st
   db.deletedWrites = db.deletedWrites.filter((d) => within24h(d.at));
   for (const r of rows) if (within24h(r.at)) db.deletedWrites.push({ kind, id: r.id, at: r.at, device: r.device, ip: r.ip });
 }
-const toPost = ({ id, at, who, cat, title, body, storeId, comments, likes, isSample }: PostRow): Post => ({ id, at, who, cat, title, body, storeId, comments, likes: likes ?? 0, isSample });
-const toList = ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes, isSample }: ListRow): PlaceList => ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes, isSample });
+const toPost = ({ id, at, who, cat, title, body, storeId, comments, likes }: PostRow): Post => ({ id, at, who, cat, title, body, storeId, comments, likes: likes ?? 0 });
+const toList = ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes }: ListRow): PlaceList => ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes });
 
 // ───────── 읽기 ─────────
 

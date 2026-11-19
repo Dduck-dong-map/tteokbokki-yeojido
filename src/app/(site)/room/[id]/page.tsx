@@ -6,7 +6,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { LikeButton } from "@/components/lists/ListParts";
 import { Comments, PostActions } from "@/components/room/PostParts";
-import { SampleRibbon, SpiceStamp } from "@/components/brand";
+import { SpiceStamp } from "@/components/brand";
 import { BackHeader } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { BOARD_CATS, timeAgo } from "@/lib/community";
@@ -42,11 +42,6 @@ async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 pt-3 pb-10 md:px-0">
-      {post.isSample && (
-        <div className="flex justify-center">
-          <SampleRibbon />
-        </div>
-      )}
       <article className="flex flex-col gap-3">
         <header>
           <Badge variant="outline" className="rounded-full border-transparent bg-muted px-2 text-caption font-normal text-muted-foreground">

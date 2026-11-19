@@ -9,7 +9,7 @@ import FlipStamp from "@/components/store/FlipStamp";
 import SaveButton from "@/components/store/SaveButton";
 import { AddPhoto, CopyAddress, FlagReviewButton, GoLinks, MoreActions, ReviewForm, StillHere, VerifyBar } from "@/components/store/StoreActions";
 import { CloseStore, ShareButton, StoreDistance, StoreMiniMap } from "@/components/store/StoreLocation";
-import { PendingTag, SampleRibbon, StarGlyph, Stars, Tag } from "@/components/brand";
+import { PendingTag, StarGlyph, Stars, Tag } from "@/components/brand";
 import { getHistory, getRegion, getReviews, getStore, getStores } from "@/lib/data";
 import { kakaoDirections, naverDirections } from "@/lib/directions";
 import { won } from "@/lib/filters";
@@ -20,7 +20,7 @@ import { goneNotice, isPending, updateReasons } from "@/lib/wiki";
 
 export async function generateStaticParams() {
   const ids = (await getStores()).map((s) => ({ id: s.id }));
-  // Cache Components 는 빈 목록을 받지 않는다. 예시를 숨기고(NEXT_PUBLIC_SAMPLE_DATA=off) 빌드하면 빌드 때 가게가 0곳이라 자리 하나를 둔다 (요청 때는 없는 가게 = 404)
+  // Cache Components 는 빈 목록을 받지 않는다. 저장소가 비어 있으면 빌드 때 가게가 0곳이라 자리 하나를 둔다 (요청 때는 없는 가게 = 404)
   return ids.length ? ids : [{ id: "none" }];
 }
 
@@ -111,11 +111,6 @@ async function StoreDetail({ id }: { id: string }) {
       />
 
       <div className="flex flex-col gap-3.5 p-4">
-        {s.isSample && (
-          <div className="flex justify-center">
-            <SampleRibbon />
-          </div>
-        )}
         {notice && <p className="rounded-xl bg-spicybg px-3 py-2 text-body-small text-spicytext break-keep [overflow-wrap:anywhere]">{notice}</p>}
         {!gone && fresh !== "fresh" && (
           <p className="rounded-xl bg-secondary px-3 py-2 text-body-small text-muted-foreground break-keep [overflow-wrap:anywhere]">오래된 정보일 수 있어요. 마지막 확인이 {STALE_DAYS}일을 넘었어요.</p>

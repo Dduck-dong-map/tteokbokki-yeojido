@@ -12,14 +12,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "tokens": "node scripts/build-tokens.mjs",
     "test": "vitest run",
-    "e2e": "playwright test",
-    "db:up": "docker compose up -d --wait db",
-    "db:down": "docker compose stop db",
-    "db:reset": "docker compose down -v && docker compose up -d --wait db",
-    "db:psql": "docker compose exec db psql -U ddy -d tteok",
-    "app:up": "docker compose --env-file .env.local up -d --build --wait app",
-    "app:down": "docker compose stop app",
-    "app:logs": "docker compose logs -f --tail 100 app"
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

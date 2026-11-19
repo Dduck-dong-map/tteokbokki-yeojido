@@ -22,15 +22,13 @@ pnpm tokens         # docs/design-system/tokens.json → src/app/tokens.css 생�
 # 하나만 돌리기
 pnpm exec vitest run tests/unit/wiki.test.ts -t "테스트 이름"
 pnpm exec playwright test tests/e2e/flows.spec.ts --project=mobile-390 -g "테스트 이름"
-
-# 로컬 DB (도커 Postgres 16 + PostGIS, db/README.md)
-pnpm db:up | db:down | db:reset | db:psql
-pnpm app:up         # 빌드한 앱까지 도커로 (standalone)
 ```
 
-E2E 는 3101 포트에 **파일 저장소 모드**(`DATA_DIR=.data-e2e`)로 따로 띄우고 `DATABASE_URL`·네이버 키·`ADMIN_KEY` 를 비운다. 개발 DB 는 건드리지 않는다. 개발 서버가 떠 있으면 Next 16 의 dev 잠금(`.next/dev/lock`) 때문에 저절로 `next build` + `next start` 로 돈다. `E2E_SERVER=dev|start` 로 고를 수 있다(`playwright.config.ts`).
+DB 는 Supabase 다(`db/README.md`). 로컬 도커 DB · 도커 앱 서버와 `pnpm db:*` · `pnpm app:*` 명령은 11-19 에 지웠다. `DATABASE_URL` 이 없으면 파일 저장소로 돈다.
 
-CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · 단위 시험을 돌리고, Postgres 서비스에 `db/init/*.sql` 을 적용해 PG 시험(`tests/unit/pg.test.ts`)까지 돈다. E2E 도 세 폭으로 돈다(개발 서버 모드).
+E2E 는 3101 포트에 **파일 저장소 모드**(`DATA_DIR=.data-e2e`, 시험 자료로 채움)로 따로 띄우고 `DATABASE_URL`·네이버 키를 비우고 시험용 `ADMIN_KEY` 를 넣는다. 개발 DB 는 건드리지 않는다. 개발 서버가 떠 있으면 Next 16 의 dev 잠금(`.next/dev/lock`) 때문에 저절로 `next build` + `next start` 로 돈다. `E2E_SERVER=dev|start` 로 고를 수 있다(`playwright.config.ts`).
+
+CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · 단위 시험을 돌리고, CI 안의 Postgres 서비스에 `db/init/*.sql` 을 적용해 PG 시험(`tests/unit/pg.test.ts`)까지 돈다. E2E 도 세 폭으로 돈다(개발 서버 모드).
 
 ## Next.js 주의
 
@@ -40,14 +38,14 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 
 **화면 = 컨테이너 + View.** (자세한 작성 규칙은 컴포넌트 패턴 가이드 2장) 화면마다 `X.tsx`(상태·데이터·라우터·브라우저 API)와 `XView.tsx`(props 만 받아 그리는 정적 마크업)로 나뉜다. View 의 props 계약은 `src/components/<screen>/types.ts` 에 둔다. 예: `components/home/MapShell.tsx` → `MapShellView.tsx`. 공용 부품은 `components/ui/`(shadcn, base-nova · `@base-ui/react`), `brand/`(도장·별점·로고 등 우리 것), `layout/`(헤더·아래 메뉴·격자)에 둔다.
 
-**라우트 묶음.** `src/app/(site)/` 이 사용자 화면이다. `(site)/(map)/layout.tsx` 는 지도 홈 `/` 와 가게 상세 `/store/[id]` 가 함께 쓰는 틀이다. PC 에서 상세를 열어도 큰 지도가 이어지도록 지도를 레이아웃에 둔다. `src/app/admin/` 은 운영 어드민이다. 가게 관리 · 후보 가져오기 · 운영 기록은 실제 저장소를 읽고 고치고(Server Action `admin/actions.ts` → `lib/data/admin.ts`), 홈 · 신고 · 요청 · 신선도 · 설정은 시안이다. 어드민도 사용자 화면과 같은 스택(Tailwind · `ui/` 부품 · 디자인 토큰)으로 그린다. 전용 CSS 는 없다(11-19 에 지움). 공용 조각은 `components/admin/bits.tsx`(그리기) · `controls.tsx`(입력)이고, 글꼴만 다르다(어드민은 제목도 Pretendard). 접근은 `src/lib/admin/access.ts` 가 막는다(`ADMIN_KEY` 가 비면 개발 서버의 localhost 만, production 은 늘 잠김). 화면 내용은 `components/admin/AdminGate.tsx` 의 `AdminGate` 뒤에, 머리글의 단추·링크는 `AdminOnly` 뒤에 둔다.
+**라우트 묶음.** `src/app/(site)/` 이 사용자 화면이다. `(site)/(map)/layout.tsx` 는 지도 홈 `/` 와 가게 상세 `/store/[id]` 가 함께 쓰는 틀이다. PC 에서 상세를 열어도 큰 지도가 이어지도록 지도를 레이아웃에 둔다. `src/app/admin/` 은 운영 어드민이다. 화면은 가게 관리 · 후보 가져오기 · 운영 기록 셋이고 모두 실제 저장소를 읽고 고친다(Server Action `admin/actions.ts` → `lib/data/admin.ts`). `/admin` 은 가게 관리로 넘긴다. 시안이던 홈 · 신고 · 요청 · 신선도 · 설정은 11-19 에 지웠다. 어드민도 사용자 화면과 같은 스택(Tailwind · `ui/` 부품 · 디자인 토큰)으로 그린다. 전용 CSS 는 없다(11-19 에 지움). 공용 조각은 `components/admin/bits.tsx`(그리기) · `controls.tsx`(입력)이고, 글꼴만 다르다(어드민은 제목도 Pretendard). 접근은 `src/lib/admin/access.ts` 가 막는다(`ADMIN_KEY` 가 비면 개발 서버의 localhost 만, production 은 늘 잠김). 화면 내용은 `components/admin/AdminGate.tsx` 의 `AdminGate` 뒤에, 머리글의 단추·링크는 `AdminOnly` 뒤에 둔다.
 
 **데이터 흐름 (한 방향).**
-- 읽기: 화면은 `src/lib/data/index.ts` 로만 읽는다. 예시 데이터 숨김(`SHOW_SAMPLES`)과 가려진 가게 걸러내기가 여기서 일어난다.
+- 읽기: 화면은 `src/lib/data/index.ts` 로만 읽는다. 가려진 가게 걸러내기가 여기서 일어난다.
 - 쓰기: route handler(`src/app/api/*`) → `src/lib/data/db.ts`. 규칙 검사와 쓰기가 지나가는 길은 이 파일 하나다. route handler 는 `src/lib/request.ts` 의 `readJson()`(다른 출처 403 · JSON 아님 415 · 64KB 초과 413)과 `whoFrom()`(기기 표시 `x-ddy-device` 없으면 400)을 먼저 지난다.
 - 저장: `DATABASE_URL` 이 있으면 `pg.ts`(Postgres), 없으면 `.data/db.json` 파일이다. 저장 방식은 `db.ts` 안에서만 바꾼다. 화면 요청 하나에 저장소 읽기는 한 번이다(`db.ts` 의 `shared()`, `React.cache`).
 - 사진: `src/lib/data/photos.ts` 가 둘 곳을 정한다. `SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY` 가 있으면 Supabase Storage 비공개 버킷(서버 경유), 없으면 서버 폴더(`.data/photos`), Vercel 에서 없으면 올리기를 거절한다.
-- 표 설계: `db/init/*.sql` (표 13개, 새 DB 에서 차례로 돈다). 표가 바뀌면 `pnpm db:reset` 으로 DB 를 새로 만들고 가게는 어드민 「후보 가져오기」로 다시 넣는다(`db/README.md` 「표가 바뀌면」). Supabase 에 연결한 뒤에는 리셋으로 바꿀 수 없다.
+- 표 설계: `db/init/*.sql` (표 13개, 새 DB 에서 차례로 돈다). Supabase 에는 SQL Editor 로 차례로 적용한다. 표가 바뀌면 `db/README.md` 「표가 바뀌면」을 따른다. 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다.
 
 **규칙·체계는 `lib/` 에 모은다.** 화면·서버·DB 가 함께 쓴다.
 - `taxonomy.ts`: 태그 체계 (떡·스타일·맵기 등)
@@ -73,11 +71,10 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 
 ## 알아 둘 것
 
-- 키가 없어도 돈다. 가게는 예시 16곳이 나오고 저장은 `.data/` 파일에 된다(지우면 예시로 다시 시작). Postgres 빈 DB 에는 `SEED_SAMPLES=1` 일 때만 예시를 넣는다. 환경 변수 설명은 `.env.example` 에 있다.
-- `NEXT_PUBLIC_*` 값(`SAMPLE_DATA`, `NAVER_MAP_KEY_ID`)은 빌드 때 코드에 박힌다. 바꾸면 개발 서버를 다시 켠다.
-- 예시 데이터로 도는 동안은 `robots` 가 검색엔진을 막는다(`USING_SAMPLE_DATA`).
+- 키가 없어도 돈다. 저장소는 빈 채로 시작하고 저장은 `.data/` 파일에 된다. 예시 데이터는 앱에 없다(11-19 에 뺌). 시험만 `tests/fixtures/`(가게 16곳 · 글 · 리스트)로 저장소를 채워 돈다(`seed.ts` 의 `seedDataDir`). 환경 변수 설명은 `.env.example` 에 있다.
+- `NEXT_PUBLIC_*` 값(`SITE_URL`, `NAVER_MAP_KEY_ID`)은 빌드 때 코드에 박힌다. 바꾸면 개발 서버를 다시 켠다.
 - Vercel 에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Supabase Storage 설정이 없으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다).
-- production(`pnpm start` · 도커 앱 · Vercel)에서는 `ADMIN_KEY` 가 없으면 어드민이 늘 잠긴다. 개발 서버만 `ADMIN_KEY` 없이 127.0.0.1 · localhost 로 열린다.
+- production(`pnpm start` · Vercel)에서는 `ADMIN_KEY` 가 없으면 어드민이 늘 잠긴다. 개발 서버만 `ADMIN_KEY` 없이 127.0.0.1 · localhost 로 열린다.
 - 접속 IP 는 `x-forwarded-for` 첫 주소다. Vercel 은 이 헤더를 덮어쓰지만, 프록시 없이 서버를 직접 열면 손님이 지어 보낼 수 있다(`src/lib/request.ts`).
 - `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 개발 서버를 끄고 `.next/dev` 를 지운다(개발 캐시만 지우면 된다. `.next` 전체를 지우면 떠 있는 `pnpm start` 서버가 깨진다).
 - 기기·IP 는 해시로만 남기고 화면에 내보내지 않는다(`db.ts` 의 `Mark`).

@@ -7,9 +7,9 @@
 - ✅ Next.js 16.4 App Router · TypeScript · pnpm · Tailwind CSS v4 · shadcn 앱 골격
 - ✅ 라우트 묶음: 사용자 화면 `(site)` 13개 · 어드민 `admin` 10개 · `api` route handler 8개
 - ✅ 디자인 토큰 파이프라인(`tokens.json` → `pnpm tokens` → `tokens.css` → `globals.css`)
-- ✅ 로컬 DB(도커 Postgres 16 + PostGIS)와 표 SQL `db/init/001~004`(표 13개 · RLS 켬)
+- ✅ 로컬 DB(도커 Postgres 16 + PostGIS)와 표 SQL `db/init/001~004`(표 13개 · RLS 켬). 도커 DB 는 Phase 5 에서 지웠고 표 SQL 은 그대로 쓴다
 - ✅ 시험 도구: Vitest 단위 시험, Playwright E2E(폭 390 · 768 · 1280, 파일 저장소 모드)
-- ✅ 환경 변수 설명 `.env.example`, 도커 앱 서버(`pnpm app:up`)
+- ✅ 환경 변수 설명 `.env.example`, 도커 앱 서버(`pnpm app:up`, Phase 5 에서 지움)
 - ✅ CI 워크플로 `ci.yml` 작성: `check`(typecheck · lint · 단위 시험) · `postgres`(표 적용 · PG 시험)
 - ✅ `ci.yml` 을 깃허브에 올려 `check` · `postgres` 두 작업 통과 확인
 - ✅ CI 에 E2E(Playwright) 작업 넣기
@@ -87,23 +87,29 @@
 - 열쇠 없는 브라우저로 어드민 화면을 열면 내용 대신 잠김 안내가 나오는 E2E 가 통과한다
 - `pnpm e2e` 의 `routes.spec.ts`(`page.tsx` 23개 × 폭 셋)가 통과한다
 
-## Phase 5: 최적화 및 배포 (남은 일 4~6일)
+## Phase 5: 최적화 및 배포 (남은 일 6~9일)
 
 - ✅ 배포 가드: Vercel 에서 `DATABASE_URL` · `HASH_SALT` 가 비면 서버가 시작하지 않는다
-- ✅ 빈 Postgres DB 에는 `SEED_SAMPLES=1` 일 때만 예시를 넣는다
+- ✅ 저장소(Postgres · 파일)는 빈 채로 시작한다. 예시를 넣는 길(`SEED_SAMPLES`)은 11-19 에 지웠다
 - ✅ Supabase 연결 코드(`pg.ts`: 포트 6543 이면 prepare 끔 · ssl · 연결 1개)와 옮기는 절차(`db/README.md`)
+- ✅ 로컬 도커를 지운다(11-19): `Dockerfile` · `.dockerignore` · `docker-compose.yml`, `pnpm db:*` · `pnpm app:*` 스크립트 7개, `next.config.ts` 의 standalone 빌드. `db/README.md` · `.env.example` · `CLAUDE.md` · `README.md` · 기술 스택 문서를 Supabase 기준으로 고친다. Postgres 시험은 CI 의 `postgres` 작업이 돈다
+- [ ] 표 설계를 마감한다: 별점 평균이 평가가 쌓일수록 어긋나는 것을 고치고(`db.ts` `reviewStore`), 칸 이름 정리안(`docs/디자인/분석/ERD_이름정리안_v1_2026-11-19.html`)을 결정대로 반영하고, 운영 데이터가 생긴 뒤 표를 바꾸는 방법(바꾸는 SQL 을 둘 자리 · 적용 순서)을 `db/README.md` 에 적는다 (11-19: 별점 수정 + 시험 2건, 표 바꾸는 방법 `db/migrations/` 절차까지 끝남. 남은 것은 칸 이름 정리안 결정)
+- ✅ 예시 데이터를 앱 코드에서 뺐다(11-19): `sample-stores.ts` · `sample-community.ts` 를 `tests/fixtures/` 로 옮기고 단위 시험 · E2E 가 `seed.ts` 로 저장소를 채워 돈다. `is_sample` 칸 3개 · `SEED_SAMPLES` · `NEXT_PUBLIC_SAMPLE_DATA` · `SampleRibbon` 을 지웠다. 어드민 시안 화면 5개(홈 · 제보 · 신고 · 설정 · 신선도 점검)와 그 자료(`src/lib/admin/sample.ts`)도 지우고 `/admin` 은 가게 관리로 넘긴다. 구 목록은 `src/lib/regions.ts` 로 옮겼다
+- [ ] Supabase 프로젝트(서울)를 만들고 SQL Editor 에서 `db/init/*.sql` 을 차례로 실행한다 (11-19 확인: 계정에 이 앱의 프로젝트가 아직 없다)
 - [ ] 읽기 최적화: 요청마다 표 전체를 읽는 것을 결정대로 바꾼다(화면 범위 조회 · 목록 페이지 캐시)
-- [ ] Supabase 프로젝트(서울)를 만들고 SQL Editor 에서 `db/init/*.sql` 을 차례로 실행한다
 - [ ] Storage 비공개 버킷 `photos` 를 만들고 사진 올리기 → 다시 읽기를 확인한다
 - [ ] Transaction pooler 주소(6543)를 `.env.local` 에 넣어 개발 서버로 읽기 · 쓰기를 확인한다
 - [ ] Vercel 환경 변수(`DATABASE_URL` · `HASH_SALT` · `ADMIN_KEY` · `SUPABASE_*` · `NEXT_PUBLIC_*`)를 넣고 배포한다
 - [ ] 어드민 「후보 가져오기」로 실제 가게를 넣고, 청년부 1차 사용자(1~3명)에게 주소를 나눈다
 - [ ] PRD 9절 지표 셋을 `store_directions` · `store_logs` 질의로 7일마다 잰다
 - [ ] 공개 출시 전: 이용약관 · 개인정보 처리방침 페이지, 사장님 · 권리 침해 요청 창구, 쓰기에 Cloudflare Turnstile
-- 이유: 판정 · 한도 · 사진 저장(Phase 2)과 기능 시험(Phase 3 · 4)이 끝나기 전에 운영 DB 에 붙이면 틀린 표 · 내림 기록이 운영 데이터에 쌓이고, Supabase 연결 뒤에는 `pnpm db:reset` 으로 표를 바꿀 수 없다.
+- 이유: 판정 · 한도 · 사진 저장(Phase 2)과 기능 시험(Phase 3 · 4)이 끝나기 전에 운영 DB 에 붙이면 틀린 표 · 내림 기록이 운영 데이터에 쌓이고, 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다. 도커는 Supabase 로 정한 뒤 쓰지 않는 길이라 지우고, 예시 데이터는 운영 번들과 표에 섞이지 않게 연결 전에 시험 쪽으로 옮긴다.
 
 **완료 기준:**
-- 운영 주소에서 등록한 가게와 올린 사진이 다시 배포한 뒤에도 남아 있고, 운영 DB 의 `stores` 에 `is_sample` 이 참인 줄이 0개다
+- `git ls-files | grep -iE "docker"` 가 0줄이고 `package.json` 에 `db:` · `app:` 스크립트가 없다
+- `grep -rE "sample-stores|sample-community" src` 가 0줄이고 `pnpm typecheck` · `pnpm lint` · `pnpm test` · `pnpm e2e` 가 통과한다
+- 평가 5 · 4 · 4 · 4 를 넣은 가게의 별점이 4.3 인 단위 시험이 통과한다
+- 운영 주소에서 등록한 가게와 올린 사진이 다시 배포한 뒤에도 남아 있고, 운영 DB 의 `stores` 에 `(예시)` 가 든 이름이 0개다
 - 운영 주소에서 PRD 수용 기준 F010 두 줄과 F006 · F007 · F015 를 폰으로 확인한 기록이 `docs/작업기록.md` 에 있다
 - `store_directions` 에서 배포 뒤 첫째 · 둘째 7일 가운데 한 번이라도 서로 다른 device 가 1 이상이다
 - 공개 출시 전: 약관 · 처리방침 주소가 `routes.spec.ts` 에서 열리고, 요청 창구가 가게 상세에서 열리며, Turnstile 토큰 없는 쓰기가 거절되는 시험이 통과한다
@@ -112,6 +118,9 @@
 
 | 항목 | 선택지 | 막는 Phase |
 |---|---|---|
+| 칸 이름 정리안(ERD 11-19) | 지금 이름 유지 / DB 칸 이름만 바꾸고 `pg.ts` 에 대응표 / 앱 값 이름까지 바꿈 | 5 |
+| 어드민 시안 화면(홈 · 제보 · 신고 · 설정 · 신선도)과 시안 자료 | 화면과 자료를 지움 / 그대로 둠(운영 메뉴에서는 이미 숨김) | 5 |
+| 운영 데이터가 생긴 뒤 표를 바꾸는 방법 | `db/migrations/` 에 번호 붙인 SQL 을 두고 SQL Editor 로 적용 / Supabase CLI 마이그레이션 | 5 |
 | 화면 범위 조회 | 전체를 읽어 앱에서 거르기 / PostGIS 함수 `stores_in_bounds` | 5 |
 | 목록 페이지 캐시 | 요청마다 읽기 / `"use cache"` + `cacheTag` 와 쓰기 때 무효화 | 5 |
 | 팀 기획과 다른 다섯 곳 · 「승인 후 공개」 스위치(PRD 12-1) | 현재 구현 유지 / 기획대로 되돌림 · 스위치 MVP 이후 / 지금 만듦 | 5 |

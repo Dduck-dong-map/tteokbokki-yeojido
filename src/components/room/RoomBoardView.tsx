@@ -1,6 +1,5 @@
 import { MapPin, ThumbsUp } from "lucide-react";
 import Link from "next/link";
-import { SampleRibbon } from "@/components/brand";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
@@ -14,7 +13,7 @@ const CATS: [BoardCatFilter, string][] = [["all", "전체"], ...(Object.entries(
 // 떡볶이방 글 목록. 줄 하나 = 말머리 · 제목 · [댓글 수] / 닉네임 · 시각 · 👍 · 📍가게.
 // 폰은 위에 붙는 머리칸 + 좌우 꽉 찬 줄 목록, 768 이상은 둥근 카드 한 장 (웹 1차 기획 3.2 「목록」 줄).
 // 상태(고른 말머리)·거르기·fetch 는 전부 컨테이너(RoomBoard)가 한다.
-export default function RoomBoardView({ posts, cat, storeNames, now, sample, onCatChange }: RoomBoardViewProps) {
+export default function RoomBoardView({ posts, cat, storeNames, now, onCatChange }: RoomBoardViewProps) {
   return (
     <>
       <header className="z-10 border-b border-border bg-background px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-1.5 max-md:sticky max-md:top-0 md:border-0 md:bg-transparent md:px-0 md:pt-5">
@@ -37,12 +36,6 @@ export default function RoomBoardView({ posts, cat, storeNames, now, sample, onC
           ))}
         </div>
       </header>
-
-      {sample && (
-        <div className="flex justify-center pt-3">
-          <SampleRibbon />
-        </div>
-      )}
 
       <main className="flex-1 pb-6">
         {posts.length ? (

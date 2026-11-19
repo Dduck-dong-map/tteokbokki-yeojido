@@ -5,7 +5,7 @@ import { Breadcrumb, Locked, PageHeader } from "@/components/admin/bits";
 import { adminAccess } from "@/lib/admin/access";
 import { adminReadLogs, adminReadStore } from "@/lib/data/admin";
 import { findResearch, getDataset } from "@/lib/data/datasets";
-import { REGIONS } from "@/lib/data/sample-stores";
+import { REGIONS } from "@/lib/regions";
 
 export const metadata = { title: "가게 편집" };
 
@@ -52,7 +52,7 @@ async function Editor({ params, searchParams }: Pick<PageProps<"/admin/stores/[i
   return (
     <>
       <Breadcrumb items={[CRUMB, { label: store.name }]} />
-      <PageHeader id="M-AD-04" title={store.name} desc={`${store.address} · id ${store.id}${store.isSample ? " · 예시 가게" : ""}${found ? ` · 출처 ${found.dataset.title}` : ""}`} />
+      <PageHeader id="M-AD-04" title={store.name} desc={`${store.address} · id ${store.id}${found ? ` · 출처 ${found.dataset.title}` : ""}`} />
       <StoreEditor initial={store} research={found?.row.research} regions={regions} history={history} />
     </>
   );

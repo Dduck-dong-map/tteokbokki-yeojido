@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 // 본문 글꼴 Pretendard: 화면에 나온 글자가 든 조각만 받는다 (11-13 수정판, 예전 280~415KB)
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
-import { USING_SAMPLE_DATA } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -34,8 +33,6 @@ export const metadata: Metadata = {
   description: "떡 종류와 맵기까지 골라 찾는 분식 맛집 지도. 가입 없이 바로 보고, 누구나 등록해요.",
   applicationName: "떡볶여지도",
   appleWebApp: { capable: true, title: "떡볶여지도", statusBarStyle: "default" },
-  // 예시 데이터로 돌 때는 검색엔진에 올리지 않는다
-  robots: USING_SAMPLE_DATA ? { index: false, follow: false } : undefined,
 };
 
 export const viewport: Viewport = {

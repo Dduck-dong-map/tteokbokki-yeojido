@@ -1,6 +1,6 @@
-import type { BoardCat, ListVisibility } from "../community";
+import type { BoardCat, ListVisibility } from "@/lib/community";
 
-// 떡볶이방 글 · 맛집 리스트 예시 (11-08). 빈 화면으로 보이지 않게 넣은 가짜 기록이고, 제목에 (예시)를 붙였다.
+// 떡볶이방 글 · 맛집 리스트 시험 자료 (11-08, 11-19 에 src/lib/data 에서 옮김). 제목에 (예시)를 붙인 가짜 기록이다.
 // 가게 id 는 sample-stores.ts 의 예시 가게다.
 
 export const SAMPLE_LISTS: { id: string; title: string; desc: string; storeIds: string[]; who: string; daysAgo: number; likes: number; visibility: ListVisibility }[] = [

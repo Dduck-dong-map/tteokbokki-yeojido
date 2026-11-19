@@ -1,5 +1,4 @@
 import { Plus } from "lucide-react";
-import { SampleRibbon } from "@/components/brand";
 import { BottomNav } from "@/components/layout";
 import ListInfoFormView from "@/components/lists/ListInfoFormView";
 import { ListCard } from "@/components/lists/ListParts";
@@ -30,7 +29,7 @@ const CARD_GRID = "grid gap-3 md:grid-cols-2 xl:grid-cols-3";
 // 탭은 shadcn Tabs 대신 Chip(role="tab") + role="tablist" — 탭 상태와 주소(?tab=) 동기화를 컨테이너가 쥐고 있어서 상태 없는 단추가 맞는다(RoomBoardView 와 같은 모양).
 // 탭·정렬은 하나 고르기라 Chip 의 onChange 가 true 일 때만 받는다. aria-selected · aria-pressed 는 Chip 이 붙인다.
 export default function MinePageView(props: MinePageViewProps) {
-  const { tab, counts, stores, myLists, ownedLoaded, publicLists, publicCount, sort, now, sample, creating, message, createForm, onTabChange, onSortChange, onCreatingChange } = props;
+  const { tab, counts, stores, myLists, ownedLoaded, publicLists, publicCount, sort, now, creating, message, createForm, onTabChange, onSortChange, onCreatingChange } = props;
   return (
     <div className="page-wide">
       <header className="z-10 border-b border-border bg-background px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-1.5 max-md:sticky max-md:top-0 md:border-0 md:bg-transparent md:px-0 md:pt-5">
@@ -56,12 +55,6 @@ export default function MinePageView(props: MinePageViewProps) {
           ))}
         </div>
       </header>
-
-      {sample && (
-        <div className="flex justify-center pt-3">
-          <SampleRibbon />
-        </div>
-      )}
 
       <main className="flex-1 px-4 pt-3 pb-6 md:px-0">
         {message && (

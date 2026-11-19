@@ -66,7 +66,7 @@
 - 작업을 계획하기 전에 `docs/ROADMAP.md` 에서 그 작업이 속한 Phase 의 항목 · 「이유」 · 「완료 기준」을 읽는다.
 - 기능 ID(F0NN)가 걸린 작업은 `docs/PRD.md` 의 그 기능 수용 기준(Given/When/Then)과 로드맵 「부록: 기능별 상태」의 메모를 읽는다.
 - 앞 Phase 의 남은 일이 뒤 Phase 작업의 선행 조건이면 앞의 것을 먼저 작업으로 만든다.
-- **Supabase · Vercel 연결(Phase 5)은 Phase 2~4 의 완료 기준이 끝나기 전에 하지 않는다.** 연결 뒤에는 `pnpm db:reset` 으로 표를 바꿀 수 없다.
+- **Supabase · Vercel 연결(Phase 5)은 Phase 2~4 의 완료 기준이 끝나기 전에 하지 않는다.** 운영 데이터가 생긴 뒤에는 표를 지우고 다시 만들 수 없다(`db/README.md` 「표가 바뀌면」).
 - 작업 하나는 로드맵의 항목 하나(`- [ ]` 한 줄)에 대응시킨다. 작업 설명에 Phase 번호와 기능 ID 를 적는다.
 
 ### 4.2 로드맵의 상태를 그대로 믿지 않는다
@@ -157,7 +157,7 @@
 어드민: 화면 → Server Action (admin/actions.ts) → allowed() → lib/data/admin.ts
 ```
 
-- 화면은 **`@/lib/data` 로만** 읽는다. 예시 데이터 숨김과 가려진 가게 걸러내기는 여기서만 한다.
+- 화면은 **`@/lib/data` 로만** 읽는다. 가려진 가게 걸러내기는 여기서만 한다.
 - 저장 방식 분기(Postgres ↔ 파일)는 **`db.ts` 안에서만** 한다.
 - 읽기 함수가 돌려준 배열·객체를 고치지 않는다. `filter` · `map` 으로 새 값을 만든다. (요청 하나에 저장소 읽기는 한 번이고 여러 곳이 값을 함께 쓴다.)
 - 컴포넌트에서 `React.cache` 를 따로 감싸지 않는다.
@@ -200,7 +200,7 @@ export async function POST(req: Request) {
 ### 6.3 어드민
 
 - Server Action 은 **함수마다** `allowed()` 로 권한을 확인한다.
-- 화면 내용은 `<AdminGate>`, 머리글의 단추·링크는 `<AdminOnly>` 로 감싼다. 제목·설명은 밖에 둔다. 시안 화면도 같다.
+- 화면 내용은 `<AdminGate>`, 머리글의 단추·링크는 `<AdminOnly>` 로 감싼다. 제목·설명은 밖에 둔다.
 - 레이아웃에서 권한을 막지 않는다. 화면마다 확인한다.
 - 예상할 수 있는 실패는 `{ ok: false, error }` 로 돌려준다.
 
@@ -241,7 +241,7 @@ export async function POST(req: Request) {
 | 디자인 토큰 값 | `docs/design-system/tokens.json` 을 고치고 `pnpm tokens` 실행. **`src/app/tokens.css` 는 손으로 고치지 않는다** |
 | 새 토큰 유틸 이름 | `src/app/globals.css` 의 `@theme inline` 에 잇고, `src/lib/utils.ts` 의 `cn` 등록과 가이드 9.3절 표를 맞춘다 |
 | View 의 props | `src/components/<screen>/types.ts` → 컨테이너 → View 순서로 함께 고친다 |
-| 표(`db/init/*.sql`) | `src/lib/data/pg.ts` · `db.ts` · `src/lib/types.ts` · `tests/unit/pg.test.ts` · `db/README.md` 를 맞추고 `pnpm db:reset`. CLAUDE.md 의 표 개수도 확인 |
+| 표(`db/init/*.sql`) | `src/lib/data/pg.ts` · `db.ts` · `src/lib/types.ts` · `tests/unit/pg.test.ts` · `db/README.md` 를 맞추고 `db/README.md` 「표가 바뀌면」대로 적용한다. CLAUDE.md 의 표 개수도 확인 |
 | 규칙 함수(`wiki.ts` · `community.ts` · `db.ts` 쓰기 규칙) | `tests/unit/` 의 해당 시험을 고치고 `pnpm test`. 수용 기준이 바뀌면 `docs/PRD.md` · `tests/e2e/acceptance.spec.ts` |
 | `src/lib/request.ts` | `tests/unit/request.test.ts` |
 | `src/lib/data/photos.ts` | `tests/unit/photos.test.ts` |
@@ -335,7 +335,7 @@ export async function POST(req: Request) {
 - ❌ `npm` · `yarn` 사용
 - ❌ `public/maplibre/` · `public/share/` 직접 고치기 (복사본, 깃 제외)
 - ❌ `.data/` · `.data-e2e/` · `.shrimp/` · `.env*` 커밋 (`.env.example` 만 올린다)
-- ❌ Supabase 연결 뒤 `pnpm db:reset` 으로 표 바꾸기
+- ❌ 운영 데이터가 생긴 뒤 표를 지우고 다시 만들기 · `tests/unit/pg.test.ts` 를 Supabase 주소로 돌리기
 - ❌ 기기 · IP 해시를 화면이나 응답에 내보내기
 - ❌ 쓰기 입구(`readJson()` · `whoFrom()`)를 건너뛰는 route handler
 - ❌ 권한 확인 없는 Server Action, `AdminGate` 밖의 어드민 내용

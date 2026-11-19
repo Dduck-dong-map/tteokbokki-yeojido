@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { seedDataDir } from "../fixtures/seed";
 
 // 요청 하나 안에서 저장소 읽기가 한 번만 도는지 (lib/data/db.ts shared · React.cache, 기술 스택 9절 #6) — 파일 저장소 모드.
 // React.cache 는 React 가 서버 화면을 그리는 중에만 기억한다(시험 환경에서는 그냥 부르기만 한다).
@@ -53,12 +54,13 @@ const who = { nick: "손님", device: "device-read-once", ip: "10.9.9.9" };
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-read-once-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
   delete (globalThis as { __ddyQueue?: unknown }).__ddyQueue;
   vi.resetModules();
   db = await import("@/lib/data/db");
   data = await import("@/lib/data");
-  // 예시 데이터를 파일로 한 번 써 둔다 (이후 읽기가 실제 파일을 읽게)
+  // 쓰기를 한 번 해 둔다 (이후 읽기가 실제 파일을 읽게)
   await db.addPost({ cat: "free", title: "읽기 시험", body: "본문" }, who);
   newRequest();
 });

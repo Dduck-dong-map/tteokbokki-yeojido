@@ -2,7 +2,7 @@
 -- 앱은 아직 lat · lng 만 쓴다. location 은 lat · lng 가 바뀔 때 저절로 채워진다.
 -- 11-09: PostGIS 를 public 이 아니라 extensions 칸(스키마)에 깐다 (Supabase 권장 — public 에 깔면 spatial_ref_sys 표가 공개 키로 열린다).
 --        그래서 위치 칸 종류는 extensions.geography 로 적고, 함수마다 search_path 에 extensions 를 넣는다.
---        Supabase 에는 extensions 칸이 이미 있다. 도커에서는 아래 첫 줄이 만든다.
+--        Supabase 에는 extensions 칸이 이미 있다. 없는 DB(CI)에서는 아래 첫 줄이 만든다.
 
 create schema if not exists extensions;
 create extension if not exists postgis with schema extensions;

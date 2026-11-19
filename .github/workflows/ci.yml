@@ -1,6 +1,6 @@
 # 자동 시험 (기술 스택 9절 #8). 깃 푸시와 PR 마다 돈다.
 #  - check: 타입 · 린트 · 단위 시험 (파일 저장소 모드, DATABASE_URL 없음 → PG 시험은 건너뜀)
-#  - postgres: Postgres 16 + PostGIS 3.4 서비스(로컬 도커와 같은 이미지)에 db/init/*.sql 이 오류 없이 도는지 보고,
+#  - postgres: Postgres 16 + PostGIS 3.4 서비스(CI 안에서만 뜨는 시험용 DB)에 db/init/*.sql 이 오류 없이 도는지 보고,
 #              DATABASE_URL 을 붙여 PG 모드 저장 흐름 · 예시 넣기 · 잠금(RLS) 시험(tests/unit/pg.test.ts)까지 돈다
 #  - e2e: Playwright 를 폭 390 · 768 · 1280 세 프로젝트로 돈다 (파일 저장소 모드, 3101 포트 — playwright.config.ts)
 # 슬랙 알림은 slack-notify.yml 이 따로 한다.

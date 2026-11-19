@@ -1,11 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import StoreList, { visibleStores } from "@/components/StoreList";
-import { SampleRibbon } from "@/components/brand";
 import { BackHeader, GRID_LI, GRID_UL } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { USING_SAMPLE_DATA } from "@/lib/data";
 import { RICE_CAKES, STYLES, keysOf, type RiceCake, type Style } from "@/lib/taxonomy";
 import type { Region, Store } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -52,11 +50,6 @@ export function RegionList({ region, stores, taste, now }: { region: Region; sto
   return (
     <div className="page-wide pb-10">
       <BackHeader title={`${region.name} ${taste ? taste.label : "떡볶이"} 지도`} href={taste ? `/seoul/${region.gu}` : "/list"} />
-      {USING_SAMPLE_DATA && (
-        <div className="flex justify-center pt-3">
-          <SampleRibbon />
-        </div>
-      )}
       <p className="px-4 pt-4 text-body-small text-muted-foreground md:px-0 md:pt-0">
         {region.name}의 {taste ? taste.label : "떡볶이"} 가게 {shown.length}곳 · 최근 확인된 곳부터 보여요.
       </p>

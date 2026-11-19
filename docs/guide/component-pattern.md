@@ -66,7 +66,7 @@ export { SectionTitle }
 | 위치 | 용도 |
 | --- | --- |
 | `src/components/ui/` | shadcn 파일(`button` · `badge` · `input` · `textarea` · `sheet` · `dialog` · `tabs` · `select` …)과 디자인 시스템 기본 부품(`chip` · `fab` · `snackbar` · `text-field`). 도메인(떡·가게)을 모른다 |
-| `src/components/brand/` | 떡볶여지도 고유 부품: `Logo` · `SpiceStamp` · `Chili` · `Stars` · `StoreThumb` · `PendingTag` · `SampleRibbon` · `Tag` |
+| `src/components/brand/` | 떡볶여지도 고유 부품: `Logo` · `SpiceStamp` · `Chili` · `Stars` · `StoreThumb` · `PendingTag` · `Tag` |
 | `src/components/layout/` | 쪽 틀: `SiteHeaderView` · `BottomNav` · `BackHeader` · `SearchBoxView` · 격자(`grid.ts`) · 메뉴 목록(`nav.ts`) |
 | `src/components/map/` | 지도(`TteokMap`), 대동여지도 바탕(`dongyeoStyle.ts`), 네이버 지도(`realMap.ts`), 지도 도장(`stamps.ts`) |
 | `src/components/<screen>/` | 한 화면의 컨테이너 · View · 계약(`types.ts`). `home` · `store` · `register` · `room` · `lists` · `mine` · `admin` · `loading` |
@@ -257,7 +257,7 @@ async function RecentBadge() {
 
 ### 4.6 데이터 공급 계층
 
-- 화면은 `@/lib/data`(`src/lib/data/index.ts`)만 부른다. 예시 데이터 숨김(`SHOW_SAMPLES`)과 가려진 가게 걸러내기가 여기서 일어난다. 화면이 이 일을 다시 하지 않는다.
+- 화면은 `@/lib/data`(`src/lib/data/index.ts`)만 부른다. 가려진 가게 걸러내기가 여기서 일어난다. 화면이 이 일을 다시 하지 않는다.
 - 저장 방식(Postgres ↔ `.data/db.json`)은 `db.ts` 안에서만 바뀐다. 컴포넌트 코드는 그대로다.
 - 어드민 화면은 `@/lib/data/admin` · `datasets` 를 서버 컴포넌트와 Server Action 에서만 쓴다.
 
@@ -360,8 +360,8 @@ export default function VoteBox({ storeId }: { storeId: string }) {
 
 - Server Action 은 `"use server"` 파일(`src/app/admin/actions.ts`)에 두고 클라이언트 컴포넌트에서 import 한다. 클라이언트 컴포넌트 안에서는 정의할 수 없다.
 - 누구나 직접 POST 로 부를 수 있으므로 **함수마다 권한을 확인한다**(`allowed()` → `adminAccess()`).
-- 어드민 화면도 화면마다 권한을 확인한다. 레이아웃에서는 막지 않는다. 내용은 `<AdminGate>` 로 감싸고(잠기면 잠김 안내가 대신 나온다), 머리글의 단추·링크는 `<AdminOnly>` 로 감싼다(잠기면 그리지 않는다). 머리글의 제목·설명은 밖에 둔다. 시안 화면도 같다.
-- production(`next start`·도커 앱·Vercel)에서는 `ADMIN_KEY` 가 없으면 `adminAccess()` 가 늘 잠김을 돌려준다.
+- 어드민 화면도 화면마다 권한을 확인한다. 레이아웃에서는 막지 않는다. 내용은 `<AdminGate>` 로 감싸고(잠기면 잠김 안내가 대신 나온다), 머리글의 단추·링크는 `<AdminOnly>` 로 감싼다(잠기면 그리지 않는다). 머리글의 제목·설명은 밖에 둔다.
+- production(`next start`·Vercel)에서는 `ADMIN_KEY` 가 없으면 `adminAccess()` 가 늘 잠김을 돌려준다.
 - 예상할 수 있는 실패는 throw 하지 말고 `{ ok: false, error }` 로 돌려준다. 화면은 `useActionState` 나 반환값으로 표시한다.
 - `redirect()` 뒤의 코드는 돌지 않는다. 캐시 비우기는 그 앞에서 한다.
 - 캐시 비우기: 지금은 `revalidatePath("/", "layout")` 를 쓴다. 태그 캐시(4.5절)를 쓰게 되면 아래를 따른다(문서: `revalidateTag.md` · `updateTag.md`).
@@ -646,7 +646,7 @@ Tailwind 는 `@theme` 에 없는 이름의 클래스를 **아무 경고 없이 �
 
 - `metadata`·`generateMetadata`·`viewport` 는 **서버 컴포넌트(page·layout)에서만** export 한다.
 - `<head>`·`<title>`·`<meta>` 를 JSX 로 직접 쓰지 않는다.
-- `robots` 는 `src/app/robots.ts` 가 `USING_SAMPLE_DATA` 로 정한다. 화면에서 따로 막지 않는다.
+- `robots` 는 `src/app/robots.ts` 가 정한다(`/api/` · `/register` · `/admin` 만 막는다). 화면에서 따로 막지 않는다.
 
 ---
 

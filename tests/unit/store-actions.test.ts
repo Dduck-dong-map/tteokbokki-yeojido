@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SPICE_LEVELS } from "@/lib/taxonomy";
 import type { NewStoreInput } from "@/lib/wiki";
 import { HIDE_AT, checkPatch, checkReview, goneNotice } from "@/lib/wiki";
+import { seedDataDir } from "../fixtures/seed";
 
 // 가게 상세에서 이용자가 하는 일 (lib/data/db.ts) — 아직 있어요 · 신고 · 후기 신고 · 평가 · 달라요 · 정보 고치기.
 // db.test.ts 와 같은 격리: 테스트마다 임시 DATA_DIR + 파일 저장소, 모듈을 새로 읽는다.
@@ -43,6 +44,7 @@ async function newStore() {
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-store-actions-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
   delete (globalThis as { __ddyQueue?: unknown }).__ddyQueue;
   vi.resetModules();
@@ -142,6 +144,21 @@ describe("checkReview · reviewStore — 별 필수, 같은 사람 가게당 평
     expect(mine).toHaveLength(1);
     expect(mine[0]).toMatchObject({ stars: 5, text: "다시 가 보니 최고" });
     expect((await db.readStore(id))?.rating).toEqual({ avg: 5, count: 1 });
+  });
+
+  it("별 5 · 4 · 4 · 4 → 평균 4.3 (반올림한 평균으로 합계를 되살리면 4.2 가 된다)", async () => {
+    const id = await newStore();
+    for (const [i, stars] of [5, 4, 4, 4].entries()) expect(await db.reviewStore(id, { stars }, who(String(i + 1)))).toEqual({ ok: true });
+    expect((await db.readStore(id))?.rating).toEqual({ avg: 4.3, count: 4 });
+  });
+
+  it("평가가 60건 쌓여도 저장된 평균이 평가 줄의 실제 평균과 같다", async () => {
+    const id = await newStore();
+    const all = Array.from({ length: 60 }, (_, i) => ((i * 7) % 5) + 1);
+    // 한 사람 하루 한도와 무관하게 서로 다른 60명이 쓴다
+    for (const [i, stars] of all.entries()) expect(await db.reviewStore(id, { stars }, { nick: `손님${i}`, device: `device-r${i}`, ip: `10.1.${i}.1` })).toEqual({ ok: true });
+    const avg = Math.round((all.reduce((a, b) => a + b, 0) / all.length) * 10) / 10;
+    expect((await db.readStore(id))?.rating).toEqual({ avg, count: 60 });
   });
 });
 

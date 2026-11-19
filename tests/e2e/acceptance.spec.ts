@@ -1,9 +1,9 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { SAMPLE_STORES } from "../../src/lib/data/sample-stores";
+import { SAMPLE_STORES } from "../fixtures/sample-stores";
 import { addTestStore, adminLogin, asNewDevice, asNewIp, fillSteps, isMobile, post, postRaw, sameIpPeople, someone, submitRegister, tag, waitMap } from "./helpers";
 
 // PRD 5절 수용 기준 가운데 ROADMAP 1단계 「빠진 E2E 시험」 (F001~F026, F010 · F007 손 확인은 뺌).
-// 저장소는 파일 모드(.data-e2e)이고 세 폭이 함께 돈다 → 예시 가게를 내리지 않는다. 내려야 하면 시험용 가게를 새로 만든다(addTestStore).
+// 저장소는 파일 모드(.data-e2e)이고 세 폭이 함께 돈다 → 시험 자료의 가게(tests/fixtures)를 내리지 않는다. 내려야 하면 시험용 가게를 새로 만든다(addTestStore).
 // 여러 사람이 필요한 준비(신고 3명 · 남의 글)는 API 로 하고, 결과는 화면에서 본다.
 
 const sample = (id: string) => SAMPLE_STORES.find((s) => s.id === id)!;
@@ -501,21 +501,12 @@ test("F010 열쇠 없이 가게 관리 → 그 자리에 잠김 안내 + [운영
   await expect(page.locator("table tbody tr").first()).toBeVisible();
 });
 
-test("F010 열쇠 없음: 시안 화면도 내용 대신 잠김 안내가 나온다", async ({ page }) => {
-  for (const url of ["/admin", "/admin/reports", "/admin/flags", "/admin/settings", "/admin/freshness"]) {
-    await page.goto(url);
-    await expect(page.getByText("운영 로그인이 필요해요"), url).toBeVisible();
-    await expect(page.getByText("시안이에요"), url).toHaveCount(0);
-  }
-});
-
 test("F010 열쇠 없음: 머리칸에는 제목 · 설명만, 누를 수 있는 것은 [운영 로그인] 뿐", async ({ page }) => {
   // 내용 칸(main) 안을 본다 — 옆 메뉴의 「직접 등록」 같은 메뉴 링크는 잠겨도 남는다(눌러도 같은 잠김 안내가 나온다)
   const main = page.getByRole("main");
+  // /admin 은 가게 관리로 넘긴다 (시안이던 홈은 11-19 에 지웠다)
   await page.goto("/admin");
-  await expect(main.getByRole("heading", { name: /오늘 할 일/ })).toBeVisible();
-  await expect(main.getByRole("link", { name: /승인 시작/ })).toHaveCount(0);
-  await page.goto("/admin/stores");
+  await expect(page).toHaveURL(/\/admin\/stores$/);
   await expect(main.getByRole("heading", { name: /가게 관리/ })).toBeVisible();
   await expect(main.getByRole("link", { name: /자료 넣기/ })).toHaveCount(0);
   await expect(main.getByRole("link", { name: /직접 등록/ })).toHaveCount(0);

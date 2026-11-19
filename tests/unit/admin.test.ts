@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { seedDataDir } from "../fixtures/seed";
 
 // 운영 어드민 가게 관리 (lib/data/admin.ts, 11-15) — 파일 저장소 모드. db.test.ts 와 같은 격리 방식.
 
@@ -37,6 +38,7 @@ const base = (p: Partial<Input> = {}): Input => ({
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-admin-test-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
   delete (globalThis as { __ddyQueue?: unknown }).__ddyQueue;
   vi.resetModules();
@@ -88,10 +90,9 @@ describe("직접 등록 · 수정 · 내리기", () => {
     expect(await admin.adminCreateStore(base(), "new")).toMatchObject({ ok: false });
   });
 
-  it("화면에서 끼워 넣은 칸(상태·예시·별점)은 저장하지 않는다", async () => {
-    await admin.adminCreateStore({ ...base(), isSample: true, status: "hidden", rating: { avg: 5, count: 99 } }, "gn-test");
+  it("화면에서 끼워 넣은 칸(상태·별점)은 저장하지 않는다", async () => {
+    await admin.adminCreateStore({ ...base(), status: "hidden", rating: { avg: 5, count: 99 } }, "gn-test");
     const s = await admin.adminReadStore("gn-test");
-    expect(s?.isSample).toBeUndefined();
     expect(s?.status).toBe("active");
     expect(s?.rating).toBeUndefined();
   });

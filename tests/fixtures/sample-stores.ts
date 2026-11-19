@@ -1,15 +1,9 @@
-import type { Region, Store } from "../types";
+import type { Store } from "@/lib/types";
 
-// 예시 데이터: 화면·필터를 확인하려고 만든 가짜 가게다. 실제 가게가 아니다.
+// 시험 자료: 단위 시험 · E2E 가 저장소를 채우는 가짜 가게다. 실제 가게가 아니고 앱 코드(src)는 이 파일을 가져오지 않는다 (11-19 에 src/lib/data 에서 옮김).
 // 이름에 (예시)를 붙이고, 위치는 동네 중심 근처에 흩어 놓았다.
 // 출시 전 300곳은 공공데이터 후보 + 직접 확인으로 채운다(기획안 7절).
 
-export const REGIONS: Region[] = [
-  { city: "seoul", gu: "mapo", name: "마포구" },
-  { city: "seoul", gu: "seodaemun", name: "서대문구" },
-  // 11-15: 실제 가게 첫 지역 (docs/리서치/가게리서치_강남_v1_2026-11-15.md · lib/data/datasets.ts)
-  { city: "seoul", gu: "gangnam", name: "강남구" },
-];
 
 const allWeek = [0, 1, 2, 3, 4, 5, 6];
 const noSun = [1, 2, 3, 4, 5, 6];
@@ -27,7 +21,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 4000, priceCheckedAt: "2026-10-12",
     menu: [{ name: "국물떡볶이", price: 4000 }, { name: "모둠튀김", price: 3500 }, { name: "어묵 2개", price: 1500 }],
     hours: { days: noSun, open: "10:30", close: "20:30" },
-    lastConfirmedAt: "2026-10-20", isSample: true,
+    lastConfirmedAt: "2026-10-20",
     rating: { avg: 4.3, count: 12 },
     memo: "시장 입구에서 오래 하신 집이에요. 밀떡이 쫄깃하고 국물이 달달해요.\n튀김을 국물에 찍어 먹으면 더 맛있어요. 저녁에는 줄이 길어요. (예시 소개글)",
     introBy: "쫀득한 밀떡 412",
@@ -44,7 +38,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 3500, priceCheckedAt: "2026-09-02",
     menu: [{ name: "기름떡볶이", price: 3500 }, { name: "순대", price: 4000 }],
     hours: { days: allWeek, open: "11:00", close: "21:00" },
-    lastConfirmedAt: "2026-09-02", isSample: true,
+    lastConfirmedAt: "2026-09-02",
     rating: { avg: 3.9, count: 7 },
   },
   {
@@ -58,7 +52,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 6500, priceCheckedAt: "2026-10-01",
     menu: [{ name: "로제떡볶이", price: 6500 }, { name: "치즈 추가", price: 1500 }],
     hours: { days: allWeek, open: "11:30", close: "22:00" },
-    lastConfirmedAt: "2026-10-18", isSample: true,
+    lastConfirmedAt: "2026-10-18",
     rating: { avg: 4.6, count: 31 },
   },
   {
@@ -72,7 +66,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 5500, priceCheckedAt: "2026-08-19",
     menu: [{ name: "즉석떡볶이 (2인)", price: 11000 }, { name: "라면사리", price: 1000 }, { name: "볶음밥", price: 2500 }],
     hours: { days: noSun, open: "11:00", close: "21:30" },
-    lastConfirmedAt: "2026-08-19", isSample: true,
+    lastConfirmedAt: "2026-08-19",
     rating: { avg: 4.1, count: 18 },
   },
   {
@@ -86,7 +80,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 5000, priceCheckedAt: "2026-10-05",
     menu: [{ name: "떡볶이 (1인)", price: 5000 }, { name: "주먹밥", price: 2000 }],
     hours: { days: allWeek, open: "11:00", close: "02:00" },
-    lastConfirmedAt: "2026-10-25", isSample: true,
+    lastConfirmedAt: "2026-10-25",
     rating: { avg: 3.6, count: 4 },
   },
   {
@@ -100,7 +94,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 3000, priceCheckedAt: "2026-06-11",
     menu: [{ name: "컵떡볶이", price: 3000 }, { name: "어묵", price: 1000 }],
     hours: { days: allWeek, open: "15:00", close: "23:30" },
-    lastConfirmedAt: "2026-06-11", isSample: true,
+    lastConfirmedAt: "2026-06-11",
     rating: { avg: 4.8, count: 40 },
   },
   {
@@ -114,7 +108,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 7000, priceCheckedAt: "2026-09-27",
     menu: [{ name: "마라떡볶이", price: 7000 }, { name: "분모자 추가", price: 2000 }],
     hours: { days: allWeek, open: "12:00", close: "22:00" },
-    lastConfirmedAt: "2026-10-02", isSample: true,
+    lastConfirmedAt: "2026-10-02",
     rating: { avg: 4.0, count: 9 },
   },
   {
@@ -128,7 +122,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 4500, priceCheckedAt: "2026-03-14",
     menu: [{ name: "짜장떡볶이", price: 4500 }, { name: "김밥", price: 3000 }],
     hours: { days: noSun, open: "10:00", close: "20:00" },
-    lastConfirmedAt: "2026-03-14", isSample: true,
+    lastConfirmedAt: "2026-03-14",
     rating: { avg: 4.4, count: 22 }, // 180일 넘음 → 흐린 도장
   },
   {
@@ -142,7 +136,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 9000, priceCheckedAt: "2026-07-30",
     menu: [{ name: "궁중떡볶이", price: 9000 }, { name: "전 모둠", price: 15000 }],
     hours: { days: weekdays, open: "17:00", close: "23:00" },
-    lastConfirmedAt: "2026-07-30", isSample: true,
+    lastConfirmedAt: "2026-07-30",
     rating: { avg: 3.8, count: 5 },
   },
   {
@@ -156,7 +150,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 4000, priceCheckedAt: "2026-10-09",
     menu: [{ name: "떡볶이", price: 4000 }, { name: "순대", price: 4000 }, { name: "김밥", price: 3000 }],
     hours: { days: noSun, open: "09:30", close: "20:00" },
-    lastConfirmedAt: "2026-10-23", isSample: true,
+    lastConfirmedAt: "2026-10-23",
     rating: { avg: 4.2, count: 15 },
   },
   {
@@ -170,7 +164,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 4000, priceCheckedAt: "2025-08-03",
     menu: [{ name: "쌀떡볶이", price: 4000 }],
     hours: { days: noSun, open: "11:00", close: "19:00" },
-    lastConfirmedAt: "2025-08-03", isSample: true,
+    lastConfirmedAt: "2025-08-03",
     rating: { avg: 4.5, count: 27 }, // 365일 넘음 → 목록·지도에서 내림
   },
   {
@@ -184,7 +178,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 5500, priceCheckedAt: "2026-10-14",
     menu: [{ name: "치즈떡볶이", price: 5500 }, { name: "참치김밥", price: 4000 }],
     hours: { days: allWeek, open: "11:00", close: "23:00" },
-    lastConfirmedAt: "2026-10-21", isSample: true,
+    lastConfirmedAt: "2026-10-21",
     rating: { avg: 3.7, count: 3 },
   },
   {
@@ -198,7 +192,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 6000, priceCheckedAt: "2026-09-18",
     menu: [{ name: "로제 즉석떡볶이 (1인)", price: 6000 }, { name: "볶음밥", price: 2500 }],
     hours: { days: allWeek, open: "11:00", close: "21:00" },
-    lastConfirmedAt: "2026-09-18", isSample: true,
+    lastConfirmedAt: "2026-09-18",
     rating: { avg: 4.1, count: 11 },
   },
   {
@@ -212,7 +206,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 4500, priceCheckedAt: "2026-10-03",
     menu: [{ name: "떡볶이", price: 4500 }, { name: "야채김밥", price: 3500 }],
     hours: { days: noSun, open: "08:00", close: "20:00" },
-    lastConfirmedAt: "2026-10-03", isSample: true,
+    lastConfirmedAt: "2026-10-03",
     rating: { avg: 4.7, count: 36 },
   },
   {
@@ -226,7 +220,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 3500, priceCheckedAt: "2026-02-20",
     menu: [{ name: "떡볶이", price: 3500 }, { name: "순대", price: 3500 }],
     hours: { days: allWeek, open: "16:00", close: "01:00" },
-    lastConfirmedAt: "2026-02-20", isSample: true,
+    lastConfirmedAt: "2026-02-20",
     rating: { avg: 3.9, count: 6 }, // 180일 넘음 → 흐린 도장
   },
   {
@@ -240,7 +234,7 @@ export const SAMPLE_STORES: Store[] = [
     price: 5000, priceCheckedAt: "2026-10-10",
     menu: [{ name: "누들 국물떡볶이", price: 5000 }, { name: "어묵탕", price: 9000 }],
     hours: { days: [2, 3, 4, 5, 6], open: "18:00", close: "02:00" },
-    lastConfirmedAt: "2026-10-10", isSample: true,
+    lastConfirmedAt: "2026-10-10",
     rating: { avg: 4.0, count: 2 },
   },
 ];

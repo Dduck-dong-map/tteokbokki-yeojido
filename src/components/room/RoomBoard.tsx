@@ -12,7 +12,6 @@ export default function RoomBoard({ posts, storeNames, nowIso }: { posts: Post[]
   const [cat, setCat] = useState<BoardCatFilter>("all");
   const now = new Date(nowIso);
   const shown = cat === "all" ? posts : posts.filter((p) => p.cat === cat);
-  const sample = posts.some((p) => p.isSample);
 
-  return <RoomBoardView posts={shown} cat={cat} storeNames={storeNames} now={now} sample={sample} onCatChange={setCat} />;
+  return <RoomBoardView posts={shown} cat={cat} storeNames={storeNames} now={now} onCatChange={setCat} />;
 }

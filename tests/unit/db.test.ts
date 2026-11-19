@@ -4,6 +4,8 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NewStoreInput } from "@/lib/wiki";
 import { DAILY_LIMIT, DAILY_LIMIT_PER_IP, VERIFY_YES, isPending } from "@/lib/wiki";
+import { SAMPLE_STORES } from "../fixtures/sample-stores";
+import { seedDataDir } from "../fixtures/seed";
 
 // 저장소 규칙 (lib/data/db.ts) — 파일 저장소 모드.
 // db.ts 는 DATA_DIR 과 DATABASE_URL 을 모듈이 처음 읽힐 때 고정하므로,
@@ -34,6 +36,7 @@ const input = (p: Partial<NewStoreInput> = {}): NewStoreInput => ({
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-db-test-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = ""; // 빈 문자열 → PG 꺼짐 (파일 저장소)
   delete (globalThis as { __ddyQueue?: unknown }).__ddyQueue; // 쓰기 줄은 전역이라 테스트마다 비운다
   vi.resetModules();
@@ -45,18 +48,20 @@ afterEach(() => {
 });
 
 describe("격리", () => {
-  it("DATA_DIR 이 임시 폴더를 가리키고, 첫 쓰기 뒤 db.json 이 거기 생긴다", async () => {
+  it("DATA_DIR 이 임시 폴더를 가리키고, 파일이 없으면 빈 저장소로 시작해 첫 쓰기 뒤 db.json 이 거기 생긴다", async () => {
     expect(db.DATA_DIR).toBe(dir);
+    rmSync(path.join(dir, "db.json"));
+    expect(await db.readStores()).toEqual([]);
+    expect(await db.readPosts()).toEqual([]);
     expect(existsSync(path.join(dir, "db.json"))).toBe(false);
     const res = await db.addStore(input(), who("1"));
     expect(res.ok).toBe(true);
     expect(existsSync(path.join(dir, "db.json"))).toBe(true);
+    expect(await db.readStores()).toHaveLength(1);
   });
 
-  it("예시 데이터가 시드된다", async () => {
-    const stores = await db.readStores();
-    expect(stores.length).toBeGreaterThan(0);
-    expect(stores.every((s) => s.isSample)).toBe(true);
+  it("시험 자료로 채운 저장소를 읽는다", async () => {
+    expect(await db.readStores()).toHaveLength(SAMPLE_STORES.length);
   });
 });
 
@@ -233,37 +238,5 @@ describe("recordGo — 길찾기 누름 (W1-4)", () => {
     const res = await db.recordGo("no-such-store", "naver", who("1"));
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.status).toBe(404);
-  });
-});
-
-describe("예시 숨기기 — NEXT_PUBLIC_SAMPLE_DATA=off (W1-1 · W1-2)", () => {
-  beforeEach(() => {
-    process.env.NEXT_PUBLIC_SAMPLE_DATA = "off";
-    vi.resetModules();
-  });
-  afterEach(() => {
-    delete process.env.NEXT_PUBLIC_SAMPLE_DATA;
-  });
-
-  it("화면 읽기에서 예시 가게·글·리스트가 빠지고, 예시 표시가 꺼진다", async () => {
-    const data = await import("@/lib/data");
-    const raw = await import("@/lib/data/db");
-    const [sample] = await raw.readStores();
-    expect(sample.isSample).toBe(true); // 지우지는 않는다
-    expect(data.USING_SAMPLE_DATA).toBe(false);
-    expect(await data.getStores()).toHaveLength(0);
-    expect(await data.getStore(sample.id)).toBeUndefined();
-    expect(await data.getPosts()).toHaveLength(0);
-    expect(await data.getPublicLists()).toHaveLength(0);
-    expect(await data.getRecentReportCount()).toBe(0);
-  });
-
-  it("숨긴 예시 가게 옆에 같은 이름으로 올려도 막지 않는다", async () => {
-    const raw = await import("@/lib/data/db");
-    const [sample] = await raw.readStores();
-    const res = await raw.addStore(input({ name: sample.name, lat: sample.lat + 0.0003, lng: sample.lng }), who("1"));
-    expect(res.ok).toBe(true);
-    const data = await import("@/lib/data");
-    expect((await data.getStores()).map((s) => s.name)).toEqual([sample.name]);
   });
 });

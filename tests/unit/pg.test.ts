@@ -4,12 +4,12 @@ import postgres from "postgres";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { NewStoreInput } from "@/lib/wiki";
 
-// Postgres 모드 저장 흐름 · 예시 넣기 · 잠금(RLS) (lib/data/pg.ts, 기술 스택 9절 #4 · #8).
-// DATABASE_URL 이 있을 때만 돈다 (CI 의 Postgres 서비스 · 로컬 `pnpm db:up`). 없으면 전부 건너뛴다.
+// Postgres 모드 저장 흐름 · 빈 DB · 잠금(RLS) (lib/data/pg.ts, 기술 스택 9절 #4 · #8).
+// DATABASE_URL 이 있을 때만 돈다 (CI 의 Postgres 서비스 · 내 컴퓨터에 따로 띄운 Postgres + PostGIS). 없으면 전부 건너뛴다.
 //
 // 안전: DATABASE_URL 이 가리키는 DB 의 표는 건드리지 않는다. 그 서버에 시험용 DB(ddy_test_…)를 새로 만들어
 // db/init/*.sql 을 차례로 돌리고, 시험이 끝나면 지운다. 그래서 그 계정에 DB 를 만들 권한(CREATEDB)이 있어야 한다
-// (도커 · CI 의 계정은 주인이라 된다). Supabase 같은 바깥 DB 주소로는 돌리지 않는다.
+// (CI 의 계정은 주인이라 된다). Supabase 같은 바깥 DB 주소로는 돌리지 않는다.
 
 const BASE = process.env.DATABASE_URL || "";
 const INIT_DIR = path.join(process.cwd(), "db", "init");
@@ -42,12 +42,11 @@ async function closeApp() {
   delete g.__ddyPg;
 }
 
-// db.ts 를 그 DB 주소로 새로 읽는다 (PG · SEED_SAMPLES 는 모듈을 읽을 때 정해진다)
-async function openApp(url: string, seed = false): Promise<Db> {
+// db.ts 를 그 DB 주소로 새로 읽는다 (PG 는 모듈을 읽을 때 정해진다)
+async function openApp(url: string): Promise<Db> {
   await closeApp();
   delete g.__ddyQueue;
   vi.stubEnv("DATABASE_URL", url);
-  vi.stubEnv("SEED_SAMPLES", seed ? "1" : "");
   vi.resetModules();
   return import("@/lib/data/db");
 }
@@ -89,8 +88,8 @@ describe.skipIf(!BASE)("Postgres 모드 (DATABASE_URL)", () => {
     await admin.end({ timeout: 1 });
   });
 
-  describe("빈 DB 와 예시 데이터 (#4)", () => {
-    it("SEED_SAMPLES 가 없으면 빈 DB 를 열어도 예시를 넣지 않는다", async () => {
+  describe("빈 DB (#4)", () => {
+    it("빈 DB 를 열면 빈 저장소이고 아무것도 써 넣지 않는다", async () => {
       const { url, sql } = await freshDb();
       const db = await openApp(url);
       expect(await db.readStores()).toEqual([]);
@@ -99,43 +98,13 @@ describe.skipIf(!BASE)("Postgres 모드 (DATABASE_URL)", () => {
       const [{ n }] = await sql`select count(*)::int as n from stores`;
       expect(n).toBe(0);
 
-      // 첫 쓰기도 예시를 끌고 들어오지 않는다
+      // 첫 쓰기는 그 한 줄만 넣는다
       const res = await db.addStore(input(), who("1"));
       expect(res.ok).toBe(true);
-      const rows = await sql`select count(*)::int as n, count(*) filter (where is_sample)::int as samples from stores`;
-      expect(rows[0]).toEqual({ n: 1, samples: 0 });
+      const rows = await sql`select count(*)::int as n from stores`;
+      expect(rows[0]).toEqual({ n: 1 });
       const [{ posts }] = await sql`select count(*)::int as posts from posts`;
       expect(posts).toBe(0);
-    });
-
-    it("SEED_SAMPLES=1 이면 처음 읽을 때 예시를 한 번만 넣는다 (로컬 도커 DB)", async () => {
-      const { url, sql } = await freshDb();
-      const db = await openApp(url, true);
-      const stores = await db.readStores();
-      expect(stores.length).toBeGreaterThan(0);
-      expect(stores.every((s) => s.isSample)).toBe(true);
-      const [{ n, samples }] = await sql`select count(*)::int as n, count(*) filter (where is_sample)::int as samples from stores`;
-      expect(n).toBe(stores.length);
-      expect(samples).toBe(stores.length);
-
-      // 다시 열어도(새 연결) 더 넣지 않는다
-      const again = await openApp(url, true);
-      expect((await again.readStores()).length).toBe(stores.length);
-      const [{ n: n2 }] = await sql`select count(*)::int as n from stores`;
-      expect(n2).toBe(stores.length);
-    });
-
-    it("가게가 비어도 다른 표에 줄이 있으면 빈 DB 로 보지 않는다 (예시를 덮어 넣지 않는다)", async () => {
-      const { url, sql } = await freshDb();
-      const db = await openApp(url, true);
-      // 예시를 넣은 뒤 가게만 지운다 (글 · 리스트는 남음)
-      await db.readStores();
-      await sql`delete from stores`;
-      const reopened = await openApp(url, true);
-      expect(await reopened.readStores()).toEqual([]);
-      expect((await reopened.readPosts()).length).toBeGreaterThan(0);
-      const [{ n }] = await sql`select count(*)::int as n from stores`;
-      expect(n).toBe(0);
     });
   });
 
@@ -207,11 +176,14 @@ describe.skipIf(!BASE)("Postgres 모드 (DATABASE_URL)", () => {
 
     it("공개 키 역할(anon)은 표를 읽어도 0줄이고, 넣기는 거절된다 — Supabase 처럼 표 권한을 줘도", async () => {
       const { url, sql } = await freshDb();
-      // 예시를 넣어 표마다 줄을 만든다
-      const db = await openApp(url, true);
+      // 가게 · 글 · 리스트 · 길찾기 줄을 만든다
+      const db = await openApp(url);
+      const added = await db.addStore(input(), who("1"));
+      expect(added.ok).toBe(true);
       const stores = await db.readStores();
-      expect(stores.length).toBeGreaterThan(0);
+      expect(stores).toHaveLength(1);
       await db.recordGo(stores[0].id, "kakao", who("1"));
+      expect((await db.addPost({ cat: "free", title: "RLS 글", body: "본문" }, who("1"))).ok).toBe(true);
 
       // Supabase 의 anon 역할 흉내: 로그인 없는 역할 + 표 권한(Supabase 기본값처럼 모두 허용). 막는 것은 RLS 뿐이다
       const [{ exists }] = await admin`select exists(select 1 from pg_roles where rolname = 'anon') as exists`;

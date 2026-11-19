@@ -13,7 +13,7 @@ pnpm dev
 
 크롬에서 http://localhost:3000 을 연다. 폭 768 미만은 지도 + 아래 시트 + 아래 메뉴, 768~1279 는 왼쪽 패널 + 지도, 1280 이상은 목록 + 상세 + 지도다. 휴대폰 크기로 보려면 F12 → 휴대폰 아이콘.
 
-키나 계정이 없어도 돈다. 가게는 예시 데이터(가짜) 16곳이고, 등록·평가·글은 `.data/` 폴더 파일에 저장된다(지우면 예시로 다시 시작). 로컬 DB(도커 Postgres)에 저장하려면 [`db/README.md`](db/README.md) 대로 `pnpm db:up` 뒤 `.env.local` 에 `DATABASE_URL` 을 넣는다(빈 DB 에 예시를 넣으려면 `SEED_SAMPLES=1` 도). 배포처럼 빌드한 앱까지 도커로 띄우려면 `pnpm app:up` (같은 문서 「앱 서버」). 나중에 쓸 값은 [`.env.example`](.env.example) 에 적어 두었다.
+키나 계정이 없어도 돈다. 저장소는 빈 채로 시작하고(예시 데이터 없음), 등록·평가·글은 `.data/` 폴더 파일에 저장된다. DB(Supabase)에 저장하려면 [`db/README.md`](db/README.md) 대로 `.env.local` 에 `DATABASE_URL` 을 넣는다. 로컬 도커 DB · 도커 앱 서버는 11-19 에 지웠다. 나중에 쓸 값은 [`.env.example`](.env.example) 에 적어 두었다.
 
 | 주소 | 화면 | 비고 |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ pnpm dev
 | `/room` · `/room/write` · `/room/[id]` | 떡볶이방(게시판) — 자유 · 맛집 추천 · 같이 가요 | 2차(11-08). 가입 없이 닉네임으로 |
 | `/mine` | 내 맛지도 — 내 리스트 · 모두의 리스트 · 찜한 가게 · 내 등록 | 찜·내 등록은 이 기기(localStorage)에만 |
 | `/lists/[id]` | 맛집 리스트 하나 | 링크로만 공유한 리스트도 주소를 알면 연다 |
-| `/admin` | 운영 어드민 | 가게 관리(`/admin/stores`) · 후보 가져오기(`/admin/candidates`) · 운영 기록(`/admin/logs`)은 실제 저장소를 읽고 고친다. 홈 · 신고 · 요청 · 신선도 · 설정은 시안. `ADMIN_KEY` 가 있으면 `/admin/login` 으로 들어가고, 없으면 개발 서버의 127.0.0.1 · localhost 에서만 열린다(production 은 잠김). 기획: [`docs/기획/어드민기획_v1_2026-10-27.md`](docs/기획/어드민기획_v1_2026-10-27.md) |
+| `/admin` | 운영 어드민 | 가게 관리(`/admin/stores`) · 후보 가져오기(`/admin/candidates`) · 운영 기록(`/admin/logs`)셋이고 실제 저장소를 읽고 고친다(`/admin` 은 가게 관리로 넘긴다). `ADMIN_KEY` 가 있으면 `/admin/login` 으로 들어가고, 없으면 개발 서버의 127.0.0.1 · localhost 에서만 열린다(production 은 잠김). 기획: [`docs/기획/어드민기획_v1_2026-10-27.md`](docs/기획/어드민기획_v1_2026-10-27.md) |
 
 
 ## 구성
@@ -35,7 +35,7 @@ pnpm dev
 - 화면 구조(2026-11-09 리팩토링): 화면마다 **컨테이너**(`X.tsx`: 상태·데이터·라우터)와 **View**(`XView.tsx`: props 만 받아 그리는 정적 마크업)로 나뉜다. View 의 props 계약은 `src/components/<screen>/types.ts`. 공용 부품은 `src/components/ui/`(shadcn) · `brand/`(도장·별점·로고 등 우리 것) · `layout/`(헤더·아래 메뉴·격자)
 - 색: `src/app/globals.css` 의 shadcn 변수 한 벌(팔레트 T2 값 고정, 2026-11-10 결정 R2). 런타임 팔레트 전환 `?pal=`·글꼴 시험 `?logo=`·화면 스튜디오 연동은 제거했다. 팔레트 비교는 `docs/공유/design/index.html` 보드에서만 한다. `src/lib/theme.ts` 는 지도 색 계산(T2)만 남겼다
 - 태그 체계: `src/lib/taxonomy.ts` (기획안 7절, 화면·서버·DB 공통) · 규칙: `src/lib/wiki.ts`(등록·확인·숨김) · `src/lib/community.ts`(게시판·리스트 한도)
-- 데이터: 화면은 `src/lib/data/index.ts` 로만 읽고, 쓰기는 route handler(`src/app/api/*`) → `src/lib/request.ts`(출처 · JSON · 크기 · 기기 표시 검사) → `src/lib/data/db.ts`(규칙·단일 쓰기 경로) → `DATABASE_URL` 이 있으면 `pg.ts`(Postgres), 없으면 `.data/db.json`. 표 설계는 `db/init/*.sql`(표 13개, 모두 RLS 켬 · 허용 규칙 없음). 표가 바뀌면 `pnpm db:reset` 으로 새로 만든다
+- 데이터: 화면은 `src/lib/data/index.ts` 로만 읽고, 쓰기는 route handler(`src/app/api/*`) → `src/lib/request.ts`(출처 · JSON · 크기 · 기기 표시 검사) → `src/lib/data/db.ts`(규칙·단일 쓰기 경로) → `DATABASE_URL` 이 있으면 `pg.ts`(Postgres), 없으면 `.data/db.json`. 표 설계는 `db/init/*.sql`(표 13개, 모두 RLS 켬 · 허용 규칙 없음). 표가 바뀌면 `db/README.md` 「표가 바뀌면」을 따른다
 - 사진: `src/lib/data/photos.ts`. Supabase Storage 설정(`SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY`)이 있으면 비공개 버킷에 넣고 서버가 내려 주며, 없으면 서버 폴더(`.data/photos`)에 둔다. 주소는 어느 쪽이든 `/api/photos/<id>`
 - 같은 사람 판정: 기기 표시(`x-ddy-device`) + 접속 IP 해시. 기기 표시 없는 쓰기는 거절하고, 내리는 판정(달라요 · 신고)은 서로 다른 IP 3곳, 하루 한도는 한 사람 한도 + 같은 IP 상한이다
 - 시험: `pnpm test`(vitest: 규칙 함수 · 저장소 쓰기 규칙 · 쓰기 입구 검사 · 어드민 접근 · 사진 저장소. Postgres 시험 `pg.test.ts` 는 `DATABASE_URL` 이 있을 때만) · `pnpm e2e`(Playwright: 라우트 23개 + 저장 흐름 5 + 수용 기준 32, 폭 390·768·1280. 3101 포트에 파일 저장소 모드로 따로 띄우며 개발 DB 는 건드리지 않는다) · `pnpm typecheck` · `pnpm lint`
@@ -44,9 +44,8 @@ pnpm dev
 ## 알아 둘 것
 
 - MapLibre 6 은 지도 그리기 일꾼 파일을 따로 불러온다. `pnpm dev`·`pnpm build` 앞에서 `scripts/copy-maplibre-worker.mjs` 가 `public/maplibre/` 에 복사한다(깃 제외). `scripts/copy-share.mjs` 는 `docs/` 의 공유용 HTML 을 `public/share/` 로 복사한다.
-- 예시 데이터로 돌 때는 `robots` 가 검색엔진을 막는다(`src/lib/data/index.ts` 의 `USING_SAMPLE_DATA`).
 - Vercel 배포에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Supabase Storage 설정이 없으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다). Supabase 프로젝트와 버킷은 아직 없다.
-- Postgres 빈 DB 는 `SEED_SAMPLES=1` 일 때만 예시로 시작한다. 실제 가게는 어드민 「후보 가져오기」로 넣는다([`db/README.md`](db/README.md) 「가게 넣는 순서」).
+- 저장소는 빈 채로 시작한다. 실제 가게는 어드민 「후보 가져오기」로 넣는다([`db/README.md`](db/README.md) 「가게 넣는 순서」). 시험 자료(가게 16곳 · 글 · 리스트)는 `tests/fixtures/` 에 있고 시험만 쓴다.
 - `globals.css` 를 고쳐도 개발 서버가 옛 CSS 를 줄 때가 있다. 다시 켜도 그대로면 `.next` 를 지우고 켠다.
 - `AGENTS.md` 는 `next dev` 가 저절로 만드는 파일이다. 어드민 화면도 사용자 화면과 같은 스택(Tailwind · `ui/` 부품 · 디자인 토큰)으로 그린다. 전용 CSS 는 없고 공용 조각은 `src/components/admin/bits.tsx` · `controls.tsx` 다. 어드민 아이콘은 `lucide-react` 다(`src/components/admin/Icon.tsx`).
 

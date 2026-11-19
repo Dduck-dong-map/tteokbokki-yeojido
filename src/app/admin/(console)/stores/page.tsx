@@ -5,7 +5,7 @@ import { Empty, LinkButton, Locked, PageHeader, TableFrame } from "@/components/
 import { Icon } from "@/components/admin/Icon";
 import { adminAccess } from "@/lib/admin/access";
 import { adminReadStores } from "@/lib/data/admin";
-import { REGIONS } from "@/lib/data/sample-stores";
+import { REGIONS } from "@/lib/regions";
 
 export const metadata = { title: "가게 관리" };
 

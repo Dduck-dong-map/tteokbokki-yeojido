@@ -5,6 +5,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DAILY_COMMENTS, DAILY_COMMENTS_PER_IP, DAILY_LISTS, DAILY_LISTS_PER_IP, DAILY_POSTS, DAILY_POSTS_PER_IP } from "@/lib/community";
 import type { NewStoreInput } from "@/lib/wiki";
 import { DAILY_LIMIT, DAILY_LIMIT_PER_IP, DAILY_PHOTOS, DAILY_PHOTOS_PER_IP, HIDE_AT, VERIFY_YES, isPending } from "@/lib/wiki";
+import { SAMPLE_POSTS } from "../fixtures/sample-community";
+import { SAMPLE_STORES } from "../fixtures/sample-stores";
+import { seedDataDir } from "../fixtures/seed";
 
 // 같은 사람 판정 · 도배 방지 (11-18 결정, lib/data/db.ts · lib/request.ts).
 //  - 내리는 판정(달라요 · 가게 신고 · 후기 · 글 · 댓글 신고)은 서로 다른 접속 위치(IP) HIDE_AT 곳이 모여야 한다
@@ -57,6 +60,7 @@ async function reload() {
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-same-person-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
   await reload();
 });
@@ -294,8 +298,8 @@ describe("기기 표시(x-ddy-device)가 없는 쓰기는 거절", () => {
     const photo = new Request("http://127.0.0.1:3101/api/photos", { method: "POST", headers: { "content-type": "image/jpeg" }, body: new Uint8Array([0xff, 0xd8, 0xff, 0xe0]) });
     expect((await photos.POST(photo)).status).toBe(400);
     // 아무것도 저장되지 않았다
-    expect((await db.readStores()).every((s) => s.isSample)).toBe(true);
-    expect((await db.readPosts()).every((p) => p.isSample)).toBe(true);
+    expect(await db.readStores()).toHaveLength(SAMPLE_STORES.length);
+    expect(await db.readPosts()).toHaveLength(SAMPLE_POSTS.length);
   });
 });
 

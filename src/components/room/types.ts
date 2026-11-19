@@ -16,7 +16,6 @@ export type RoomBoardViewProps = {
   cat: BoardCatFilter;
   storeNames: Record<string, string>;
   now: Date;
-  sample: boolean;
   onCatChange: (cat: BoardCatFilter) => void;
 };
 

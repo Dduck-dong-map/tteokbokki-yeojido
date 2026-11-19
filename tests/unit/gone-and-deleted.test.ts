@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DAILY_COMMENTS, DAILY_COMMENTS_PER_IP, DAILY_LISTS, DAILY_LISTS_PER_IP, DAILY_POSTS, DAILY_POSTS_PER_IP } from "@/lib/community";
 import type { NewStoreInput } from "@/lib/wiki";
 import { GONE_REASON_FIELD, HIDE_AT, goneNotice } from "@/lib/wiki";
+import { seedDataDir } from "../fixtures/seed";
 
 // 11-19 PRD 검증에서 나온 버그 고침 확인 (lib/data/db.ts · lib/wiki.ts).
 //  ① 숨김 안내의 까닭은 내린 판정과 같은 기준(되살린 뒤 서로 다른 접속 위치 수)을 따른다 — 숨김 줄에 남긴 「내린 까닭」으로 가른다
@@ -46,6 +47,7 @@ const notice = async (id: string) => goneNotice((await db.readStore(id))!, await
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-gone-deleted-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
   delete (globalThis as { __ddyQueue?: unknown }).__ddyQueue;
   vi.resetModules();

@@ -3,10 +3,9 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import StoreList, { visibleStores } from "@/components/StoreList";
-import { SampleRibbon } from "@/components/brand";
 import { BottomNav } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
-import { USING_SAMPLE_DATA, getRegions, getStores } from "@/lib/data";
+import { getRegions, getStores } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "동네별 떡볶이 목록" };
@@ -55,12 +54,6 @@ async function Loader() {
           ))}
         </nav>
       </header>
-
-      {USING_SAMPLE_DATA && (
-        <div className="flex justify-center pt-3">
-          <SampleRibbon />
-        </div>
-      )}
 
       <h2 className="px-4 pt-4 font-sans text-caption font-semibold text-muted-foreground/70 md:px-0 md:pt-1 md:pb-3">최근 확인된 가게부터</h2>
       <main className="flex-1">

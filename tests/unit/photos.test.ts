@@ -2,6 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { seedDataDir } from "../fixtures/seed";
 
 // 사진 저장소 (lib/data/photos.ts) — Supabase Storage 설정이 있을 때 · 없을 때 · Vercel 에서 없을 때.
 // db.ts 가 DATA_DIR 을 처음 읽힐 때 고정하므로 db.test.ts 와 같이 env 를 먼저 바꾸고 새로 읽는다.
@@ -31,6 +32,7 @@ beforeEach(async () => {
   saved = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-photo-test-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
   for (const k of ["VERCEL", "HASH_SALT", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_PHOTO_BUCKET"] as const) delete process.env[k];
   await load();

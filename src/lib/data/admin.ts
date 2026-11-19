@@ -4,8 +4,8 @@ import { DAY_NAMES } from "../freshness";
 import { GRADES, MAX_TASTES, RICE_CAKES, SHOP_TYPES, SIDES, SPICE_LEVELS, STYLES, TASTES, USAGES } from "../taxonomy";
 import type { Change, Fail, HistoryItem, HistoryKind, Hours, MenuItem, Store, StoreStatus } from "../types";
 import { GU_SLUGS } from "../wiki";
-import { REGIONS } from "./sample-stores";
-import { type Db, hash, isoDay, load, mutate, stamp } from "./db";
+import { REGIONS } from "../regions";
+import { type Db, hash, isoDay, load, mutate, readLogs, stamp } from "./db";
 
 // 운영 어드민의 가게 관리 (11-15). 화면 = /admin/stores · /admin/candidates · /admin/logs, 부르는 곳 = app/admin/actions.ts.
 // 이용자 쓰기 규칙(db.ts: 하루 한도·중복 막기·「확인 중」)은 운영자에게 걸지 않는다. 대신 모든 변경은 이력(store_logs)에 남긴다.
@@ -160,12 +160,10 @@ export const adminReadStore = async (id: string) => (await load()).stores.find((
 
 export type AdminLog = HistoryItem & { storeId: string; storeName: string };
 export async function adminReadLogs(opts: { storeId?: string; limit?: number } = {}): Promise<AdminLog[]> {
-  const db = await load();
+  // 이력은 전체 읽기에 최근 것만 실리므로(pg.ts window) 조건을 걸어 따로 읽는다 (db.ts readLogs)
+  const [db, logs] = await Promise.all([load(), readLogs({ storeId: opts.storeId, limit: opts.limit ?? 300 })]);
   const names = new Map(db.stores.map((s) => [s.id, s.name]));
-  return db.logs
-    .filter((l) => !opts.storeId || l.storeId === opts.storeId)
-    .sort((a, b) => b.at.localeCompare(a.at))
-    .slice(0, opts.limit ?? 300)
+  return logs
     .map(({ id, at, who, kind, changes, storeId }) => ({ id, at, who, kind, changes, storeId, storeName: names.get(storeId) ?? storeId }));
 }
 

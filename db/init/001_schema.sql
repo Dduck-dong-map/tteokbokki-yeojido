@@ -1,15 +1,14 @@
--- 떡볶여지도 로컬 DB (도커, 11-08) — 지금 앱 데이터(web/src/lib/data/db.ts)를 그대로 담는 표.
--- 도커 컨테이너가 처음 뜰 때 이 파일이 자동으로 돈다 (docker-entrypoint-initdb.d).
--- 표를 바꾸면 이 파일을 직접 고치고 pnpm db:reset 으로 DB 를 새로 만든다 (이미 쓰던 DB 를 고치는 절차는 두지 않는다 · db/README.md).
--- 이름은 앱 값의 이름을 snake_case 로 옮긴 것 (lastConfirmedAt → last_confirmed_at). 앱 쪽 연결: web/src/lib/data/pg.ts
+-- 떡볶여지도 DB 표 (11-08) — 앱 데이터(src/lib/data/db.ts)를 그대로 담는다.
+-- 새 DB(Supabase SQL Editor · CI 의 Postgres)에 001 → 004 를 차례로 돌린다. 로컬 도커 DB 는 11-19 에 지웠다.
+-- 표를 바꾸는 방법은 db/README.md 「표가 바뀌면」.
+-- 이름은 앱 값의 이름을 snake_case 로 옮긴 것 (lastConfirmedAt → last_confirmed_at). 앱 쪽 연결: src/lib/data/pg.ts
 -- 로그인이 없어서 「누가」는 기기 표시·접속 위치의 해시(device · ip)로만 남긴다. 화면에는 내보내지 않는다.
--- 나중에 Supabase 로 옮길 때도 이 표를 그대로 쓰고, 읽기 권한(RLS)만 더한다.
 
 -- ───────── 가게 ─────────
 create table stores (
   id text primary key,                 -- 주소에 쓰는 짧은 이름 (/store/[id])
   name text not null,
-  grade text not null,                 -- specialist · bunsik · menu
+  grade text not null check (grade in ('specialist', 'bunsik', 'menu')),
   lat double precision not null,
   lng double precision not null,
   address text not null,
@@ -29,12 +28,10 @@ create table stores (
   hours jsonb,                         -- {days, open, close}
   last_confirmed_at date not null,
   rating jsonb,                        -- {avg, count}
-  is_sample boolean,                   -- 예시 데이터
-  status text,                         -- 없으면 active · hidden · closed
+  status text check (status in ('active', 'hidden', 'closed')),  -- 없으면 active
   created_at date,                     -- 이용자가 등록한 가게 → 일주일 「확인 중」
   "by" text,                           -- 처음 등록한 사람 닉네임
   verify jsonb,                        -- {yes, no}
-  spice_votes jsonb,
   photos jsonb,                        -- 사진 id 목록 (사진 파일은 web/.data/photos)
   memo text,                           -- 소개글
   intro_by text,
@@ -47,7 +44,7 @@ create table store_logs (
   store_id text not null references stores(id) on delete cascade,
   at timestamptz not null,
   who text not null,
-  kind text not null,
+  kind text not null check (kind in ('new', 'edit', 'still', 'hidden', 'closed', 'verified')),
   changes jsonb,
   device text not null,
   ip text not null
@@ -61,7 +58,6 @@ create table reviews (
   at timestamptz not null,
   who text not null,
   stars smallint,
-  spice smallint,                      -- 예전 맵기 표 (새 평가에는 없음)
   text text,
   hidden boolean,
   flags jsonb,                         -- 신고한 기기들
@@ -77,7 +73,7 @@ create table store_votes (
   at timestamptz not null,
   device text not null,
   ip text not null,
-  primary key (store_id, device, ip, at)
+  primary key (store_id, device, ip)   -- 한 사람(기기 + 접속 위치)은 가게마다 한 번 (11-19: 열쇠에서 at 을 뺐다)
 );
 
 -- 가게 신고 (3명이면 내림)
@@ -87,7 +83,7 @@ create table store_flags (
   at timestamptz not null,
   device text not null,
   ip text not null,
-  primary key (store_id, device, ip, at)
+  primary key (store_id, device, ip)   -- 한 사람(기기 + 접속 위치)은 가게마다 한 번 (11-19: 열쇠에서 at 을 뺐다)
 );
 
 -- ───────── 떡볶이방 (게시판) ─────────
@@ -95,13 +91,12 @@ create table posts (
   id text primary key,
   at timestamptz not null,
   who text not null,
-  cat text not null,                   -- free · recommend · together
+  cat text not null check (cat in ('free', 'recommend', 'together')),
   title text not null,
   body text not null,
   store_id text references stores(id) on delete set null,
   comments integer not null default 0,
   likes integer not null default 0,
-  is_sample boolean,
   hidden boolean,
   flags jsonb,
   device text not null,
@@ -140,9 +135,8 @@ create table place_lists (
   who text not null,
   created_at timestamptz not null,
   updated_at timestamptz not null,
-  visibility text not null,             -- public · link
+  visibility text not null check (visibility in ('public', 'link')),
   likes integer not null default 0,
-  is_sample boolean,
   device text not null,                 -- 만든 기기 (고치기는 이 기기만)
   ip text not null
 );
@@ -172,7 +166,7 @@ create index photo_uploads_at_idx on photo_uploads (at);
 -- 하루 한도를 셀 때 남아 있는 줄만 세면 쓰고 지우기를 되풀이해 한도를 넘을 수 있다 → 지운 것을 한 줄씩 남겨 함께 센다 (src/lib/data/db.ts recentWrites).
 -- at = 처음 쓴 시각, device · ip = 쓴 사람. 최근 24시간 안에 쓴 것만 남기고 앱이 줄을 더할 때마다 오래된 줄을 지운다. 화면에는 쓰지 않는다.
 create table deleted_writes (
-  kind text not null,                  -- post · comment · list
+  kind text not null check (kind in ('post', 'comment', 'list')),
   id text not null,                    -- 지운 글 · 댓글 · 리스트의 id
   at timestamptz not null,
   device text not null,

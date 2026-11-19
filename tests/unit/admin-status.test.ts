@@ -4,6 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NewStoreInput } from "@/lib/wiki";
 import { HIDE_AT, goneNotice } from "@/lib/wiki";
+import { seedDataDir } from "../fixtures/seed";
 
 // 운영자 되살리기 (lib/data/admin.ts adminSetStatus · F012). 신고·달라요로 내려간 가게를 되살린 뒤
 // 예전에 쌓인 수 때문에 신고 1건 · 달라요 1표로 곧바로 다시 내려가지 않아야 한다. 격리 방식은 admin.test.ts 와 같다.
@@ -34,6 +35,7 @@ const input = (): NewStoreInput => ({
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-admin-status-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = "";
   delete (globalThis as { __ddyQueue?: unknown }).__ddyQueue;
   vi.resetModules();

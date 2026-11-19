@@ -33,7 +33,6 @@ export type MinePageViewProps = {
   reports: MyReport[];
   me: LatLng | null;
   now: Date;
-  sample: boolean;
   creating: boolean;
   message: string | null;
   createForm: ListInfoFormViewProps; // creating 일 때

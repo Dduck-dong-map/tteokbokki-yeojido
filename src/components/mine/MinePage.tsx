@@ -19,7 +19,7 @@ import type { ListSort, MineTab, SavedRow } from "./types";
 // 마크업은 MinePageView 가 맡는다(계약: ./types.ts). 서버 페이지(mine/page.tsx)는 default export 와 MineTab 을 그대로 쓴다.
 export type { MineTab } from "./types";
 
-export default function MinePage({ stores, lists, sample, nowIso, initialTab }: { stores: Store[]; lists: PlaceList[]; sample: boolean; nowIso: string; initialTab: MineTab }) {
+export default function MinePage({ stores, lists, nowIso, initialTab }: { stores: Store[]; lists: PlaceList[]; nowIso: string; initialTab: MineTab }) {
   const router = useRouter();
   const mine = useMine();
   const owned = useOwned();
@@ -78,7 +78,6 @@ export default function MinePage({ stores, lists, sample, nowIso, initialTab }: 
       reports={mine.reports}
       me={me}
       now={now}
-      sample={sample}
       creating={creating}
       message={msg}
       createForm={createForm}
