@@ -1,0 +1,85 @@
+# 자동 시험 (기술 스택 9절 #8). 깃 푸시와 PR 마다 돈다.
+#  - check: 타입 · 린트 · 단위 시험 (파일 저장소 모드, DATABASE_URL 없음 → PG 시험은 건너뜀)
+#  - postgres: Postgres 16 + PostGIS 3.4 서비스(로컬 도커와 같은 이미지)에 db/init/*.sql 이 오류 없이 도는지 보고,
+#              DATABASE_URL 을 붙여 PG 모드 저장 흐름 · 예시 넣기 · 잠금(RLS) 시험(tests/unit/pg.test.ts)까지 돈다
+# E2E(Playwright)는 아직 넣지 않았다 (브라우저 설치 · 빌드 시간). 슬랙 알림은 slack-notify.yml 이 따로 한다.
+name: 시험
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: 타입 · 린트 · 단위 (파일 모드)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      # pnpm 판은 package.json 의 packageManager(pnpm@10.33.0)를 따른다
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: 타입 검사
+        run: pnpm typecheck
+      - name: 린트
+        run: pnpm lint
+      - name: 단위 시험 (파일 모드)
+        run: pnpm test
+        env:
+          DATABASE_URL: ""
+
+  postgres:
+    name: 단위 · 저장 흐름 (Postgres 모드)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      db:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: ddy
+          POSTGRES_PASSWORD: ddy_local
+          POSTGRES_DB: tteok
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ddy -d tteok"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 30
+    env:
+      DATABASE_URL: postgres://ddy:ddy_local@127.0.0.1:5432/tteok
+      PGPASSWORD: ddy_local
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # 서비스 이미지는 처음 뜰 때 tteok 의 public 에 PostGIS 를 깔아 둔다. 우리 SQL 은 PostGIS 를 extensions 칸에 까므로
+      # (Supabase 와 같게) 빈 DB(template0)를 새로 만들어 차례로 돌린다 — Supabase SQL Editor 에 붙여 넣는 순서와 같다
+      - name: db/init/*.sql 적용 확인
+        run: |
+          psql -h 127.0.0.1 -U ddy -d tteok -v ON_ERROR_STOP=1 -c "create database tteok_init template template0"
+          for f in $(ls db/init/*.sql | sort); do
+            echo "== $f"
+            psql -h 127.0.0.1 -U ddy -d tteok_init -v ON_ERROR_STOP=1 -q -f "$f"
+          done
+          psql -h 127.0.0.1 -U ddy -d tteok_init -Atc "select count(*) from pg_tables where schemaname = 'public'"
+      # pg.test.ts 는 이 서버에 시험용 DB 를 새로 만들어 db/init/*.sql 을 돌리고 끝나면 지운다.
+      # 다른 단위 시험은 저마다 DATABASE_URL 을 비우고 파일 모드로 돈다
+      - name: 단위 시험 (Postgres 모드 포함)
+        run: pnpm test

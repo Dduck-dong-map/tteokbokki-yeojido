@@ -235,6 +235,9 @@ export function adminSetStatus(id: string, status: StoreStatus, reason?: string)
     const now = s.status ?? "active";
     if (now === status) return fail(`이미 「${STATUS_TEXT[status]}」 상태예요`);
     s.status = status;
+    // 되살리면 쌓였던 「달라요」를 0 으로 돌린다 → 되살린 뒤 달라요 1표로 곧바로 다시 내려가지 않는다 (F012 · F017).
+    // 한 사람 한 표 기록(votes)은 그대로 두어 같은 사람이 다시 누르지는 못한다. 신고는 flagStore 가 되살린 뒤 것만 센다 — 아래 「→ 보임」 이력 줄이 그 기준이다.
+    if (status === "active" && s.verify?.no) s.verify = { ...s.verify, no: 0 };
     const changes = [{ field: "상태", from: STATUS_TEXT[now], to: STATUS_TEXT[status] + (reason?.trim() ? ` (${reason.trim().slice(0, 40)})` : "") }];
     addLog(db, id, status === "active" ? "edit" : status, changes);
     return { ok: true };

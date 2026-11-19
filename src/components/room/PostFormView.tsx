@@ -1,17 +1,19 @@
+import { MapPin } from "lucide-react";
 import StorePicker from "@/components/lists/StorePicker";
 import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { BOARD_CATS, MAX_POST_BODY, MAX_POST_TITLE, type BoardCat } from "@/lib/community";
 import { cn } from "@/lib/utils";
 import type { PostFormViewProps } from "./types";
 
-const LABEL = "text-[13px] font-semibold text-muted-foreground";
+const LABEL = "text-caption font-semibold text-muted-foreground";
 
 // 떡볶이방 글쓰기: 말머리 → 제목 → 내용 → 가게 붙이기(선택) → 「올리기」.
 // 값·오류·보내는 중과 모든 핸들러는 컨테이너(PostForm)가 넘긴다. checkPost·send·router·refreshOwned 는 여기 없다.
 // StorePicker 는 lists/ 의 컨테이너를 그대로 쓴다(⑧에서 안쪽만 바뀜).
-// 입력 글자는 16px — 더 작으면 아이폰 사파리가 화면을 저절로 확대한다 (REQ-W09).
+// 입력칸은 디자인 시스템 칸(variant="field" · 18px) — 16px 보다 작으면 아이폰 사파리가 화면을 저절로 확대한다 (REQ-W09).
 export default function PostFormView({
   cat, title, body, store, stores, nick, busy, error,
   onCatChange, onTitleChange, onBodyChange, onStoreChange, onSubmit,
@@ -26,24 +28,13 @@ export default function PostFormView({
     >
       <fieldset className="flex flex-col gap-2">
         <legend className={LABEL}>말머리</legend>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {(Object.entries(BOARD_CATS) as [BoardCat, string][]).map(([k, v]) => {
-            const on = cat === k;
-            return (
-              <button
-                key={k}
-                type="button"
-                aria-pressed={on}
-                onClick={() => onCatChange(k)}
-                className={cn(
-                  "hit h-9 rounded-full border px-3.5 text-[13px] whitespace-nowrap",
-                  on ? "border-primary bg-primary font-semibold text-primary-foreground" : "border-input bg-card text-muted-foreground hover:bg-muted",
-                )}
-              >
-                {v}
-              </button>
-            );
-          })}
+        <div className="mt-2 flex flex-wrap gap-2">
+          {/* 하나만 고른다: 누를 때마다 그 말머리를 알린다(켜진 것을 다시 눌러도 그대로) */}
+          {(Object.entries(BOARD_CATS) as [BoardCat, string][]).map(([k, v]) => (
+            <Chip key={k} shape="pill" selected={cat === k} onClick={() => onCatChange(k)}>
+              {v}
+            </Chip>
+          ))}
         </div>
       </fieldset>
 
@@ -57,7 +48,7 @@ export default function PostFormView({
           onChange={(e) => onTitleChange(e.target.value)}
           maxLength={MAX_POST_TITLE}
           placeholder="예: 망원 국물떡볶이 오늘 줄 없어요"
-          className={cn("h-11 rounded-xl bg-card px-3 text-[16px] text-foreground md:text-[16px]")}
+          variant="field"
         />
       </div>
 
@@ -76,34 +67,35 @@ export default function PostFormView({
           maxLength={MAX_POST_BODY}
           rows={8}
           placeholder="떡볶이 이야기를 자유롭게 써 주세요. 남을 깎아내리는 글은 신고되면 가려져요."
-          className={cn("field-sizing-fixed rounded-xl bg-card px-3 py-2.5 text-[16px] leading-relaxed text-foreground md:text-[16px]")}
+          variant="field"
+          className="field-sizing-fixed"
         />
       </div>
 
       <div className="flex flex-col gap-1.5">
         <span className={LABEL}>가게 붙이기 (선택)</span>
         {store ? (
-          <p className="flex h-11 items-center gap-2 rounded-xl border border-input bg-secondary px-3 text-[14px]">
-            <span aria-hidden="true">📍</span>
+          <p className="flex min-h-11 items-center gap-2 rounded-xl border border-input bg-secondary pr-1 pl-3 text-caption">
+            <MapPin className="size-5 shrink-0 text-muted-foreground" strokeWidth={2} aria-hidden="true" />
             <span className="min-w-0 flex-1 truncate font-semibold text-foreground">{store.name}</span>
-            <button type="button" onClick={() => onStoreChange(null)} className="hit text-[13px] text-muted-foreground/70 underline underline-offset-2">
+            <Button type="button" variant="text" size="compact" onClick={() => onStoreChange(null)}>
               빼기
-            </button>
+            </Button>
           </p>
         ) : (
           <StorePicker stores={stores} onPick={onStoreChange} />
         )}
       </div>
 
-      <p className="text-[12px] text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
+      <p className="text-body-small text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
         닉네임 <b className="font-semibold text-muted-foreground">{nick || "…"}</b> 으로 올라가요 · 이 기기에서 쓴 글은 나중에 지울 수 있어요
       </p>
       {error && (
-        <p role="alert" className="rounded-xl bg-spicybg px-3 py-2 text-[13px] text-spicytext">
+        <p role="alert" className="rounded-xl bg-spicybg px-3 py-2 text-body-small text-spicytext">
           {error}
         </p>
       )}
-      <Button type="submit" disabled={busy} className={cn("h-12 rounded-xl text-[15px] font-bold")}>
+      <Button type="submit" variant="filled" size="xl" disabled={busy}>
         {busy ? "올리는 중…" : "올리기"}
       </Button>
     </form>

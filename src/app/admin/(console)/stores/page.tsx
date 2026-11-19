@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { AdminOnly } from "@/components/admin/AdminGate";
 import StoreTable from "@/components/admin/StoreTable";
 import { Locked, PageHeader } from "@/components/admin/bits";
 import { Icon } from "@/components/admin/Icon";
@@ -14,12 +15,15 @@ export default function StoresPage() {
   return (
     <>
       <PageHeader id="M-AD-03" title="가게 관리" desc="가게는 지우지 않아요. 숨기거나 폐업 처리하고, 모든 변경은 이력에 남아요.">
-        <Link href="/admin/candidates" className="btn btn--default">
-          <Icon name="download" /> 자료 넣기
-        </Link>
-        <Link href="/admin/stores/new" className="btn btn--primary">
-          <Icon name="plus" /> 직접 등록
-        </Link>
+        {/* 누를 수 있는 것은 열쇠 검사 뒤에만 (잠겼으면 안 보인다) */}
+        <AdminOnly>
+          <Link href="/admin/candidates" className="btn btn--default">
+            <Icon name="download" /> 자료 넣기
+          </Link>
+          <Link href="/admin/stores/new" className="btn btn--primary">
+            <Icon name="plus" /> 직접 등록
+          </Link>
+        </AdminOnly>
       </PageHeader>
       <Suspense fallback={<div className="table-wrap"><div className="empty"><div className="empty__desc">가게를 불러오는 중…</div></div></div>}>
         <Stores />

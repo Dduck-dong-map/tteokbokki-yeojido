@@ -25,7 +25,7 @@ export default function FlipStamp({ n, size = 64, faded = false }: { n: Spice; s
         </div>
         <div className="flip-back flip-face flex flex-col items-center">
           <SpiceStamp n={n} size={size} faded={faded} pill={false} />
-          <span className="mt-[2px] text-[11px] leading-tight text-muted-foreground/70">{SPICE_LEVELS[n].label}</span>
+          <span className="mt-[2px] text-caption leading-none whitespace-nowrap text-muted-foreground/70">{SPICE_LEVELS[n].label}</span>
         </div>
       </div>
     </button>

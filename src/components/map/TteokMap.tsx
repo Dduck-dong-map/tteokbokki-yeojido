@@ -30,6 +30,12 @@ type Props = {
   showName?: boolean; // 도장 밑 글자를 가격 대신 가게 이름으로
 };
 
+// 초점(focus)으로 지도를 옮긴다: 가게 묶음이면 모두 보이게, 한 곳이면 그곳으로
+function moveTo(m: MlMap, focus: Focus) {
+  if ("bounds" in focus) m.fitBounds([[focus.bounds.w, focus.bounds.s], [focus.bounds.e, focus.bounds.n]], { padding: 48, maxZoom: 15, duration: 600 });
+  else m.easeTo({ center: [focus.lng, focus.lat], zoom: focus.zoom ?? Math.max(m.getZoom(), 15), duration: 600 });
+}
+
 // 첫 화면 중심: 가게가 가장 많은 구의 한가운데 (11-16 강남 + 마포 → 둘 사이 한강 위가 되지 않게). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
 const START: [number, number] = [126.928, 37.5555];
 function storesCenter(stores: Store[]): [number, number] {
@@ -77,6 +83,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   const [failed, setFailed] = useState(false); // 지도를 못 불러와도 주소·길찾기는 그대로 쓸 수 있다 (경고창#6)
   const initial = useRef({ interactive, showName });
   const mapRef = useRef<MlMap | null>(null);
+  const pendingFocus = useRef<Focus | null>(null); // 지도가 만들어지기 전에 온 초점
   const ready = useRef(false);
   const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange, onSettled });
   useEffect(() => {
@@ -153,6 +160,9 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       const mouse = initial.current.interactive && window.matchMedia("(hover: hover) and (min-width: 768px)").matches;
       if (mouse) m.addControl(new ml.NavigationControl({ showCompass: false }), "bottom-right");
       mapRef.current = m;
+      // 지도가 만들어지기 전에 온 초점(예: PC 에서 이미 허용한 내 위치가 지도 코드보다 먼저 옴)을 이제 적용한다
+      if (pendingFocus.current) moveTo(m, pendingFocus.current);
+      pendingFocus.current = null;
       if (process.env.NODE_ENV === "development" && initial.current.interactive) Object.assign(window, { __tteokMap: m }); // 개발 중 콘솔에서 지도 살펴보기
       provideStamps(m, t.map, t.css.surface);
 
@@ -287,9 +297,10 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
 
   useEffect(() => {
     const m = mapRef.current;
-    if (!focus || !m) return;
-    if ("bounds" in focus) m.fitBounds([[focus.bounds.w, focus.bounds.s], [focus.bounds.e, focus.bounds.n]], { padding: 48, maxZoom: 15, duration: 600 });
-    else m.easeTo({ center: [focus.lng, focus.lat], zoom: focus.zoom ?? Math.max(m.getZoom(), 15), duration: 600 });
+    if (!focus) return;
+    // 지도가 아직 없으면(maplibre 를 불러오는 중) 버리지 않고 기억해 두었다가 만든 뒤에 옮긴다
+    if (!m) pendingFocus.current = focus;
+    else moveTo(m, focus);
   }, [focus]);
 
   // maplibre 가 지도 상자에 position: relative 를 붙이므로, 바깥 상자로 자리를 잡는다
@@ -303,12 +314,12 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         <div ref={box} className="h-full w-full" aria-label="떡볶이 가게 지도" role="region" />
       </div>
       {failed && (
-        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-border bg-card px-3 py-2 text-center text-[13px] text-muted-foreground shadow-sm">
+        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-border bg-card px-3 py-2 text-center text-body-small text-muted-foreground shadow-sm">
           지도를 불러오지 못했어요. 주소와 길찾기는 그대로 쓸 수 있어요.
         </p>
       )}
       {realOn && interactive && (
-        <span className="pointer-events-none absolute top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-input bg-card px-3 py-1 text-[12px] text-muted-foreground shadow-sm">
+        <span className="pointer-events-none absolute top-11 left-1/2 z-10 max-w-[calc(100%-1rem)] -translate-x-1/2 truncate rounded-full border border-input bg-card px-3 py-1 text-caption text-muted-foreground shadow-sm">
           {realOn === "naver" ? "실제 지도 · 축소하면 그림 지도" : "실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도"}
         </span>
       )}

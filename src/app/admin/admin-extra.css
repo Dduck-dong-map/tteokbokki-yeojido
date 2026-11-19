@@ -1,28 +1,35 @@
 /* 떡볶여지도 어드민 전용 덧붙임. Admin Navy(admin-navy.css) 뒤에 붙는다.
-   규칙: 색은 브랜드 램프만 바꾸고, 새 부품은 여기 모은다. 모두 .admin-root 안에서만 듣는다. */
+   규칙: 새 부품은 여기 모은다. 모두 .admin-root 안에서만 듣는다.
+   색은 디자인 토큰(src/app/tokens.css)에 잇고 색 값을 직접 쓰지 않는다 (2026-11-18). */
 
-/* 브랜드 = 서비스의 쪽빛(#2D5B9A). 빨강은 서비스 도장·로고 몫이라 어드민 주 색으로 안 쓴다 */
+/* 주 색 = 디자인 시스템의 주 행동(옥빛). 예전에는 여기서 쪽빛 단계로 덮어썼다.
+   admin-navy.css 의 --brand-* 가 이미 같은 토큰을 가리키지만, 그 파일을 원본에서 다시 만들어도 색이 유지되게 여기에도 둔다.
+   빨강은 서비스 도장·로고 몫이라 어드민 주 색으로 안 쓴다 */
 .admin-root {
-  --brand-50: #eef3fa;
-  --brand-100: #dce6f4;
-  --brand-200: #b3c7e4;
-  --brand-400: #4a78b8;
-  --brand-500: #2d5b9a;
-  --brand-600: #244a7e;
-  --brand-700: #1b3862;
+  --brand-50: var(--background-brand);
+  --brand-100: var(--interactive-secondary-hover);
+  --brand-200: var(--border-focus);
+  --brand-400: var(--interactive-primary-hover);
+  --brand-500: var(--interactive-primary);
+  --brand-600: var(--interactive-primary-active);
+  --brand-700: var(--interactive-primary-active);
   min-height: 100dvh;
+}
+/* 뒤집힌 면(레일·헤더·브랜드 칸) 위의 포커스 고리는 뒤집힌 면용 행동색으로 — 보통 포커스색은 어두운 바탕에서 안 보인다 */
+.admin-root :is(.rail, .header, .brand) :focus-visible {
+  outline-color: var(--text-inverse-action);
 }
 /* 브랜드 칸의 작은 표시는 서비스 도장(빨강 네모 인장)으로 */
 .admin-root .brand__mark {
-  background: #c00000;
+  background: var(--brand-red);
   font-family: var(--font);
 }
 .admin-root .header__title b {
   font-weight: var(--fw-bold);
 }
 .admin-root .header .badge {
-  background: rgba(255, 255, 255, 0.12);
-  color: #e5e8ef;
+  background: color-mix(in srgb, var(--text-inverse) 12%, transparent);
+  color: var(--text-inverse);
 }
 .admin-root .menu-item__count {
   margin-left: auto;
@@ -190,11 +197,11 @@
   font-weight: 800;
   line-height: 1;
 }
-.admin-root .stamp--1 { background: #f2b78c; color: #3a1408; }
-.admin-root .stamp--2 { background: #e3814d; color: #2e0f05; }
-.admin-root .stamp--3 { background: #c8102e; color: #fff4e6; }
-.admin-root .stamp--4 { background: #8e0b1f; color: #fff4e6; }
-.admin-root .stamp--5 { background: #4a0710; color: #fff4e6; }
+.admin-root .stamp--1 { background: var(--spicy-1); color: var(--text-on-spicy-low); }
+.admin-root .stamp--2 { background: var(--spicy-2); color: var(--text-on-spicy-low); }
+.admin-root .stamp--3 { background: var(--spicy-3); color: var(--text-on-spicy-high); }
+.admin-root .stamp--4 { background: var(--spicy-4); color: var(--text-on-spicy-high); }
+.admin-root .stamp--5 { background: var(--spicy-5); color: var(--text-on-spicy-high); }
 
 /* 알림 토스트 */
 .admin-root .toast {
@@ -206,7 +213,7 @@
   padding: var(--sp-2) var(--sp-4);
   border-radius: var(--r-xl);
   background: var(--rail-bg);
-  color: #fff;
+  color: var(--text-inverse);
   box-shadow: var(--shadow-lg);
 }
 

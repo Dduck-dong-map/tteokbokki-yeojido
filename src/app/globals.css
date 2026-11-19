@@ -5,6 +5,8 @@
 @import "./tokens.css";
 
 @custom-variant dark (&:is(.dark *));
+/* 고대비 테마(<html data-theme="hc">)에서만 듣는 변형. 그림자가 없어지는 면에 hc:border 처럼 테두리를 준다 */
+@custom-variant hc (&:is([data-theme="hc"] *));
 
 /*
   색 체계 (2026-11-12): 디자인 토큰 2층 = src/app/tokens.css (docs/design-system/tokens.json 에서 생성, pnpm tokens). 규칙 문서 = docs/design-system/
@@ -65,6 +67,41 @@
   --color-spicytext: var(--spicytext);
   --color-stampbg: var(--stampbg);
   --color-loc: var(--loc);
+
+  /* 디자인 시스템 Semantic 토큰 가운데 위에 없던 것 (docs/design-system/README.md 2절). 값은 tokens.css 가 테마마다 바꾼다 */
+  /* 누르는 것의 hover · active 단계: 주 행동(옥빛) · 두 번째 행동 · 제보(갈색) · 투명 버튼·칸·안 고른 칩 */
+  --color-primary-hover: var(--interactive-primary-hover);
+  --color-primary-active: var(--interactive-primary-active);
+  --color-secondary-hover: var(--interactive-secondary-hover);
+  --color-secondary-active: var(--interactive-secondary-active);
+  --color-report-hover: var(--interactive-accent-hover);
+  --color-report-active: var(--interactive-accent-active);
+  --color-ghost-hover: var(--interactive-ghost-hover);
+  --color-ghost-active: var(--interactive-ghost-active);
+  /* 쓸 수 없음: 바탕 · 글자 */
+  --color-disabled: var(--interactive-disabled);
+  --color-disabled-foreground: var(--text-disabled);
+  /* 뒤집힌 면(스낵바): 바탕 · 글자 · 행동 글자 */
+  --color-inverse: var(--background-inverse);
+  --color-inverse-foreground: var(--text-inverse);
+  --color-inverse-action: var(--text-inverse-action);
+  /* 오류 테두리 (border-invalid). 강한 테두리는 border-input, 포커스는 ring-ring · outline-ring 이 이미 잇는다 */
+  --color-invalid: var(--border-error);
+  /* 높낮이: shadow-elevation-1(검색창·카드) · 2(아래 막대) · 3(FAB·시트·스낵바). 고대비에서는 none */
+  --shadow-elevation-1: var(--elevation-1);
+  --shadow-elevation-2: var(--elevation-2);
+  --shadow-elevation-3: var(--elevation-3);
+  /* 모서리: rounded-control = radius-8(칩·입력칸·스낵바) · rounded-badge = radius-4(배지·태그).
+     radius-12(카드·시트·FAB)는 rounded-lg, radius-full(버튼·도장·탭 알약)은 rounded-full 이 이미 잇는다 */
+  --radius-control: var(--radius-8);
+  --radius-badge: var(--radius-4);
+  /* 치수: min-h-target-min · h-field · h-fab · h-navbar · size-icon-md 처럼 쓴다 */
+  --spacing-target-min: var(--target-min);
+  --spacing-field: var(--field-height);
+  --spacing-fab: var(--fab-size);
+  --spacing-navbar: var(--navbar-height);
+  --spacing-icon-md: var(--icon-md);
+  --spacing-icon-sm: var(--icon-sm);
 
   /* 글꼴 (11-13 수정판): 제목(h1~h3 · font-heading · font-serif) = 조선100년체(토큰 --font-family-base), 본문·작은 글자 = Pretendard.
      조선100년체는 굵기가 하나뿐이고 14px 아래에서 「전→컨」「누들→누둘」처럼 읽혀 본문에는 쓰지 않는다 (11-04 「제목만」 · 11-13 점검).
@@ -224,6 +261,25 @@ body {
     }
     .page-narrow {
       max-width: 688px;
+    }
+  }
+}
+
+/* 디자인 시스템의 누르는 영역 target-min(48px, 접근성 4절). .hit(44px, REQ-W10)과 같은 방식으로 터치 기기에서 보이지 않는 영역만 넓힌다.
+   모양은 그대로다. ui/ 의 Button 새 크기 · Chip · Snackbar 행동 단추가 쓴다 */
+@layer components {
+  @media (pointer: coarse) {
+    .hit-target {
+      position: relative;
+    }
+    .hit-target::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, var(--target-min));
+      height: max(100%, var(--target-min));
+      transform: translate(-50%, -50%);
     }
   }
 }

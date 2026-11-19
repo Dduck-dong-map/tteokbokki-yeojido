@@ -1,8 +1,8 @@
+import { Link2 } from "lucide-react";
 import { SampleRibbon } from "@/components/brand";
 import TteokMap from "@/components/map/TteokMap";
 import { Button } from "@/components/ui/button";
 import { LIST_VISIBILITY, MAX_LIST_STORES, timeAgo } from "@/lib/community";
-import { cn } from "@/lib/utils";
 import ListInfoFormView from "./ListInfoFormView";
 import { LikeButton, ShareListButton } from "./ListParts";
 import ListStoreRowsView from "./ListStoreRowsView";
@@ -31,17 +31,22 @@ export default function ListPanelView({
           <ListInfoFormView {...info} />
         ) : (
           <header className="flex flex-col gap-2">
-            <h1 className="text-[22px] leading-snug font-bold text-balance break-keep [overflow-wrap:anywhere]">{list.title}</h1>
-            {list.desc && <p className="text-[14px] leading-relaxed whitespace-pre-line text-muted-foreground break-keep [overflow-wrap:anywhere]">{list.desc}</p>}
-            <p className="text-[12px] text-muted-foreground/70">
+            <h1 className="text-heading-3 leading-snug text-balance break-keep [overflow-wrap:anywhere]">{list.title}</h1>
+            {list.desc && <p className="text-body-small leading-relaxed whitespace-pre-line text-muted-foreground break-keep [overflow-wrap:anywhere]">{list.desc}</p>}
+            <p className="text-caption text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">
               {list.who} 님의 리스트 · {stores.length}곳 · {timeAgo(list.updatedAt, now)} 고침
-              {list.visibility === "link" && <> · 🔗 {LIST_VISIBILITY.link}</>}
+              {list.visibility === "link" && (
+                <>
+                  {" · "}
+                  <Link2 className="inline size-4 align-[-3px]" strokeWidth={2} aria-hidden="true" /> {LIST_VISIBILITY.link}
+                </>
+              )}
             </p>
             <div className="mt-1 flex flex-wrap items-center gap-2">
               <LikeButton id={list.id} likes={list.likes} />
               <ShareListButton title={list.title} />
               {mine && (
-                <Button type="button" variant="outline" onClick={onEditStart} className={cn("h-10 rounded-xl border-input bg-card px-3.5 text-[14px] font-bold text-foreground")}>
+                <Button type="button" variant="outlined" size="md" onClick={onEditStart}>
                   이름·설명 고치기
                 </Button>
               )}
@@ -57,7 +62,7 @@ export default function ListPanelView({
         )}
 
         {message && (
-          <p role="alert" className="rounded-xl bg-spicybg px-3 py-2 text-[13px] text-spicytext">
+          <p role="alert" className="rounded-xl bg-spicybg px-3 py-2 text-body-small text-spicytext break-keep [overflow-wrap:anywhere]">
             {message}
           </p>
         )}
@@ -67,28 +72,28 @@ export default function ListPanelView({
         {/* 만든 기기: 가게 넣기 · 리스트 지우기 */}
         {mine && (
           <section className="flex flex-col gap-2">
-            <h2 className="text-[14px] font-bold">
+            <h2 className="text-body-medium">
               가게 넣기{" "}
               <span className="font-normal text-muted-foreground/70">
                 ({stores.length}/{MAX_LIST_STORES})
               </span>
             </h2>
             <StorePicker stores={pick} exclude={inList} onPick={onAdd} />
-            <div className="mt-4 flex flex-wrap items-center justify-end gap-2 text-[13px]">
+            <div className="mt-4 flex flex-wrap items-center justify-end gap-2 text-body-small">
               {askDelete ? (
                 <>
-                  <span className="text-muted-foreground break-keep [overflow-wrap:anywhere]">이 리스트를 지울까요? 받은 추천도 함께 사라져요.</span>
-                  <button type="button" onClick={onDelete} className={cn("hit h-8 rounded-lg bg-spicybg px-3 font-semibold text-spicytext")}>
+                  <span className="min-w-0 text-muted-foreground break-keep [overflow-wrap:anywhere]">이 리스트를 지울까요? 받은 추천도 함께 사라져요.</span>
+                  <button type="button" onClick={onDelete} className="hit h-8 shrink-0 rounded-full bg-spicybg px-3 font-semibold text-spicytext">
                     지우기
                   </button>
-                  <Button type="button" variant="outline" onClick={() => onAskDelete(false)} className={cn("hit h-8 rounded-lg border-input bg-card px-3 text-[13px] font-normal text-muted-foreground")}>
+                  <Button type="button" variant="outlined" size="compact" onClick={() => onAskDelete(false)}>
                     그만두기
                   </Button>
                 </>
               ) : (
-                <button type="button" onClick={() => onAskDelete(true)} className="hit text-muted-foreground/70 underline underline-offset-2">
+                <Button type="button" variant="text" size="compact" onClick={() => onAskDelete(true)}>
                   리스트 지우기
-                </button>
+                </Button>
               )}
             </div>
           </section>
@@ -101,7 +106,7 @@ export default function ListPanelView({
           {stores.length ? (
             wide && <TteokMap stores={stores} selectedId={selectedId} onSelect={onSelect} me={null} focus={focus} start={start} showName />
           ) : (
-            <p className="grid h-full place-items-center text-[13px] text-muted-foreground/70">가게를 넣으면 지도에 도장이 찍혀요</p>
+            <p className="grid h-full place-items-center px-3 text-center text-body-small text-muted-foreground/70 break-keep">가게를 넣으면 지도에 도장이 찍혀요</p>
           )}
         </div>
       </aside>

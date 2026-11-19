@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { SpiceStamp } from "@/components/brand";
 import { Button } from "@/components/ui/button";
+import { Chip as UiChip } from "@/components/ui/chip";
 import { Sheet, SheetClose, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { DEFAULT_FILTERS, type Filters } from "@/lib/filters";
 import { PRICE_STEPS, RICE_CAKES, SPICE_LEVELS, STYLES, keysOf, type Spice } from "@/lib/taxonomy";
@@ -23,26 +24,21 @@ function nextSpice([lo, hi]: Filters["spice"], lv: Spice): Filters["spice"] {
   return [lv, lv];
 }
 
+// 고르기 칩 = 디자인 시스템 FilterChip (ui/chip). 켜짐은 Chip 이 aria-pressed 로 알린다. 누름은 그대로 onClick 으로 넘긴다
 function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: ReactNode }) {
   return (
-    <Button
-      type="button"
-      variant={on ? "default" : "outline"}
-      aria-pressed={on}
-      onClick={onClick}
-      className={cn("h-11 rounded-full px-3.5 text-[14px] font-medium md:h-9", !on && "border-input bg-card text-muted-foreground")}
-    >
+    <UiChip type="button" selected={on} onClick={onClick}>
       {children}
-    </Button>
+    </UiChip>
   );
 }
 
 function Section({ id, title, hint, children }: { id?: string; title: string; hint?: string; children: ReactNode }) {
   return (
     <section id={id} className="scroll-mt-2 border-b border-border py-4 last:border-0">
-      <h3 className="mb-2.5 text-[14px] font-bold text-foreground">
+      <h3 className="mb-2.5 text-caption text-foreground">
         {title}
-        {hint && <span className="ml-2 text-[12px] font-normal text-muted-foreground/70">{hint}</span>}
+        {hint && <span className="ml-2 text-caption font-normal text-muted-foreground/70">{hint}</span>}
       </h3>
       <div className="flex flex-wrap gap-2">{children}</div>
     </section>
@@ -54,15 +50,15 @@ function FilterBody({ value: f, resultCount: n, inline = false, onChange, onClos
   const allSpice = f.spice[0] === 1 && f.spice[1] === 5;
   return (
     <>
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-center justify-between gap-2">
         {inline ? (
-          <h2 className="text-[18px] font-bold text-foreground">오늘은 어떤 떡?</h2>
+          <h2 className="min-w-0 text-body-large text-foreground">오늘은 어떤 떡?</h2>
         ) : (
-          <SheetTitle className="text-[18px] font-bold text-foreground">오늘은 어떤 떡?</SheetTitle>
+          <SheetTitle className="min-w-0 text-body-large text-foreground">오늘은 어떤 떡?</SheetTitle>
         )}
-        <button type="button" onClick={() => onChange(DEFAULT_FILTERS)} className="hit text-[13px] text-muted-foreground/70 underline">
+        <Button type="button" variant="text" size="compact" onClick={() => onChange(DEFAULT_FILTERS)}>
           처음으로
-        </button>
+        </Button>
       </div>
 
       <Section id="filter-rice" title="떡" hint="여러 개">
@@ -82,20 +78,24 @@ function FilterBody({ value: f, resultCount: n, inline = false, onChange, onClos
       </Section>
 
       <Section id="filter-spice" title="맵기" hint="신라면 = 3 · 두 번 누르면 범위">
-        <div className="flex w-full items-end justify-between gap-1">
+        <div className="flex w-full items-stretch justify-between gap-1">
           {([1, 2, 3, 4, 5] as Spice[]).map((lv) => {
             const on = !allSpice && lv >= f.spice[0] && lv <= f.spice[1];
             return (
-              <button
+              <UiChip
                 key={lv}
                 type="button"
+                shape="tile"
+                tone="tonal"
+                selected={on}
                 onClick={() => onChange({ ...f, spice: nextSpice(f.spice, lv) })}
-                aria-pressed={on}
-                className={cn("flex min-h-11 flex-1 flex-col items-center gap-1 rounded-xl border py-2", on ? "border-primary" : "border-transparent")}
+                // Chip 은 안의 svg 를 아이콘 크기(20px)로 키운다. 도장 아래 고추(brand Chili)는 제 크기(width·height 속성)로 되돌린다 — 안 그러면 고추 5개가 칸 밖으로 넘친다
+                className="min-w-0 flex-1 shrink justify-start px-1"
               >
                 <SpiceStamp n={lv} size={30} />
-                <span className="text-[11px] leading-tight text-muted-foreground/70">{SPICE_LEVELS[lv].ref.replace(" 정도", "")}</span>
-              </button>
+                {/* 좁은 칸(폭 360 에서 60px 남짓)이라 긴 이름은 줄을 바꾼다 */}
+                <span className="max-w-full text-center text-caption leading-tight text-muted-foreground [overflow-wrap:anywhere]">{SPICE_LEVELS[lv].ref.replace(" 정도", "")}</span>
+              </UiChip>
             );
           })}
         </div>
@@ -125,13 +125,13 @@ function FilterBody({ value: f, resultCount: n, inline = false, onChange, onClos
       <div className={cn("sticky bottom-0 bg-card pt-2 pb-[calc(env(safe-area-inset-bottom)+4px)]", inline ? "-mx-4 px-4" : "-mx-5 px-5")}>
         {n === 0 ? (
           <div className="flex gap-2">
-            <p className="grid h-12 flex-1 place-items-center rounded-xl bg-muted text-[14px] text-muted-foreground">조건에 맞는 가게가 없어요</p>
-            <Button type="button" onClick={() => onChange(DEFAULT_FILTERS)} className="h-12 rounded-xl px-5 text-[15px] font-bold">
+            <p className="grid min-h-12 min-w-0 flex-1 place-items-center rounded-xl bg-muted px-2 text-center text-caption break-keep text-muted-foreground">조건에 맞는 가게가 없어요</p>
+            <Button type="button" variant="filled" size="xl" onClick={() => onChange(DEFAULT_FILTERS)}>
               필터 초기화
             </Button>
           </div>
         ) : (
-          <Button type="button" onClick={onClose} className="h-12 w-full rounded-xl text-[16px] font-bold">
+          <Button type="button" variant="filled" size="xl" onClick={onClose} className="w-full">
             가게 {n}곳 보기
           </Button>
         )}

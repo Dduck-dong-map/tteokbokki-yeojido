@@ -1,43 +1,47 @@
-/* Admin Navy 디자인 시스템(admin.css)을 .admin-root 안에서만 듣게 바꾼 사본. 원본을 고치지 말고 다시 만든다. */
-.admin-root{--brand-50:  #EAF1FF;   
-  --brand-100: #D6E4FF;   
-  --brand-200: #A6C1FF;   
-  --brand-400: #4E86FF;   
-  --brand-500: #3370FF;   
-  --brand-600: #2557D6;   
-  --brand-700: #1B3FA0;   
+/* Admin Navy 디자인 시스템(admin.css)을 .admin-root 안에서만 듣게 바꾼 사본.
+   2026-11-18 부터 색은 떡볶여지도 디자인 토큰에 이어져 있다 — 원본에서 다시 만들면 맨 위 변수 묶음과 색 줄을 다시 이어야 한다. */
+.admin-root{
+  /* 색은 디자인 토큰(src/app/tokens.css 의 Semantic)에 잇는다 (2026-11-18). 여기에 색 값을 직접 쓰지 않는다.
+     주 행동 단계: 옅은 바탕 · 포커스 번짐 · 포커스 고리 · hover · 기본 · active */
+  --brand-50:  var(--background-brand);
+  --brand-100: var(--interactive-secondary-hover);
+  --brand-200: var(--border-focus);
+  --brand-400: var(--interactive-primary-hover);
+  --brand-500: var(--interactive-primary);
+  --brand-600: var(--interactive-primary-active);
+  --brand-700: var(--interactive-primary-active);
 
-  
-  --rail-bg:        #232A3B;
-  --rail-bg-hover:  #2E374C;
-  --rail-bg-active: #313D59;
-  --rail-fg:        #A9B2C6;
-  --rail-fg-active: #FFFFFF;
-  --rail-divider:   #2C3547;
+  /* 레일·헤더 = 뒤집힌 면. hover·고른 칸은 뒤집힌 글자색을 조금 섞어 만든다 (테마가 바뀌어도 따라간다) */
+  --rail-bg:        var(--background-inverse);
+  --rail-bg-hover:  color-mix(in srgb, var(--text-inverse) 12%, var(--background-inverse));
+  --rail-bg-active: color-mix(in srgb, var(--text-inverse) 20%, var(--background-inverse));
+  --rail-fg:        var(--text-inverse);
+  --rail-fg-active: var(--text-inverse);
+  --rail-divider:   color-mix(in srgb, var(--text-inverse) 12%, var(--background-inverse));
 
-  
-  --canvas:       #F2F4F7;  
-  --surface:      #FFFFFF;  
-  --surface-sunk: #F7F8FA;  
-  --surface-hover:#F2F5FA;  
+  /* 바탕 · 면 · 가라앉은 면 · hover */
+  --canvas:       var(--background-primary);
+  --surface:      var(--background-secondary);
+  --surface-sunk: var(--background-tertiary);
+  --surface-hover:var(--interactive-ghost-hover);
 
-  --border:        #E3E6EB; 
-  --border-strong: #C9CDD4; 
+  /* --border-strong 은 여기서 다시 정하지 않는다 — 같은 이름의 Semantic 토큰(tokens.css)이 그대로 내려온다 */
+  --border:        var(--border-default);
 
-  --text-1: #1D2129;  
-  --text-2: #4E5969;  
-  --text-3: #86909C;  
-  --text-4: #C9CDD4;  
-  --text-inv:#FFFFFF;
+  --text-1: var(--text-primary);
+  --text-2: var(--text-secondary);
+  --text-3: var(--text-secondary);
+  --text-4: var(--icon-secondary);
+  --text-inv:var(--text-inverse);
 
-  
+  /* 성공 · 경고 · 정보는 디자인 시스템에 대응 토큰이 없어 그대로 둔다. 위험만 오류 토큰에 잇는다 */
   --success:#00B42A; --success-bg:#E8FFEA;
   --warning:#FF7D00; --warning-bg:#FFF7E8;
-  --danger: #F53F3F; --danger-bg: #FFECE8;
+  --danger: var(--text-error); --danger-bg: var(--background-error);
   --info:   #3370FF; --info-bg:   #EAF1FF;
-  --neutral-badge-bg:#F2F3F5;
+  --neutral-badge-bg:var(--background-tertiary);
 
-  
+  /* 바로가기 카드의 분류 색 8가지 — 대응 토큰 없음, 그대로 둔다 */
   --tile-blue:#3370FF;  --tile-blue-bg:#E8F0FF;
   --tile-cyan:#0FC6C2;  --tile-cyan-bg:#E5FBFA;
   --tile-green:#00B42A; --tile-green-bg:#E8FFEA;
@@ -126,21 +130,21 @@
 .admin-root .brand__mark{width:28px;height:28px;border-radius:var(--r-md);
   background:var(--brand-500);
   display:grid;place-items:center;
-  color:#fff;font-weight:var(--fw-bold);font-size:var(--fs-label);}
+  color:var(--white);font-weight:var(--fw-bold);font-size:var(--fs-label);}
 .admin-root .header{grid-area:header;
   background:var(--rail-bg);
   display:flex;align-items:center;gap:var(--sp-4);
   padding:0 var(--sp-5);
-  color:#E5E8EF;}
-.admin-root .header__title{font-size:var(--fs-body);font-weight:var(--fw-medium);color:#fff;letter-spacing:-.01em}
+  color:var(--text-inverse);}
+.admin-root .header__title{font-size:var(--fs-body);font-weight:var(--fw-medium);color:var(--text-inverse);letter-spacing:-.01em}
 .admin-root .header__spacer{flex:1}
 .admin-root .header__action{display:flex;align-items:center;gap:var(--sp-2);
   height:28px;padding:0 var(--sp-2);border-radius:var(--r-md);
   color:var(--rail-fg);cursor:pointer;background:none;border:0;
   transition:background var(--dur) var(--ease),color var(--dur) var(--ease);}
-.admin-root .header__action:hover{background:var(--rail-bg-hover);color:#fff}
+.admin-root .header__action:hover{background:var(--rail-bg-hover);color:var(--text-inverse)}
 .admin-root .header__avatar{width:26px;height:26px;border-radius:var(--r-full);
-  background:var(--brand-500);color:#fff;
+  background:var(--brand-500);color:var(--text-on-interactive);
   display:grid;place-items:center;font-size:var(--fs-caption);font-weight:var(--fw-medium);}
 .admin-root .rail{grid-area:rail;
   background:var(--rail-bg);
@@ -156,10 +160,10 @@
   transition:background var(--dur) var(--ease),color var(--dur) var(--ease);}
 .admin-root .rail__item span{font-size:11px;line-height:14px;letter-spacing:-.02em}
 .admin-root .rail__item svg{width:20px;height:20px}
-.admin-root .rail__item:hover{background:var(--rail-bg-hover);color:#fff}
+.admin-root .rail__item:hover{background:var(--rail-bg-hover);color:var(--text-inverse)}
 .admin-root .rail__item.is-active{background:var(--rail-bg-active);color:var(--rail-fg-active)}
 .admin-root .rail__item.is-active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;
-  background:var(--brand-500);border-radius:0 var(--r-sm) var(--r-sm) 0;}
+  background:var(--text-inverse-action);border-radius:0 var(--r-sm) var(--r-sm) 0;}
 .admin-root .rail__spacer{flex:1}
 .admin-root .sidemenu{grid-area:sidemenu;
   background:var(--surface);
@@ -248,7 +252,7 @@
 .admin-root .entry-card__icon--purple{background:var(--tile-purple-bg);color:var(--tile-purple)}
 .admin-root .entry-card__icon--pink{background:var(--tile-pink-bg);  color:var(--tile-pink)}
 .admin-root .entry-card__icon--gold{background:var(--tile-gold-bg);  color:var(--tile-gold)}
-.admin-root .entry-card--help .entry-card__icon{border-radius:var(--r-md);background:var(--tile-green);color:#fff}
+.admin-root .entry-card--help .entry-card__icon{border-radius:var(--r-md);background:var(--tile-green);color:var(--white)}
 .admin-root .card{background:var(--surface);
   border:1px solid var(--border);
   border-radius:var(--r-lg);}
@@ -275,15 +279,15 @@
   transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),color var(--dur) var(--ease);}
 .admin-root .btn svg{width:15px;height:15px}
 .admin-root .btn:disabled{cursor:not-allowed;opacity:.45}
-.admin-root .btn--primary{background:var(--brand-500);color:#fff}
+.admin-root .btn--primary{background:var(--brand-500);color:var(--text-on-interactive)}
 .admin-root .btn--primary:hover:not(:disabled){background:var(--brand-400)}
 .admin-root .btn--primary:active:not(:disabled){background:var(--brand-600)}
 .admin-root .btn--default{background:var(--surface);border-color:var(--border-strong);color:var(--text-2)}
 .admin-root .btn--default:hover:not(:disabled){border-color:var(--brand-500);color:var(--brand-500)}
 .admin-root .btn--text{background:none;color:var(--brand-500);padding-inline:var(--sp-2)}
 .admin-root .btn--text:hover:not(:disabled){background:var(--brand-50)}
-.admin-root .btn--danger{background:var(--danger);color:#fff}
-.admin-root .btn--danger:hover:not(:disabled){background:#E02B2B}
+.admin-root .btn--danger{background:var(--danger);color:var(--text-on-interactive)}
+.admin-root .btn--danger:hover:not(:disabled){background:color-mix(in srgb, var(--danger) 85%, var(--text-primary))}
 .admin-root .btn--sm{height:26px;padding:0 var(--sp-3);font-size:var(--fs-label)}
 .admin-root .btn--lg{height:38px;padding:0 var(--sp-5)}
 .admin-root .btn--icon{width:32px;padding:0}
@@ -319,7 +323,7 @@
   background:var(--border-strong);cursor:pointer;
   transition:background var(--dur) var(--ease);}
 .admin-root .switch__track::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;
-  border-radius:var(--r-full);background:#fff;box-shadow:var(--shadow-sm);
+  border-radius:var(--r-full);background:var(--icon-on-interactive);box-shadow:var(--shadow-sm);
   transition:transform var(--dur) var(--ease);}
 .admin-root .switch input:checked + .switch__track{background:var(--brand-500)}
 .admin-root .switch input:checked + .switch__track::after{transform:translateX(20px)}
@@ -332,8 +336,8 @@
 .admin-root .check input[type=radio]{border-radius:var(--r-full)}
 .admin-root .check input:checked{background:var(--brand-500);border-color:var(--brand-500)}
 .admin-root .check input[type=checkbox]:checked::after{content:"";position:absolute;left:5px;top:1.5px;width:4px;height:8px;
-  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
-.admin-root .check input[type=radio]:checked::after{content:"";position:absolute;inset:4px;border-radius:var(--r-full);background:#fff;}
+  border:solid var(--icon-on-interactive);border-width:0 2px 2px 0;transform:rotate(45deg);}
+.admin-root .check input[type=radio]:checked::after{content:"";position:absolute;inset:4px;border-radius:var(--r-full);background:var(--icon-on-interactive);}
 .admin-root .form-row{display:grid;grid-template-columns:140px 1fr;gap:var(--sp-4);align-items:start;margin-bottom:var(--sp-4)}
 .admin-root .form-row > .field__label{margin:0;padding-top:6px;text-align:right;color:var(--text-2);font-weight:var(--fw-normal)}
 .admin-root .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
@@ -361,7 +365,7 @@
   border:1px solid var(--border);border-radius:var(--r-md);
   background:var(--surface);color:var(--text-2);font-size:var(--fs-label);cursor:pointer;}
 .admin-root .page-btn:hover{border-color:var(--brand-500);color:var(--brand-500)}
-.admin-root .page-btn.is-active{background:var(--brand-500);border-color:var(--brand-500);color:#fff}
+.admin-root .page-btn.is-active{background:var(--brand-500);border-color:var(--brand-500);color:var(--text-on-interactive)}
 .admin-root .badge{display:inline-flex;align-items:center;gap:var(--sp-1);
   height:20px;padding:0 var(--sp-2);border-radius:var(--r-sm);
   font-size:var(--fs-caption);line-height:1;font-weight:var(--fw-medium);
@@ -395,7 +399,7 @@
 .admin-root .alert--warning svg{color:var(--warning)}
 .admin-root .alert--danger{background:var(--danger-bg);border-left-color:var(--danger)}
 .admin-root .alert--danger svg{color:var(--danger)}
-.admin-root .modal-backdrop{position:fixed;inset:0;background:rgba(29,33,41,.45);display:grid;place-items:center;z-index:100;padding:var(--sp-6)}
+.admin-root .modal-backdrop{position:fixed;inset:0;background:var(--overlay-scrim);display:grid;place-items:center;z-index:100;padding:var(--sp-6)}
 .admin-root .modal{width:100%;max-width:520px;background:var(--surface);
   border-radius:var(--r-xl);box-shadow:var(--shadow-modal);overflow:hidden;}
 .admin-root .modal__head{display:flex;align-items:center;padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--border)}

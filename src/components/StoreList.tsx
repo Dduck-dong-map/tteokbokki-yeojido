@@ -16,7 +16,7 @@ export function visibleStores(stores: Store[], now: Date) {
 // 여기서는 바깥 껍데기(격자 · 상세로 가는 Link)만 그린다. 글 목록이라 사진은 끄고 종류 배지는 켠다.
 export default function StoreList({ stores, now }: { stores: Store[]; now: Date }) {
   if (!stores.length) {
-    return <p className="px-4 py-10 text-center text-[14px] text-muted-foreground/70">아직 등록된 가게가 없어요. 아는 집을 등록해 주세요!</p>;
+    return <p className="px-4 py-10 text-center text-body-small text-muted-foreground/70">아직 등록된 가게가 없어요. 아는 집을 등록해 주세요!</p>;
   }
   return (
     <ul className={cn(GRID_UL)}>

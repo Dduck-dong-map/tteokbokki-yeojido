@@ -1,7 +1,7 @@
 -- 길찾기 누름 기록 (W1-4, 11-11) — 성공 지표 KPI-W01 「주간 길찾기」를 잰다.
 -- 가게 상세의 「네이버 지도로 길찾기」「카카오맵」을 누를 때마다 한 줄. 같은 사람(기기와 접속 위치가 모두 같음)이
 -- 같은 가게를 같은 날 다시 누르면 더하지 않는다 (규칙은 src/lib/data/db.ts recordGo).
--- 새 DB 는 컨테이너가 처음 뜰 때 저절로 돈다. 이미 쓰던 DB 에는 한 번만: pnpm db:update (db/README.md)
+-- 컨테이너가 처음 뜰 때 001~003 뒤에 저절로 돈다. 이미 쓰던 DB 를 고치는 명령(db:update)은 없앴다 (11-18) — 표가 바뀌면 pnpm db:reset (db/README.md)
 -- 몇 번 눌렸나 보기: pnpm db:psql → select date_trunc('week', at) as week, count(*), count(distinct device) from store_directions group by 1 order by 1;
 
 create table if not exists store_directions (

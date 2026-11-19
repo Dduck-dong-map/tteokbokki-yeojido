@@ -2,17 +2,20 @@ import { daysSince } from "./freshness";
 import { GRADES, RICE_CAKES, STYLES, USAGES, type Grade, type RiceCake, type Spice, type Style, type Usage } from "./taxonomy";
 import type { Hours, MenuItem, Store } from "./types";
 
-// 「모두가 고치는 지도」 규칙 (거지맵 구도를 추린 MVP, 11-04 · docs/MVP_거지맵구도_2026-11-04.md)
+// 「모두가 고치는 지도」 규칙 (거지맵 구도를 추린 MVP, 11-04 · docs/기획/MVP_거지맵구도_2026-11-04.md)
 // 등록은 사전 승인 없이 바로 올라가고, 이용자들이 뒤에서 걸러 낸다.
 // 화면과 서버가 같은 규칙으로 검사한다.
 
 export const VERIFY_DAYS = 7; // 새 가게는 일주일 동안 「확인 중」으로 보인다
 export const VERIFY_YES = 3; // 「맞아요」 3명이면 확인 완료
-export const HIDE_AT = 3; // 「달라요」 또는 신고가 3명 쌓이면 지도에서 내린다
+export const HIDE_AT = 3; // 「달라요」 또는 신고가 3명 쌓이면 지도에서 내린다. 「3명」= 서로 다른 접속 위치(IP) 3곳 — 같은 곳에서 기기 표시만 바꾼 것은 한 명으로 센다 (11-18)
 export const MIN_PHOTOS = 0; // 새 가게 등록에 필요한 사진 (간판이나 메뉴판). 써 보기 동안은 0 = 없어도 등록 (W1-3) — 사진 저장소를 붙이면 1 로 되돌린다
 export const MAX_PHOTOS = 5;
+export const DAILY_PHOTOS = 30; // 한 사람 하루(최근 24시간) 사진 올리기
+export const DAILY_PHOTOS_PER_IP = 150; // 같은 접속 위치(IP) 전체의 하루 사진 상한 = 다섯 사람 몫. 기기 표시만 바꿔 한도를 넘는 것을 막는다 (11-18)
 export const MAX_MENU = 5;
 export const DAILY_LIMIT = 10; // 한 사람(기기와 접속 위치가 모두 같으면 한 사람) 하루 등록·수정 10건
+export const DAILY_LIMIT_PER_IP = 50; // 같은 접속 위치(IP) 전체의 하루 등록·수정 상한. 기기 표시만 바꿔 한도를 넘는 것을 막는다 (11-18)
 export const DUP_RADIUS_M = 80; // 이 거리 안에 같은 이름이 있으면 이미 있는 가게로 본다
 export const MAX_INTRO = 500; // 소개글 글자 수
 export const OLD_DAYS = 60; // 마지막 확인이 이보다 오래되면 「확인이 필요해요」
@@ -172,4 +175,28 @@ export function updateReasons(s: Pick<Store, "photos" | "hours" | "lastConfirmed
   if (!s.photos?.length) out.push("사진 없음");
   if (!s.hours) out.push("영업시간 없음");
   return out;
+}
+
+// 지도가 저절로 내린 줄(db.ts goneLog)에 남기는 까닭 칸 (11-19). 이력의 「바뀐 칸」 하나로 남아 변경 이력 화면에도 「내린 까닭 보임 → 달라요」로 보인다.
+export const GONE_REASON_FIELD = "내린 까닭";
+export const GONE_BY_VOTES = "달라요"; // 되살린 뒤 달라요를 낸 서로 다른 접속 위치가 HIDE_AT 곳 (db.ts verifyStore)
+export const GONE_BY_FLAGS = "신고"; // 되살린 뒤 신고한 서로 다른 접속 위치가 HIDE_AT 곳 (db.ts flagStore)
+
+// 내려간 가게(숨김·문 닫음)를 주소로 열었을 때 맨 위에 띄우는 안내 (F005). 내린 까닭에 따라 문구를 나눈다.
+// 까닭은 이력(store_logs)의 마지막 「숨김」「폐업」 줄로 가른다:
+//  - 운영자가 내림: 어드민 adminSetStatus 가 남긴 줄은 「상태」 바뀐 칸이 있다
+//  - 지도가 저절로 내림(who 「지도」): 그 줄의 「내린 까닭」 칸(달라요 · 신고)을 따른다 — 내린 판정과 같은 기준 (11-19)
+//  - 까닭 칸이 없는 옛 줄(11-19 전): 폐업 = 신고 · 숨김 = 달라요 표 수가 HIDE_AT 이상이면 달라요, 아니면 신고 (예전 그대로)
+// 신고 이유(광고·엉뚱한 곳 등)는 가게 상세가 읽는 자료에 없어 「신고」 하나로 묶는다.
+export function goneNotice(s: Pick<Store, "status" | "verify">, history: { kind: string; changes?: { field: string; to?: string }[] }[]): string | null {
+  const status = s.status ?? "active";
+  if (status === "active") return null;
+  const last = history.find((h) => h.kind === "hidden" || h.kind === "closed"); // 이력은 최근 것부터
+  const byAdmin = !!last?.changes?.some((c) => c.field === "상태");
+  if (status === "closed") return byAdmin ? "운영자가 문을 닫은 것을 확인해서 지도에서 내렸어요." : "문을 닫았다는 신고가 쌓여 지도에서 내렸어요.";
+  if (byAdmin) return "운영자가 확인해서 지도에서 내렸어요.";
+  const reason = last?.changes?.find((c) => c.field === GONE_REASON_FIELD)?.to;
+  const byVotes = reason !== undefined ? reason === GONE_BY_VOTES : (s.verify?.no ?? 0) >= HIDE_AT;
+  if (byVotes) return "사실과 다르다는 의견이 쌓여 지도에서 내렸어요.";
+  return last ? "신고가 쌓여 지도에서 내렸어요." : "지금은 지도에서 내린 가게예요.";
 }

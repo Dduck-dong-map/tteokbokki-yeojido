@@ -35,7 +35,7 @@ function TasteChip({ href, active, children }: { href: string; active: boolean; 
       variant={active ? "default" : "outline"}
       render={<Link href={href} aria-current={active ? "page" : undefined} />}
       className={cn(
-        "hit h-8 shrink-0 overflow-visible rounded-full px-3 text-[13px] font-medium",
+        "hit h-8 shrink-0 overflow-visible rounded-full px-3 text-caption font-medium",
         active ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-muted-foreground",
       )}
     >
@@ -57,7 +57,7 @@ export function RegionList({ region, stores, taste, now }: { region: Region; sto
           <SampleRibbon />
         </div>
       )}
-      <p className="px-4 pt-4 text-[14px] text-muted-foreground md:px-0 md:pt-0">
+      <p className="px-4 pt-4 text-body-small text-muted-foreground md:px-0 md:pt-0">
         {region.name}의 {taste ? taste.label : "떡볶이"} 가게 {shown.length}곳 · 최근 확인된 곳부터 보여요.
       </p>
       {/* 취향 칩: 폰은 가로 스크롤(스크롤바 숨김), 768 이상은 줄바꿈 */}

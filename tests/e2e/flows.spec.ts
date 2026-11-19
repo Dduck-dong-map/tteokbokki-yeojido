@@ -1,39 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 import { SAMPLE_STORES } from "../../src/lib/data/sample-stores";
-import { asNewDevice, asNewIp, isMobile, tag, tinyJpeg } from "./helpers";
+import { asNewDevice, asNewIp, fillSteps, submitRegister, tag, tinyJpeg, waitMap } from "./helpers";
 
 // 저장 흐름 다섯 (계획 7-3 회귀 계약). 파일 저장소(.data-e2e)에 쓰고, 테스트마다 새 기기·새 접속 위치로 시작한다.
 // 셀렉터는 화면 코드(components/register, store, room, lists, mine)에서 읽은 id · role · 문구다.
 
 const SAMPLE = SAMPLE_STORES[0]; // 망원 할머니 국물떡볶이 (예시)
-
-// 등록 폼: 폰은 다섯 단계를 「다음」으로 넘기고, 768 이상은 한 화면이라 「다음」이 없다
-async function next(page: Page) {
-  if (isMobile(page)) await page.getByRole("button", { name: "다음" }).click();
-}
-
-// MapPicker 는 지도가 뜬 뒤 가운데 좌표를 lat/lng 로 알려 준다 → 지도 캔버스가 생기고 한 박자 기다린다
-async function waitMap(page: Page) {
-  await page.locator("canvas.maplibregl-canvas").first().waitFor({ timeout: 30_000 });
-  await page.waitForTimeout(2_000);
-}
-
-// 1~4단계 채우기 (사진 직전까지). name · 위치는 호출한 쪽이 정한다.
-async function fillSteps(page: Page, name: string) {
-  await page.locator("#reg-name").fill(name);
-  await page.locator("#reg-grade").getByRole("button", { name: "분식집", exact: true }).click();
-  await page.locator("#reg-address").fill("서울 마포구 망원동 1-1");
-  await next(page);
-  // 「밀떡」은 「누들밀떡」과 부분 일치하므로 exact
-  await page.locator("#reg-rice").getByRole("button", { name: "밀떡", exact: true }).click();
-  await page.locator("#reg-style").getByRole("button", { name: "국물", exact: true }).click();
-  await page.locator("#reg-spice").getByRole("button", { name: /신라면/ }).click();
-  await next(page);
-  await page.locator("#reg-menu").getByLabel("메뉴 이름").first().fill("떡볶이");
-  await page.locator("#reg-menu").getByRole("button", { name: "4,000원" }).click();
-  await next(page); // → 소개글 (선택)
-  await next(page); // → 사진
-}
 
 async function addPhoto(page: Page) {
   const jpeg = await tinyJpeg(page);
@@ -51,8 +23,7 @@ test("① 등록 다섯 단계 끝까지 → /store/[id] 에 이름이 보인다
   await fillSteps(page, name);
   await addPhoto(page);
 
-  await page.getByRole("button", { name: "지도에 올리기" }).click();
-  await expect(page.getByRole("heading", { name: /지도에 올렸어요/ })).toBeVisible({ timeout: 20_000 });
+  await submitRegister(page, page.getByRole("heading", { name: /지도에 올렸어요/ }));
   await page.getByRole("link", { name: "올린 가게 보기" }).click();
   await expect(page).toHaveURL(/\/store\/s-[0-9a-f]{8}$/);
   await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
@@ -72,10 +43,9 @@ test("② 80m 안 같은 이름 → 「이미 지도에 있는 가게 같아요�
   await fillSteps(page, SAMPLE.name);
   await addPhoto(page);
 
-  await page.getByRole("button", { name: "지도에 올리기" }).click();
   // Next 의 라우트 안내(#__next-route-announcer__)도 role=alert 라 문구로 거른다
   const alert = page.getByRole("alert").filter({ hasText: "이미 지도에 있는 가게 같아요" });
-  await expect(alert).toBeVisible({ timeout: 20_000 });
+  await submitRegister(page, alert);
   await expect(alert).toContainText(SAMPLE.name);
   await expect(alert.getByRole("link", { name: "그 가게 보기" })).toHaveAttribute("href", `/store/${SAMPLE.id}`);
   await expect(alert.getByRole("button", { name: "다른 가게예요" })).toBeVisible();

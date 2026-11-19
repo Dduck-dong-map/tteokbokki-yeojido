@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand";
 import { NAV } from "./nav";
@@ -16,7 +17,7 @@ export default function SiteHeaderView({ active, onSearchSubmit, search }: SiteH
       <form role="search" className="min-w-0 max-w-[320px] flex-1" onSubmit={onSearchSubmit}>
         {search}
       </form>
-      <nav aria-label="메뉴" className="ml-auto flex shrink-0 items-center gap-0.5 text-[14px]">
+      <nav aria-label="메뉴" className="ml-auto flex shrink-0 items-center gap-0.5 text-caption">
         {NAV.map((n) => {
           const isActive = active === n.key;
           return (
@@ -38,9 +39,10 @@ export default function SiteHeaderView({ active, onSearchSubmit, search }: SiteH
       {/* 등록 버튼 = 제보 갈색(report, P3). 고추장 빨강(brand-red)은 이름 글씨·찜 하트 */}
       <Link
         href="/register"
-        className="grid h-[38px] shrink-0 place-items-center rounded-xl bg-report px-3 text-[14px] font-bold whitespace-nowrap text-report-foreground hover:opacity-90 xl:px-4"
+        className="inline-flex h-[38px] shrink-0 items-center gap-1 rounded-xl bg-report px-3 text-caption font-bold whitespace-nowrap text-report-foreground hover:opacity-90 xl:px-4"
       >
-        ＋ 맛집 등록
+        <Plus className="size-4" strokeWidth={2} aria-hidden="true" />
+        맛집 등록
       </Link>
     </header>
   );

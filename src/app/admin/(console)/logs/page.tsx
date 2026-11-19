@@ -10,21 +10,34 @@ const KIND_TEXT: Record<string, string> = { new: "등록", edit: "수정", still
 
 // M-AD-08 운영 기록: 누가 언제 어느 가게를 어떻게 바꿨는지 (REQ-AD-12). 11-15 부터 실제 DB 의 가게 이력(store_logs)을 보여 준다.
 // 이용자의 등록·수정·「아직 있어요」와 운영자의 수정·숨김이 한 줄로 쌓인다. 이 화면에서는 지울 수 없다.
-export default function LogsPage() {
+// ?store=<가게 id> 를 붙이면 그 가게 기록만 본다 (adminReadLogs 의 storeId).
+export default function LogsPage({ searchParams }: PageProps<"/admin/logs">) {
   return (
     <>
       <PageHeader id="M-AD-08" title="운영 기록" desc="가게 등록·수정·확인·숨김·폐업이 모두 남아요. 최근 300건을 보여 줘요." />
       <Suspense fallback={<div className="table-wrap"><div className="empty"><div className="empty__desc">기록을 불러오는 중…</div></div></div>}>
-        <Logs />
+        <Logs searchParams={searchParams} />
       </Suspense>
     </>
   );
 }
 
-async function Logs() {
+async function Logs({ searchParams }: Pick<PageProps<"/admin/logs">, "searchParams">) {
   const access = await adminAccess();
   if (!access.ok) return <Locked why={access.why} />;
-  const logs = await adminReadLogs({ limit: 300 });
+  const store = (await searchParams).store;
+  const storeId = typeof store === "string" && store ? store : undefined;
+  const logs = await adminReadLogs({ storeId, limit: 300 });
+  // 기록 0건: 빈 표 대신 안내 (F023)
+  if (!logs.length)
+    return (
+      <div className="table-wrap">
+        <div className="empty">
+          <div className="empty__title">아직 남은 기록이 없어요</div>
+          <div className="empty__desc">{storeId ? "이 가게는 아직 등록·수정·확인 기록이 없어요." : "가게를 등록하거나 고치면 여기에 한 줄씩 쌓여요."}</div>
+        </div>
+      </div>
+    );
   return (
     <div className="table-wrap">
       <div className="table-toolbar">

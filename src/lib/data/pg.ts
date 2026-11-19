@@ -35,6 +35,10 @@ const SPECS: [keyof Db, Spec][] = [
   ["likes", { table: "list_likes", key: ["listId", "device"], cols: { listId: "text", at: "ts", ...MARK } }],
   // 길찾기 누름 (W1-4, db/init/004_directions.sql)
   ["goes", { table: "store_directions", key: ["id"], cols: { id: "text", storeId: "text", app: "text", at: "ts", ...MARK } }],
+  // 사진 하루 한도 (11-18, db/init/001_schema.sql photo_uploads)
+  ["photoUploads", { table: "photo_uploads", key: ["id"], cols: { id: "text", at: "ts", ...MARK } }],
+  // 지운 글 · 댓글 · 리스트의 하루 한도 줄 (11-19, db/init/001_schema.sql deleted_writes)
+  ["deletedWrites", { table: "deleted_writes", key: ["kind", "id"], cols: { kind: "text", id: "text", at: "ts", ...MARK } }],
 ];
 
 const PG_TYPE: Record<Col, string> = { text: "text", int: "int", num: "float8", bool: "boolean", date: "date", ts: "timestamptz", json: "jsonb" };
@@ -54,7 +58,7 @@ type Client = postgres.Sql;
 // 빈 칸(null)은 앱에서처럼 아예 없는 값으로
 const clean = (r: Row) => Object.fromEntries(Object.entries(r).filter(([, v]) => v !== null));
 
-// 표 11개를 한 번에 (DB 와 한 번만 오간다, 11-09). Supabase 처럼 DB 가 멀리 있으면 표마다 따로 읽을 때 화면이 그만큼 느려진다.
+// 표 13개를 한 번에 (DB 와 한 번만 오간다, 11-09). Supabase 처럼 DB 가 멀리 있으면 표마다 따로 읽을 때 화면이 그만큼 느려진다.
 // 각 표를 JSON 배열로 묶어 { stores: [...], logs: [...] } 하나로 받는다. 칸 이름·날짜 모양은 selectSql 그대로.
 const READ_ALL_SQL = `select json_build_object(${SPECS.map(
   ([k, sp]) => `'${k}', (select coalesce(json_agg(t), '[]'::json) from (${selectSql(sp)}) t)`,
@@ -63,7 +67,8 @@ const READ_ALL_SQL = `select json_build_object(${SPECS.map(
 async function readAll(sql: Client): Promise<Db | null> {
   const [{ db }] = (await sql.unsafe(READ_ALL_SQL)) as unknown as [{ db: Record<string, Row[]> }];
   const out = Object.fromEntries(SPECS.map(([k]) => [k, (db[k] ?? []).map(clean)])) as Record<string, Row[]>;
-  return out.stores.length ? (out as unknown as Db) : null;
+  // 표가 모두 비었을 때만 「빈 DB」(null). 가게만 비고 글·기록이 있으면 그대로 읽는다 (예전엔 가게가 비면 빈 DB 로 봐서 다른 표를 못 읽었다)
+  return SPECS.some(([k]) => out[k].length) ? (out as unknown as Db) : null;
 }
 
 const keyOf = (sp: Spec, r: Row) => sp.key.map((k) => String(r[k])).join("\u0001");
@@ -143,7 +148,7 @@ function client(): Client {
 
 const LOCK = 724242; // 쓰기는 한 번에 하나씩 (서버가 여러 개여도)
 
-// prepare: DB 가 비어 있으면(null) 예시 데이터를 만들어 주고, 아니면 빠진 칸만 채운다 (db.ts withCommunity · seed)
+// prepare: DB 가 비어 있으면(null) 빈 저장소(SEED_SAMPLES=1 이면 예시 데이터)를 만들어 주고, 아니면 빠진 칸만 채운다 (db.ts prepare)
 export async function pgMutate<T>(prepare: (raw: Db | null) => Db, fn: (db: Db) => T | Promise<T>): Promise<T> {
   const out = await client().begin(async (tx) => {
     await tx.unsafe(`select pg_advisory_xact_lock(${LOCK})`);
@@ -160,6 +165,9 @@ export async function pgMutate<T>(prepare: (raw: Db | null) => Db, fn: (db: Db) 
 export async function pgRead(prepare: (raw: Db | null) => Db): Promise<Db> {
   const raw = await readAll(client());
   if (raw) return prepare(raw);
-  // 처음 켠 빈 DB: 예시 가게·글·리스트를 바로 넣어 둔다 (팀원이 표를 열어 볼 수 있게)
+  // 처음 켠 빈 DB. 예시를 넣기로 했으면(db.ts SEED_SAMPLES=1, 로컬 도커) 예시 가게·글·리스트를 바로 넣어 둔다 (팀원이 표를 열어 볼 수 있게).
+  // 아니면(운영 DB) 아무것도 쓰지 않고 빈 저장소를 돌려준다 — 실제 가게는 어드민 「후보 가져오기」로 넣는다 (db/README.md)
+  const empty = prepare(null);
+  if (!empty.stores.length) return empty;
   return pgMutate(prepare, (db) => db);
 }

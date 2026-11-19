@@ -5,8 +5,8 @@ import mapo from "./stores-mapo.json";
 // 운영자가 「후보 가져오기」(/admin/candidates)에서 DB 에 넣는 실제 가게 자료 묶음 (11-15).
 // 앱이 혼자 넣지 않는다 — 운영자가 눌러야 들어간다. 이미 있는 id 는 건드리지 않는다 (lib/data/admin.ts adminImport).
 // 강남 v1 = 공개된 사실(이름·주소·메뉴·가격·영업시간·근거 날짜)만 모은 리서치. 리뷰 글·별점은 가져오지 않았다.
-//   원본 표 docs/가게리서치_강남_v1_2026-11-15.md · 좌표 = OpenStreetMap Nominatim (© OpenStreetMap contributors)
-// 마포 v1 (11-16) = 같은 방식 · 원본 표 docs/가게리서치_마포_v1_2026-11-16.md
+//   원본 표 docs/리서치/가게리서치_강남_v1_2026-11-15.md · 좌표 = OpenStreetMap Nominatim (© OpenStreetMap contributors)
+// 마포 v1 (11-16) = 같은 방식 · 원본 표 docs/리서치/가게리서치_마포_v1_2026-11-16.md
 
 export type Research = {
   confidence?: string | null; // high · medium

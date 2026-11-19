@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { TextField } from "@/components/ui/text-field";
 import { GRADES, RICE_CAKES, STYLES, USAGES, keysOf } from "@/lib/taxonomy";
-import { Choice, HoursField, INPUT, IntroField, MapPicker, MenuEditor, NickField, PhotoPicker, SpiceInput } from "./fields";
+import { Choice, HoursField, IntroField, MapPicker, MenuEditor, NickField, PhotoPicker, SpiceInput } from "./fields";
 import type { EditFormViewProps } from "./types";
 
 // 정보 고치기 (웹 1차 기획 M-W-04): 지금 가게 정보 + 소개글 칸 + 맵기 칸. 누구나 고칠 수 있고 바로 반영되며 변경 이력에 남는다.
@@ -11,7 +12,7 @@ import type { EditFormViewProps } from "./types";
 export default function EditFormView({ store, stores, values, moveOpen, error, sending, onChange, onOpenMove, onSubmit }: EditFormViewProps) {
   return (
     <div className="flex flex-col gap-6 px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+20px)] md:px-0">
-      <p className="rounded-xl bg-secondary px-3 py-2 text-[13px] leading-relaxed text-muted-foreground">
+      <p className="rounded-xl bg-secondary px-3 py-2 text-body-small leading-relaxed text-muted-foreground">
         고치면 바로 반영되고{" "}
         <Link href={`/store/${store.id}/history`} className="hit font-semibold underline underline-offset-2">
           변경 이력
@@ -69,14 +70,8 @@ export default function EditFormView({ store, stores, values, moveOpen, error, s
 
       <Section title="가게 기본 정보">
         <div className="flex flex-col gap-3">
-          <label className="text-[13px] text-muted-foreground/70">
-            가게 이름
-            <input value={values.name} onChange={(e) => onChange({ name: e.target.value })} maxLength={60} className={INPUT} />
-          </label>
-          <label className="text-[13px] text-muted-foreground/70">
-            주소
-            <input value={values.address} onChange={(e) => onChange({ address: e.target.value })} maxLength={120} className={INPUT} />
-          </label>
+          <TextField label="가게 이름" value={values.name} onChange={(e) => onChange({ name: e.target.value })} maxLength={60} />
+          <TextField label="주소" value={values.address} onChange={(e) => onChange({ address: e.target.value })} maxLength={120} />
           <div className="flex flex-wrap gap-2">
             {keysOf(GRADES).map((k) => (
               <Choice key={k} on={values.grade === k} onClick={() => onChange({ grade: k })}>
@@ -88,7 +83,7 @@ export default function EditFormView({ store, stores, values, moveOpen, error, s
           {moveOpen ? (
             <MapPicker stores={stores} start={store} onChange={(pos) => onChange({ pos })} />
           ) : (
-            <Button type="button" variant="outline" onClick={onOpenMove} className="h-11 rounded-xl border-dashed border-input bg-transparent text-[13px] font-normal text-muted-foreground">
+            <Button type="button" variant="outline" onClick={onOpenMove} className="h-11 rounded-xl border-dashed border-input bg-transparent text-caption font-normal text-muted-foreground">
               지도 위치도 고치기
             </Button>
           )}
@@ -98,11 +93,11 @@ export default function EditFormView({ store, stores, values, moveOpen, error, s
       <NickField />
 
       {error && (
-        <p role="alert" className="text-[13px] text-spicytext">
+        <p role="alert" className="text-body-small text-spicytext">
           {error}
         </p>
       )}
-      <Button type="button" onClick={onSubmit} disabled={sending} className="h-12 rounded-xl text-[16px] font-bold">
+      <Button type="button" variant="filled" size="xl" onClick={onSubmit} disabled={sending}>
         {sending ? "저장하는 중…" : "고친 내용 올리기"}
       </Button>
     </div>
@@ -113,8 +108,9 @@ export default function EditFormView({ store, stores, values, moveOpen, error, s
 function Section({ id, title, sub, children }: { id?: string; title: string; sub?: string; children: ReactNode }) {
   return (
     <section id={id} className="scroll-mt-16 md:scroll-mt-20">
-      <h2 className="mb-2 text-[15px] font-bold">
-        {title} {sub && <span className="text-[12px] font-normal text-muted-foreground/70">{sub}</span>}
+      {/* 제목은 조선100년체라 굵기를 주지 않는다. 보조말은 14px 이라 본문 글꼴로 */}
+      <h2 className="mb-2 text-body-medium">
+        {title} {sub && <span className="font-sans text-caption font-normal text-muted-foreground/70">{sub}</span>}
       </h2>
       {children}
     </section>

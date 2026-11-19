@@ -15,3 +15,5 @@ alter table post_comments enable row level security;
 alter table post_likes enable row level security;
 alter table place_lists enable row level security;
 alter table list_likes enable row level security;
+alter table photo_uploads enable row level security;
+alter table deleted_writes enable row level security;

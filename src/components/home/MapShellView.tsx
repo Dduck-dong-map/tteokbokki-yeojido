@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/layout";
 import MapLoading from "@/components/loading/MapLoading";
 import TteokMap from "@/components/map/TteokMap";
 import SearchBox from "@/components/SearchBox";
+import { Button } from "@/components/ui/button";
 import { freshness } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
 import FilterSheetView from "./FilterSheetView";
@@ -31,7 +32,7 @@ export default function MapShellView(p: MapShellViewProps) {
       <div className={cn("relative flex h-dvh flex-col overflow-hidden bg-background md:contents", routeId && "max-md:hidden")}>
         <header className="z-10 flex items-center justify-between bg-card px-4 pt-[calc(env(safe-area-inset-top)+8px)] pb-1 md:hidden">
           <Logo />
-          <span className="text-[12px] text-muted-foreground/70">
+          <span className="text-caption text-muted-foreground/70">
             최근 7일 등록·수정 <b className="text-muted-foreground">{recentReports}건</b>
           </span>
         </header>
@@ -39,17 +40,17 @@ export default function MapShellView(p: MapShellViewProps) {
         {/* 검색 + 필터 단추 하나 (슬랙 10-28: 처음부터 많은 선택을 요구하지 않기). 768 이상은 검색이 위 헤더로 올라간다 */}
         <div className="z-10 flex gap-2 border-b border-border bg-card px-4 py-2 md:hidden">
           <SearchBox />
-          <button
+          {/* 필터가 걸려 있으면 옅은 옥빛(tonal) + 옥빛 테두리. 옥빛 채움(filled)은 고른 줄의 「자세히 · 길찾기」 하나에만 쓴다 */}
+          <Button
             type="button"
+            variant={filterCount ? "tonal" : "outlined"}
+            size="md"
             onClick={() => p.onFilterOpen()}
-            className={cn(
-              "relative h-11 shrink-0 rounded-xl border px-3 text-[13px] font-bold",
-              filterCount ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-foreground",
-            )}
+            className={cn("self-center px-4", filterCount ? "border-primary" : "bg-card")}
           >
             필터
-            {filterCount > 0 && <span className="ml-1 rounded-full bg-primary-foreground px-1.5 text-[11px] text-primary">{filterCount}</span>}
-          </button>
+            {filterCount > 0 && <span className="rounded-full bg-primary px-1.5 text-caption text-primary-foreground">{filterCount}</span>}
+          </Button>
         </div>
 
         <div className="relative flex-1 md:contents">
@@ -60,7 +61,7 @@ export default function MapShellView(p: MapShellViewProps) {
             )}
             <MapLoading settled={mapSettled} />
             {hasStale && mapSettled && (
-              <p className="pointer-events-none absolute bottom-[calc(var(--attrib-bottom)+30px)] left-2 z-10 flex items-center gap-1.5 rounded-full bg-card/90 px-2.5 py-1 text-[12px] text-muted-foreground shadow-sm">
+              <p className="pointer-events-none absolute bottom-[calc(var(--attrib-bottom)+30px)] left-2 z-10 flex items-center gap-1.5 rounded-full bg-card/90 px-2.5 py-1 text-caption text-muted-foreground shadow-sm">
                 <span aria-hidden="true" className="inline-block h-3 w-3 rounded-full bg-chart-3 opacity-45" />
                 흐린 도장 = 반년 넘게 확인 안 됨
               </p>
@@ -69,7 +70,7 @@ export default function MapShellView(p: MapShellViewProps) {
             <div className="pointer-events-none absolute inset-x-0 top-2 z-10 flex flex-col items-center gap-1.5">
               {sample && <SampleRibbon />}
               {toast && (
-                <span role="status" className="rounded-full bg-foreground px-3 py-1.5 text-[13px] text-background">
+                <span role="status" className="rounded-full bg-foreground px-3 py-1.5 text-caption text-background">
                   {toast}
                 </span>
               )}
@@ -94,7 +95,7 @@ export default function MapShellView(p: MapShellViewProps) {
               <Link
                 href="/register"
                 aria-label="맛집 등록"
-                className="grid h-14 w-14 place-items-center rounded-full bg-report text-[13px] leading-tight font-bold text-report-foreground shadow-lg md:hidden"
+                className="grid h-14 w-14 place-items-center rounded-full bg-report text-caption leading-tight font-bold text-report-foreground shadow-lg md:hidden"
               >
                 등록
               </Link>

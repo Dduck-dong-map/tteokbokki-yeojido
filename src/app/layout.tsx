@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
 import { USING_SAMPLE_DATA } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -47,7 +48,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={`${ChosunCentennial.variable} ${TteokWordmark.variable}`}>
+    <html lang="ko" className={cn(ChosunCentennial.variable, TteokWordmark.variable)}>
       <body className="min-h-dvh antialiased">
         {children}
       </body>

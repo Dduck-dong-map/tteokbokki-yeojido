@@ -6,8 +6,9 @@ import { bad, readJson, reply, whoFrom } from "@/lib/request";
 export async function POST(req: Request, ctx: RouteContext<"/api/lists/[id]">) {
   const { id } = await ctx.params;
   const body = await readJson(req);
-  if (!body) return bad("내용을 읽지 못했어요");
+  if (body instanceof Response) return body; // 다른 출처 · JSON 아님 · 너무 큼 · 읽지 못함 (lib/request.ts)
   const who = whoFrom(req, body.nick);
+  if (who instanceof Response) return who; // 기기 표시(x-ddy-device)가 없는 쓰기는 받지 않는다
   const storeId = typeof body.storeId === "string" ? body.storeId : "";
 
   switch (body.action) {

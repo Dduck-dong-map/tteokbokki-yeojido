@@ -1,5 +1,6 @@
 -- 떡볶여지도 로컬 DB (도커, 11-08) — 지금 앱 데이터(web/src/lib/data/db.ts)를 그대로 담는 표.
--- 도커 컨테이너가 처음 뜰 때 이 파일이 자동으로 돈다 (docker-entrypoint-initdb.d). 다시 만들려면 npm run db:reset.
+-- 도커 컨테이너가 처음 뜰 때 이 파일이 자동으로 돈다 (docker-entrypoint-initdb.d).
+-- 표를 바꾸면 이 파일을 직접 고치고 pnpm db:reset 으로 DB 를 새로 만든다 (이미 쓰던 DB 를 고치는 절차는 두지 않는다 · db/README.md).
 -- 이름은 앱 값의 이름을 snake_case 로 옮긴 것 (lastConfirmedAt → last_confirmed_at). 앱 쪽 연결: web/src/lib/data/pg.ts
 -- 로그인이 없어서 「누가」는 기기 표시·접속 위치의 해시(device · ip)로만 남긴다. 화면에는 내보내지 않는다.
 -- 나중에 Supabase 로 옮길 때도 이 표를 그대로 쓰고, 읽기 권한(RLS)만 더한다.
@@ -155,3 +156,27 @@ create table list_likes (
   ip text not null,
   primary key (list_id, device)
 );
+
+-- ───────── 사진 하루 한도 (11-18) ─────────
+-- 사진 한 장을 올릴 때마다 한 줄. 한 사람(기기 + 접속 위치) 하루 30장 · 같은 접속 위치 전체 상한을 센다 (규칙은 src/lib/data/db.ts takePhotoSlot · 숫자는 src/lib/wiki.ts).
+-- 예전에는 서버 메모리에 세어서 서버가 새로 뜨면 0 부터 다시 셌다. 최근 24시간 줄만 남기고 앱이 올릴 때마다 오래된 줄을 지운다.
+create table photo_uploads (
+  id text primary key,                 -- 사진 id (/api/photos/[id])
+  at timestamptz not null,
+  device text not null,
+  ip text not null
+);
+create index photo_uploads_at_idx on photo_uploads (at);
+
+-- ───────── 지운 글 · 댓글 · 리스트 (11-19) ─────────
+-- 하루 한도를 셀 때 남아 있는 줄만 세면 쓰고 지우기를 되풀이해 한도를 넘을 수 있다 → 지운 것을 한 줄씩 남겨 함께 센다 (src/lib/data/db.ts recentWrites).
+-- at = 처음 쓴 시각, device · ip = 쓴 사람. 최근 24시간 안에 쓴 것만 남기고 앱이 줄을 더할 때마다 오래된 줄을 지운다. 화면에는 쓰지 않는다.
+create table deleted_writes (
+  kind text not null,                  -- post · comment · list
+  id text not null,                    -- 지운 글 · 댓글 · 리스트의 id
+  at timestamptz not null,
+  device text not null,
+  ip text not null,
+  primary key (kind, id)
+);
+create index deleted_writes_at_idx on deleted_writes (at);

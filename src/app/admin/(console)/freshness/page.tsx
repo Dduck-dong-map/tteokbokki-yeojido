@@ -1,3 +1,4 @@
+import AdminGate from "@/components/admin/AdminGate";
 import FreshnessTable from "@/components/admin/FreshnessTable";
 import { PageHeader, ProtoNote } from "@/components/admin/bits";
 
@@ -8,8 +9,10 @@ export default function FreshnessPage() {
   return (
     <>
       <PageHeader id="M-AD-05" title="신선도 점검" desc="매주 한 번, 오래 확인 안 한 가게를 전화·방문·지도 앱으로 확인해요. 확인하면 확인일이 오늘로 바뀌고 도장이 다시 진해져요." />
-      <ProtoNote />
-      <FreshnessTable />
+      <AdminGate>
+        <ProtoNote />
+        <FreshnessTable />
+      </AdminGate>
     </>
   );
 }

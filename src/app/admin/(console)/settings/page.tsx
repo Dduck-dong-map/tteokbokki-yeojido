@@ -1,3 +1,4 @@
+import AdminGate from "@/components/admin/AdminGate";
 import { PageHeader, ProtoNote } from "@/components/admin/bits";
 import { Icon, type IconName } from "@/components/admin/Icon";
 import { ROLE_LABEL, RULES, STAFF } from "@/lib/admin/sample";
@@ -32,114 +33,116 @@ export default function SettingsPage() {
   return (
     <>
       <PageHeader id="M-AD-09" title="설정" desc="운영자·권한과 운영 규칙은 관리자만 바꿀 수 있어요." />
-      <ProtoNote />
+      <AdminGate>
+        <ProtoNote />
 
-      <section className="section">
-        <h2 className="section__title">관리</h2>
-        <div className="entry-grid entry-grid--4">
-          {CARDS.map((c) => (
-            <a key={c.title} href={c.href} className="entry-card">
-              <span className={`entry-card__icon entry-card__icon--${c.color}`}><Icon name={c.icon} /></span>
-              <span className="entry-card__body">
-                <span className="entry-card__title">{c.title}</span>
-                <span className="entry-card__desc">{c.desc}</span>
-              </span>
-              <span className="entry-card__arrow"><Icon name="arrow-right" /></span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <h2 className="section__title">도움말</h2>
-        <div className="entry-grid entry-grid--3">
-          {HELP.map((h) => (
-            <a key={h} href="#rules" className="entry-card entry-card--help">
-              <span className="entry-card__icon"><Icon name="book" /></span>
-              <span className="entry-card__body"><span className="entry-card__title">{h}</span></span>
-              <span className="entry-card__arrow"><Icon name="arrow-right" /></span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section className="section" id="staff">
-        <h2 className="section__title">운영자·권한</h2>
-        <div className="table-wrap u-mb-4">
-          <div className="table-toolbar">
-            <span className="u-strong">운영하는 사람 {STAFF.length}명 (예시)</span>
-            <div className="table-toolbar__spacer" />
-            <button type="button" className="btn btn--default btn--sm"><Icon name="plus" /> 초대</button>
-          </div>
-          <table className="table">
-            <thead><tr><th>이름</th><th>역할</th><th>로그인</th><th>2단계 인증</th><th>맡은 지역</th><th className="cell--num">최근 활동</th></tr></thead>
-            <tbody>
-              {STAFF.map((p) => (
-                <tr key={p.name}>
-                  <td className="cell--primary">{p.name}</td>
-                  <td><span className={`badge ${p.role === "owner" ? "badge--info" : ""}`}>{ROLE_LABEL[p.role]}</span></td>
-                  <td className="u-muted">{p.email}</td>
-                  <td>{p.twoFactor ? <span className="badge badge--success">켬</span> : <span className="badge badge--warning">끔 · 크루는 선택</span>}</td>
-                  <td>{p.area ?? "전체"}</td>
-                  <td className="cell--num u-muted">{p.lastSeen}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="table-wrap">
-          <div className="table-toolbar"><span className="u-strong">역할별로 할 수 있는 일</span></div>
-          <table className="table table--compact">
-            <thead><tr><th>할 일</th><th style={{ width: 90 }}>관리자</th><th style={{ width: 90 }}>운영자</th><th style={{ width: 90 }}>크루</th></tr></thead>
-            <tbody>
-              {MATRIX.map(([label, ...can]) => (
-                <tr key={label}>
-                  <td>{label}</td>
-                  {can.map((c, i) => <td key={i}>{c ? <span className="dot dot--success" /> : <span className="u-muted">—</span>}</td>)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="section" id="rules">
-        <h2 className="section__title">운영 규칙</h2>
-        <div className="card">
-          <div className="card__body">
-            {RULES.map((r) => (
-              <div key={r.key} className="form-row">
-                <label className="field__label">{r.label}</label>
-                <div>
-                  <input className="input" style={{ maxWidth: 240 }} value={r.value} disabled readOnly />
-                  <p className="field__hint">{r.note}</p>
-                </div>
-              </div>
+        <section className="section">
+          <h2 className="section__title">관리</h2>
+          <div className="entry-grid entry-grid--4">
+            {CARDS.map((c) => (
+              <a key={c.title} href={c.href} className="entry-card">
+                <span className={`entry-card__icon entry-card__icon--${c.color}`}><Icon name={c.icon} /></span>
+                <span className="entry-card__body">
+                  <span className="entry-card__title">{c.title}</span>
+                  <span className="entry-card__desc">{c.desc}</span>
+                </span>
+                <span className="entry-card__arrow"><Icon name="arrow-right" /></span>
+              </a>
             ))}
           </div>
-          <div className="card__foot">
-            <span className="u-caption">처음에는 코드 값으로 두고, 바꿀 일이 잦아지면 여기서 바꾸게 열어요.</span>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="section" id="blocks">
-        <h2 className="section__title">차단 기기</h2>
-        <div className="table-wrap">
-          <table className="table">
-            <thead><tr><th>기기</th><th>이유</th><th>차단한 사람</th><th className="cell--num">풀리는 날</th><th style={{ width: 100 }} /></tr></thead>
-            <tbody>
-              <tr>
-                <td className="u-mono">ff00…</td>
-                <td>도배 (하루 11건)</td>
-                <td>이시영</td>
-                <td className="cell--num u-muted">2026-11-02</td>
-                <td><div className="row-actions"><a href="#">풀기</a></div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <section className="section">
+          <h2 className="section__title">도움말</h2>
+          <div className="entry-grid entry-grid--3">
+            {HELP.map((h) => (
+              <a key={h} href="#rules" className="entry-card entry-card--help">
+                <span className="entry-card__icon"><Icon name="book" /></span>
+                <span className="entry-card__body"><span className="entry-card__title">{h}</span></span>
+                <span className="entry-card__arrow"><Icon name="arrow-right" /></span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="section" id="staff">
+          <h2 className="section__title">운영자·권한</h2>
+          <div className="table-wrap u-mb-4">
+            <div className="table-toolbar">
+              <span className="u-strong">운영하는 사람 {STAFF.length}명 (예시)</span>
+              <div className="table-toolbar__spacer" />
+              <button type="button" className="btn btn--default btn--sm"><Icon name="plus" /> 초대</button>
+            </div>
+            <table className="table">
+              <thead><tr><th>이름</th><th>역할</th><th>로그인</th><th>2단계 인증</th><th>맡은 지역</th><th className="cell--num">최근 활동</th></tr></thead>
+              <tbody>
+                {STAFF.map((p) => (
+                  <tr key={p.name}>
+                    <td className="cell--primary">{p.name}</td>
+                    <td><span className={`badge ${p.role === "owner" ? "badge--info" : ""}`}>{ROLE_LABEL[p.role]}</span></td>
+                    <td className="u-muted">{p.email}</td>
+                    <td>{p.twoFactor ? <span className="badge badge--success">켬</span> : <span className="badge badge--warning">끔 · 크루는 선택</span>}</td>
+                    <td>{p.area ?? "전체"}</td>
+                    <td className="cell--num u-muted">{p.lastSeen}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="table-wrap">
+            <div className="table-toolbar"><span className="u-strong">역할별로 할 수 있는 일</span></div>
+            <table className="table table--compact">
+              <thead><tr><th>할 일</th><th style={{ width: 90 }}>관리자</th><th style={{ width: 90 }}>운영자</th><th style={{ width: 90 }}>크루</th></tr></thead>
+              <tbody>
+                {MATRIX.map(([label, ...can]) => (
+                  <tr key={label}>
+                    <td>{label}</td>
+                    {can.map((c, i) => <td key={i}>{c ? <span className="dot dot--success" /> : <span className="u-muted">—</span>}</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="section" id="rules">
+          <h2 className="section__title">운영 규칙</h2>
+          <div className="card">
+            <div className="card__body">
+              {RULES.map((r) => (
+                <div key={r.key} className="form-row">
+                  <label className="field__label">{r.label}</label>
+                  <div>
+                    <input className="input" style={{ maxWidth: 240 }} value={r.value} disabled readOnly />
+                    <p className="field__hint">{r.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="card__foot">
+              <span className="u-caption">처음에는 코드 값으로 두고, 바꿀 일이 잦아지면 여기서 바꾸게 열어요.</span>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="blocks">
+          <h2 className="section__title">차단 기기</h2>
+          <div className="table-wrap">
+            <table className="table">
+              <thead><tr><th>기기</th><th>이유</th><th>차단한 사람</th><th className="cell--num">풀리는 날</th><th style={{ width: 100 }} /></tr></thead>
+              <tbody>
+                <tr>
+                  <td className="u-mono">ff00…</td>
+                  <td>도배 (하루 11건)</td>
+                  <td>이시영</td>
+                  <td className="cell--num u-muted">2026-11-02</td>
+                  <td><div className="row-actions"><a href="#">풀기</a></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </AdminGate>
     </>
   );
 }

@@ -26,12 +26,12 @@ export function StoreCardBody({ store: s, now, me = null, thumb = false, tags = 
       {thumb && <StoreThumb photo={s.photos?.[0]} />}
 
       <div className="min-w-0 flex-1">
-        <h3 className="flex items-center gap-1.5 text-[15px] font-bold text-foreground">
+        <h3 className="flex items-center gap-1.5 text-body-medium text-foreground">
           <span className="truncate">{s.name}</span>
           {isPending(s, now) && <PendingTag />}
         </h3>
 
-        <p className="truncate text-[12px] text-muted-foreground/70">
+        <p className="truncate text-caption text-muted-foreground/70">
           {s.dong}
           {me && <> · {distanceText(distanceM(me, s))}</>}
           <span className={cn(stale && "text-spicytext")}> · 확인 {confirmedAgo(s.lastConfirmedAt, now)}</span>
@@ -46,12 +46,12 @@ export function StoreCardBody({ store: s, now, me = null, thumb = false, tags = 
             ))}
           </div>
         ) : (
-          <p className="mt-0.5 truncate text-[13px] text-muted-foreground">
+          <p className="mt-0.5 truncate text-caption text-muted-foreground">
             {STYLES[s.style]} · {rice.join("·")}
           </p>
         )}
 
-        <p className="mt-1 flex items-center gap-2 text-[13px]">
+        <p className="mt-1 flex items-center gap-2 text-caption">
           <Stars rating={s.rating} size={12} />
           {tags && <span className="text-muted-foreground/70">· 맵기 {SPICE_LEVELS[s.spice].ref.replace(" 정도", "")}</span>}
         </p>
@@ -60,8 +60,8 @@ export function StoreCardBody({ store: s, now, me = null, thumb = false, tags = 
       <div className="flex shrink-0 flex-col items-end justify-between">
         <SpiceStamp n={s.spice} size={26} faded={stale} face />
         <div className="text-right">
-          <b className="block text-[15px] leading-tight text-foreground">{won(s.price)}</b>
-          {s.menu[0] && <span className="block max-w-[96px] truncate text-[11px] text-muted-foreground/70">{s.menu[0].name}</span>}
+          <b className="block text-body-medium leading-tight text-foreground">{won(s.price)}</b>
+          {s.menu[0] && <span className="block max-w-[96px] truncate text-caption text-muted-foreground/70">{s.menu[0].name}</span>}
         </div>
       </div>
     </>

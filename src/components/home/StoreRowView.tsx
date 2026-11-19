@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { StoreCardBody } from "./StoreCardBody";
 import type { StoreRowViewProps } from "./types";
@@ -23,7 +24,7 @@ export default function StoreRowView({ store, me, now, selected, onPick }: Store
 
       {selected && (
         <div className="flex gap-2 px-4 pb-3 md:hidden">
-          <Link href={`/store/${store.id}`} className="grid h-11 flex-1 place-items-center rounded-xl bg-primary text-[14px] font-bold text-primary-foreground">
+          <Link href={`/store/${store.id}`} className={cn(buttonVariants({ variant: "filled", size: "md" }), "min-w-0 flex-1")}>
             자세히 · 길찾기
           </Link>
         </div>

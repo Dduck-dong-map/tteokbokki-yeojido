@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AddPhotoViewProps } from "./types";
 
@@ -8,13 +9,22 @@ export default function AddPhotoView({ busy, message, large = false, onFiles }: 
   return (
     <label
       className={cn(
-        "grid cursor-pointer place-items-center border border-dashed border-input bg-card px-2 text-center text-[13px] text-muted-foreground/70",
+        "grid cursor-pointer place-items-center border border-dashed border-input bg-card px-2 text-center text-body-small text-muted-foreground/70",
         large ? "h-32 w-full rounded-2xl" : "h-32 w-24 shrink-0 rounded-xl",
       )}
     >
-      <span className="break-keep">
-        {busy ? "올리는 중…" : large ? "아직 사진이 없어요 · 눌러서 올려 주세요" : "+ 사진"}
-        {message && <span className="mt-1 block text-[12px] text-spicytext">{message}</span>}
+      <span className="break-keep [overflow-wrap:anywhere]">
+        {busy ? (
+          "올리는 중…"
+        ) : large ? (
+          "아직 사진이 없어요 · 눌러서 올려 주세요"
+        ) : (
+          <span className="inline-flex items-center gap-1">
+            <Plus className="size-4" strokeWidth={2} aria-hidden="true" />
+            사진
+          </span>
+        )}
+        {message && <span className="mt-1 block text-caption text-spicytext">{message}</span>}
       </span>
       <input type="file" accept="image/*" multiple className="hidden" disabled={busy} onChange={(e) => onFiles(e.target.files)} />
     </label>

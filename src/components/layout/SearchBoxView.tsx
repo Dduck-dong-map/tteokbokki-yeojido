@@ -1,5 +1,5 @@
 import { Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import type { SearchBoxViewProps } from "./types";
 
 // 가게 검색칸. 돋보기 · 입력칸 · 지우기 단추. 검색어와 핸들러는 컨테이너(SearchBox.tsx)가 넘긴다.
@@ -13,18 +13,14 @@ export default function SearchBoxView({ value, onChange, onClear }: SearchBoxVie
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="가게 이름이나 동네로 찾기"
-        className="min-w-0 flex-1 bg-transparent text-[16px] text-foreground outline-none placeholder:text-muted-foreground/70"
+        className="min-w-0 flex-1 bg-transparent text-body-medium text-foreground outline-none placeholder:text-muted-foreground/70"
         aria-label="가게 검색"
       />
       {value && (
-        <button
-          type="button"
-          onClick={onClear}
-          aria-label="검색어 지우기"
-          className={cn("hit grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted-foreground/70 hover:bg-muted hover:text-foreground")}
-        >
-          <X size={16} aria-hidden="true" />
-        </button>
+        // 검색칸(높이 40~44px) 안이라 보이는 크기는 32px 로 줄인다. 누르는 영역은 icon-md 의 .hit-target 이 넓힌다
+        <Button type="button" variant="text" size="icon-md" onClick={onClear} aria-label="검색어 지우기" className="size-8 text-muted-foreground/70 hover:text-foreground">
+          <X className="size-4" aria-hidden="true" />
+        </Button>
       )}
     </label>
   );

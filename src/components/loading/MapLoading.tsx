@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import IntroZoom from "./IntroZoom";
 
 const ZOOM_END = 1600; // 확대가 끝나는 때 (globals.css 의 intro-zoom 과 맞춘다) — 브라우저가 움직임을 못 알려 줄 때만 쓴다
@@ -51,5 +52,5 @@ export default function MapLoading({ settled }: { settled: boolean }) {
   }, [settled]);
 
   if (phase === "gone") return null;
-  return <IntroZoom ref={ref} className={`max-md:fixed max-md:z-40 ${phase === "leaving" ? "intro-leaving" : ""}`} />;
+  return <IntroZoom ref={ref} className={cn("max-md:fixed max-md:z-40", phase === "leaving" && "intro-leaving")} />;
 }

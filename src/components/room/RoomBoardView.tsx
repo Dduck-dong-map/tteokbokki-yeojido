@@ -1,6 +1,9 @@
+import { MapPin, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 import { SampleRibbon } from "@/components/brand";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import { BOARD_CATS, timeAgo, type BoardCat } from "@/lib/community";
 import { cn } from "@/lib/utils";
 import type { BoardCatFilter, RoomBoardViewProps } from "./types";
@@ -17,36 +20,21 @@ export default function RoomBoardView({ posts, cat, storeNames, now, sample, onC
       <header className="z-10 border-b border-border bg-background px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-1.5 max-md:sticky max-md:top-0 md:border-0 md:bg-transparent md:px-0 md:pt-5">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-[18px] font-bold md:text-[20px]">떡볶이방</h1>
-            <p className="mt-0.5 text-[12px] text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">떡볶이 이야기 나누는 곳 · 가입 없이 닉네임으로</p>
+            <h1 className="text-heading-4">떡볶이방</h1>
+            <p className="mt-0.5 text-body-small text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">떡볶이 이야기 나누는 곳 · 가입 없이 닉네임으로</p>
           </div>
-          <Link
-            href="/room/write"
-            className={cn("grid h-11 shrink-0 place-items-center rounded-xl bg-primary px-4 text-[14px] font-bold text-primary-foreground hover:bg-primary/80 md:h-10")}
-          >
+          <Link href="/room/write" className={cn(buttonVariants({ variant: "filled", size: "md" }), "px-5")}>
             글쓰기
           </Link>
         </div>
-        {/* 탭 줄: 단추는 32px 이지만 .hit 가 44px 로 넓힌다. 가로 스크롤 칸이 ::after 를 자르지 않게 위아래 6px 여백 */}
-        <div role="tablist" aria-label="말머리" className="mt-1.5 flex gap-1.5 overflow-x-auto py-1.5 [scrollbar-width:none]">
-          {CATS.map(([key, label]) => {
-            const on = cat === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                role="tab"
-                aria-selected={on}
-                onClick={() => onCatChange(key)}
-                className={cn(
-                  "hit h-8 shrink-0 rounded-full border px-3 text-[13px] whitespace-nowrap",
-                  on ? "border-primary bg-primary font-semibold text-primary-foreground" : "border-input bg-card text-muted-foreground hover:bg-muted",
-                )}
-              >
-                {label}
-              </button>
-            );
-          })}
+        {/* 탭 줄: 칩은 32px 이지만 .hit-target 이 48px 로 넓힌다. 가로 스크롤 칸이 ::after 를 자르지 않게 위아래 8px 여백.
+            aria-selected 는 Chip 이 role="tab" 을 보고 붙인다. 누를 때마다 그 말머리를 알린다 */}
+        <div role="tablist" aria-label="말머리" className="mt-1 flex gap-2 overflow-x-auto py-2 [scrollbar-width:none]">
+          {CATS.map(([key, label]) => (
+            <Chip key={key} role="tab" shape="pill" selected={cat === key} onClick={() => onCatChange(key)}>
+              {label}
+            </Chip>
+          ))}
         </div>
       </header>
 
@@ -63,16 +51,29 @@ export default function RoomBoardView({ posts, cat, storeNames, now, sample, onC
               <li key={p.id}>
                 <Link href={`/room/${p.id}`} className="block min-h-11 px-4 py-3.5 hover:bg-muted">
                   <p className="flex items-center gap-1.5">
-                    <Badge variant="outline" className="shrink-0 rounded-full border-transparent bg-muted px-2 text-[12px] font-normal text-muted-foreground">
+                    <Badge variant="outline" className="shrink-0 rounded-full border-transparent bg-muted px-2 text-caption font-normal text-muted-foreground">
                       {BOARD_CATS[p.cat]}
                     </Badge>
-                    <span className="min-w-0 truncate text-[15px] font-semibold text-foreground">{p.title}</span>
-                    {p.comments > 0 && <span className="shrink-0 text-[13px] font-bold text-link">[{p.comments}]</span>}
+                    <span className="min-w-0 truncate text-body-medium font-semibold text-foreground">{p.title}</span>
+                    {p.comments > 0 && <span className="shrink-0 text-caption font-bold text-link">[{p.comments}]</span>}
                   </p>
-                  <p className="mt-1 truncate text-[12px] text-muted-foreground/70">
+                  <p className="mt-1 truncate text-caption text-muted-foreground/70">
                     {p.who} · {timeAgo(p.at, now)}
-                    {p.likes > 0 && <> · 👍 {p.likes}</>}
-                    {p.storeId && storeNames[p.storeId] && <> · 📍 {storeNames[p.storeId]}</>}
+                    {/* 아이콘은 그림만, 읽는 글은 예전 그대로(👍 · 📍) 남긴다 */}
+                    {p.likes > 0 && (
+                      <>
+                        {" · "}
+                        <ThumbsUp className="inline size-4 align-[-3px]" strokeWidth={2} aria-hidden="true" />
+                        <span className="sr-only">👍</span> {p.likes}
+                      </>
+                    )}
+                    {p.storeId && storeNames[p.storeId] && (
+                      <>
+                        {" · "}
+                        <MapPin className="inline size-4 align-[-3px]" strokeWidth={2} aria-hidden="true" />
+                        <span className="sr-only">📍</span> {storeNames[p.storeId]}
+                      </>
+                    )}
                   </p>
                 </Link>
               </li>
@@ -80,8 +81,8 @@ export default function RoomBoardView({ posts, cat, storeNames, now, sample, onC
           </ul>
         ) : (
           <div className="mt-16 px-4 text-center">
-            <p className="text-[13px] leading-relaxed text-muted-foreground/70">아직 글이 없어요.</p>
-            <Link href="/room/write" className="hit mt-3 inline-block text-[13px] font-semibold text-foreground underline underline-offset-4">
+            <p className="text-body-small leading-relaxed text-muted-foreground/70">아직 글이 없어요.</p>
+            <Link href="/room/write" className="hit mt-3 inline-block text-body-small font-semibold text-foreground underline underline-offset-4">
               첫 글 쓰기
             </Link>
           </div>

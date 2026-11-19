@@ -1,6 +1,9 @@
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { SpiceStamp } from "@/components/brand";
 import { GRID_LI, GRID_UL } from "@/components/layout";
+import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import { distanceM, distanceText } from "@/lib/filters";
 import { confirmedAgo, freshness } from "@/lib/freshness";
 import { RICE_CAKES, STYLES } from "@/lib/taxonomy";
@@ -12,28 +15,24 @@ import type { MinePageViewProps } from "./types";
 type MineSavedViewProps = Pick<MinePageViewProps, "saved" | "savedShown" | "onlyVisited" | "me" | "now" | "onToggleOnlyVisited" | "onCreateFromSaved" | "onToggleVisited" | "onUnsave">;
 
 // 찜한 가게 줄 목록. 정렬(가까운순/최근 저장순)·「다녀온 곳만」 거르기는 컨테이너가 끝내서 넘긴다.
-// 줄 하나 = 도장 · 이름 · 동·거리·스타일·떡 / 찜한 날 · 확인한 날(오래되면 맵기 글색) · 「다녀옴」 · ♥(찜 취소).
+// 「다녀온 곳만」·「다녀옴」은 주 행동이 아닌 켜짐이라 Chip tone="tonal"(옥빛 테두리 + 옅은 바탕). 「다녀옴」의 켜짐은 Chip 의 체크 아이콘(lucide Check)으로 보인다.
+// 줄 하나 = 도장 · 이름 · 동·거리·스타일·떡 / 찜한 날 · 확인한 날(오래되면 맵기 글색) · 「다녀옴」 · 채운 하트(lucide Heart, 찜 취소).
 export default function MineSavedView({ saved, savedShown, onlyVisited, me, now, onToggleOnlyVisited, onCreateFromSaved, onToggleVisited, onUnsave }: MineSavedViewProps) {
   return (
     <section aria-label="찜한 가게">
-      <div className="flex items-center justify-between gap-2 text-[13px]">
-        <b>
+      <div className="flex items-center justify-between gap-2 text-caption">
+        <b className="min-w-0 break-keep">
           찜한 가게 {saved.length}곳 <span className="font-normal text-muted-foreground/70">· {me ? "가까운순" : "최근 저장순"}</span>
         </b>
-        <button
-          type="button"
-          aria-pressed={onlyVisited}
-          onClick={onToggleOnlyVisited}
-          className={cn("hit h-7 shrink-0 rounded-full border px-2.5 text-[12px] whitespace-nowrap", onlyVisited ? "border-primary bg-secondary font-semibold text-primary" : "border-input text-muted-foreground")}
-        >
+        <Chip type="button" size="sm" tone="tonal" shape="pill" selected={onlyVisited} onChange={onToggleOnlyVisited}>
           다녀온 곳만
-        </button>
+        </Chip>
       </div>
 
       {saved.length > 0 && (
-        <button type="button" onClick={onCreateFromSaved} className={cn("mt-2 grid h-11 w-full place-items-center rounded-xl border border-input bg-card text-[13px] font-bold text-foreground hover:bg-muted md:h-10 md:max-w-[520px]")}>
+        <Button type="button" variant="outlined" size="md" onClick={onCreateFromSaved} className="mt-2 w-full min-w-0 px-3 md:max-w-[520px]">
           찜한 {saved.length}곳으로 리스트 만들기
-        </button>
+        </Button>
       )}
 
       {savedShown.length ? (
@@ -45,28 +44,23 @@ export default function MineSavedView({ saved, savedShown, onlyVisited, me, now,
                 <Link href={`/store/${s.id}`} className="flex min-w-0 flex-1 items-center gap-3">
                   <SpiceStamp n={s.spice} size={30} faded={stale} />
                   <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-[15px] font-bold">{s.name}</h3>
-                    <p className="truncate text-[13px] text-muted-foreground">
+                    <h3 className="truncate text-body-medium">{s.name}</h3>
+                    <p className="truncate text-caption text-muted-foreground">
                       {s.dong}
                       {me && <> · {distanceText(distanceM(me, s))}</>} · {STYLES[s.style]} · {s.rice.map((r) => RICE_CAKES[r]).join("·")}
                     </p>
-                    <p className="text-[11px] text-muted-foreground/70">
+                    <p className="truncate text-caption text-muted-foreground/70">
                       찜 {confirmedAgo(v.at, now)}
                       <span className={cn(stale && "text-spicytext")}> · 확인 {confirmedAgo(s.lastConfirmedAt, now)}</span>
                     </p>
                   </div>
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => onToggleVisited(s.id)}
-                  aria-pressed={!!v.visited}
-                  className={cn("hit h-8 shrink-0 rounded-full border px-2.5 text-[12px] whitespace-nowrap", v.visited ? "border-primary bg-secondary font-semibold text-primary" : "border-input bg-card text-muted-foreground")}
-                >
-                  {v.visited ? "다녀옴 ✓" : "다녀옴"}
-                </button>
-                <button type="button" onClick={() => onUnsave(s.id)} aria-label={`${s.name} 찜 취소`} className={cn("grid h-11 w-11 shrink-0 place-items-center text-[18px] text-brand-red md:h-8 md:w-8")}>
-                  ♥
-                </button>
+                <Chip type="button" size="sm" tone="tonal" shape="pill" selected={!!v.visited} onChange={() => onToggleVisited(s.id)}>
+                  다녀옴
+                </Chip>
+                <Button type="button" variant="text" size="icon-md" onClick={() => onUnsave(s.id)} aria-label={`${s.name} 찜 취소`} className="text-brand-red">
+                  <Heart className="size-5 fill-current" strokeWidth={2} aria-hidden="true" />
+                </Button>
               </li>
             );
           })}

@@ -12,7 +12,7 @@ export function BottomNav({ active }: { active?: NavKey }) {
   return (
     <nav
       aria-label="메뉴"
-      className="grid h-14 shrink-0 grid-cols-3 border-t border-border bg-background pb-[env(safe-area-inset-bottom)] text-[12px] md:hidden"
+      className="grid h-14 shrink-0 grid-cols-3 border-t border-border bg-background pb-[env(safe-area-inset-bottom)] text-caption md:hidden"
     >
       {NAV.map((n) => {
         const isActive = active === n.key;

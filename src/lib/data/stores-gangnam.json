@@ -3,7 +3,7 @@
  "title": "강남구 리서치 v1",
  "at": "2026-11-15",
  "who": "운영 · 강남 리서치 v1",
- "doc": "docs/가게리서치_강남_v1_2026-11-15.md",
+ "doc": "docs/리서치/가게리서치_강남_v1_2026-11-15.md",
  "geocoder": "OpenStreetMap Nominatim (© OpenStreetMap contributors)",
  "stores": [
   {

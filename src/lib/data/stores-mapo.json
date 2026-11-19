@@ -3,7 +3,7 @@
  "title": "마포구 리서치 v1",
  "at": "2026-11-16",
  "who": "운영 · 마포 리서치 v1",
- "doc": "docs/가게리서치_마포_v1_2026-11-16.md",
+ "doc": "docs/리서치/가게리서치_마포_v1_2026-11-16.md",
  "geocoder": "OpenStreetMap Nominatim (© OpenStreetMap contributors)",
  "stores": [
   {

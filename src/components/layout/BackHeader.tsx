@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import type { ReactNode } from "react";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 // 하위 화면 머리칸. 폰에서는 위에 붙어 따라오고, 768 이상에서는 위 헤더 아래 제목 줄이 된다.
@@ -11,10 +13,10 @@ export function BackHeader({ title, href = "/", right, className }: { title: str
         className,
       )}
     >
-      <Link href={href} className="grid h-11 w-11 place-items-center rounded-full text-xl text-foreground hover:bg-muted" aria-label="뒤로">
-        ‹
+      <Link href={href} className={cn(buttonVariants({ variant: "text", size: "icon-xl" }), "text-foreground")} aria-label="뒤로">
+        <ChevronLeft className="size-6" strokeWidth={2} aria-hidden="true" />
       </Link>
-      <h1 className="min-w-0 flex-1 truncate text-[16px] font-bold md:text-[20px]">{title}</h1>
+      <h1 className="min-w-0 flex-1 truncate text-heading-4">{title}</h1>
       {right}
     </header>
   );

@@ -7,7 +7,7 @@ import type { Region, Store } from "../types";
 export const REGIONS: Region[] = [
   { city: "seoul", gu: "mapo", name: "마포구" },
   { city: "seoul", gu: "seodaemun", name: "서대문구" },
-  // 11-15: 실제 가게 첫 지역 (docs/가게리서치_강남_v1_2026-11-15.md · lib/data/datasets.ts)
+  // 11-15: 실제 가게 첫 지역 (docs/리서치/가게리서치_강남_v1_2026-11-15.md · lib/data/datasets.ts)
   { city: "seoul", gu: "gangnam", name: "강남구" },
 ];
 
