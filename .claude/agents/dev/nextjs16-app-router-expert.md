@@ -92,7 +92,7 @@ model: inherit
 
 ## 5. 떡볶여지도 결정 (구현할 때 따른다)
 
-근거 문서: `docs/기술스택_v1_2026-10-28.md`.
+근거 문서: `docs/개발/기술스택_v1_2026-10-28.md`.
 
 - Supabase(Postgres + PostGIS) + Vercel. 지도는 **네이버 지도 JS v3 + 커스텀 스타일**이고 `MapView` 인터페이스 뒤에 둔다(나중에 MapLibre로 교체 가능하게).
 - **쓰기는 서버만**: 브라우저 → route handler(또는 Server Action) → service role. anon 키는 RLS로 승인된 가게 SELECT만. Turnstile 검증과 기기·IP 한도는 서버에서.

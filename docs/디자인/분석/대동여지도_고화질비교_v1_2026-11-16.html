@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대동여지도 고화질 비교</title>
+<style>
+  :root { --bg: #f3f1ee; --ink: #222; --muted: #6b6b6b; --line: #d9d4cc; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+  header { padding: 20px 24px 8px; }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .row { display: flex; gap: 28px; padding: 16px 24px 28px; flex-wrap: wrap; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  .label { font-size: 14px; font-weight: 600; }
+  .label small { font-weight: 400; color: var(--muted); }
+  .phone { width: 390px; height: 844px; position: relative; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 18px; container-type: size; }
+  .map { position: absolute; left: 50%; top: 50%; width: min(92cqw, calc(84cqh * 960 / 1615)); aspect-ratio: 960 / 1615; translate: -50% -50%; transform-origin: 38% 54%; }
+  .map img { display: block; width: 100%; height: 100%; transform-origin: 38% 54%; }
+  .map .hires { position: absolute; left: 20.9896%; top: 44.0074%; width: 34.0104%; height: 19.9907%; transform-origin: 50% 50%; }
+  .s1 .map { transform: none; }
+  .s8 .map { transform: translate(12%, -4%) scale(8); }
+  .s10 .map { transform: translate(12%, -4%) scale(8); }
+  .s10 .map img { transform: scale(1.25); }
+  .s1 .map .hires { outline: 2px dashed rgba(192, 0, 0, .7); outline-offset: -2px; }
+  h2 { font-size: 16px; margin: 0; padding: 0 24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>첫 화면 대동여지도 · 지금 vs 고화질 (11-16)</h1>
+  <p>폰 크기(390×844)에서 첫 화면이 한양으로 들어간 장면을 그대로 그렸어요. 왼쪽 = 지금(960px 그림 하나) · 오른쪽 = 고화질(960px 전도 위에 3,840px 판 한양 둘레 조각).</p>
+  <p>원본: 위키미디어 공용 Daedongyeojido-full.jpg (김정호 1861, 서울대 규장각 소장, 퍼블릭 도메인 표기). 조각 파일 537KB, 첫 그림 뒤에 받아요.</p>
+</header>
+
+<h2>8배 — 지도가 준비되기를 기다리는 장면 (가장 오래 보임)</h2>
+<div class="row">
+  <div class="col"><div class="label">지금 <small>960px</small></div>
+    <div class="phone s8"><div class="map"><img src="../../../public/loading/daedong.webp" alt=""></div></div></div>
+  <div class="col"><div class="label">고화질 <small>+ 한양 조각</small></div>
+    <div class="phone s8"><div class="map"><img src="../../../public/loading/daedong.webp" alt=""><img class="hires" src="../../../public/loading/daedong-hanyang.webp" alt=""></div></div></div>
+</div>
+
+<h2>10배 — 지도로 바뀌며 걷히는 순간</h2>
+<div class="row">
+  <div class="col"><div class="label">지금</div>
+    <div class="phone s10"><div class="map"><img src="../../../public/loading/daedong.webp" alt=""></div></div></div>
+  <div class="col"><div class="label">고화질</div>
+    <div class="phone s10"><div class="map"><img src="../../../public/loading/daedong.webp" alt=""><img class="hires" src="../../../public/loading/daedong-hanyang.webp" alt=""></div></div></div>
+</div>
+
+<h2>1배 — 처음 전도 (빨간 점선 = 고화질 조각 자리. 실제 화면에선 1배일 땐 조각을 숨기고, 확대가 3배쯤 된 0.9초부터 나타나요)</h2>
+<div class="row">
+  <div class="col"><div class="label">지금</div>
+    <div class="phone s1"><div class="map"><img src="../../../public/loading/daedong.webp" alt=""></div></div></div>
+  <div class="col"><div class="label">고화질</div>
+    <div class="phone s1"><div class="map"><img src="../../../public/loading/daedong.webp" alt=""><img class="hires" src="../../../public/loading/daedong-hanyang.webp" alt=""></div></div></div>
+</div>
+</body>
+</html>
