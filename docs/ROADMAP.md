@@ -99,7 +99,7 @@
 - [ ] 읽기 최적화: 요청마다 표 전체를 읽는 것을 결정대로 바꾼다(화면 범위 조회 · 목록 페이지 캐시)
 - ✅ Vercel Blob 비공개 저장소(싱가포르)를 만들어 프로젝트에 잇고 사진 올리기 → 다시 읽기를 확인했다(11-20): Vercel 프로젝트 `lucetas-projects/tteokbokki-yeojido`, 저장소 `tteokbokki-photos`(`sin1` · Private). 올리기 201 → `/api/photos/<id>` 200 내용 같음, 저장소 주소로 직접 열면 403. 배포는 아직 하지 않았다
 - ✅ Neon 의 Pooled connection 주소로 앱 서버의 읽기 · 쓰기를 확인했다(11-20): Neon 가지 `dev-check-2026-11-20` 에 붙인 `pnpm build` + `next start` 에서 등록 → 맞아요 → 평가 → 길찾기가 모두 저장되고 가게 상세 · 지도 홈에 다시 보인다(쓰기 잠금이 풀러에서 돈다). 본 DB 는 빈 채 그대로다. 도중에 `DATABASE_POOL=` 빈 값이 연결 0개가 되어 빌드와 질의가 멈추는 버그를 찾아 `pg.ts` 를 고쳤다. `.env.local` 의 `ADMIN_KEY` · `HASH_SALT` 는 아직 비어 있다(`HASH_SALT` 는 Vercel 에 넣을 값과 같게 한다)
-- [ ] Vercel 환경 변수(`DATABASE_URL` · `HASH_SALT` · `ADMIN_KEY` · `NEXT_PUBLIC_*`)를 넣고 함수 지역을 싱가포르로 맞춰 `vercel --prod` 로 배포한다 (조직 소유 저장소라 무료 플랜에서는 깃 연결이 안 된다)
+- [ ] Vercel 환경 변수(`DATABASE_URL` · `HASH_SALT` · `ADMIN_KEY` · `NEXT_PUBLIC_*`)를 넣고 함수 지역을 싱가포르로 맞춰 `vercel --prod` 로 배포한다 (조직 소유 저장소라 무료 플랜에서는 깃 연결이 안 된다. 11-20: `vercel.json` 에 `sin1` 을 넣고 `HASH_SALT` · `ADMIN_KEY` 를 production · preview 에 넣었다. 미리보기 배포는 Neon 가지 `preview` 에 붙여 올렸고 화면이 열린다. 남은 것은 production 의 `DATABASE_URL` · `NEXT_PUBLIC_SITE_URL` 과 운영 배포)
 - [ ] 어드민 「후보 가져오기」로 실제 가게를 넣고, 청년부 1차 사용자(1~3명)에게 주소를 나눈다
 - [ ] PRD 9절 지표 셋을 `store_directions` · `store_logs` 질의로 7일마다 잰다
 - [ ] 공개 출시 전: 이용약관 · 개인정보 처리방침 페이지, 사장님 · 권리 침해 요청 창구, 쓰기에 Cloudflare Turnstile
