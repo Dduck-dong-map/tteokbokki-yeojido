@@ -1,7 +1,7 @@
 import type { LayerSpecification, LngLatLike, Map as MlMap, StyleSpecification } from "maplibre-gl";
 
 // 확대 방식 ① 의 「실제 지도」 자리 (11-13 부터 기본, 주소 ?zoom=names 면 ②). 밖에서는 follow · remove · kind 만 쓴다.
-// 네이버 키(NEXT_PUBLIC_NAVER_MAP_KEY_ID)가 있으면 네이버 지도(GL 벡터), 없거나 인증이 안 되면 OpenFreeMap 상세 지도(임시).
+// 네이버 키(NEXT_PUBLIC_NAVER_MAP_KEY)가 있으면 네이버 지도(GL 벡터), 없거나 인증이 안 되면 OpenFreeMap 상세 지도(임시).
 // 범위 = ① 확대했을 때 실제 지도만 네이버 (보드 W1-6, 11-11 사용자 결정). 그림 지도·주소 검색은 그대로.
 
 const SANS = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif"; // 글꼴 통일: 조선100년체 (11-12)
@@ -11,7 +11,7 @@ export const PRELOAD_ZOOM = 14;
 // 네이버 지도가 드러났을 때 왼쪽 아래 저작권 표시 (네이버 로고는 지도 왼쪽 위에 따로 나온다)
 // 가게 좌표 일부는 OpenStreetMap(Nominatim)에서 찾았다 (강남 리서치 v1, 11-15) → 네이버 지도가 보일 때도 OSM 표시를 함께 둔다 (ODbL)
 export const NAVER_CREDIT = '<a href="https://www.navercorp.com" target="_blank">© NAVER Corp.</a> · 가게 좌표 <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a> contributors';
-const NAVER_KEY = process.env.NEXT_PUBLIC_NAVER_MAP_KEY_ID; // 빌드 때 박힌다 → .env.local 을 바꾸면 개발 서버를 다시 켠다
+const NAVER_KEY = process.env.NEXT_PUBLIC_NAVER_MAP_KEY; // 빌드 때 박힌다 → .env.local 을 바꾸면 개발 서버를 다시 켠다
 
 export type RealMap = { follow: (center: LngLatLike, zoom: number) => void; remove: () => void; kind: () => "naver" | "temp" };
 type Ml = typeof import("maplibre-gl");

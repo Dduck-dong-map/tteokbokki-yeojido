@@ -15,7 +15,7 @@
 | 패키지 관리 | **pnpm 만** (`pnpm@10.33.0`). `npm` · `yarn` 금지 |
 | 저장 | `DATABASE_URL` 있으면 Postgres 16 + PostGIS(`pg.ts`), 없으면 `.data/db.json` |
 | 사진 | Vercel Blob 비공개 저장소(이어져 있을 때) / `.data/photos` |
-| 지도 | MapLibre 6 + OpenFreeMap. `NEXT_PUBLIC_NAVER_MAP_KEY_ID` 있으면 네이버 지도 |
+| 지도 | MapLibre 6 + OpenFreeMap. `NEXT_PUBLIC_NAVER_MAP_KEY` 있으면 네이버 지도 |
 | 시험 | Vitest(`tests/unit`) · Playwright(`tests/e2e`, 폭 390 · 768 · 1280) |
 | 배포 목표 | Vercel + Neon |
 

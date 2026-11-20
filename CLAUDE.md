@@ -57,7 +57,7 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 
 단위 테스트는 이 규칙 함수들과 `db.ts` 쓰기 규칙 · `request.ts` · `photos.ts` · `admin.ts` · `admin/access.ts` 를 본다. React 부품은 E2E 로만 본다.
 
-**지도.** MapLibre 6 + OpenFreeMap 타일을 쓰고, 대동여지도 느낌 바탕은 `components/map/dongyeoStyle.ts` 에 있다. `NEXT_PUBLIC_NAVER_MAP_KEY_ID` 가 있으면 네이버 지도를 쓴다(`realMap.ts`). MapLibre 일꾼 파일은 `public/maplibre/` 에 복사되며 깃에서 빠진다.
+**지도.** MapLibre 6 + OpenFreeMap 타일을 쓰고, 대동여지도 느낌 바탕은 `components/map/dongyeoStyle.ts` 에 있다. `NEXT_PUBLIC_NAVER_MAP_KEY` 가 있으면 네이버 지도를 쓴다(`realMap.ts`). MapLibre 일꾼 파일은 `public/maplibre/` 에 복사되며 깃에서 빠진다.
 
 **색·디자인 토큰 2층.**
 - 생성 층: `src/app/tokens.css`. `pnpm tokens` 로 만들고 **손으로 고치지 않는다**. 원본은 `docs/design-system/tokens.json` 이다.
@@ -72,7 +72,7 @@ CI(`.github/workflows/ci.yml`)는 푸시·PR 마다 타입 검사 · 린트 · �
 ## 알아 둘 것
 
 - 키가 없어도 돈다. 저장소는 빈 채로 시작하고 저장은 `.data/` 파일에 된다. 예시 데이터는 앱에 없다(11-19 에 뺌). 시험만 `tests/fixtures/`(가게 16곳 · 글 · 리스트)로 저장소를 채워 돈다(`seed.ts` 의 `seedDataDir`). 환경 변수 설명은 `.env.example` 에 있다.
-- `NEXT_PUBLIC_*` 값(`SITE_URL`, `NAVER_MAP_KEY_ID`)은 빌드 때 코드에 박힌다. 바꾸면 개발 서버를 다시 켠다.
+- `NEXT_PUBLIC_*` 값(`SITE_URL`, `NAVER_MAP_KEY`)은 빌드 때 코드에 박힌다. 바꾸면 개발 서버를 다시 켠다.
 - Vercel 에서는 `HASH_SALT` 나 `DATABASE_URL` 이 비어 있으면 서버가 시작하지 않는다. Vercel Blob 저장소가 이어져 있지 않으면 Vercel 에서는 사진 올리기를 거절한다(사진 없이 등록은 된다).
 - production(`pnpm start` · Vercel)에서는 `ADMIN_KEY` 가 없으면 어드민이 늘 잠긴다. 개발 서버만 `ADMIN_KEY` 없이 127.0.0.1 · localhost 로 열린다.
 - 접속 IP 는 `x-forwarded-for` 첫 주소다. Vercel 은 이 헤더를 덮어쓰지만, 프록시 없이 서버를 직접 열면 손님이 지어 보낼 수 있다(`src/lib/request.ts`).
