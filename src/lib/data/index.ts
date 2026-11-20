@@ -1,6 +1,6 @@
 import type { Store } from "../types";
 import { readHistory, readList, readPost, readPosts, readPublicLists, readRecentCount, readReviews, readStore, readStores } from "./db";
-import { REGIONS } from "./sample-stores";
+import { REGIONS } from "../regions";
 
 // 화면이 데이터를 꺼내는 곳은 여기 하나로 모은다. 저장 방식은 db.ts 안에서만 바꾼다.
 
@@ -31,5 +31,3 @@ export function getRegions() {
 export function getRegion(gu: string) {
   return REGIONS.find((r) => r.gu === gu);
 }
-
-export const USING_SAMPLE_DATA = true;

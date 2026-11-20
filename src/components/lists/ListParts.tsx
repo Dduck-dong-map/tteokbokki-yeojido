@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, Link2, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { LIST_VISIBILITY, timeAgo, type PlaceList } from "@/lib/community";
@@ -7,35 +8,42 @@ import { send } from "@/lib/me";
 import { refreshOwned, useOwned } from "@/lib/owned";
 import type { Store } from "@/lib/types";
 import { SpiceStamp } from "@/components/brand";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 // 리스트 카드: 이름 · 설명 한 줄 · 담긴 가게 도장 · N곳 · 만든 사람 · 추천 수
 export function ListCard({ list, stores, now, showVisibility = false }: { list: PlaceList; stores: Map<string, Store>; now: Date; showVisibility?: boolean }) {
   const inList = list.storeIds.map((id) => stores.get(id)).filter((s): s is Store => !!s);
   return (
-    <Link href={`/lists/${list.id}`} className="flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-3.5 transition-shadow hover:shadow-md">
+    <Link href={`/lists/${list.id}`} className="flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-3.5 transition-colors duration-100 hover:border-input">
       <div className="flex items-start gap-2">
-        <h3 className="min-w-0 flex-1 text-[15px] leading-snug font-bold">{list.title}</h3>
-        <span className="shrink-0 rounded-full bg-secondary px-2 text-[12px] leading-6 font-semibold text-muted-foreground" aria-label={`추천 ${list.likes}`}>
-          👍 {list.likes}
+        <h3 className="min-w-0 flex-1 text-body-medium break-keep [overflow-wrap:anywhere]">{list.title}</h3>
+        <span className="inline-flex shrink-0 items-center gap-1 h-6 rounded-full bg-secondary px-2 text-caption font-semibold text-muted-foreground" aria-label={`추천 ${list.likes}`}>
+          <ThumbsUp className="size-4" strokeWidth={2} aria-hidden="true" />
+          {list.likes}
         </span>
       </div>
-      {list.desc && <p className="line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">{list.desc}</p>}
+      {list.desc && <p className="line-clamp-2 text-body-small break-keep [overflow-wrap:anywhere] text-muted-foreground">{list.desc}</p>}
       <div className="flex items-center gap-1.5" aria-hidden="true">
         {inList.slice(0, 6).map((s) => (
           <SpiceStamp key={s.id} n={s.spice} size={22} pill={false} />
         ))}
-        {inList.length > 6 && <span className="text-[12px] text-muted-foreground/70">+{inList.length - 6}</span>}
+        {inList.length > 6 && <span className="text-caption text-muted-foreground/70">+{inList.length - 6}</span>}
       </div>
-      <p className="mt-auto truncate text-[12px] text-muted-foreground/70">
+      <p className="mt-auto truncate text-caption text-muted-foreground/70">
         {inList.length}곳 · {list.who} · {timeAgo(list.updatedAt, now)}
-        {showVisibility && list.visibility === "link" && <> · 🔗 {LIST_VISIBILITY.link}</>}
+        {showVisibility && list.visibility === "link" && (
+          <>
+            {" · "}
+            <Link2 className="inline size-4 align-[-3px]" strokeWidth={2} aria-hidden="true" /> {LIST_VISIBILITY.link}
+          </>
+        )}
       </p>
     </Link>
   );
 }
 
 // 추천(엄지척): 누르면 +1, 다시 누르면 취소. 내 리스트·내 글은 숫자만 보인다. 맛집 리스트와 떡볶이방 글이 같이 쓴다.
+// 켜짐은 aria-pressed · 글자(「추천함」) · 옥빛 채움(filled)으로 함께 보인다. 꺼지면 테두리(outlined).
 export function LikeButton({ id, likes, kind = "list" }: { id: string; likes: number; kind?: "list" | "post" }) {
   const { data } = useOwned();
   const mine = kind === "list" ? data.lists.some((l) => l.id === id) : data.posts.includes(id);
@@ -61,22 +69,21 @@ export function LikeButton({ id, likes, kind = "list" }: { id: string; likes: nu
 
   return (
     <div className="flex items-center gap-2">
-      <button
+      <Button
         type="button"
+        variant={liked ? "filled" : "outlined"}
+        size="md"
         onClick={press}
         disabled={mine}
         aria-pressed={liked}
         title={mine ? (kind === "list" ? "내 리스트는 추천할 수 없어요" : "내 글은 추천할 수 없어요") : liked ? "추천 취소" : `이 ${what} 추천하기`}
-        className={cn(
-          "flex h-10 items-center gap-1.5 rounded-xl border px-3.5 text-[14px] font-bold transition-transform active:scale-95 disabled:active:scale-100",
-          liked ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-foreground",
-        )}
+        className="gap-1.5 px-4"
       >
-        <span aria-hidden="true">👍</span>
+        <ThumbsUp className="size-5" strokeWidth={2} aria-hidden="true" />
         {mine ? "추천" : liked ? "추천함" : "추천"} <span className="tabular-nums">{count}</span>
-      </button>
+      </Button>
       {msg && (
-        <span role="status" className="text-[12px] text-muted-foreground/70">
+        <span role="status" className="text-caption text-muted-foreground/70">
           {msg}
         </span>
       )}
@@ -101,8 +108,14 @@ export function ShareListButton({ title }: { title: string }) {
     }
   };
   return (
-    <button type="button" onClick={share} className="flex h-10 items-center gap-1.5 rounded-xl border border-input bg-card px-3.5 text-[14px] font-bold text-foreground">
-      {done ? "링크 복사됨 ✓" : "공유"}
-    </button>
+    <Button type="button" variant="outlined" size="md" onClick={share} className="px-4">
+      {done ? (
+        <>
+          링크 복사됨 <Check className="size-5" strokeWidth={2} aria-hidden="true" />
+        </>
+      ) : (
+        "공유"
+      )}
+    </Button>
   );
 }

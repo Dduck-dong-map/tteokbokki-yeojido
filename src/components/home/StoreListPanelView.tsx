@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import { cn } from "@/lib/utils";
 import FilterSheetView from "./FilterSheetView";
 import StoreRowView from "./StoreRowView";
@@ -35,7 +36,7 @@ export default function StoreListPanelView({
     <section
       aria-label="가게 목록"
       className={cn(
-        "absolute inset-x-0 bottom-0 z-20 flex h-[var(--sheet-h)] flex-col rounded-t-2xl border-t border-border bg-card shadow-lg transition-[height] duration-200",
+        "absolute inset-x-0 bottom-0 z-20 flex h-[var(--sheet-h)] flex-col rounded-t-2xl border-t border-border bg-card shadow-elevation-3 transition-[height] duration-200",
         "md:static md:order-1 md:h-full md:w-[360px] md:shrink-0 md:rounded-none md:border-t-0 md:border-r md:shadow-none md:transition-none",
         routeId ? "md:max-xl:hidden xl:w-[360px]" : "xl:w-[400px]",
       )}
@@ -44,24 +45,18 @@ export default function StoreListPanelView({
       <div className="hidden shrink-0 flex-wrap gap-1.5 border-b border-border px-4 py-2.5 md:flex">
         <Button
           type="button"
-          variant={filterOn || filterOpen ? "default" : "outline"}
+          variant={filterOn || filterOpen ? "tonal" : "outlined"}
+          size="compact"
           aria-expanded={filterOpen}
           onClick={() => (filterOpen ? onFilterClose() : onFilterOpen())}
-          className={cn("h-8 rounded-full px-3 text-[13px] font-bold", !(filterOn || filterOpen) && "border-input bg-card text-foreground")}
+          className={cn(filterOn || filterOpen ? "border-primary" : "bg-card")}
         >
           필터{filterOn && ` ${filterCount}`}
         </Button>
         {filterChips.map((c) => (
-          <Button
-            key={c.id}
-            type="button"
-            variant="outline"
-            aria-pressed={c.on}
-            onClick={() => onFilterOpen(c.id)}
-            className={cn("h-8 rounded-full px-3 text-[13px]", c.on ? "border-primary font-bold text-foreground" : "border-input bg-card font-normal text-muted-foreground")}
-          >
+          <Chip key={c.id} type="button" tone="tonal" shape="pill" selected={c.on} onClick={() => onFilterOpen(c.id)}>
             {c.label}
-          </Button>
+          </Chip>
         ))}
       </div>
 
@@ -76,6 +71,7 @@ export default function StoreListPanelView({
             onPointerUp={onHandlePointerUp}
             onPointerCancel={onHandlePointerCancel}
           >
+            {/* eslint-disable-next-line no-restricted-syntax -- 시트 손잡이(4px 막대): 끌기와 탭을 함께 받는 전용 모양이라 Button 을 쓰지 않는다 */}
             <button
               type="button"
               // 끌기 모드(onHandlePointerDown 있음)에서는 탭도 컨테이너의 PointerUp 이 처리하므로 onClick 을 걸지 않는다(두 번 토글 방지)
@@ -84,19 +80,23 @@ export default function StoreListPanelView({
               className="hit mx-auto mb-2 block h-1 w-10 rounded-full bg-input md:hidden"
             />
             <div className="flex items-center justify-between gap-2">
-              <h2 className="min-w-0 text-[14px] font-bold text-foreground break-keep [overflow-wrap:anywhere]">{title}</h2>
-              <div className="flex shrink-0 gap-1 text-[12px]" onPointerDown={(e) => e.stopPropagation()}>
+              <h2 className="min-w-0 text-caption text-foreground break-keep [overflow-wrap:anywhere]">{title}</h2>
+              <div className="flex shrink-0 gap-1" onPointerDown={(e) => e.stopPropagation()}>
                 {SORTS.map((s) => (
-                  <button
+                  // 체크 아이콘은 끈다: 폰 폭에서 제목과 한 줄에 서야 접힌 시트(64px) 안에 들어온다. 켜짐은 채움 알약 모양 + aria-pressed 로 알린다
+                  <Chip
                     key={s.key}
                     type="button"
+                    size="sm"
+                    tone="ghost"
+                    shape="pill"
+                    check={false}
                     disabled={s.key === "near" && !canSortNear}
+                    selected={sort === s.key}
                     onClick={() => onSortChange(s.key)}
-                    aria-pressed={sort === s.key}
-                    className={cn("hit rounded-full px-2.5 py-1 whitespace-nowrap", sort === s.key ? "bg-foreground text-background" : "text-muted-foreground/70 disabled:opacity-40")}
                   >
                     {s.label}
-                  </button>
+                  </Chip>
                 ))}
               </div>
             </div>
@@ -112,16 +112,16 @@ export default function StoreListPanelView({
               </ul>
             ) : shown.length > 0 ? (
               <div className="px-6 py-8 text-center">
-                <p className="text-[14px] text-muted-foreground">지도를 움직이거나, 가게가 있는 곳으로 가 보세요.</p>
-                <Button type="button" variant="outline" onClick={onShowAll} className="mt-3 h-11 rounded-xl border-muted-foreground px-5 text-[14px] font-bold">
+                <p className="text-body-small text-muted-foreground">지도를 움직이거나, 가게가 있는 곳으로 가 보세요.</p>
+                <Button type="button" variant="outlined" size="md" onClick={onShowAll} className="mt-3">
                   가게 {shown.length}곳 모두 보기
                 </Button>
               </div>
             ) : (
               <div className="px-6 py-8 text-center">
-                <p className="text-[15px] font-bold text-foreground">{query ? "검색어나 필터를 바꿔 보세요" : "필터를 조금 풀어 보세요"}</p>
-                <p className="mt-1 text-[13px] text-muted-foreground/70">조건을 지우면 가게 {stores.length}곳이 다시 보여요</p>
-                <Button type="button" onClick={onResetAll} className="mt-4 h-11 rounded-xl px-5 text-[14px] font-bold">
+                <p className="text-body-medium font-bold text-foreground">{query ? "검색어나 필터를 바꿔 보세요" : "필터를 조금 풀어 보세요"}</p>
+                <p className="mt-1 text-body-small text-muted-foreground/70">조건을 지우면 가게 {stores.length}곳이 다시 보여요</p>
+                <Button type="button" variant="filled" size="md" onClick={onResetAll} className="mt-4">
                   {filterOn ? "필터 초기화" : "검색어 지우기"}
                 </Button>
               </div>

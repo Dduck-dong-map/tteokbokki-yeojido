@@ -3,10 +3,9 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import StoreList, { visibleStores } from "@/components/StoreList";
-import { SampleRibbon } from "@/components/brand";
 import { BottomNav } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
-import { USING_SAMPLE_DATA, getRegions, getStores } from "@/lib/data";
+import { getRegions, getStores } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "동네별 떡볶이 목록" };
@@ -40,7 +39,7 @@ async function Loader() {
           "max-md:sticky max-md:top-0 md:border-0 md:bg-transparent md:px-0 md:pt-5",
         )}
       >
-        <h1 className="text-[18px] font-bold text-foreground md:text-[20px]">목록</h1>
+        <h1 className="text-heading-4 text-foreground">목록</h1>
         {/* 동네 칩: 누르면 지역 페이지. 폰 누르는 곳은 .hit 으로 44px (REQ-W10) — Badge 의 overflow-hidden 이 .hit 의 ::after 를 자르지 않게 푼다 */}
         <nav aria-label="동네" className="mt-2 flex flex-wrap gap-2">
           {regions.map((r) => (
@@ -48,7 +47,7 @@ async function Loader() {
               key={r.gu}
               variant="outline"
               render={<Link href={`/seoul/${r.gu}`} />}
-              className="hit h-8 overflow-visible rounded-full border-input bg-card px-3 text-[13px] font-medium text-muted-foreground"
+              className="hit h-8 overflow-visible rounded-full border-input bg-card px-3 text-caption font-medium text-muted-foreground"
             >
               {r.name} {stores.filter((s) => s.gu === r.gu).length}곳
             </Badge>
@@ -56,13 +55,7 @@ async function Loader() {
         </nav>
       </header>
 
-      {USING_SAMPLE_DATA && (
-        <div className="flex justify-center pt-3">
-          <SampleRibbon />
-        </div>
-      )}
-
-      <h2 className="px-4 pt-4 text-[13px] font-semibold text-muted-foreground/70 md:px-0 md:pt-1 md:pb-3">최근 확인된 가게부터</h2>
+      <h2 className="px-4 pt-4 font-sans text-caption font-semibold text-muted-foreground/70 md:px-0 md:pt-1 md:pb-3">최근 확인된 가게부터</h2>
       <main className="flex-1">
         <StoreList stores={stores} now={now} />
       </main>

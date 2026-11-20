@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { BackHeader } from "@/components/layout";
+import { buttonVariants } from "@/components/ui/button";
 import { getHistory, getStore } from "@/lib/data";
 import type { HistoryKind } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -43,19 +44,19 @@ async function Loader({ params }: Pick<PageProps<"/store/[id]/history">, "params
   return (
     <>
       <BackHeader title="변경 이력" href={`/store/${id}`} />
-      <p className="px-4 pt-4 text-[14px] font-bold md:px-0 md:pt-0 break-keep [overflow-wrap:anywhere]">{store.name}</p>
+      <p className="px-4 pt-4 text-body-small font-bold md:px-0 md:pt-0 break-keep [overflow-wrap:anywhere]">{store.name}</p>
       {items.length ? (
         // 폰은 좌우 꽉 찬 줄 목록, 768 이상은 둥근 카드 한 장
-        <ol className={cn("mt-2 divide-y divide-border border-y border-border bg-card md:rounded-2xl md:border")}>
+        <ol className="mt-2 divide-y divide-border border-y border-border bg-card md:rounded-2xl md:border">
           {items.map((h) => (
             <li key={h.id} className="px-4 py-3">
-              <p className="flex items-baseline justify-between gap-2 text-[12px] text-muted-foreground/70">
-                <b className="font-semibold text-muted-foreground">{h.who}</b>
+              <p className="flex items-baseline justify-between gap-2 text-caption text-muted-foreground/70">
+                <b className="min-w-0 truncate font-semibold text-muted-foreground">{h.who}</b>
                 <span className="shrink-0">{when(h.at)}</span>
               </p>
-              <p className="mt-0.5 text-[14px]">{KIND[h.kind]}</p>
+              <p className="mt-0.5 text-body-small break-keep [overflow-wrap:anywhere]">{KIND[h.kind]}</p>
               {h.changes?.map((c) => (
-                <p key={c.field} className="mt-1 text-[13px] text-muted-foreground break-keep [overflow-wrap:anywhere]">
+                <p key={c.field} className="mt-1 text-body-small text-muted-foreground break-keep [overflow-wrap:anywhere]">
                   <span className="text-muted-foreground/70">{c.field}</span> {short(c.from)} → <b>{short(c.to)}</b>
                 </p>
               ))}
@@ -63,10 +64,10 @@ async function Loader({ params }: Pick<PageProps<"/store/[id]/history">, "params
           ))}
         </ol>
       ) : (
-        <p className="px-4 py-10 text-center text-[14px] text-muted-foreground/70">아직 바뀐 적이 없어요.</p>
+        <p className="px-4 py-10 text-center text-body-small text-muted-foreground/70">아직 바뀐 적이 없어요.</p>
       )}
       <div className="px-4 pt-4 md:px-0">
-        <Link href={`/store/${id}/edit`} className={cn("grid h-11 place-items-center rounded-xl border border-input bg-card text-[14px] font-bold hover:bg-muted")}>
+        <Link href={`/store/${id}/edit`} className={cn(buttonVariants({ variant: "outlined", size: "md" }), "flex w-full min-w-0 px-3")}>
           잘못된 곳이 있으면 고치기
         </Link>
       </div>

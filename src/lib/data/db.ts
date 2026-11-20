@@ -1,18 +1,17 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { cache } from "react";
 import { distanceM, won } from "../filters";
 import { GRADES, RICE_CAKES, SPICE_LEVELS, STYLES, USAGES } from "../taxonomy";
 import type { Change, Fail, HistoryItem, HistoryKind, Review, Store } from "../types";
-import { DAILY_LIMIT, DUP_RADIUS_M, HIDE_AT, MAX_PHOTOS, VERIFY_YES, isPending, parseAddress, type FlagReason, type NewStoreInput, type StorePatch } from "../wiki";
-import { DAILY_COMMENTS, DAILY_LISTS, DAILY_POSTS, MAX_LIST_STORES, type BoardCat, type ListVisibility, type Owned, type PlaceList, type Post, type PostComment } from "../community";
-import { SAMPLE_LISTS, SAMPLE_POSTS } from "./sample-community";
-import { SAMPLE_HISTORY, SAMPLE_NEW, SAMPLE_REVIEWS, SAMPLE_STORES } from "./sample-stores";
+import { DAILY_LIMIT, DAILY_LIMIT_PER_IP, DAILY_PHOTOS, DAILY_PHOTOS_PER_IP, DUP_RADIUS_M, GONE_BY_FLAGS, GONE_BY_VOTES, GONE_REASON_FIELD, HIDE_AT, MAX_PHOTOS, VERIFY_YES, isPending, parseAddress, type FlagReason, type NewStoreInput, type StorePatch } from "../wiki";
+import { DAILY_COMMENTS, DAILY_COMMENTS_PER_IP, DAILY_LISTS, DAILY_LISTS_PER_IP, DAILY_POSTS, DAILY_POSTS_PER_IP, MAX_LIST_STORES, type BoardCat, type ListVisibility, type Owned, type PlaceList, type Post, type PostComment } from "../community";
 
 // 저장소: 지금은 서버 폴더의 JSON 파일 하나다 (저장소 루트 .data/db.json · 깃에 안 올라간다).
-// 계정 없이 흐름 전체를 시험하려고 이렇게 뒀고, Supabase 키를 받으면 이 파일 안만 바꾼다.
+// 계정 없이 흐름 전체를 시험하려고 이렇게 뒀고, DATABASE_URL 을 넣으면 Postgres 로 간다(아래 PG).
 // 주의: Vercel 에서는 API 와 페이지가 임시 폴더를 함께 쓰지 못해 저장이 화면에 안 나타난다 (11-06 확인) → 공개 전에 반드시 바꿔야 한다.
-// 파일을 지우면 예시 데이터로 다시 시작한다.
+// 파일이 없으면 빈 저장소로 시작한다. 시험은 tests/fixtures/seed.ts 로 채운 저장소에서 돈다.
 
 // DATA_DIR 은 tests/unit/db.test.ts 가 격리 확인에 쓴다
 export const DATA_DIR = process.env.DATA_DIR ?? (process.env.VERCEL ? "/tmp/ddy-data" : path.join(process.cwd(), ".data"));
@@ -33,6 +32,15 @@ type CommentRow = PostComment & Mark & { postId: string; hidden?: boolean; flags
 type ListRow = PlaceList & Mark;
 type LikeRow = Mark & { listId: string; at: string };
 type PostLikeRow = Mark & { postId: string; at: string };
+// 길찾기 누름 (W1-4) — 성공 지표 KPI-W01. 화면에는 쓰지 않고 쌓기만 한다
+export type GoApp = "naver" | "kakao";
+type GoRow = Mark & { id: string; storeId: string; app: GoApp; at: string };
+// 사진 올리기 한 장 = 한 줄 (11-18) — 하루 한도를 세는 데만 쓴다. id = 사진 id. 최근 24시간 줄만 남긴다
+type PhotoRow = Mark & { id: string; at: string };
+// 지운 글 · 댓글 · 리스트 한 개 = 한 줄 (11-19) — 하루 한도를 세는 데만 쓴다. 남아 있는 줄만 세면 쓰고 지우기를 되풀이해 한도를 넘을 수 있어서다.
+// at = 처음 쓴(만든) 시각, Mark = 쓴 사람. 최근 24시간 안에 쓴 것만 남기고, 줄을 더할 때마다 오래된 줄을 지운다
+export type WriteKind = "post" | "comment" | "list";
+type DeletedRow = Mark & { kind: WriteKind; id: string; at: string };
 export type Db = {
   stores: Store[];
   logs: LogRow[];
@@ -44,58 +52,54 @@ export type Db = {
   lists: ListRow[];
   likes: LikeRow[];
   postLikes: PostLikeRow[];
+  goes: GoRow[];
+  photoUploads: PhotoRow[];
+  deletedWrites: DeletedRow[];
 };
 
-const isoDay = (t = Date.now()) => new Date(t + 9 * 3_600_000).toISOString().slice(0, 10);
-const daysAgo = (n: number) => isoDay(Date.now() - n * 86_400_000);
-const isoAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
-const SEED_MARK: Mark = { device: "seed", ip: "seed" };
+export const isoDay = (t = Date.now()) => new Date(t + 9 * 3_600_000).toISOString().slice(0, 10);
+// 기록 시각은 한 서버 안에서 늘 앞으로만 간다. 같은 1ms 에 되살리기와 신고가 찍히면 restoredAt 의 `at > since` 가
+// 되살린 뒤의 신고를 빼먹어서, 앞 시각과 같으면 1ms 뒤로 민다 (11-19 CI 에서 admin-status 시험이 가끔 실패).
+let lastStamp = 0;
+export function stamp() {
+  lastStamp = Math.max(Date.now(), lastStamp + 1);
+  return new Date(lastStamp).toISOString();
+}
+const SEED_MARK: Mark = { device: "seed", ip: "seed" }; // 「지도」가 남기는 기록(내림 · 확인 끝)의 표시
 
-// 예전 db.json 에는 게시판·리스트 칸이 없다 → 처음 읽을 때 예시로 채운다
+// 예전 db.json 에는 나중에 더한 칸(게시판 · 리스트 · 길찾기 · 사진 · 지운 것)이 없다 → 읽을 때 빈 목록으로 채운다
 function withCommunity(db: Db): Db {
-  if (!db.posts) {
-    db.posts = SAMPLE_POSTS.map((p) => ({ ...SEED_MARK, id: p.id, at: isoAgo(p.daysAgo), who: p.who, cat: p.cat, title: p.title, body: p.body, storeId: p.storeId, comments: p.comments.length, likes: p.likes, isSample: true }));
-    db.comments = SAMPLE_POSTS.flatMap((p) =>
-      p.comments.map((c, i) => ({ ...SEED_MARK, id: `${p.id}-c${i}`, postId: p.id, at: isoAgo(p.daysAgo - 0.1 * (i + 1)), who: c.who, text: c.text })),
-    );
-  }
+  db.posts ??= [];
   db.comments ??= [];
-  if (!db.lists) {
-    db.lists = SAMPLE_LISTS.map((l) => ({ ...SEED_MARK, id: l.id, title: l.title, desc: l.desc, storeIds: l.storeIds, who: l.who, createdAt: isoAgo(l.daysAgo), updatedAt: isoAgo(l.daysAgo), visibility: l.visibility, likes: l.likes, isSample: true }));
-  }
+  db.lists ??= [];
   db.likes ??= [];
   db.postLikes ??= []; // 글 추천 (11-08 추가)
+  db.goes ??= []; // 길찾기 누름 (11-11 추가)
+  db.photoUploads ??= []; // 사진 하루 한도 (11-18 추가)
+  db.deletedWrites ??= []; // 지운 글 · 댓글 · 리스트도 하루 한도에 센다 (11-19 추가)
   return db;
 }
 
-function seed(): Db {
-  const stores: Store[] = SAMPLE_STORES.map((s) => {
-    const fresh = SAMPLE_NEW[s.id];
-    return fresh ? { ...s, createdAt: daysAgo(fresh.daysAgo), lastConfirmedAt: daysAgo(fresh.daysAgo), by: fresh.by, verify: fresh.verify } : { ...s };
-  });
-  return {
-    stores,
-    logs: [
-      ...Object.entries(SAMPLE_NEW).map(([storeId, n]) => ({ ...SEED_MARK, id: `seed-new-${storeId}`, storeId, at: `${daysAgo(n.daysAgo)}T12:00:00+09:00`, who: n.by, kind: "new" as const })),
-      ...SAMPLE_HISTORY.map((h, i) => ({ ...SEED_MARK, id: `seed-log-${i}`, storeId: h.storeId, at: `${daysAgo(h.daysAgo)}T12:00:00+09:00`, who: h.who, kind: "edit" as const, changes: h.changes })),
-    ],
-    reviews: SAMPLE_REVIEWS.map((r, i) => ({ ...SEED_MARK, id: `seed-rev-${i}`, storeId: r.storeId, at: `${daysAgo(r.daysAgo)}T12:00:00+09:00`, who: r.who, stars: r.stars, spice: r.spice, text: r.text })),
-    votes: [],
-    flags: [],
-  } as unknown as Db;
-}
-
-// 11-08: .env.local 에 DATABASE_URL 이 있으면 로컬 DB(도커 Postgres, pg.ts)에 저장한다. 없으면 지금처럼 파일.
+// 11-08: DATABASE_URL 이 있으면 Postgres(Neon, pg.ts)에 저장한다. 없으면 파일.
 // 아래 규칙 함수들은 저장 방식과 상관없이 그대로 쓴다.
 const PG = !!process.env.DATABASE_URL;
-const prepare = (raw: Db | null) => withCommunity(raw ?? seed());
 
-async function load(): Promise<Db> {
+// 배포(Vercel)에서 DATABASE_URL 이 비면 파일 모드로 /tmp 에 쓰고, 응답은 성공인데 저장이 남지 않는다 (기술 스택 9절 #2).
+// HASH_SALT 와 같이 db.ts 를 불러올 때 멈춘다 → 서버가 시작하지 않는다. 로컬 개발 · E2E 는 VERCEL 이 없어 그대로 돈다.
+if (process.env.VERCEL && !PG) throw new Error("DATABASE_URL 환경 변수가 비어 있어요. Vercel 설정에 Neon 의 Pooled connection 주소(호스트 이름에 -pooler)를 넣어 주세요 (.env.example 참고)");
+
+// 저장소는 빈 채로 시작한다 (11-19: 예시 데이터를 앱에서 뺐다). 가게는 등록 화면이나 어드민 「후보 가져오기」로 넣는다.
+const blank = (): Db => ({ stores: [], logs: [], reviews: [], votes: [], flags: [], posts: [], comments: [], lists: [], likes: [], postLikes: [], goes: [], photoUploads: [], deletedWrites: [] });
+// raw = null: 저장소가 아직 비어 있음 (파일 없음 · PG 는 표가 모두 빔)
+const prepare = (raw: Db | null) => withCommunity(raw ?? blank());
+
+// 어드민(lib/data/admin.ts)도 같은 읽기·쓰기 줄을 쓴다
+export async function load(): Promise<Db> {
   if (PG) return (await import("./pg")).pgRead(prepare);
   try {
     return withCommunity(JSON.parse(await readFile(DB_FILE, "utf8")) as Db);
   } catch (e) {
-    if ((e as NodeJS.ErrnoException).code === "ENOENT") return withCommunity(seed());
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return blank();
     throw e;
   }
 }
@@ -116,22 +120,36 @@ async function save(db: Db) {
 }
 
 // 쓰기는 한 번에 하나씩 (읽고 → 고치고 → 저장). 개발 서버는 모듈을 다시 불러오므로 줄은 전역에 둔다.
-const g = globalThis as unknown as { __ddyQueue?: Promise<unknown> };
-function mutate<T>(fn: (db: Db) => T | Promise<T>): Promise<T> {
-  if (PG) return import("./pg").then((m) => m.pgMutate(prepare, fn));
+const g = globalThis as unknown as { __ddyQueue?: Promise<unknown>; __ddyGen?: number };
+export function mutate<T>(fn: (db: Db) => T | Promise<T>): Promise<T> {
+  // 쓰기는 늘 저장소를 새로 읽는다(load). 끝나면 세대 번호를 올려, 같은 요청 안의 다음 읽기(shared)가 옛 값을 쓰지 않게 한다
+  const bump = () => {
+    g.__ddyGen = (g.__ddyGen ?? 0) + 1;
+  };
+  if (PG) return import("./pg").then((m) => m.pgMutate(prepare, fn)).finally(bump);
   const run = (g.__ddyQueue ?? Promise.resolve()).catch(() => undefined).then(async () => {
     const db = await load();
     const out = await fn(db);
     await save(db);
     return out;
-  });
+  }).finally(bump);
   g.__ddyQueue = run;
   return run;
 }
 
+// 요청 하나 안에서 저장소 읽기를 한 번으로 (기술 스택 9절 #6, 번들 문서 01-getting-started/06-fetching-data.md 「Reusing data with React.cache」).
+// React.cache 는 요청마다 따로 기억하고 요청끼리는 나누지 않는다. 지도 홈 · 가게 상세에서 레이아웃과 페이지가 각각 읽어도 load() 는 한 번만 돈다.
+// 인자 gen(쓰기 세대)이 바뀌면 다른 칸으로 기억하므로, 같은 요청에서 쓰기(mutate) 뒤에 읽으면 새로 읽는다.
+// React 가 그리는 중이 아니면(route handler · 단위 시험) React.cache 는 그냥 부르기만 한다 → 매번 읽는다.
+// 돌려준 Db 는 같은 요청의 여러 곳이 함께 보므로 읽기 함수에서 고치지 않는다(filter · map 으로 새 배열만).
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- gen 은 기억 칸을 가르는 열쇠로만 쓴다
+const loadShared = cache((_gen: number) => load());
+const shared = () => loadShared(g.__ddyGen ?? 0);
+
 // 기기·접속 위치 해시에 섞는 소금. 배포(Vercel)에서 비어 있으면 기본값 "ddy" 로 해시가 역산될 수 있어 시작 때 멈춘다 (정리 보고서 2절 #2).
 // 로컬 pnpm build · E2E(next start) 는 VERCEL 이 없어 기본값으로 돈다.
-const HASH_SALT = process.env.HASH_SALT ?? (process.env.VERCEL ? null : "ddy");
+// 빈 값(HASH_SALT=)도 없는 것으로 본다 — 빈 값을 넘겨도 개발 서버와 같은 해시가 되고, Vercel 에서는 빈 값이면 멈춘다
+const HASH_SALT = process.env.HASH_SALT || (process.env.VERCEL ? null : "ddy");
 if (HASH_SALT === null) throw new Error("HASH_SALT 환경 변수가 비어 있어요. Vercel 설정에 아무도 모르는 긴 글자를 넣어 주세요 (.env.example 참고)");
 
 export function hash(v: string) {
@@ -139,40 +157,74 @@ export function hash(v: string) {
 }
 
 const mark = (who: Who): Mark => ({ device: hash(who.device), ip: hash(who.ip) });
-const same = (a: Mark, b: Mark) => a.device === b.device || a.ip === b.ip;
+// 같은 사람 = 기기와 접속 위치가 모두 같을 때만 (W1-9). 같은 와이파이(교회)에 모여도 기기가 다르면 각자 한 표 · 각자 하루 한도.
+// 「한 사람 한 번」(한 표 · 신고 한 번 · 평가 하나 · 아직 있어요 하루 한 번 · 길찾기 하루 한 줄)과 좋은 쪽 판정(맞아요 · 평가 · 추천)은 이 기준이다.
+const same = (a: Mark, b: Mark) => a.device === b.device && a.ip === b.ip;
+// 내리는 판정(달라요 · 가게 신고 · 후기 · 글 · 댓글 신고)은 사람 수가 아니라 서로 다른 접속 위치(IP) 수로 센다 (11-18 결정).
+// 기기 표시는 손님이 마음대로 바꿔 보낼 수 있어, 같은 곳에서 표시만 바꾼 요청 여럿으로는 내려가지 않게 한다.
+const distinctIps = (rows: Mark[]) => new Set(rows.map((r) => r.ip)).size;
+// 운영자가 가게를 되살린 시각 (없으면 ""). 되살림 = 운영자 이력 중 「상태 … → 보임」 줄 (lib/data/admin.ts adminSetStatus).
+// 내리는 판정은 이 뒤에 들어온 신고 · 달라요만 센다 (되살린 뒤 1건으로 곧바로 다시 내려가지 않게, F012). 예전 줄은 지우지 않고 남긴다.
+const restoredAt = (db: Db, storeId: string) =>
+  db.logs
+    .filter((l) => l.storeId === storeId && l.kind === "edit" && l.changes?.some((c) => c.field === "상태" && c.to.startsWith("보임")))
+    .reduce((a, l) => (l.at > a ? l.at : a), "");
 const log = (db: Db, storeId: string, who: { nick: string } & Mark, kind: HistoryKind, changes?: Change[]) =>
-  db.logs.push({ id: randomUUID(), storeId, at: new Date().toISOString(), who: who.nick, device: who.device, ip: who.ip, kind, changes });
+  db.logs.push({ id: randomUUID(), storeId, at: stamp(), who: who.nick, device: who.device, ip: who.ip, kind, changes });
+// 지도가 저절로 내릴 때(달라요 · 신고) 그 줄에 까닭을 남긴다 (11-19). 가게 상세의 안내(lib/wiki.ts goneNotice)가 이것을 읽어
+// 내린 판정과 같은 기준으로 문구를 고른다. 표 구조는 그대로 두고 이력의 「바뀐 칸」(changes) 하나로 남긴다 — 변경 이력 화면에도 보인다.
+const goneLog = (db: Db, storeId: string, kind: "hidden" | "closed", by: string) =>
+  log(db, storeId, { nick: "지도", ...SEED_MARK }, kind, [{ field: GONE_REASON_FIELD, from: "보임", to: by }]);
 
-function overDailyLimit(db: Db, m: Mark) {
-  const from = Date.now() - 86_400_000;
-  return db.logs.filter((l) => (l.kind === "new" || l.kind === "edit") && same(l, m) && new Date(l.at).getTime() > from).length >= DAILY_LIMIT;
+// 하루 한도 (11-18 결정): 한 사람(same) 한도 + 같은 접속 위치(IP) 전체 상한. recent = 최근 24시간 줄.
+// 기기 표시만 바꿔 보내면 「다른 사람」이 되어 한 사람 한도를 피할 수 있으므로, 접속 위치 상한이 그 위를 막는다.
+function overDaily(recent: Mark[], m: Mark, perPerson: number, perIp: number): "me" | "ip" | null {
+  if (recent.filter((r) => same(r, m)).length >= perPerson) return "me";
+  if (recent.filter((r) => r.ip === m.ip).length >= perIp) return "ip";
+  return null;
 }
+// what = 「등록·수정이」「글이」처럼 조사까지
+const ipLimitMsg = (what: string) => `지금 쓰는 인터넷(와이파이)에서 오늘 ${what} 너무 많이 올라왔어요. 데이터로 바꾸거나 내일 다시 부탁드려요`;
 
 const LIMIT_MSG = "오늘은 등록·수정을 많이 해 주셨어요. 내일 다시 부탁드려요";
 
+// 등록·수정 한도. 넘었으면 그대로 돌려줄 실패(429), 아니면 null
+function dailyLimitFail(db: Db, m: Mark): Fail | null {
+  const recent = db.logs.filter((l) => (l.kind === "new" || l.kind === "edit") && within24h(l.at));
+  const over = overDaily(recent, m, DAILY_LIMIT, DAILY_LIMIT_PER_IP);
+  return over ? fail(over === "me" ? LIMIT_MSG : ipLimitMsg("등록·수정이"), 429) : null;
+}
+
 // ───────── 읽기 ─────────
 
-export const readStores = async () => (await load()).stores;
+export const readStores = async () => (await shared()).stores;
 
-export const readStore = async (id: string) => (await load()).stores.find((s) => s.id === id);
+export const readStore = async (id: string) => (await shared()).stores.find((s) => s.id === id);
 
 export async function readReviews(storeId: string): Promise<Review[]> {
-  return (await load()).reviews
+  return (await shared()).reviews
     .filter((r) => r.storeId === storeId && !r.hidden)
     .sort((a, b) => b.at.localeCompare(a.at))
-    .map(({ id, at, who, stars, spice, text }) => ({ id, at, who, stars, spice, text }));
+    .map(({ id, at, who, stars, text }) => ({ id, at, who, stars, text }));
+}
+
+// 변경 이력 줄을 최근 것부터 읽는다. 가게 하나만(storeId) · 몇 줄까지(limit).
+// 이력은 누를 때마다 쌓이는 표라 「전체 읽기」(shared · load)에는 최근 것만 실린다 (pg.ts 의 window, 11-19).
+// 오래된 줄까지 필요한 화면(변경 이력 · 운영 기록)은 이 함수로 따로 읽는다 — Postgres 는 조건을 걸어 그 줄만, 파일 저장소는 통째로 읽어 거른다
+export async function readLogs(opts: { storeId?: string; limit?: number } = {}): Promise<LogRow[]> {
+  if (PG) return (await import("./pg")).pgLogs(opts) as Promise<LogRow[]>;
+  const rows = (await shared()).logs.filter((l) => !opts.storeId || l.storeId === opts.storeId).sort((a, b) => b.at.localeCompare(a.at));
+  return opts.limit ? rows.slice(0, opts.limit) : rows;
 }
 
 export async function readHistory(storeId: string): Promise<HistoryItem[]> {
-  return (await load()).logs
-    .filter((l) => l.storeId === storeId)
-    .sort((a, b) => b.at.localeCompare(a.at))
-    .map(({ id, at, who, kind, changes }) => ({ id, at, who, kind, changes }));
+  return (await readLogs({ storeId })).map(({ id, at, who, kind, changes }) => ({ id, at, who, kind, changes }));
 }
 
 export async function readRecentCount(days = 7) {
   const from = Date.now() - days * 86_400_000;
-  return (await load()).logs.filter((l) => (l.kind === "new" || l.kind === "edit") && new Date(l.at).getTime() > from).length;
+  const db = await shared();
+  return db.logs.filter((l) => (l.kind === "new" || l.kind === "edit") && new Date(l.at).getTime() > from).length;
 }
 
 // ───────── 쓰기 ─────────
@@ -191,9 +243,11 @@ function slugFor(db: Db) {
 export function addStore(input: NewStoreInput, who: Who) {
   return mutate((db): { ok: true; id: string } | Fail => {
     const m = mark(who);
-    if (overDailyLimit(db, m)) return fail(LIMIT_MSG, 429);
+    const over = dailyLimitFail(db, m);
+    if (over) return over;
     const name = input.name.trim();
     if (!input.notDuplicate) {
+      // 숨긴 예시 가게와는 겹쳐도 막지 않는다 (화면에 없는 가게를 「이미 있어요」로 안내하게 되므로)
       const dup = db.stores.find((s) => s.status !== "hidden" && distanceM(s, input) <= DUP_RADIUS_M && (norm(s.name).includes(norm(name)) || norm(name).includes(norm(s.name))));
       if (dup) return fail(`이미 지도에 있는 가게 같아요: ${dup.name}`, 409, dup.id);
     }
@@ -232,7 +286,7 @@ export function addStore(input: NewStoreInput, who: Who) {
     };
     db.stores.push(store);
     log(db, id, { nick: who.nick, ...m }, "new");
-    if (input.stars) db.reviews.push({ ...m, id: randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars });
+    if (input.stars) db.reviews.push({ ...m, id: randomUUID(), storeId: id, at: stamp(), who: who.nick, stars: input.stars });
     return { ok: true, id };
   });
 }
@@ -245,7 +299,8 @@ export function editStore(id: string, patch: StorePatch, who: Who) {
     const s = db.stores.find((x) => x.id === id);
     if (!s) return fail("가게를 찾지 못했어요", 404);
     const m = mark(who);
-    if (overDailyLimit(db, m)) return fail(LIMIT_MSG, 429);
+    const over = dailyLimitFail(db, m);
+    if (over) return over;
 
     const changes: Change[] = [];
     const note = (field: string, from: string, to: string) => from !== to && changes.push({ field, from, to });
@@ -323,35 +378,57 @@ export function editStore(id: string, patch: StorePatch, who: Who) {
   });
 }
 
+// 길찾기 누름 (W1-4). 같은 사람이 같은 가게를 같은 날 다시 누르면 더하지 않는다 → 「찾아가려 한 사람·날」을 센다
+export function recordGo(id: string, app: GoApp, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    if (!db.stores.some((x) => x.id === id)) return fail("가게를 찾지 못했어요", 404);
+    const m = mark(who);
+    const today = isoDay();
+    if (!db.goes.some((g) => g.storeId === id && same(g, m) && isoDay(new Date(g.at).getTime()) === today))
+      db.goes.push({ ...m, id: randomUUID(), storeId: id, app, at: stamp() });
+    return { ok: true };
+  });
+}
+
 export function confirmStill(id: string, who: Who) {
   return mutate((db): { ok: true } | Fail => {
     const s = db.stores.find((x) => x.id === id);
     if (!s) return fail("가게를 찾지 못했어요", 404);
+    // 내려간 가게(숨김 · 문 닫음)는 받지 않는다 (11-19). 받으면 문 닫은 가게가 「최근 확인」으로 보인다
+    if ((s.status ?? "active") !== "active") return fail("지도에서 내린 가게라 지금은 확인을 받지 않아요", 409);
     const m = mark(who);
     const today = isoDay();
-    if (db.logs.some((l) => l.storeId === id && l.kind === "still" && l.at.slice(0, 10) === today && same(l, m))) return fail("오늘은 이미 확인해 주셨어요", 409);
+    // 기록 시각(UTC ISO)도 한국 날짜로 바꿔 비교한다. 글자를 잘라 비교하면 한국 시간 0~9시 기록이 전날로 잡힌다 (F006)
+    if (db.logs.some((l) => l.storeId === id && l.kind === "still" && isoDay(new Date(l.at).getTime()) === today && same(l, m))) return fail("오늘은 이미 확인해 주셨어요", 409);
     s.lastConfirmedAt = today;
     log(db, id, { nick: who.nick, ...m }, "still");
     return { ok: true };
   });
 }
 
-// 「맞아요」「달라요」: 같은 기기·같은 접속 위치는 가게마다 한 표
+// 「맞아요」「달라요」: 같은 기기·같은 접속 위치는 가게마다 한 표.
+// 맞아요(좋은 쪽)는 표 수 그대로 — 같은 와이파이에서 세 사람(기기 셋)이 눌러도 확인 끝.
+// 달라요로 내리는 것은 달라요를 낸 서로 다른 접속 위치(IP)가 HIDE_AT 곳일 때다 (화면의 달라요 수 verify.no 는 표 수 그대로).
 export function verifyStore(id: string, ok: boolean, who: Who) {
   return mutate((db): { ok: true; yes: number; no: number; status: Store["status"] } | Fail => {
     const s = db.stores.find((x) => x.id === id);
     if (!s) return fail("가게를 찾지 못했어요", 404);
+    // 내려간 가게(숨김 · 문 닫음)는 표를 받지 않는다 (11-19). 받으면 달라요가 모여 문 닫음이 숨김으로 바뀌고 숨김 줄도 더 쌓인다
+    if ((s.status ?? "active") !== "active") return fail("지도에서 내린 가게라 지금은 확인을 받지 않아요", 409);
     if (!isPending(s, new Date())) return fail("이미 확인이 끝난 가게예요", 409);
     const m = mark(who);
     if (db.votes.some((v) => v.storeId === id && same(v, m))) return fail("이미 알려 주셨어요. 고마워요!", 409);
-    db.votes.push({ ...m, storeId: id, ok, at: new Date().toISOString() });
+    db.votes.push({ ...m, storeId: id, ok, at: stamp() });
     const verify = { yes: s.verify?.yes ?? 0, no: s.verify?.no ?? 0 };
     if (ok) verify.yes += 1;
     else verify.no += 1;
     s.verify = verify;
-    if (verify.no >= HIDE_AT) {
+    // 되살린 가게는 되살린 뒤의 달라요만 센다 (adminSetStatus 가 verify.no 를 0 으로 돌리는 것과 같은 기준)
+    const since = restoredAt(db, id);
+    const noIps = distinctIps(db.votes.filter((v) => v.storeId === id && !v.ok && v.at > since));
+    if (noIps >= HIDE_AT) {
       s.status = "hidden";
-      log(db, id, { nick: "지도", ...SEED_MARK }, "hidden");
+      goneLog(db, id, "hidden", GONE_BY_VOTES);
     } else if (ok && verify.yes === VERIFY_YES) {
       s.lastConfirmedAt = isoDay();
       log(db, id, { nick: "지도", ...SEED_MARK }, "verified");
@@ -364,11 +441,19 @@ export function reviewStore(id: string, input: { stars: number; text?: string },
   return mutate((db): { ok: true } | Fail => {
     const s = db.stores.find((x) => x.id === id);
     if (!s) return fail("가게를 찾지 못했어요", 404);
+    // 내려간 가게(숨김 · 문 닫음)는 평가를 받지 않는다 (11-19)
+    if ((s.status ?? "active") !== "active") return fail("지도에서 내린 가게라 지금은 평가를 받지 않아요", 409);
     const m = mark(who);
     const old = db.reviews.find((r) => r.storeId === id && same(r, m));
 
     // 별점: 기기마다 한 표. 다시 쓰면 이전 표를 빼고 더한다.
-    const rating = { total: (s.rating?.avg ?? 0) * (s.rating?.count ?? 0), count: s.rating?.count ?? 0 };
+    // 합계는 평가 줄의 별을 직접 더해 얻는다. 저장된 평균은 소수 한 자리로 반올림돼 있어서, 평균 × 개수로 합계를 되살리면
+    // 평가가 쌓일수록 어긋난다(5 · 4 · 4 · 4 가 4.2 로 저장됐다 — 11-19).
+    const rows = db.reviews.filter((r) => r.storeId === id && r.stars);
+    const stored = s.rating?.count ?? 0;
+    // 평가 줄 없이 평균 · 개수만 가져온 가게(예시 · 후보 자료)는 줄로 셀 수 없는 몫을 저장된 평균으로 어림한다
+    const extra = Math.max(0, stored - rows.length);
+    const rating = { total: rows.reduce((sum, r) => sum + (r.stars ?? 0), 0) + (s.rating?.avg ?? 0) * extra, count: rows.length + extra };
     if (old?.stars) {
       rating.total -= old.stars;
       rating.count -= 1;
@@ -378,26 +463,30 @@ export function reviewStore(id: string, input: { stars: number; text?: string },
     s.rating = rating.count ? { avg: Math.round((rating.total / rating.count) * 10) / 10, count: rating.count } : undefined;
 
     const text = input.text?.trim() || undefined;
-    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: new Date().toISOString(), who: who.nick, stars: input.stars, spice: old?.spice, text }; // 예전 맵기 표는 그대로 남긴다
+    const row: ReviewRow = { ...m, id: old?.id ?? randomUUID(), storeId: id, at: stamp(), who: who.nick, stars: input.stars, text };
     if (old) db.reviews[db.reviews.indexOf(old)] = row;
     else db.reviews.push(row);
     return { ok: true };
   });
 }
 
-// 신고: 같은 기기·접속 위치는 가게마다 한 번. 3명이 쌓이면 지도에서 내린다.
+// 신고: 같은 기기·접속 위치는 가게마다 한 번. 서로 다른 접속 위치(IP) HIDE_AT 곳에서 신고가 오면 지도에서 내린다.
 export function flagStore(id: string, reason: FlagReason, who: Who) {
   return mutate((db): { ok: true; status: Store["status"] } | Fail => {
     const s = db.stores.find((x) => x.id === id);
     if (!s) return fail("가게를 찾지 못했어요", 404);
     const m = mark(who);
     if (db.flags.some((f) => f.storeId === id && same(f, m))) return fail("이미 신고해 주셨어요. 고마워요!", 409);
-    db.flags.push({ ...m, storeId: id, reason, at: new Date().toISOString() });
-    const flags = db.flags.filter((f) => f.storeId === id);
-    if (flags.length >= HIDE_AT && (s.status ?? "active") === "active") {
-      const closed = flags.filter((f) => f.reason === "closed").length;
-      s.status = closed * 2 > flags.length ? "closed" : "hidden"; // 신고 대부분이 폐업이면 「문 닫음」
-      log(db, id, { nick: "지도", ...SEED_MARK }, s.status);
+    db.flags.push({ ...m, storeId: id, reason, at: stamp() });
+    // 운영자가 되살린 가게는 되살린 뒤에 들어온 신고만 센다 (되살린 뒤 신고 1건으로 곧바로 다시 내려가지 않게, F012 — restoredAt).
+    const since = restoredAt(db, id);
+    const flags = db.flags.filter((f) => f.storeId === id && f.at > since);
+    const ips = distinctIps(flags);
+    if (ips >= HIDE_AT && (s.status ?? "active") === "active") {
+      // 폐업 과반도 접속 위치 수로 센다 (한 곳에서 「문을 닫았어요」를 여러 번 보내 과반을 만들지 못하게)
+      const closedIps = distinctIps(flags.filter((f) => f.reason === "closed"));
+      s.status = closedIps * 2 > ips ? "closed" : "hidden"; // 신고한 곳 대부분이 폐업이면 「문 닫음」
+      goneLog(db, id, s.status, GONE_BY_FLAGS);
     }
     return { ok: true, status: s.status };
   });
@@ -411,8 +500,29 @@ export function flagReview(reviewId: string, who: Who) {
     const flags = r.flags ?? [];
     if (flags.some((f) => same(f, m))) return fail("이미 신고해 주셨어요. 고마워요!", 409);
     r.flags = [...flags, m];
-    if (r.flags.length >= HIDE_AT) r.hidden = true;
+    if (distinctIps(r.flags) >= HIDE_AT) r.hidden = true; // 서로 다른 접속 위치 HIDE_AT 곳
     return { ok: true };
+  });
+}
+
+// ───────── 사진 하루 한도 (11-18) ─────────
+// 사진 한 장 = 한 줄(photo_uploads). 예전엔 서버 메모리에 세어 서버가 새로 뜨면(Vercel) 0 부터 다시 셌다 → 저장소에 남긴다.
+// 올리기 전에 자리를 잡고(take), 저장에 실패하면 돌려준다(release) — 부르는 곳은 lib/data/photos.ts addPhoto 하나다.
+// 한도에 쓰는 것은 최근 24시간 줄뿐이라 그보다 오래된 줄은 자리를 잡을 때마다 지운다 (표가 계속 커지지 않게).
+export function takePhotoSlot(id: string, who: Who) {
+  return mutate((db): { ok: true } | Fail => {
+    const m = mark(who);
+    db.photoUploads = db.photoUploads.filter((p) => within24h(p.at));
+    const over = overDaily(db.photoUploads, m, DAILY_PHOTOS, DAILY_PHOTOS_PER_IP);
+    if (over) return fail(over === "me" ? "오늘은 사진을 많이 올리셨어요. 내일 다시 부탁드려요" : ipLimitMsg("사진이"), 429);
+    db.photoUploads.push({ ...m, id, at: stamp() });
+    return { ok: true };
+  });
+}
+
+export function releasePhotoSlot(id: string) {
+  return mutate((db) => {
+    db.photoUploads = db.photoUploads.filter((p) => p.id !== id);
   });
 }
 
@@ -422,17 +532,27 @@ export function flagReview(reviewId: string, who: Who) {
 const NO_DEVICE = hash("no-device");
 const owns = (row: Mark, m: Mark) => m.device !== NO_DEVICE && row.device === m.device;
 const within24h = (at: string) => new Date(at).getTime() > Date.now() - 86_400_000;
-const toPost = ({ id, at, who, cat, title, body, storeId, comments, likes, isSample }: PostRow): Post => ({ id, at, who, cat, title, body, storeId, comments, likes: likes ?? 0, isSample });
-const toList = ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes, isSample }: ListRow): PlaceList => ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes, isSample });
+// 하루 한도에 세는 줄 = 최근 24시간 안에 쓴 것 중 남아 있는 줄 + 지운 줄 (11-19)
+const recentWrites = (db: Db, kind: WriteKind, live: { at: string; device: string; ip: string }[]): Mark[] => [
+  ...live.filter((r) => within24h(r.at)),
+  ...db.deletedWrites.filter((d) => d.kind === kind && within24h(d.at)),
+];
+// 지운 것을 기록한다. 최근 24시간 안에 쓴 것만 남긴다 (그보다 오래된 것은 한도에 쓰지 않으므로 표가 계속 커지지 않게 지운다)
+function noteDeleted(db: Db, kind: WriteKind, rows: (Mark & { id: string; at: string })[]) {
+  db.deletedWrites = db.deletedWrites.filter((d) => within24h(d.at));
+  for (const r of rows) if (within24h(r.at)) db.deletedWrites.push({ kind, id: r.id, at: r.at, device: r.device, ip: r.ip });
+}
+const toPost = ({ id, at, who, cat, title, body, storeId, comments, likes }: PostRow): Post => ({ id, at, who, cat, title, body, storeId, comments, likes: likes ?? 0 });
+const toList = ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes }: ListRow): PlaceList => ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes });
 
 // ───────── 읽기 ─────────
 
 export async function readPosts(): Promise<Post[]> {
-  return (await load()).posts.filter((p) => !p.hidden).sort((a, b) => b.at.localeCompare(a.at)).map(toPost);
+  return (await shared()).posts.filter((p) => !p.hidden).sort((a, b) => b.at.localeCompare(a.at)).map(toPost);
 }
 
 export async function readPost(id: string): Promise<{ post: Post; comments: PostComment[] } | undefined> {
-  const db = await load();
+  const db = await shared();
   const p = db.posts.find((x) => x.id === id && !x.hidden);
   if (!p) return undefined;
   const comments = db.comments
@@ -443,12 +563,12 @@ export async function readPost(id: string): Promise<{ post: Post; comments: Post
 }
 
 export async function readPublicLists(): Promise<PlaceList[]> {
-  return (await load()).lists.filter((l) => l.visibility === "public").map(toList);
+  return (await shared()).lists.filter((l) => l.visibility === "public").map(toList);
 }
 
 // 링크로만 공유한 리스트도 주소를 아는 사람은 연다
 export async function readList(id: string) {
-  const l = (await load()).lists.find((x) => x.id === id);
+  const l = (await shared()).lists.find((x) => x.id === id);
   return l ? toList(l) : undefined;
 }
 
@@ -456,7 +576,7 @@ export async function readList(id: string) {
 export async function readOwned(device: string): Promise<Owned> {
   const m: Mark = { device: hash(device), ip: "" };
   if (m.device === NO_DEVICE) return { lists: [], posts: [], comments: [], liked: [], likedPosts: [] };
-  const db = await load();
+  const db = await shared();
   return {
     lists: db.lists.filter((l) => owns(l, m)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map(toList),
     posts: db.posts.filter((p) => owns(p, m)).map((p) => p.id),
@@ -471,10 +591,11 @@ export async function readOwned(device: string): Promise<Owned> {
 export function addPost(input: { cat: BoardCat; title: string; body: string; storeId?: string }, who: Who) {
   return mutate((db): { ok: true; id: string } | Fail => {
     const m = mark(who);
-    if (db.posts.filter((p) => same(p, m) && within24h(p.at)).length >= DAILY_POSTS) return fail("오늘은 글을 많이 써 주셨어요. 내일 다시 부탁드려요", 429);
+    const over = overDaily(recentWrites(db, "post", db.posts), m, DAILY_POSTS, DAILY_POSTS_PER_IP);
+    if (over) return fail(over === "me" ? "오늘은 글을 많이 써 주셨어요. 내일 다시 부탁드려요" : ipLimitMsg("글이"), 429);
     if (input.storeId && !db.stores.some((s) => s.id === input.storeId)) return fail("붙인 가게를 찾지 못했어요");
     const id = `p-${randomUUID().slice(0, 8)}`;
-    db.posts.push({ ...m, id, at: new Date().toISOString(), who: who.nick, cat: input.cat, title: input.title.trim(), body: input.body.trim(), storeId: input.storeId || undefined, comments: 0, likes: 0 });
+    db.posts.push({ ...m, id, at: stamp(), who: who.nick, cat: input.cat, title: input.title.trim(), body: input.body.trim(), storeId: input.storeId || undefined, comments: 0, likes: 0 });
     return { ok: true, id };
   });
 }
@@ -485,6 +606,9 @@ export function deletePost(id: string, who: Who) {
     if (!p) return fail("글을 찾지 못했어요", 404);
     if (!owns(p, mark(who))) return fail("이 기기에서 쓴 글만 지울 수 있어요", 403);
     db.posts.splice(db.posts.indexOf(p), 1);
+    // 글과 함께 사라지는 댓글도 쓴 사람들의 하루 한도에 남긴다
+    noteDeleted(db, "post", [p]);
+    noteDeleted(db, "comment", db.comments.filter((c) => c.postId === id));
     db.comments = db.comments.filter((c) => c.postId !== id);
     db.postLikes = db.postLikes.filter((k) => k.postId !== id);
     return { ok: true };
@@ -498,9 +622,10 @@ export function addComment(postId: string, text: string, who: Who) {
     const p = db.posts.find((x) => x.id === postId && !x.hidden);
     if (!p) return fail("글을 찾지 못했어요", 404);
     const m = mark(who);
-    if (db.comments.filter((c) => same(c, m) && within24h(c.at)).length >= DAILY_COMMENTS) return fail("오늘은 댓글을 많이 써 주셨어요. 내일 다시 부탁드려요", 429);
+    const over = overDaily(recentWrites(db, "comment", db.comments), m, DAILY_COMMENTS, DAILY_COMMENTS_PER_IP);
+    if (over) return fail(over === "me" ? "오늘은 댓글을 많이 써 주셨어요. 내일 다시 부탁드려요" : ipLimitMsg("댓글이"), 429);
     const id = `c-${randomUUID().slice(0, 8)}`;
-    db.comments.push({ ...m, id, postId, at: new Date().toISOString(), who: who.nick, text: text.trim() });
+    db.comments.push({ ...m, id, postId, at: stamp(), who: who.nick, text: text.trim() });
     p.comments = countComments(db, postId);
     return { ok: true, id };
   });
@@ -512,6 +637,7 @@ export function deleteComment(commentId: string, who: Who) {
     if (!c) return fail("댓글을 찾지 못했어요", 404);
     if (!owns(c, mark(who))) return fail("이 기기에서 쓴 댓글만 지울 수 있어요", 403);
     db.comments.splice(db.comments.indexOf(c), 1);
+    noteDeleted(db, "comment", [c]);
     const p = db.posts.find((x) => x.id === c.postId);
     if (p) p.comments = countComments(db, p.id);
     return { ok: true };
@@ -532,14 +658,14 @@ export function likePost(id: string, who: Who) {
       db.postLikes.splice(db.postLikes.indexOf(old), 1);
       p.likes = Math.max(0, p.likes - 1);
     } else {
-      db.postLikes.push({ ...m, postId: id, at: new Date().toISOString() });
+      db.postLikes.push({ ...m, postId: id, at: stamp() });
       p.likes += 1;
     }
     return { ok: true, liked: !old, likes: p.likes };
   });
 }
 
-// 신고: 같은 기기·접속 위치는 한 번. HIDE_AT 명이 쌓이면 가린다 (후기 신고와 같은 규칙)
+// 신고: 같은 기기·접속 위치는 한 번. 서로 다른 접속 위치(IP) HIDE_AT 곳에서 신고가 오면 가린다 (후기 신고와 같은 규칙)
 export function flagPost(id: string, who: Who) {
   return mutate((db): { ok: true } | Fail => {
     const p = db.posts.find((x) => x.id === id);
@@ -548,7 +674,7 @@ export function flagPost(id: string, who: Who) {
     const flags = p.flags ?? [];
     if (flags.some((f) => same(f, m))) return fail("이미 신고해 주셨어요. 고마워요!", 409);
     p.flags = [...flags, m];
-    if (p.flags.length >= HIDE_AT) p.hidden = true;
+    if (distinctIps(p.flags) >= HIDE_AT) p.hidden = true;
     return { ok: true };
   });
 }
@@ -561,7 +687,7 @@ export function flagComment(id: string, who: Who) {
     const flags = c.flags ?? [];
     if (flags.some((f) => same(f, m))) return fail("이미 신고해 주셨어요. 고마워요!", 409);
     c.flags = [...flags, m];
-    if (c.flags.length >= HIDE_AT) {
+    if (distinctIps(c.flags) >= HIDE_AT) {
       c.hidden = true;
       const p = db.posts.find((x) => x.id === c.postId);
       if (p) p.comments = countComments(db, p.id);
@@ -584,10 +710,11 @@ export function createList(input: { title: string; desc?: string; visibility: Li
   return mutate((db): { ok: true; id: string } | Fail => {
     const m = mark(who);
     if (m.device === NO_DEVICE) return fail("이 브라우저에서는 리스트를 만들 수 없어요. 다른 브라우저로 열어 주세요", 400);
-    if (db.lists.filter((l) => same(l, m) && within24h(l.createdAt)).length >= DAILY_LISTS) return fail("오늘은 리스트를 많이 만들어 주셨어요. 내일 다시 부탁드려요", 429);
+    const over = overDaily(recentWrites(db, "list", db.lists.map((l) => ({ at: l.createdAt, device: l.device, ip: l.ip }))), m, DAILY_LISTS, DAILY_LISTS_PER_IP);
+    if (over) return fail(over === "me" ? "오늘은 리스트를 많이 만들어 주셨어요. 내일 다시 부탁드려요" : ipLimitMsg("리스트가"), 429);
     const known = new Set(db.stores.map((s) => s.id));
     const storeIds = [...new Set(input.storeIds ?? [])].filter((s) => known.has(s)).slice(0, MAX_LIST_STORES);
-    const now = new Date().toISOString();
+    const now = stamp();
     const id = `l-${randomUUID().slice(0, 8)}`;
     db.lists.push({ ...m, id, title: input.title.trim(), desc: input.desc?.trim() || undefined, storeIds, who: who.nick, createdAt: now, updatedAt: now, visibility: input.visibility, likes: 0 });
     return { ok: true, id };
@@ -601,7 +728,7 @@ export function updateList(id: string, patch: { title?: string; desc?: string | 
     if (patch.title !== undefined) l.title = patch.title.trim();
     if (patch.desc !== undefined) l.desc = patch.desc?.trim() || undefined;
     if (patch.visibility !== undefined) l.visibility = patch.visibility;
-    l.updatedAt = new Date().toISOString();
+    l.updatedAt = stamp();
     return { ok: true };
   });
 }
@@ -627,7 +754,7 @@ export function editListStores(id: string, op: ListStoreOp, who: Who) {
       if (at < 0 || to < 0 || to >= l.storeIds.length) return fail("더 옮길 수 없어요");
       [l.storeIds[at], l.storeIds[to]] = [l.storeIds[to], l.storeIds[at]];
     }
-    l.updatedAt = new Date().toISOString();
+    l.updatedAt = stamp();
     return { ok: true, storeIds: l.storeIds };
   });
 }
@@ -637,6 +764,7 @@ export function deleteList(id: string, who: Who) {
     const l = findOwnList(db, id, who);
     if (isFail(l)) return l;
     db.lists.splice(db.lists.indexOf(l), 1);
+    noteDeleted(db, "list", [{ id: l.id, at: l.createdAt, device: l.device, ip: l.ip }]);
     db.likes = db.likes.filter((k) => k.listId !== id);
     return { ok: true };
   });
@@ -656,7 +784,7 @@ export function likeList(id: string, who: Who) {
       db.likes.splice(db.likes.indexOf(old), 1);
       l.likes = Math.max(0, l.likes - 1);
     } else {
-      db.likes.push({ ...m, listId: id, at: new Date().toISOString() });
+      db.likes.push({ ...m, listId: id, at: stamp() });
       l.likes += 1;
     }
     return { ok: true, liked: !old, likes: l.likes };

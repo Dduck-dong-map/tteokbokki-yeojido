@@ -1,9 +1,11 @@
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NewStoreInput } from "@/lib/wiki";
-import { DAILY_LIMIT, VERIFY_YES, isPending } from "@/lib/wiki";
+import { DAILY_LIMIT, DAILY_LIMIT_PER_IP, VERIFY_YES, isPending } from "@/lib/wiki";
+import { SAMPLE_STORES } from "../fixtures/sample-stores";
+import { seedDataDir } from "../fixtures/seed";
 
 // 저장소 규칙 (lib/data/db.ts) — 파일 저장소 모드.
 // db.ts 는 DATA_DIR 과 DATABASE_URL 을 모듈이 처음 읽힐 때 고정하므로,
@@ -34,6 +36,7 @@ const input = (p: Partial<NewStoreInput> = {}): NewStoreInput => ({
 beforeEach(async () => {
   dir = mkdtempSync(path.join(os.tmpdir(), "ddy-db-test-"));
   process.env.DATA_DIR = dir;
+  seedDataDir(dir); // 시험 자료(가게 16곳 · 글 · 리스트)로 채운 저장소에서 시작한다
   process.env.DATABASE_URL = ""; // 빈 문자열 → PG 꺼짐 (파일 저장소)
   delete (globalThis as { __ddyQueue?: unknown }).__ddyQueue; // 쓰기 줄은 전역이라 테스트마다 비운다
   vi.resetModules();
@@ -45,18 +48,20 @@ afterEach(() => {
 });
 
 describe("격리", () => {
-  it("DATA_DIR 이 임시 폴더를 가리키고, 첫 쓰기 뒤 db.json 이 거기 생긴다", async () => {
+  it("DATA_DIR 이 임시 폴더를 가리키고, 파일이 없으면 빈 저장소로 시작해 첫 쓰기 뒤 db.json 이 거기 생긴다", async () => {
     expect(db.DATA_DIR).toBe(dir);
+    rmSync(path.join(dir, "db.json"));
+    expect(await db.readStores()).toEqual([]);
+    expect(await db.readPosts()).toEqual([]);
     expect(existsSync(path.join(dir, "db.json"))).toBe(false);
     const res = await db.addStore(input(), who("1"));
     expect(res.ok).toBe(true);
     expect(existsSync(path.join(dir, "db.json"))).toBe(true);
+    expect(await db.readStores()).toHaveLength(1);
   });
 
-  it("예시 데이터가 시드된다", async () => {
-    const stores = await db.readStores();
-    expect(stores.length).toBeGreaterThan(0);
-    expect(stores.every((s) => s.isSample)).toBe(true);
+  it("시험 자료로 채운 저장소를 읽는다", async () => {
+    expect(await db.readStores()).toHaveLength(SAMPLE_STORES.length);
   });
 });
 
@@ -114,13 +119,28 @@ describe(`addStore — 같은 기기 하루 ${DAILY_LIMIT}건 한도`, () => {
     expect(other.ok).toBe(true);
   });
 
-  it("기기가 달라도 접속 위치가 같으면 같은 사람으로 센다", async () => {
-    for (let i = 0; i < DAILY_LIMIT; i++) {
-      await db.addStore(input({ name: `가게 ${i}`, lat: 37.4 + i * 0.01 }), who("1"));
+  // 11-18 결정: 한 사람 한도는 기기마다 따로 세고, 그 위에 같은 접속 위치(IP) 전체 상한을 함께 센다
+  it(`같은 와이파이(접속 위치)라도 기기가 다르면 한 사람 한도(${DAILY_LIMIT})는 따로 세고, 접속 위치 상한(${DAILY_LIMIT_PER_IP})은 함께 센다`, async () => {
+    const ip = who("1").ip;
+    const wifi = (n: number): Who => ({ ...who(String(100 + n)), ip });
+    const far = (i: number) => input({ name: `가게 ${i}`, lat: 34 + i * 0.01, lng: 127 }); // 중복 검사에 안 걸리게 멀리
+    for (let i = 0; i < DAILY_LIMIT; i++) await db.addStore(far(i), wifi(0));
+    // 같은 사람은 11번째에서 막히지만
+    expect(await db.addStore(far(DAILY_LIMIT), wifi(0))).toMatchObject({ ok: false, status: 429, error: "오늘은 등록·수정을 많이 해 주셨어요. 내일 다시 부탁드려요" });
+    // 같은 와이파이의 다른 기기는 자기 한도로 올린다
+    let n = DAILY_LIMIT;
+    expect((await db.addStore(far(n++), wifi(1))).ok).toBe(true);
+    // 기기를 바꿔 가며 접속 위치 상한까지 채우면
+    for (let d = 1; n < DAILY_LIMIT_PER_IP; d++) {
+      for (let i = d === 1 ? 1 : 0; i < DAILY_LIMIT && n < DAILY_LIMIT_PER_IP; i++) expect((await db.addStore(far(n++), wifi(d))).ok, `${n}번째`).toBe(true);
     }
-    const sameIp = await db.addStore(input({ name: "같은 와이파이", lat: 37.3 }), { ...who("9"), ip: who("1").ip });
-    expect(sameIp.ok).toBe(false);
-  });
+    // 새 기기라도 그 접속 위치에서는 더 못 올린다 (51번째)
+    const over = await db.addStore(far(n++), wifi(99));
+    expect(over).toMatchObject({ ok: false, status: 429 });
+    if (!over.ok) expect(over.error).toContain("지금 쓰는 인터넷(와이파이)에서");
+    // 다른 접속 위치는 그대로 된다
+    expect((await db.addStore(far(n++), who("2"))).ok).toBe(true);
+  }, 30_000);
 });
 
 describe(`verifyStore — 맞아요 ${VERIFY_YES}명이면 확인 끝`, () => {
@@ -199,5 +219,24 @@ describe("맛집 리스트 — 만든 기기만 고친다", () => {
     const res = await db.createList({ title: "익명", visibility: "public" }, { nick: "손님", device: "no-device", ip: "1.1.1.1" });
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.status).toBe(400);
+  });
+});
+
+describe("recordGo — 길찾기 누름 (W1-4)", () => {
+  const goes = () => (JSON.parse(readFileSync(path.join(dir, "db.json"), "utf8")) as { goes: { storeId: string; app: string }[] }).goes;
+
+  it("같은 사람이 같은 가게를 같은 날 다시 누르면 한 줄, 다른 사람은 따로", async () => {
+    const [s] = await db.readStores();
+    expect((await db.recordGo(s.id, "naver", who("1"))).ok).toBe(true);
+    expect((await db.recordGo(s.id, "kakao", who("1"))).ok).toBe(true);
+    expect((await db.recordGo(s.id, "naver", who("2"))).ok).toBe(true);
+    expect(goes()).toHaveLength(2);
+    expect(goes()[0]).toMatchObject({ storeId: s.id, app: "naver" });
+  });
+
+  it("없는 가게는 404", async () => {
+    const res = await db.recordGo("no-such-store", "naver", who("1"));
+    expect(res.ok).toBe(false);
+    if (!res.ok) expect(res.status).toBe(404);
   });
 });

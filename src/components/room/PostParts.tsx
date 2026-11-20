@@ -5,8 +5,8 @@ import { useState } from "react";
 import { MAX_COMMENT, checkComment, timeAgo, type PostComment } from "@/lib/community";
 import { send, useMe } from "@/lib/me";
 import { refreshOwned, useOwned } from "@/lib/owned";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 
 // 글 아래: 내 글이면 「지우기」, 아니면 「신고」. 지우기는 화면 안에서 한 번 더 묻는다 (확인 창은 쓰지 않는다).
 export function PostActions({ id }: { id: string }) {
@@ -29,28 +29,28 @@ export function PostActions({ id }: { id: string }) {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-end gap-2 text-[13px]">
-      {msg && <span className="mr-auto text-muted-foreground/70">{msg}</span>}
+    <div className="flex flex-wrap items-center justify-end gap-2 text-body-small">
+      {msg && <span className="mr-auto min-w-0 break-keep text-muted-foreground/70 [overflow-wrap:anywhere]">{msg}</span>}
       {mine ? (
         asking ? (
           <>
             <span className="text-muted-foreground">이 글을 지울까요?</span>
-            <button type="button" onClick={remove} className={cn("hit h-8 rounded-lg bg-spicybg px-3 font-semibold text-spicytext")}>
+            <Button type="button" variant="destructive" size="compact" onClick={remove}>
               지우기
-            </button>
-            <button type="button" onClick={() => setAsking(false)} className={cn("hit h-8 rounded-lg border border-input px-3 text-muted-foreground")}>
+            </Button>
+            <Button type="button" variant="outlined" size="compact" onClick={() => setAsking(false)}>
               그만두기
-            </button>
+            </Button>
           </>
         ) : (
-          <button type="button" onClick={() => setAsking(true)} className={cn("hit text-muted-foreground/70 underline underline-offset-2")}>
+          <Button type="button" variant="text" size="compact" onClick={() => setAsking(true)}>
             글 지우기
-          </button>
+          </Button>
         )
       ) : (
-        <button type="button" onClick={flag} className={cn("hit text-muted-foreground/70 underline underline-offset-2")}>
+        <Button type="button" variant="text" size="compact" onClick={flag}>
           신고
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -89,28 +89,31 @@ export function Comments({ postId, comments, nowIso }: { postId: string; comment
 
   return (
     <section className="flex flex-col gap-2 border-t border-border pt-3.5" aria-label="댓글">
-      <h2 className="text-[15px] font-bold">댓글 {comments.length}</h2>
+      <h2 className="text-body-medium">댓글 {comments.length}</h2>
       {comments.length > 0 && (
         <ul className="divide-y divide-border">
           {comments.map((c) => (
             <li key={c.id} className="py-2.5">
-              <p className="flex items-center gap-1.5 text-[12px] text-muted-foreground/70">
-                <b className="font-semibold text-muted-foreground">{c.who}</b>· {timeAgo(c.at, now)}
-                <button
+              <p className="flex items-center gap-1.5 text-caption text-muted-foreground/70">
+                <b className="min-w-0 truncate font-semibold text-muted-foreground">{c.who}</b>
+                <span className="shrink-0">· {timeAgo(c.at, now)}</span>
+                <Button
                   type="button"
+                  variant="text"
+                  size="compact"
                   onClick={() => act(data.comments.includes(c.id) ? "delete-comment" : "flag-comment", c.id)}
-                  className={cn("hit ml-auto underline underline-offset-2")}
+                  className="ml-auto"
                 >
                   {data.comments.includes(c.id) ? "지우기" : "신고"}
-                </button>
+                </Button>
               </p>
-              <p className="mt-1 text-[14px] leading-relaxed whitespace-pre-line">{c.text}</p>
+              <p className="mt-1 text-body-small break-keep whitespace-pre-line [overflow-wrap:anywhere]">{c.text}</p>
             </li>
           ))}
         </ul>
       )}
       <form onSubmit={submit} className="mt-1 flex flex-col gap-2">
-        {/* shadcn Textarea 위에 기존 모양(둥근 모서리 · 카드 배경 · 14px)만 덧씌운다. md:text-sm 기본값도 14px 로 고정. */}
+        {/* 디자인 시스템 칸(variant="field" · 18px): 폰에서 16px 보다 작으면 사파리가 화면을 확대한다. 높이는 내용 따라 늘어난다 */}
         <Textarea
           id="comment-text"
           value={text}
@@ -119,21 +122,17 @@ export function Comments({ postId, comments, nowIso }: { postId: string; comment
           rows={2}
           placeholder={`${me.nick || "닉네임"} 으로 댓글 남기기`}
           aria-label="댓글"
-          className={cn("min-h-0 rounded-xl bg-card px-3 py-2 text-[14px] focus-visible:ring-0 md:text-[14px]")}
+          variant="field"
         />
         <div className="flex items-center gap-2">
           {msg && (
-            <span role="status" className="text-[12px] text-muted-foreground/70">
+            <span role="status" className="min-w-0 text-body-small break-keep text-muted-foreground/70 [overflow-wrap:anywhere]">
               {msg}
             </span>
           )}
-          <button
-            type="submit"
-            disabled={busy || !text.trim()}
-            className={cn("ml-auto grid h-9 place-items-center rounded-xl bg-primary px-4 text-[13px] font-bold text-primary-foreground disabled:opacity-50")}
-          >
+          <Button type="submit" variant="filled" size="md" disabled={busy || !text.trim()} className="ml-auto">
             {busy ? "올리는 중…" : "댓글 달기"}
-          </button>
+          </Button>
         </div>
       </form>
     </section>

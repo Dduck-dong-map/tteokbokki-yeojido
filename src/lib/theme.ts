@@ -1,4 +1,4 @@
-// 팔레트는 P3 「어묵국물 · 옥빛 버튼」, 바탕 #F3F1EE (2026-11-12 디자인 시스템). 다른 팔레트와의 비교는 docs/design 보드에서 한다.
+// 팔레트는 P3 「어묵국물 · 옥빛 버튼」, 바탕 #F3F1EE (2026-11-12 디자인 시스템). 다른 팔레트와의 비교는 docs/공유/design 보드에서 한다.
 // 화면 색은 app/tokens.css(docs/design-system/tokens.json 에서 생성)가 정한다.
 // 이 파일은 CSS 변수를 못 읽는 지도(components/map: MapLibre 스타일·캔버스 도장)의 색 계산에만 쓴다.
 

@@ -11,6 +11,10 @@ export const MAX_POST_BODY = 2000;
 export const MAX_COMMENT = 300;
 export const DAILY_POSTS = 20; // 기기·접속 위치 기준 하루 글 수
 export const DAILY_COMMENTS = 60;
+// 같은 접속 위치(IP) 전체의 하루 상한. 기기 표시만 바꿔 한도를 넘는 것을 막는다 (11-18).
+// 상한은 한 사람 한도보다 커야 한다(혼자 쓰는 사람이 먼저 막히지 않게). 댓글은 한 사람 60 → 한 곳 150.
+export const DAILY_POSTS_PER_IP = 50;
+export const DAILY_COMMENTS_PER_IP = 150;
 
 export type Post = {
   id: string;
@@ -22,7 +26,6 @@ export type Post = {
   storeId?: string; // 글에 붙인 가게 (선택)
   comments: number;
   likes: number; // 추천(엄지척) 수
-  isSample?: boolean;
 };
 
 export type PostComment = { id: string; at: string; who: string; text: string };
@@ -53,6 +56,7 @@ export const MAX_LIST_TITLE = 40;
 export const MAX_LIST_DESC = 200;
 export const MAX_LIST_STORES = 50;
 export const DAILY_LISTS = 20;
+export const DAILY_LISTS_PER_IP = 50; // 같은 접속 위치(IP) 전체의 하루 상한 (11-18)
 
 export type PlaceList = {
   id: string;
@@ -64,7 +68,6 @@ export type PlaceList = {
   updatedAt: string; // ISO
   visibility: ListVisibility;
   likes: number; // 추천 수
-  isSample?: boolean;
 };
 
 export function checkListInfo(p: { title?: unknown; desc?: unknown; visibility?: unknown }, partial = false): string | null {

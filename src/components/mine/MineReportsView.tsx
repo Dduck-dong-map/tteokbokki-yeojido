@@ -13,11 +13,12 @@ type MineReportsViewProps = Pick<MinePageViewProps, "reports" | "now">;
 // 등록 종류 배지 문구 (REQ-W12: 「제보」가 아니라 「등록」)
 const KIND: Record<MyReport["kind"], string> = { new: "새 가게", edit: "정보 수정", closed: "문 닫음" };
 
+// 배지 글자 크기에 `!` 를 붙인 까닭: ui/badge 는 기본 cn 을 써서 `text-caption` 을 글자색으로 보고 지운다(brand/Tag 와 같은 사정).
 // 내가 올린 등록·수정 줄 목록. 가게 id 가 있으면 상세로 가는 링크, 없으면(아직 가게가 안 생긴 등록) 글자만.
 export default function MineReportsView({ reports, now }: MineReportsViewProps) {
   return (
     <section aria-label="내 등록">
-      <div className="flex items-center justify-between text-[13px]">
+      <div className="flex items-center justify-between gap-2 text-caption">
         <b>내가 올린 등록·수정 {reports.length}건</b>
         <span className="text-muted-foreground/70">최근순</span>
       </div>
@@ -27,11 +28,11 @@ export default function MineReportsView({ reports, now }: MineReportsViewProps) 
           {reports.map((r, i) => {
             const inner = (
               <>
-                <Badge variant="outline" className="shrink-0 rounded-full border-input bg-secondary px-2 text-[11px] font-normal text-muted-foreground">
+                <Badge variant="outline" className="shrink-0 rounded-full border-transparent bg-muted px-2 text-caption font-normal text-muted-foreground">
                   {KIND[r.kind]}
                 </Badge>
-                <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-foreground">{r.name}</span>
-                <span className="shrink-0 text-[12px] text-muted-foreground/70">{confirmedAgo(r.at, now)}</span>
+                <span className="min-w-0 flex-1 truncate text-body-small font-semibold text-foreground">{r.name}</span>
+                <span className="shrink-0 text-caption text-muted-foreground/70">{confirmedAgo(r.at, now)}</span>
               </>
             );
             return (
@@ -57,7 +58,7 @@ export default function MineReportsView({ reports, now }: MineReportsViewProps) 
         </MineEmpty>
       )}
 
-      <p className="mt-6 text-center text-[12px] text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">등록은 바로 지도에 올라가요 · 이 기기에서 올린 것만 보여요</p>
+      <p className="mt-6 text-center text-caption text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">등록은 바로 지도에 올라가요 · 이 기기에서 올린 것만 보여요</p>
     </section>
   );
 }

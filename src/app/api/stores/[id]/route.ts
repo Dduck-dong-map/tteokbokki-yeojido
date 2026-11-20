@@ -1,4 +1,4 @@
-import { confirmStill, editStore, flagReview, flagStore, reviewStore, verifyStore } from "@/lib/data/db";
+import { confirmStill, editStore, flagReview, flagStore, recordGo, reviewStore, verifyStore } from "@/lib/data/db";
 import { PHOTO_ID, bad, readJson, reply, whoFrom } from "@/lib/request";
 import { FLAG_REASONS, checkPatch, checkReview, type FlagReason, type StorePatch } from "@/lib/wiki";
 
@@ -7,8 +7,9 @@ import { FLAG_REASONS, checkPatch, checkReview, type FlagReason, type StorePatch
 export async function POST(req: Request, ctx: RouteContext<"/api/stores/[id]">) {
   const { id } = await ctx.params;
   const body = await readJson(req);
-  if (!body) return bad("내용을 읽지 못했어요");
+  if (body instanceof Response) return body; // 다른 출처 · JSON 아님 · 너무 큼 · 읽지 못함 (lib/request.ts)
   const who = whoFrom(req, body.nick);
+  if (who instanceof Response) return who; // 기기 표시(x-ddy-device)가 없는 쓰기는 받지 않는다
 
 
   switch (body.action) {
@@ -34,6 +35,9 @@ export async function POST(req: Request, ctx: RouteContext<"/api/stores/[id]">) 
       if (!(reason in FLAG_REASONS)) return bad("신고 이유를 골라 주세요", 422);
       return reply(await flagStore(id, reason, who));
     }
+    // 길찾기 누름 기록 (W1-4, KPI-W01)
+    case "go":
+      return reply(await recordGo(id, body.app === "kakao" ? "kakao" : "naver", who));
     case "flag-review":
       if (typeof body.reviewId !== "string") return bad("어느 후기인지 알려 주세요", 422);
       return reply(await flagReview(body.reviewId, who));

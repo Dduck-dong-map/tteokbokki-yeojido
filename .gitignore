@@ -39,6 +39,8 @@ docs/슬랙_올림_*/
 
 # 기타
 .DS_Store
+# 개인 편집기 설정 (VS Code)
+.vscode/
 *.pem
 
 # 디버그 로그
@@ -70,3 +72,9 @@ next-env.d.ts
 # Playwright 산출물 (tests/e2e)
 /test-results/
 /playwright-report/
+
+# 가게 자료 만들 때 쓴 스크립트·DB 백업 (이 컴퓨터에만, 11-16) — 만든_스크립트/README.md
+/만든_스크립트/
+
+# Shrimp Task Manager 작업 데이터 (개인 작업 목록·기록)
+.shrimp/

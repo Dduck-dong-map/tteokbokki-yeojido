@@ -26,7 +26,7 @@ model: inherit
 ## 1. 작업 순서 (체크리스트 — 매번 전부)
 
 - [ ] 1. 읽는다: `components.json`, `src/app/globals.css`(변수 이름), `src/components/ui/` 목록, `src/components/brand/`(SpiceStamp · Chili · Stars · Logo · StoreThumb · PendingTag · SampleRibbon), `src/components/layout/`, 맡은 화면의 **컨테이너 파일**(`X.tsx`)에 정의된 **props 타입**.
-- [ ] 2. 기획을 읽는다: `docs/웹1차기획_v1_2026-11-06.md` **3.2 반응형 규칙 표**와 **3.3 해당 화면 절**, `docs/기획안_v5_2026-10-31.md` **8절(브랜딩·색·글꼴)**, `docs/팔레트_shadcn_2026-11-01.md`.
+- [ ] 2. 기획을 읽는다: `docs/기획/웹1차기획_v1_2026-11-06.md` **3.2 반응형 규칙 표**와 **3.3 해당 화면 절**, `docs/기획/기획안_v5_2026-10-31.md` **8절(브랜딩·색·글꼴)**, `docs/디자인/팔레트_shadcn_2026-11-01.md`.
 - [ ] 3. 필요한 shadcn 부품이 `src/components/ui/` 에 없으면 **CLI 로 추가**한다(직접 쓰지 않는다): `pnpm dlx shadcn@latest add <name>`. 추가한 목록을 보고서에 적는다.
 - [ ] 4. `XView.tsx` 를 쓴다(2절 규약). props 타입은 컨테이너의 것을 **import** 하고 새로 만들지 않는다. 타입이 아직 없으면 **제안 타입**을 파일 상단 주석에 적고 임시로 `type Props = {...}` 를 두되 보고서에 "컨테이너가 확정할 것"으로 표시한다.
 - [ ] 5. 폭 3개에서 확인한다: 390 · 768 · 1280. 가로 스크롤 0, 글자 넘침 0.

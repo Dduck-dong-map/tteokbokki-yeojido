@@ -35,8 +35,9 @@ describe("checkNewStore", () => {
   });
 
   it(`사진은 ${MIN_PHOTOS}장 이상 ${MAX_PHOTOS}장 이하`, () => {
-    expect(checkNewStore({ ...VALID, photos: [] })).toBe(`간판이나 메뉴판 사진을 ${MIN_PHOTOS}장 이상 올려 주세요`);
-    expect(checkNewStore({ ...VALID, photos: undefined })).toBe(`간판이나 메뉴판 사진을 ${MIN_PHOTOS}장 이상 올려 주세요`);
+    const short = MIN_PHOTOS > 0 ? `간판이나 메뉴판 사진을 ${MIN_PHOTOS}장 이상 올려 주세요` : null; // 0 이면 사진 없이도 통과
+    expect(checkNewStore({ ...VALID, photos: [] })).toBe(short);
+    expect(checkNewStore({ ...VALID, photos: undefined })).toBe(short);
     expect(checkNewStore({ ...VALID, photos: Array(MAX_PHOTOS + 1).fill("p") })).toBe(`사진은 ${MAX_PHOTOS}장까지 올릴 수 있어요`);
     expect(checkNewStore({ ...VALID, photos: Array(MAX_PHOTOS).fill("p") })).toBeNull();
   });

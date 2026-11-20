@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { StoreCardBody } from "./StoreCardBody";
 import type { StoreRowViewProps } from "./types";
@@ -8,7 +9,8 @@ import type { StoreRowViewProps } from "./types";
 // 고른 줄은 폰에서만 「자세히 · 길찾기」 링크가 아래에 붙는다.
 export default function StoreRowView({ store, me, now, selected, onPick }: StoreRowViewProps) {
   return (
-    <li id={`row-${store.id}`} className={cn(selected && "bg-muted")}>
+    <li id={`row-${store.id}`} className={cn(selected && "bg-secondary shadow-[inset_3px_0_0_var(--primary)]")}>
+      {/* eslint-disable-next-line no-restricted-syntax -- 디자인 시스템 StoreListItem 의 구현: 줄 전체가 단추인 모양이라 Button(한 줄 알약)이 아니다 */}
       <button
         type="button"
         onClick={onPick}
@@ -23,7 +25,7 @@ export default function StoreRowView({ store, me, now, selected, onPick }: Store
 
       {selected && (
         <div className="flex gap-2 px-4 pb-3 md:hidden">
-          <Link href={`/store/${store.id}`} className="grid h-11 flex-1 place-items-center rounded-xl bg-primary text-[14px] font-bold text-primary-foreground">
+          <Link href={`/store/${store.id}`} className={cn(buttonVariants({ variant: "filled", size: "md" }), "min-w-0 flex-1")}>
             자세히 · 길찾기
           </Link>
         </div>

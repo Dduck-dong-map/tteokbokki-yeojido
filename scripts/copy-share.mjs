@@ -15,17 +15,17 @@ rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 // 허브 페이지와 카드 그림
-cpSync(`${DOCS}/share`, OUT, { recursive: true });
+cpSync(`${DOCS}/공유/share`, OUT, { recursive: true });
 // 화면 설계 보드: 기존 v1 사진을 ../화면시안_v1_2026-10-26/화면_이미지/ 에서 불러오므로 같은 자리 관계로 둔다
-cpSync(`${DOCS}/design/index.html`, `${OUT}/board/index.html`);
+cpSync(`${DOCS}/공유/design/index.html`, `${OUT}/board/index.html`);
 // 화면 스튜디오(11-08): 모바일·PC 실제 화면을 액자로 모아 파트별 색 바꿔 보기. 보드 위 「모바일 화면」「PC 화면」 단추가 연다
-cpSync(`${DOCS}/design/screens.html`, `${OUT}/board/screens.html`);
-cpSync(`${DOCS}/design/img`, `${OUT}/board/img`, { recursive: true });
-cpSync(`${DOCS}/화면시안_v1_2026-10-26/화면_이미지`, `${OUT}/화면시안_v1_2026-10-26/화면_이미지`, { recursive: true });
+cpSync(`${DOCS}/공유/design/screens.html`, `${OUT}/board/screens.html`);
+cpSync(`${DOCS}/공유/design/img`, `${OUT}/board/img`, { recursive: true });
+cpSync(`${DOCS}/공유/화면시안_v1_2026-10-26/화면_이미지`, `${OUT}/화면시안_v1_2026-10-26/화면_이미지`, { recursive: true });
 // 출시 로드맵: 온라인 보드(claude.ai) 밖에서는 「처음 상태」 보기용으로 열린다
-cpSync(`${DOCS}/roadmap/index.html`, `${OUT}/roadmap/index.html`);
+cpSync(`${DOCS}/공유/roadmap/index.html`, `${OUT}/roadmap/index.html`);
 // 진행 현황(팀 공유용 한 장) + 거기서 보여 주는 M1 화면 그림. 그림은 ../M1_화면_이미지_… 상대 경로 그대로
-cpSync(`${DOCS}/진행현황/index.html`, `${OUT}/status/index.html`);
-cpSync(`${DOCS}/M1_화면_이미지_2026-10-31`, `${OUT}/M1_화면_이미지_2026-10-31`, { recursive: true });
+cpSync(`${DOCS}/공유/진행현황/index.html`, `${OUT}/status/index.html`);
+cpSync(`${DOCS}/공유/M1_화면_이미지_2026-10-31`, `${OUT}/M1_화면_이미지_2026-10-31`, { recursive: true });
 
 console.log("copy-share: docs → public/share 복사함");

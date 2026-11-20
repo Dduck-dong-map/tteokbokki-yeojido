@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { LikeButton } from "@/components/lists/ListParts";
 import { Comments, PostActions } from "@/components/room/PostParts";
-import { SampleRibbon, SpiceStamp } from "@/components/brand";
+import { SpiceStamp } from "@/components/brand";
 import { BackHeader } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { BOARD_CATS, timeAgo } from "@/lib/community";
@@ -41,22 +42,17 @@ async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 pt-3 pb-10 md:px-0">
-      {post.isSample && (
-        <div className="flex justify-center">
-          <SampleRibbon />
-        </div>
-      )}
       <article className="flex flex-col gap-3">
         <header>
-          <Badge variant="outline" className="rounded-md border-input px-1.5 text-[11px] font-normal text-muted-foreground">
+          <Badge variant="outline" className="rounded-full border-transparent bg-muted px-2 text-caption font-normal text-muted-foreground">
             {BOARD_CATS[post.cat]}
           </Badge>
-          <h1 className="mt-1.5 text-[20px] leading-snug font-bold text-balance break-keep [overflow-wrap:anywhere]">{post.title}</h1>
-          <p className="mt-1 text-[12px] text-muted-foreground/70">
+          <h1 className="mt-1.5 text-heading-4 text-balance break-keep [overflow-wrap:anywhere]">{post.title}</h1>
+          <p className="mt-1 text-caption text-muted-foreground/70">
             {post.who} · {timeAgo(post.at, now)}
           </p>
         </header>
-        <p className="border-t border-border pt-3 text-[15px] leading-relaxed whitespace-pre-line break-keep [overflow-wrap:anywhere]">{post.body}</p>
+        <p className="border-t border-border pt-3 text-body-medium whitespace-pre-line break-keep [overflow-wrap:anywhere]">{post.body}</p>
         {store && (
           // 붙인 가게 카드: 도장 · 이름 · 동 · 대표 메뉴 가격 → 가게 상세
           <Link
@@ -65,12 +61,15 @@ async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
           >
             <SpiceStamp n={store.spice} size={26} />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[14px] font-bold text-foreground">{store.name}</span>
-              <span className="block truncate text-[12px] text-muted-foreground/70">
+              <span className="block truncate text-caption font-bold text-foreground">{store.name}</span>
+              <span className="block truncate text-caption text-muted-foreground/70">
                 {store.dong} · {store.menu[0].name} {won(store.price)}
               </span>
             </span>
-            <span className="shrink-0 text-[13px] text-muted-foreground/70">가게 보기 ›</span>
+            <span className="inline-flex shrink-0 items-center text-caption text-muted-foreground/70">
+              가게 보기
+              <ChevronRight className="size-4" strokeWidth={2} aria-hidden="true" />
+            </span>
           </Link>
         )}
         {/* 추천(엄지척) + 숫자 (11-08) */}

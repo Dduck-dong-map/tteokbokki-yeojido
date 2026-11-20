@@ -2,11 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Check, ChevronLeft, Share2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import TteokMap from "@/components/map/TteokMap";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { distanceM, distanceText } from "@/lib/filters";
 import { useGrantedLocation, useIsWide } from "@/lib/screen";
 import type { Store } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 const noop = () => undefined;
 
@@ -21,8 +24,8 @@ export function StoreMiniMap({ store }: { store: Store }) {
   return (
     <>
       <div className="flex items-center justify-between md:hidden">
-        <h2 className="text-[16px] font-bold">위치</h2>
-        <Link href={href} className="hit text-[13px] font-bold text-link">
+        <h2 className="text-body-medium">위치</h2>
+        <Link href={href} className="hit text-caption font-bold text-link">
           지도 크게 보기
         </Link>
       </div>
@@ -41,7 +44,7 @@ export function StoreDistance({ lat, lng }: { lat: number; lng: number }) {
   return me ? <> · {distanceText(distanceM(me, { lat, lng }))}</> : null;
 }
 
-// 머리칸 왼쪽: 폰은 ‹ 뒤로, 768 이상은 × 패널 닫기. 지도에 걸어 둔 필터는 그대로 돌아간다.
+// 머리칸 왼쪽: 폰은 ChevronLeft 뒤로, 768 이상은 X 패널 닫기(lucide). 지도에 걸어 둔 필터는 그대로 돌아간다.
 export function CloseStore() {
   const router = useRouter();
   return (
@@ -52,10 +55,10 @@ export function CloseStore() {
         router.push(`/${window.location.search}`);
       }}
       aria-label="지도로 돌아가기"
-      className="grid h-11 w-11 place-items-center rounded-full text-xl text-foreground hover:bg-muted"
+      className={cn(buttonVariants({ variant: "text", size: "icon-xl" }), "text-foreground")}
     >
-      <span className="md:hidden">‹</span>
-      <span className="hidden text-[20px] md:inline">×</span>
+      <ChevronLeft className="size-6 md:hidden" strokeWidth={2} aria-hidden="true" />
+      <X className="hidden size-6 md:block" strokeWidth={2} aria-hidden="true" />
     </Link>
   );
 }
@@ -77,17 +80,8 @@ export function ShareButton({ name }: { name: string }) {
     }
   };
   return (
-    <button type="button" onClick={share} aria-label={`${name} 공유`} title={done ? "주소를 복사했어요" : "공유"} className="grid h-11 w-11 place-items-center rounded-full text-foreground hover:bg-muted">
-      {done ? (
-        <span className="text-[16px]">✓</span>
-      ) : (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="18" cy="5" r="3" />
-          <circle cx="6" cy="12" r="3" />
-          <circle cx="18" cy="19" r="3" />
-          <path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" />
-        </svg>
-      )}
-    </button>
+    <Button type="button" variant="text" size="icon-xl" onClick={share} aria-label={`${name} 공유`} title={done ? "주소를 복사했어요" : "공유"} className="text-foreground">
+      {done ? <Check className="size-6" strokeWidth={2} aria-hidden="true" /> : <Share2 className="size-6" strokeWidth={2} aria-hidden="true" />}
+    </Button>
   );
 }

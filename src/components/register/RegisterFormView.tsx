@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,18 +17,18 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
   if (doneId)
     return (
       <div className="mx-auto max-w-[480px] px-6 py-16 text-center">
-        <p className="text-[40px]" aria-hidden="true">
+        <p className="text-display-medium" aria-hidden="true">
           🍢
         </p>
-        <h2 className="mt-3 text-[20px] font-bold">지도에 올렸어요. 서비스 어묵 하나 드려요</h2>
-        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+        <h2 className="mt-3 text-heading-4 break-keep [overflow-wrap:anywhere]">지도에 올렸어요. 서비스 어묵 하나 드려요</h2>
+        <p className="mt-2 text-body-small text-muted-foreground">
           일주일 동안 「확인 중」으로 보여요.
           <br />가 본 사람 {VERIFY_YES}명이 「맞아요」를 누르면 확인이 끝나요.
         </p>
-        <Link href={`/store/${doneId}`} className={cn(buttonVariants(), "mt-8 h-12 w-full rounded-xl text-[16px] font-bold")}>
+        <Link href={`/store/${doneId}`} className={cn(buttonVariants({ variant: "filled", size: "xl" }), "mt-8 w-full")}>
           올린 가게 보기
         </Link>
-        <Link href="/" className={cn(buttonVariants({ variant: "outline" }), "mt-2 h-11 w-full rounded-xl border-input bg-card text-[14px] font-normal text-muted-foreground")}>
+        <Link href="/" className={cn(buttonVariants({ variant: "outlined", size: "md" }), "mt-3 w-full")}>
           지도로 돌아가기
         </Link>
       </div>
@@ -35,14 +36,14 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
 
   // 오류·중복 안내 (경고창#1·#2). PC 는 올리기 단추 위, 폰은 아래 고정 줄 위에 나온다
   const message = error && (
-    <div role="alert" className="mb-2 text-[13px] text-spicytext">
+    <div role="alert" className="mb-2 text-body-small break-keep text-spicytext [overflow-wrap:anywhere]">
       <p>{error}</p>
       {dupId && (
         <div className="mt-2 flex gap-2">
-          <Link href={`/store/${dupId}`} className={cn(buttonVariants({ variant: "outline" }), "h-11 flex-1 rounded-xl border-muted-foreground bg-card text-[14px] font-bold text-foreground md:h-10")}>
+          <Link href={`/store/${dupId}`} className={cn(buttonVariants({ variant: "outlined", size: "md" }), "min-w-0 flex-1 px-3")}>
             그 가게 보기
           </Link>
-          <Button type="button" variant="outline" onClick={() => onSubmit(true)} disabled={sending} className="h-11 flex-1 rounded-xl border-input bg-card text-[14px] font-normal text-muted-foreground md:h-10">
+          <Button type="button" variant="outlined" size="md" onClick={() => onSubmit(true)} disabled={sending} className="min-w-0 flex-1 px-3">
             다른 가게예요
           </Button>
         </div>
@@ -54,12 +55,12 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
     <div className="flex min-h-[calc(100dvh-48px)] flex-col px-5 pt-4 md:block md:min-h-0 md:px-0 md:pt-0">
       {/* 쓰다 만 등록 (기기 안 임시 저장). 칸을 건드리거나 띠를 닫으면 사라진다 */}
       {hasSavedDraft && !touched && !draftClosed && (
-        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl bg-secondary px-3 py-2.5 text-[13px] text-muted-foreground">
-          <span className="min-w-0 flex-1">쓰다 만 등록이 있어요.</span>
-          <Button type="button" onClick={onResumeDraft} className="h-11 rounded-lg px-3 text-[13px] font-bold md:h-9">
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl bg-secondary px-3 py-2.5 text-body-small text-muted-foreground">
+          <span className="min-w-0 flex-1 basis-32 break-keep">쓰다 만 등록이 있어요.</span>
+          <Button type="button" variant="tonal" size="compact" onClick={onResumeDraft}>
             이어서 쓰기
           </Button>
-          <Button type="button" variant="outline" onClick={onDiscardDraft} className="h-11 rounded-lg border-input bg-card px-3 text-[13px] font-normal text-foreground md:h-9">
+          <Button type="button" variant="outlined" size="compact" onClick={onDiscardDraft}>
             새로 쓰기
           </Button>
         </div>
@@ -69,8 +70,8 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
       <ol className="flex gap-1 md:hidden" aria-label={`${steps.length}단계 중 ${step + 1}단계`}>
         {steps.map((s, i) => (
           <li key={s} className="flex-1">
-            <span className={cn("block h-1 rounded-full", i <= step ? "bg-primary" : "bg-input")} />
-            <span className={cn("mt-1 block text-[11px] leading-tight", i === step ? "font-bold text-foreground" : "text-muted-foreground/70")}>{s}</span>
+            <span className={cn("block h-1 rounded-full", i <= step ? "bg-primary" : "bg-border")} />
+            <span className={cn("mt-1 block text-caption break-keep", i === step ? "font-bold text-foreground" : "text-muted-foreground/70")}>{s}</span>
           </li>
         ))}
       </ol>
@@ -80,11 +81,18 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
             1280 이상: 제목 아래 화면 왼쪽 끝에 붙인다 (사용자 11-08 시안 Group 3616). 칸 자리는 그대로 두고 옆으로만 옮겨 입력 칸이 움직이지 않게 한다 */}
         <nav
           aria-label="등록 칸"
-          className="hidden self-start lg:sticky lg:top-[72px] lg:flex lg:flex-col lg:gap-2.5 lg:text-[14px] xl:mt-5 xl:translate-x-[calc(56px_-_(100vw_-_1168px)/2_-_24px)]"
+          className="hidden self-start lg:sticky lg:top-[72px] lg:flex lg:flex-col lg:gap-2.5 lg:text-caption xl:mt-5 xl:translate-x-[calc(56px_-_(100vw_-_1168px)/2_-_24px)]"
         >
           {steps.map((s, i) => (
-            <a key={s} href={`#reg-${i}`} className={cn(i === done.indexOf(false) ? "font-bold text-foreground" : "text-muted-foreground/70")}>
-              {i + 1}. {s} {done[i] && "✓"}
+            <a key={s} href={`#reg-${i}`} className={cn("inline-flex items-center gap-1", i === done.indexOf(false) ? "font-bold text-foreground" : "text-muted-foreground/70")}>
+              {i + 1}. {s}
+              {/* 채운 칸 표시. 아이콘은 장식이고 스크린 리더에는 글자로 알린다 */}
+              {done[i] && (
+                <>
+                  <Check className="size-4" strokeWidth={2} aria-hidden="true" />
+                  <span className="sr-only">(채움)</span>
+                </>
+              )}
             </a>
           ))}
         </nav>
@@ -107,16 +115,16 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
         {message}
         <div className="flex gap-2">
           {step > 0 && (
-            <Button type="button" variant="outline" onClick={onPrev} className="h-12 flex-1 rounded-xl border-input bg-card text-[15px] font-normal text-muted-foreground">
+            <Button type="button" variant="outlined" size="xl" onClick={onPrev} className="min-w-0 flex-1 px-3">
               이전
             </Button>
           )}
           {step === 3 && !draft.memo?.trim() && (
-            <Button type="button" variant="outline" onClick={onNext} className="h-12 flex-1 rounded-xl border-input bg-card text-[15px] font-normal text-muted-foreground">
+            <Button type="button" variant="outlined" size="xl" onClick={onNext} className="min-w-0 flex-1 px-3">
               건너뛰기
             </Button>
           )}
-          <Button type="button" onClick={onNext} disabled={sending} className="h-12 flex-[2] rounded-xl text-[16px] font-bold">
+          <Button type="button" variant="filled" size="xl" onClick={onNext} disabled={sending} className="min-w-0 flex-[2] px-3">
             {step < steps.length - 1 ? "다음" : sending ? "올리는 중…" : "지도에 올리기"}
           </Button>
         </div>

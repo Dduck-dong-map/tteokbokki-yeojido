@@ -5,8 +5,9 @@ import { bad, readJson, reply, whoFrom } from "@/lib/request";
 // 떡볶이방(게시판): 글 쓰기 · 지우기 · 댓글 · 신고. 지우기는 이 기기에서 쓴 것만 된다.
 export async function POST(req: Request) {
   const body = await readJson(req);
-  if (!body) return bad("내용을 읽지 못했어요");
+  if (body instanceof Response) return body; // 다른 출처 · JSON 아님 · 너무 큼 · 읽지 못함 (lib/request.ts)
   const who = whoFrom(req, body.nick);
+  if (who instanceof Response) return who; // 기기 표시(x-ddy-device)가 없는 쓰기는 받지 않는다
   const id = typeof body.id === "string" ? body.id : "";
 
   switch (body.action) {

@@ -9,7 +9,7 @@ import { THEME } from "@/lib/theme";
 import type { Store } from "@/lib/types";
 import { isPending } from "@/lib/wiki";
 import { MAP_CREDIT, REAL_FADE, dongyeoStyle, type ZoomMode } from "./dongyeoStyle";
-import { createRealMap, type RealMap } from "./realMap";
+import { NAVER_CREDIT, PRELOAD_ZOOM, createRealMap, type RealMap } from "./realMap";
 import { provideStamps } from "./stamps";
 
 type LatLng = { lat: number; lng: number };
@@ -25,13 +25,28 @@ type Props = {
   focus: Focus | null; // n 이 바뀔 때마다 그곳으로 옮긴다
   onBoundsChange?: (b: Bounds) => void; // 지도를 움직일 때마다 보이는 범위 (「현재 지도에서 찾은 가게」)
   onSettled?: () => void; // 지도가 떴거나, 실패했거나, 8초가 지났을 때 (로딩 화면을 걷는다)
-  start?: { lat: number; lng: number; zoom: number }; // 처음 보여 줄 곳. 없으면 마포·서대문 13배
+  start?: { lat: number; lng: number; zoom: number }; // 처음 보여 줄 곳. 없으면 가게들의 한가운데 13배
   interactive?: boolean; // false = 움직이지 않는 작은 지도 (가게 상세, 위에서 밀어도 페이지가 스크롤된다)
   showName?: boolean; // 도장 밑 글자를 가격 대신 가게 이름으로
 };
 
-// 첫 화면 중심: 예시 데이터가 있는 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
+// 초점(focus)으로 지도를 옮긴다: 가게 묶음이면 모두 보이게, 한 곳이면 그곳으로
+function moveTo(m: MlMap, focus: Focus) {
+  if ("bounds" in focus) m.fitBounds([[focus.bounds.w, focus.bounds.s], [focus.bounds.e, focus.bounds.n]], { padding: 48, maxZoom: 15, duration: 600 });
+  else m.easeTo({ center: [focus.lng, focus.lat], zoom: focus.zoom ?? Math.max(m.getZoom(), 15), duration: 600 });
+}
+
+// 첫 화면 중심: 가게가 가장 많은 구의 한가운데 (11-16 강남 + 마포 → 둘 사이 한강 위가 되지 않게). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
 const START: [number, number] = [126.928, 37.5555];
+function storesCenter(stores: Store[]): [number, number] {
+  if (!stores.length) return START;
+  const byGu = new Map<string, Store[]>();
+  for (const s of stores) byGu.set(s.gu, [...(byGu.get(s.gu) ?? []), s]);
+  const top = [...byGu.values()].sort((a, b) => b.length - a.length)[0];
+  const lngs = top.map((s) => s.lng);
+  const lats = top.map((s) => s.lat);
+  return [(Math.min(...lngs) + Math.max(...lngs)) / 2, (Math.min(...lats) + Math.max(...lats)) / 2];
+}
 // 한글 지명·이름표 = 조선100년체 (app/layout.tsx 에서 이 이름으로 불러온다)
 const KOREAN_SERIF = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif";
 
@@ -64,10 +79,11 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   const box = useRef<HTMLDivElement>(null);
   const startAt = useRef(start);
   const under = useRef<HTMLDivElement>(null);
-  const [realOn, setRealOn] = useState(false);
+  const [realOn, setRealOn] = useState<"naver" | "temp" | null>(null); // ① 실제 지도가 드러났을 때 어느 지도인지
   const [failed, setFailed] = useState(false); // 지도를 못 불러와도 주소·길찾기는 그대로 쓸 수 있다 (경고창#6)
   const initial = useRef({ interactive, showName });
   const mapRef = useRef<MlMap | null>(null);
+  const pendingFocus = useRef<Focus | null>(null); // 지도가 만들어지기 전에 온 초점
   const ready = useRef(false);
   const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange, onSettled });
   useEffect(() => {
@@ -91,14 +107,14 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       if (!ml) return fail();
       ml.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs"); // scripts/copy-maplibre-worker.mjs 가 복사해 둔 파일
       const t = THEME; // 팔레트는 P3 고정 (lib/theme.ts)
-      const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "real" ? "real" : "names";
+      const mode: ZoomMode = new URLSearchParams(window.location.search).get("zoom") === "names" ? "names" : "real"; // 기본 ① (11-13)
       let m: MlMap;
       try {
         m = new ml.Map({
         container: box.current,
         interactive: initial.current.interactive,
         style: dongyeoStyle(t.map, mode),
-        center: startAt.current ? [startAt.current.lng, startAt.current.lat] : START,
+        center: startAt.current ? [startAt.current.lng, startAt.current.lat] : storesCenter(latest.current.stores),
         zoom: startAt.current?.zoom ?? 13,
         minZoom: 10,
         maxZoom: 18.5,
@@ -127,27 +143,50 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       // 패널을 열고 닫거나 등록 단계를 넘기면 지도 칸의 크기가 바뀐다
       resize = new ResizeObserver(() => m.resize());
       resize.observe(box.current);
-      // 오른쪽 아래는 등록·내 위치 버튼 자리. ① 은 확대하면 위 지도 층이 꺼지므로 저작권 표시를 고정으로 둔다.
-      m.addControl(new ml.AttributionControl({ compact: true, customAttribution: mode === "real" ? MAP_CREDIT : undefined }), "bottom-left");
+      // 오른쪽 아래는 등록·내 위치 버튼 자리. ① 은 확대하면 위 지도 층이 꺼지므로 저작권 표시를 고정으로 두고,
+      // 드러난 실제 지도가 네이버면 네이버 표시로 바꾼다 (임시 지도·그림 지도는 OpenFreeMap · OpenStreetMap).
+      let credit = mode === "real" ? MAP_CREDIT : undefined;
+      let attrib = new ml.AttributionControl({ compact: true, customAttribution: credit });
+      m.addControl(attrib, "bottom-left");
+      const setCredit = (next: string) => {
+        if (next === credit) return;
+        credit = next;
+        m.removeControl(attrib);
+        attrib = new ml.AttributionControl({ compact: true, customAttribution: next });
+        m.addControl(attrib, "bottom-left");
+      };
       m.touchZoomRotate.disableRotation();
       // 마우스를 쓰는 넓은 화면: ＋− 단추 + 도장에 올리면 이름·가격 (웹 1차 기획 REQ-W11). 터치 노트북도 마우스가 있으면 나온다.
       const mouse = initial.current.interactive && window.matchMedia("(hover: hover) and (min-width: 768px)").matches;
       if (mouse) m.addControl(new ml.NavigationControl({ showCompass: false }), "bottom-right");
       mapRef.current = m;
+      // 지도가 만들어지기 전에 온 초점(예: PC 에서 이미 허용한 내 위치가 지도 코드보다 먼저 옴)을 이제 적용한다
+      if (pendingFocus.current) moveTo(m, pendingFocus.current);
+      pendingFocus.current = null;
       if (process.env.NODE_ENV === "development" && initial.current.interactive) Object.assign(window, { __tteokMap: m }); // 개발 중 콘솔에서 지도 살펴보기
       provideStamps(m, t.map, t.css.surface);
 
       if (mode === "real" && under.current) {
+        const underEl = under.current;
+        let making = false;
         const follow = () => {
-          real?.follow(m.getCenter(), m.getZoom());
-          setRealOn(m.getZoom() >= REAL_FADE[1]);
+          const z = m.getZoom();
+          // 실제 지도는 PRELOAD_ZOOM 에 처음 닿을 때 만든다 (네이버는 띄울 때마다 1건)
+          if (!real && !making && z >= PRELOAD_ZOOM) {
+            making = true;
+            void createRealMap(ml, underEl, m.getCenter(), z, follow).then((r) => {
+              if (cancelled) return r.remove();
+              real = r;
+              follow();
+            });
+          }
+          real?.follow(m.getCenter(), z);
+          const shown = z >= REAL_FADE[1] ? (real?.kind() ?? "temp") : null;
+          setRealOn(shown);
+          setCredit(shown === "naver" ? NAVER_CREDIT : MAP_CREDIT);
         };
         m.on("move", follow);
-        createRealMap(ml, under.current, m.getCenter(), m.getZoom()).then((r) => {
-          if (cancelled) return r.remove();
-          real = r;
-          follow();
-        });
+        follow();
       }
 
       m.on("load", () => {
@@ -176,13 +215,13 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
           "icon-size": ["case", ["==", ["get", "grade"], "menu"], 0.8, 1],
           "icon-allow-overlap": true,
         };
-        // 안 보이는 도장: 길·건물·상호 이름만 도장을 비켜 가게 한다. 역·동네 이름은 이 층보다 위라 밀려나지 않는다.
-        if (mode === "names") {
-          m.addLayer(
-            { id: "stamps-block", type: "symbol", source: "stores", minzoom: 15, filter: ["!", ["has", "point_count"]], layout: stampLayout, paint: { "icon-opacity": 0 } },
-            "water-name",
-          );
-        }
+        // 안 보이는 도장: 역·길·건물·상호 이름이 도장을 비켜 가게 한다. 동네·구 이름(이 층보다 위)은 그대로.
+        // 11-13 수정판(게슈탈트 「전경-배경」): 도장이 「홍대입구역」 같은 역 이름을 덮던 것 → 역 이름이 옆으로 비킨다(dongyeoStyle station).
+        // ① 은 15.8배부터 그림 지도 층이 꺼지므로 이 층도 그 아래에서만 일한다.
+        m.addLayer(
+          { id: "stamps-block", type: "symbol", source: "stores", minzoom: 12.5, filter: ["!", ["has", "point_count"]], layout: stampLayout, paint: { "icon-opacity": 0 } },
+          "place-dong",
+        );
         m.addLayer({
           id: "stamps", type: "symbol", source: "stores", filter: ["!", ["has", "point_count"]],
           layout: { ...stampLayout, "icon-ignore-placement": true, "symbol-sort-key": pinSort(selectedId) },
@@ -258,28 +297,30 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
 
   useEffect(() => {
     const m = mapRef.current;
-    if (!focus || !m) return;
-    if ("bounds" in focus) m.fitBounds([[focus.bounds.w, focus.bounds.s], [focus.bounds.e, focus.bounds.n]], { padding: 48, maxZoom: 15, duration: 600 });
-    else m.easeTo({ center: [focus.lng, focus.lat], zoom: focus.zoom ?? Math.max(m.getZoom(), 15), duration: 600 });
+    if (!focus) return;
+    // 지도가 아직 없으면(maplibre 를 불러오는 중) 버리지 않고 기억해 두었다가 만든 뒤에 옮긴다
+    if (!m) pendingFocus.current = focus;
+    else moveTo(m, focus);
   }, [focus]);
 
   // maplibre 가 지도 상자에 position: relative 를 붙이므로, 바깥 상자로 자리를 잡는다
   return (
     <div className="absolute inset-0">
-      <div className="absolute inset-0" aria-hidden="true">
+      {/* isolate: 네이버 지도 로고·컨트롤(z-index)이 위 그림 지도 칸을 뚫고 올라오지 않게 이 칸 안에 가둔다 (11-13 확인: 14~15배에서 로고가 비침) */}
+      <div className="absolute inset-0 isolate" aria-hidden="true">
         <div ref={under} className="h-full w-full" />
       </div>
       <div className="absolute inset-0">
         <div ref={box} className="h-full w-full" aria-label="떡볶이 가게 지도" role="region" />
       </div>
       {failed && (
-        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-border bg-card px-3 py-2 text-center text-[13px] text-muted-foreground shadow-sm">
+        <p role="status" className="absolute inset-x-3 top-3 z-10 rounded-xl border border-border bg-card px-3 py-2 text-center text-body-small text-muted-foreground shadow-elevation-1">
           지도를 불러오지 못했어요. 주소와 길찾기는 그대로 쓸 수 있어요.
         </p>
       )}
-      {realOn && (
-        <span className="pointer-events-none absolute top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-input bg-card px-3 py-1 text-[12px] text-muted-foreground shadow-sm">
-          실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도
+      {realOn && interactive && (
+        <span className="pointer-events-none absolute top-11 left-1/2 z-10 max-w-[calc(100%-1rem)] -translate-x-1/2 truncate rounded-full border border-input bg-card px-3 py-1 text-caption text-muted-foreground shadow-elevation-1">
+          {realOn === "naver" ? "실제 지도 · 축소하면 그림 지도" : "실제 지도 · 네이버 자리에 임시 지도 · 축소하면 그림 지도"}
         </span>
       )}
     </div>

@@ -1,7 +1,9 @@
-import { SampleRibbon } from "@/components/brand";
+import { Plus } from "lucide-react";
 import { BottomNav } from "@/components/layout";
 import ListInfoFormView from "@/components/lists/ListInfoFormView";
 import { ListCard } from "@/components/lists/ListParts";
+import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import { cn } from "@/lib/utils";
 import MineEmpty from "./MineEmpty";
 import MineReportsView from "./MineReportsView";
@@ -24,48 +26,39 @@ const SORTS: { key: ListSort; label: string }[] = [
 const CARD_GRID = "grid gap-3 md:grid-cols-2 xl:grid-cols-3";
 
 // 내 맛지도 화면. 고른 탭·개수·리스트·찜·등록·오류·핸들러는 전부 컨테이너(MinePage)가 넘긴다.
-// 탭은 shadcn Tabs 대신 칩 단추 + role="tablist" — 탭 상태와 주소(?tab=) 동기화를 컨테이너가 쥐고 있어서 상태 없는 단추가 맞는다(RoomBoardView 와 같은 모양).
+// 탭은 shadcn Tabs 대신 Chip(role="tab") + role="tablist" — 탭 상태와 주소(?tab=) 동기화를 컨테이너가 쥐고 있어서 상태 없는 단추가 맞는다(RoomBoardView 와 같은 모양).
+// 탭·정렬은 하나 고르기라 Chip 의 onChange 가 true 일 때만 받는다. aria-selected · aria-pressed 는 Chip 이 붙인다.
 export default function MinePageView(props: MinePageViewProps) {
-  const { tab, counts, stores, myLists, ownedLoaded, publicLists, publicCount, sort, now, sample, creating, message, createForm, onTabChange, onSortChange, onCreatingChange } = props;
+  const { tab, counts, stores, myLists, ownedLoaded, publicLists, publicCount, sort, now, creating, message, createForm, onTabChange, onSortChange, onCreatingChange } = props;
   return (
     <div className="page-wide">
       <header className="z-10 border-b border-border bg-background px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-1.5 max-md:sticky max-md:top-0 md:border-0 md:bg-transparent md:px-0 md:pt-5">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <h1 className="text-[18px] font-bold md:text-[20px]">내 맛지도</h1>
-          <span className="text-[12px] text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">가게를 모아 리스트로 · 나누고 추천받기</span>
+          <h1 className="text-heading-4">내 맛지도</h1>
+          <span className="text-caption text-muted-foreground/70 break-keep [overflow-wrap:anywhere]">가게를 모아 리스트로 · 나누고 추천받기</span>
         </div>
-        {/* 탭 줄: 단추는 36px 이지만 .hit 가 44px 로 넓힌다. 가로 스크롤 칸이 ::after 를 자르지 않게 위아래 6px 여백 */}
-        <div className="mt-1.5 flex gap-1.5 overflow-x-auto py-1.5 [scrollbar-width:none]" role="tablist" aria-label="내 맛지도">
-          {TABS.map((t) => {
-            const on = tab === t.key;
-            return (
-              <button
-                key={t.key}
-                type="button"
-                role="tab"
-                aria-selected={on}
-                onClick={() => onTabChange(t.key)}
-                className={cn(
-                  "hit h-9 shrink-0 rounded-full border px-3.5 text-[13px] whitespace-nowrap",
-                  on ? "border-foreground bg-foreground font-semibold text-background" : "border-input bg-card text-muted-foreground hover:bg-muted",
-                )}
-              >
-                {t.label} <span className="tabular-nums opacity-70">{counts[t.key]}</span>
-              </button>
-            );
-          })}
+        {/* 탭 줄: 칩은 32px 이지만 .hit-target 이 48px 로 넓힌다. 가로 스크롤 칸이 ::after 를 자르지 않게 위아래 8px 여백 */}
+        <div className="mt-1 flex gap-2 overflow-x-auto py-2 [scrollbar-width:none]" role="tablist" aria-label="내 맛지도">
+          {TABS.map((t) => (
+            <Chip
+              key={t.key}
+              type="button"
+              role="tab"
+              shape="pill"
+              selected={tab === t.key}
+              onChange={(on) => {
+                if (on) onTabChange(t.key);
+              }}
+            >
+              {t.label} <span className="tabular-nums opacity-70">{counts[t.key]}</span>
+            </Chip>
+          ))}
         </div>
       </header>
 
-      {sample && (
-        <div className="flex justify-center pt-3">
-          <SampleRibbon />
-        </div>
-      )}
-
       <main className="flex-1 px-4 pt-3 pb-6 md:px-0">
         {message && (
-          <p role="alert" className="mb-3 rounded-xl bg-spicybg px-3 py-2 text-[13px] text-spicytext break-keep [overflow-wrap:anywhere]">
+          <p role="alert" className="mb-3 rounded-xl bg-spicybg px-3 py-2 text-body-small text-spicytext break-keep [overflow-wrap:anywhere]">
             {message}
           </p>
         )}
@@ -77,13 +70,10 @@ export default function MinePageView(props: MinePageViewProps) {
                 <ListInfoFormView {...createForm} />
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => onCreatingChange(true)}
-                className={cn("grid h-12 w-full place-items-center rounded-xl border border-dashed border-input bg-card text-[14px] font-bold text-foreground hover:bg-muted md:max-w-[520px]")}
-              >
-                ＋ 새 리스트 만들기
-              </button>
+              <Button type="button" variant="outlined" size="xl" onClick={() => onCreatingChange(true)} className="w-full border-dashed bg-card md:max-w-[520px]">
+                <Plus strokeWidth={2} aria-hidden="true" />
+                새 리스트 만들기
+              </Button>
             )}
             {!ownedLoaded ? (
               <MineEmpty>내 리스트를 불러오는 중…</MineEmpty>
@@ -107,19 +97,23 @@ export default function MinePageView(props: MinePageViewProps) {
 
         {tab === "all" && (
           <section aria-label="모두의 리스트">
-            <div className="flex items-center justify-between text-[13px]">
+            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-caption">
               <b>공개된 리스트 {publicCount}개</b>
               <span className="flex gap-1">
                 {SORTS.map((o) => (
-                  <button
+                  <Chip
                     key={o.key}
                     type="button"
-                    aria-pressed={sort === o.key}
-                    onClick={() => onSortChange(o.key)}
-                    className={cn("hit h-7 rounded-full px-2.5 text-[12px] whitespace-nowrap", sort === o.key ? "bg-foreground font-semibold text-background" : "text-muted-foreground/70 hover:bg-muted")}
+                    size="sm"
+                    tone="ghost"
+                    shape="pill"
+                    selected={sort === o.key}
+                    onChange={(on) => {
+                      if (on) onSortChange(o.key);
+                    }}
                   >
                     {o.label}
-                  </button>
+                  </Chip>
                 ))}
               </span>
             </div>
