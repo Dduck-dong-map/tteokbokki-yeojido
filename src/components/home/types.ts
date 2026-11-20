@@ -41,7 +41,6 @@ export type MapShellViewProps = {
   toast: string | null;
   // 정렬
   sort: SortKey; // 실제 적용 중인 정렬 (null 해석은 컨테이너가 끝낸다)
-  canSortNear: boolean; // 내 위치가 있을 때만
   // 필터
   filters: Filters;
   filterCount: number;

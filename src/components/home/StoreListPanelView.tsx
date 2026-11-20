@@ -10,7 +10,7 @@ import type { MapShellViewProps, SortKey } from "./types";
 export type StoreListPanelViewProps = Pick<
   MapShellViewProps,
   | "stores" | "shown" | "list" | "inViewCount" | "searching" | "query" | "routeId" | "selectedId" | "wide" | "sheet" | "me" | "now"
-  | "sort" | "canSortNear" | "filters" | "filterCount" | "filterChips" | "filterOpen" | "countWith"
+  | "sort" | "filters" | "filterCount" | "filterChips" | "filterOpen" | "countWith"
   | "onPick" | "onSortChange" | "onSheetChange" | "onFilterOpen" | "onFilterClose" | "onFiltersChange" | "onResetAll" | "onShowAll"
   | "listRef" | "onListKeyDown" | "onHandlePointerDown" | "onHandlePointerUp" | "onHandlePointerCancel"
 >;
@@ -21,7 +21,7 @@ const SORTS: { key: SortKey; label: string }[] = [
 ];
 
 export default function StoreListPanelView({
-  list, shown, stores, inViewCount, searching, query, selectedId, routeId, wide, sheet, me, now, sort, canSortNear,
+  list, shown, stores, inViewCount, searching, query, selectedId, routeId, wide, sheet, me, now, sort,
   filters, filterCount, filterChips, filterOpen, countWith,
   onPick, onSortChange, onSheetChange, onFilterOpen, onFilterClose, onFiltersChange, onResetAll, onShowAll,
   listRef, onListKeyDown, onHandlePointerDown, onHandlePointerUp, onHandlePointerCancel,
@@ -91,7 +91,6 @@ export default function StoreListPanelView({
                     tone="ghost"
                     shape="pill"
                     check={false}
-                    disabled={s.key === "near" && !canSortNear}
                     selected={sort === s.key}
                     onClick={() => onSortChange(s.key)}
                   >

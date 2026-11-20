@@ -129,17 +129,24 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
   };
   const flyTo = (p: LatLng & { zoom?: number }) => setFocus((f) => ({ ...p, n: (f?.n ?? 0) + 1 }));
 
-  const locate = () => {
+  // 사용자가 직접 누른 때만 부른다(「내 위치」 · 「가까운순」). 받으면 then, 못 받으면 failMsg 를 띄운다
+  const askLocation = (then: (here: LatLng) => void, failMsg: string) => {
     if (!navigator.geolocation) return flash("이 브라우저는 위치를 못 받아요");
     navigator.geolocation.getCurrentPosition(
       (p) => {
         const here = { lat: p.coords.latitude, lng: p.coords.longitude };
         setMe(here);
-        flyTo({ ...here, zoom: 15 });
+        then(here);
       },
-      () => flash("위치를 못 받았어요. 지도를 직접 움직여 주세요"),
+      () => flash(failMsg),
       { enableHighAccuracy: true, timeout: 8000 },
     );
+  };
+  const locate = () => askLocation((here) => flyTo({ ...here, zoom: 15 }), "위치를 못 받았어요. 지도를 직접 움직여 주세요");
+  // 「가까운순」은 위치가 없어도 누를 수 있다 → 그 자리에서 위치를 묻고, 받으면 정렬만 바꾼다(지도는 옮기지 않는다: 목록이 지도 범위를 따라가서 가게가 사라질 수 있다)
+  const changeSort = (key: "near" | "recent") => {
+    if (key === "near" && !me) return askLocation(() => setSort("near"), "위치를 못 받아 가까운순으로 볼 수 없어요");
+    setSort(key);
   };
 
   // 처음 위치: 폰은 지도 홈에 들어오면 한 번 묻고, PC는 묻지 않는다(「내 위치」를 눌렀을 때만, REQ-W11).
@@ -259,7 +266,6 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
       me={me}
       toast={toast}
       sort={effSort}
-      canSortNear={!!me}
       filters={filters}
       filterCount={nFilters}
       filterChips={FILTER_CHIPS.map((c) => ({ id: c.id, label: c.label, on: c.on(filters) }))}
@@ -269,7 +275,7 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
       onSelectFromMap={selectFromMap}
       onBoundsChange={setBounds}
       onMapSettled={() => setMapSettled(true)}
-      onSortChange={setSort}
+      onSortChange={changeSort}
       onSheetChange={setSheet}
       onFilterOpen={openFilterAt}
       onFilterClose={() => setFilterOpen(false)}

@@ -81,13 +81,32 @@ test("F003 위치 허용 → 가까운순, 「최근 확인순」을 누르면 �
   expect(isSorted(ages), `최근 확인순 ${ages.join(",")}`).toBe(true);
 });
 
-test("F003 위치 없음 → 최근 확인순 (가까운순은 못 누름)", async ({ page }) => {
+test("F003 위치 없음 → 최근 확인순, 「가까운순」을 누르면 위치를 묻고 못 받으면 그대로", async ({ page }) => {
   await page.goto("/");
   await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "true");
-  await expect(panel(page).getByRole("button", { name: "가까운순" })).toBeDisabled();
   await expect(rows(page).first()).toBeVisible();
   const ages = (await metaTexts(rows(page))).map(ageDays);
   expect(isSorted(ages), `최근 확인순 ${ages.join(",")}`).toBe(true);
+
+  // 위치 권한이 없는 채로 누른다 → 안내가 뜨고 정렬은 최근 확인순 그대로
+  await expect(panel(page).getByRole("button", { name: "가까운순" })).toBeEnabled();
+  await panel(page).getByRole("button", { name: "가까운순" }).click();
+  await expect(page.getByText("위치를 못 받아 가까운순으로 볼 수 없어요")).toBeVisible();
+  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "true");
+});
+
+test("F003 위치 없이 들어와 「가까운순」을 눌러 위치를 허용하면 가까운순", async ({ page, context }) => {
+  const near = sample("mangwon-soup");
+  await page.goto("/");
+  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "true");
+  await context.grantPermissions(["geolocation"]);
+  await context.setGeolocation({ latitude: near.lat, longitude: near.lng });
+  await panel(page).getByRole("button", { name: "가까운순" }).click();
+  await expect(panel(page).getByRole("button", { name: "가까운순" })).toHaveAttribute("aria-pressed", "true");
+  // 지도는 옮기지 않으므로 보이는 가게 수는 폭마다 다르다 → 보이는 줄끼리 거리순인지만 본다
+  await expect(rows(page).first()).toBeVisible();
+  const dists = (await metaTexts(rows(page))).map(meters);
+  expect(isSorted(dists), `가까운순 거리 ${dists.join(",")}`).toBe(true);
 });
 
 test("F003 폭 390 은 줄을 두 번 눌러 상세, 768 이상은 한 번에 상세", async ({ page }) => {
