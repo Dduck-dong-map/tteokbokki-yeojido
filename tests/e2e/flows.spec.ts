@@ -101,6 +101,26 @@ test("④ 글 쓰기 → 댓글 → (다른 기기가) 추천", async ({ page, c
   await other.close();
 });
 
+test("④-2 글에 사진 붙이기 → 글 화면에 사진이 보인다 (11-21)", async ({ page, context }) => {
+  await asNewDevice(context, "사진 손님");
+  await asNewIp(page);
+  const title = `E2E 사진 글 ${tag()}`;
+
+  await page.goto("/room/write");
+  await page.locator("#post-title").fill(title);
+  await page.locator("#post-body").fill("사진 붙인 본문이에요.");
+  const jpeg = await tinyJpeg(page);
+  await page.locator("#post-photos input[type=file]").setInputFiles({ name: "tteok.jpg", mimeType: "image/jpeg", buffer: jpeg });
+  await expect(page.locator("#post-photos img[alt='올린 사진']")).toHaveCount(1, { timeout: 20_000 });
+  await page.getByRole("button", { name: "올리기" }).click();
+  await expect(page).toHaveURL(/\/room\/p-[0-9a-f]{8}$/, { timeout: 20_000 });
+
+  const photo = page.getByRole("img", { name: `${title} 사진 1` });
+  await expect(photo).toBeVisible();
+  // 사진이 실제로 내려왔다 (깨진 그림이 아니다)
+  await expect.poll(() => photo.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0), { timeout: 15_000 }).toBe(true);
+});
+
 test("⑤ 내 맛지도에서 리스트 만들기 → 가게 넣기", async ({ page, context }) => {
   await asNewDevice(context, "리스트 손님");
   await asNewIp(page);

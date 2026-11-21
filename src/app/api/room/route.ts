@@ -1,6 +1,6 @@
 import { addComment, addPost, deleteComment, deletePost, flagComment, flagPost, likePost } from "@/lib/data/db";
 import { checkComment, checkPost, type BoardCat } from "@/lib/community";
-import { bad, readJson, reply, whoFrom } from "@/lib/request";
+import { PHOTO_ID, bad, readJson, reply, whoFrom } from "@/lib/request";
 
 // 떡볶이방(게시판): 글 쓰기 · 지우기 · 댓글 · 신고. 지우기는 이 기기에서 쓴 것만 된다.
 export async function POST(req: Request) {
@@ -14,7 +14,9 @@ export async function POST(req: Request) {
     case "post": {
       const error = checkPost(body);
       if (error) return bad(error, 422);
-      return reply(await addPost({ cat: body.cat as BoardCat, title: body.title as string, body: body.body as string, storeId: (body.storeId as string | undefined) || undefined }, who));
+      const photos = (body.photos as string[] | undefined) ?? []; // 사진은 선택 (11-21)
+      if (photos.some((p) => !PHOTO_ID.test(p))) return bad("사진을 다시 올려 주세요", 422);
+      return reply(await addPost({ cat: body.cat as BoardCat, title: body.title as string, body: body.body as string, storeId: (body.storeId as string | undefined) || undefined, photos }, who));
     }
     case "delete":
       return reply(await deletePost(id, who));

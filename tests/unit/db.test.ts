@@ -240,3 +240,15 @@ describe("recordGo — 길찾기 누름 (W1-4)", () => {
     if (!res.ok) expect(res.status).toBe(404);
   });
 });
+
+describe("addPost — 글 사진 (11-21)", () => {
+  it("사진 id 를 함께 저장하고 글 읽기에 그대로 나온다 · 사진 없는 글은 photos 칸이 없다", async () => {
+    const photo = "22222222-2222-4222-8222-222222222222";
+    const withPhoto = await db.addPost({ cat: "free", title: "사진 글", body: "본문", photos: [photo] }, who("1"));
+    const plain = await db.addPost({ cat: "free", title: "글만", body: "본문", photos: [] }, who("1"));
+    expect(withPhoto.ok && plain.ok).toBe(true);
+    expect((await db.readPost((withPhoto as { id: string }).id))?.post.photos).toEqual([photo]);
+    expect((await db.readPost((plain as { id: string }).id))?.post).not.toHaveProperty("photos", expect.anything());
+    expect((await db.readPosts()).find((p) => p.title === "사진 글")?.photos).toEqual([photo]);
+  });
+});

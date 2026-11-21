@@ -542,7 +542,7 @@ function noteDeleted(db: Db, kind: WriteKind, rows: (Mark & { id: string; at: st
   db.deletedWrites = db.deletedWrites.filter((d) => within24h(d.at));
   for (const r of rows) if (within24h(r.at)) db.deletedWrites.push({ kind, id: r.id, at: r.at, device: r.device, ip: r.ip });
 }
-const toPost = ({ id, at, who, cat, title, body, storeId, comments, likes }: PostRow): Post => ({ id, at, who, cat, title, body, storeId, comments, likes: likes ?? 0 });
+const toPost = ({ id, at, who, cat, title, body, storeId, photos, comments, likes }: PostRow): Post => ({ id, at, who, cat, title, body, storeId, photos: photos?.length ? photos : undefined, comments, likes: likes ?? 0 });
 const toList = ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes }: ListRow): PlaceList => ({ id, title, desc, storeIds, who, createdAt, updatedAt, visibility, likes });
 
 // ───────── 읽기 ─────────
@@ -588,14 +588,14 @@ export async function readOwned(device: string): Promise<Owned> {
 
 // ───────── 게시판 쓰기 ─────────
 
-export function addPost(input: { cat: BoardCat; title: string; body: string; storeId?: string }, who: Who) {
+export function addPost(input: { cat: BoardCat; title: string; body: string; storeId?: string; photos?: string[] }, who: Who) {
   return mutate((db): { ok: true; id: string } | Fail => {
     const m = mark(who);
     const over = overDaily(recentWrites(db, "post", db.posts), m, DAILY_POSTS, DAILY_POSTS_PER_IP);
     if (over) return fail(over === "me" ? "오늘은 글을 많이 써 주셨어요. 내일 다시 부탁드려요" : ipLimitMsg("글이"), 429);
     if (input.storeId && !db.stores.some((s) => s.id === input.storeId)) return fail("붙인 가게를 찾지 못했어요");
     const id = `p-${randomUUID().slice(0, 8)}`;
-    db.posts.push({ ...m, id, at: stamp(), who: who.nick, cat: input.cat, title: input.title.trim(), body: input.body.trim(), storeId: input.storeId || undefined, comments: 0, likes: 0 });
+    db.posts.push({ ...m, id, at: stamp(), who: who.nick, cat: input.cat, title: input.title.trim(), body: input.body.trim(), storeId: input.storeId || undefined, photos: input.photos?.length ? input.photos : undefined, comments: 0, likes: 0 });
     return { ok: true, id };
   });
 }

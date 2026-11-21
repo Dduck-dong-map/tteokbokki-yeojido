@@ -17,13 +17,14 @@ export default function PostForm({ stores }: { stores: PickStore[] }) {
   const [cat, setCat] = useState<BoardCat>("free");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [photos, setPhotos] = useState<string[]>([]);
   const [storeId, setStoreId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const store = stores.find((s) => s.id === storeId) ?? null;
 
   const submit = async () => {
-    const input = { cat, title, body, storeId: storeId ?? undefined };
+    const input = { cat, title, body, storeId: storeId ?? undefined, photos };
     const err = checkPost(input);
     if (err) return setError(err);
     setBusy(true);
@@ -41,6 +42,7 @@ export default function PostForm({ stores }: { stores: PickStore[] }) {
       cat={cat}
       title={title}
       body={body}
+      photos={photos}
       store={store}
       stores={stores}
       nick={me.nick}
@@ -49,6 +51,7 @@ export default function PostForm({ stores }: { stores: PickStore[] }) {
       onCatChange={setCat}
       onTitleChange={setTitle}
       onBodyChange={setBody}
+      onPhotosChange={setPhotos}
       onStoreChange={setStoreId}
       onSubmit={submit}
     />

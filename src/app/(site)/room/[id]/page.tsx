@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps<"/room/[id]">): Pro
   return found ? { title: `${found.post.title} · 떡볶이방`, description: found.post.body.slice(0, 80) } : {};
 }
 
-// 떡볶이방 글 하나: 말머리 · 제목 · 닉네임/시각 → 내용 → 붙인 가게 → 추천 → 지우기·신고 → 댓글
+// 떡볶이방 글 하나: 말머리 · 제목 · 닉네임/시각 → 내용 → 사진(11-21) → 붙인 가게 → 추천 → 지우기·신고 → 댓글
 export default function PostPage({ params }: PageProps<"/room/[id]">) {
   return (
     <div className="page-narrow">
@@ -53,6 +53,17 @@ async function Loader({ params }: Pick<PageProps<"/room/[id]">, "params">) {
           </p>
         </header>
         <p className="border-t border-border pt-3 text-body-medium whitespace-pre-line break-keep [overflow-wrap:anywhere]">{post.body}</p>
+        {post.photos && (
+          // 글 사진: 누르면 원래 크기로 새 탭에서 본다. 신고로 가려진 글은 글째 안 보여서 사진도 안 보인다
+          <div className="grid grid-cols-2 gap-2">
+            {post.photos.map((p, i) => (
+              <a key={p} href={`/api/photos/${p}`} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-xl border border-border">
+                {/* eslint-disable-next-line @next/next/no-img-element -- 비공개 저장소 사진을 앱 주소로 내려 준다(가게 사진과 같다) */}
+                <img src={`/api/photos/${p}`} alt={`${post.title} 사진 ${i + 1}`} loading="lazy" className="aspect-square w-full object-cover" />
+              </a>
+            ))}
+          </div>
+        )}
         {store && (
           // 붙인 가게 카드: 도장 · 이름 · 동 · 대표 메뉴 가격 → 가게 상세
           <Link

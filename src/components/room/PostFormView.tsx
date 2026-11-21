@@ -1,5 +1,6 @@
 import { MapPin } from "lucide-react";
 import StorePicker from "@/components/lists/StorePicker";
+import { PhotoPicker } from "@/components/register/fields";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Input } from "@/components/ui/input";
@@ -10,13 +11,13 @@ import type { PostFormViewProps } from "./types";
 
 const LABEL = "text-caption font-semibold text-muted-foreground";
 
-// 떡볶이방 글쓰기: 말머리 → 제목 → 내용 → 가게 붙이기(선택) → 「올리기」.
+// 떡볶이방 글쓰기: 말머리 → 제목 → 내용 → 사진(선택) → 가게 붙이기(선택) → 「올리기」.
 // 값·오류·보내는 중과 모든 핸들러는 컨테이너(PostForm)가 넘긴다. checkPost·send·router·refreshOwned 는 여기 없다.
 // StorePicker 는 lists/ 의 컨테이너를 그대로 쓴다(⑧에서 안쪽만 바뀜).
 // 입력칸은 디자인 시스템 칸(variant="field" · 18px) — 16px 보다 작으면 아이폰 사파리가 화면을 저절로 확대한다 (REQ-W09).
 export default function PostFormView({
-  cat, title, body, store, stores, nick, busy, error,
-  onCatChange, onTitleChange, onBodyChange, onStoreChange, onSubmit,
+  cat, title, body, photos, store, stores, nick, busy, error,
+  onCatChange, onTitleChange, onBodyChange, onPhotosChange, onStoreChange, onSubmit,
 }: PostFormViewProps) {
   return (
     <form
@@ -70,6 +71,11 @@ export default function PostFormView({
           variant="field"
           className="field-sizing-fixed"
         />
+      </div>
+
+      <div id="post-photos" className="flex flex-col gap-1.5">
+        <span className={LABEL}>사진 (선택)</span>
+        <PhotoPicker ids={photos} onChange={onPhotosChange} hint="사람 얼굴이 크게 나오지 않게 찍어 주세요. 찍은 위치 정보는 지워서 올려요." />
       </div>
 
       <div className="flex flex-col gap-1.5">

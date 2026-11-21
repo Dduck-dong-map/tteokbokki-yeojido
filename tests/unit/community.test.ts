@@ -8,6 +8,7 @@ import {
   MAX_LIST_STORES,
   MAX_LIST_TITLE,
   MAX_POST_BODY,
+  MAX_POST_PHOTOS,
   MAX_POST_TITLE,
   checkComment,
   checkListInfo,
@@ -56,6 +57,16 @@ describe("checkPost", () => {
     expect(checkPost({ ...ok, storeId: 3 })).toBe("가게를 다시 골라 주세요");
     expect(checkPost({ ...ok, storeId: null })).toBeNull();
     expect(checkPost({ ...ok, storeId: "mangwon-soup" })).toBeNull();
+  });
+  it("사진은 없어도 되고, 있으면 글자 id 배열 · 최대 장수 (11-21)", () => {
+    const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
+    expect(checkPost({ ...ok, photos: [] })).toBeNull();
+    expect(checkPost({ ...ok, photos: null })).toBeNull();
+    expect(checkPost({ ...ok, photos: [id(1), id(2)] })).toBeNull();
+    expect(checkPost({ ...ok, photos: "abc" })).toBe("사진을 다시 올려 주세요");
+    expect(checkPost({ ...ok, photos: [1] })).toBe("사진을 다시 올려 주세요");
+    expect(checkPost({ ...ok, photos: Array.from({ length: MAX_POST_PHOTOS }, (_, i) => id(i)) })).toBeNull();
+    expect(checkPost({ ...ok, photos: Array.from({ length: MAX_POST_PHOTOS + 1 }, (_, i) => id(i)) })).toBe(`사진은 ${MAX_POST_PHOTOS}장까지 올릴 수 있어요`);
   });
 });
 

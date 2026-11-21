@@ -31,7 +31,7 @@ const SPECS: [keyof Db, Spec][] = [
   ["votes", { table: "store_votes", key: ["storeId", "device", "ip"], cols: { storeId: "text", ok: "bool", at: "ts", ...MARK } }],
   ["flags", { table: "store_flags", key: ["storeId", "device", "ip"], cols: { storeId: "text", reason: "text", at: "ts", ...MARK } }],
   ["posts", { table: "posts", key: ["id"], cols: {
-    id: "text", at: "ts", who: "text", cat: "text", title: "text", body: "text", storeId: "text", comments: "int", likes: "int", hidden: "bool", flags: "json", ...MARK,
+    id: "text", at: "ts", who: "text", cat: "text", title: "text", body: "text", storeId: "text", photos: "json", comments: "int", likes: "int", hidden: "bool", flags: "json", ...MARK,
   } }],
   ["comments", { table: "post_comments", key: ["id"], cols: { id: "text", postId: "text", at: "ts", who: "text", text: "text", hidden: "bool", flags: "json", ...MARK } }],
   ["postLikes", { table: "post_likes", key: ["postId", "device"], cols: { postId: "text", at: "ts", ...MARK } }],

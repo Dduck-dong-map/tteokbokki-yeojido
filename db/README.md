@@ -7,6 +7,8 @@ DB 는 Neon(Postgres + PostGIS), 사진은 Vercel Blob 비공개 저장소를 �
   - [`init/002_postgis.sql`](init/002_postgis.sql) — 가게 위치 · 화면 범위 · 반경 검색 함수. PostGIS 는 `extensions` 칸(스키마)에 깐다
   - [`init/003_rls.sql`](init/003_rls.sql) — 잠금(RLS). 001 의 표 12개 모두 켜고 허용 규칙은 두지 않는다 → 공개 키로는 표를 못 읽고 못 쓴다. 앱은 서버에서 DB 주인 계정으로 붙으므로 영향 없음
   - [`init/004_directions.sql`](init/004_directions.sql) — 길찾기 누름 기록 `store_directions`(성공 지표 KPI-W01). 표는 이것까지 13개이고 이 표도 잠금(RLS)을 켠다
+- **바꾸는 SQL(이미 있는 DB 에만):** 아래 「표가 바뀌면」 순서로 날짜 순서대로 돌린다.
+  - [`migrations/2026-11-21_post_photos.sql`](migrations/2026-11-21_post_photos.sql) — 떡볶이방 글 사진 칸 `posts.photos`. 운영(`main`) · 미리보기(`preview`) 가지 모두 **아직 안 돌림** → 이 칸을 읽는 코드를 배포하기 전에 돌린다
 - **앱 연결:** `.env.local`(로컬) · Vercel 환경 변수(배포)에 `DATABASE_URL` 이 있으면 앱이 파일(루트 `.data/db.json`) 대신 DB 에 저장한다 → [`src/lib/data/pg.ts`](../src/lib/data/pg.ts). 누가 무엇을 할 수 있는지(규칙)는 [`src/lib/data/db.ts`](../src/lib/data/db.ts) 한 곳이다.
   - 읽기는 표 13개를 **한 번에** 가져온다 (DB 와 한 번만 오감). 기록 표(변경 이력 · 길찾기 · 사진 올림)는 규칙에 필요한 최근 줄만 싣는다.
   - 이 컴퓨터의 Postgres 가 아니면(= Neon) 저절로 암호화 연결 · 연결 1개. 풀러 주소(호스트 이름에 `-pooler`)면 미리 준비한 질의를 끈다.

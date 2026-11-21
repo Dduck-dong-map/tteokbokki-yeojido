@@ -129,6 +129,10 @@ describe.skipIf(!BASE)("Postgres 모드 (DATABASE_URL)", () => {
       expect(post.ok).toBe(true);
       const postId = (post as { id: string }).id;
       expect((await db.addComment(postId, "댓글", who("2"))).ok).toBe(true);
+      // 글 사진 (11-21, posts.photos): 사진 id 배열이 jsonb 로 들어갔다 그대로 나온다
+      const photoId = "00000000-0000-4000-8000-000000000001";
+      const withPhoto = await db.addPost({ cat: "free", title: "사진 글", body: "본문", photos: [photoId] }, who("2"));
+      expect(withPhoto.ok).toBe(true);
 
       // 동시에 다섯 명이 추천해도 잠금(pg_advisory_xact_lock) 덕에 정확히 5
       const likes = await Promise.all(["3", "4", "5", "6", "7"].map((n) => db.likePost(postId, who(n))));
@@ -154,6 +158,8 @@ describe.skipIf(!BASE)("Postgres 모드 (DATABASE_URL)", () => {
       expect(read?.post.body).toBe("본문 '따옴표' \\ 백슬래시");
       expect(read?.post.likes).toBe(5);
       expect(read?.comments.map((c) => c.text)).toEqual(["댓글"]);
+      expect(read?.post.photos).toBeUndefined(); // 사진 없는 글은 칸이 없다
+      expect((await reopened.readPost((withPhoto as { id: string }).id))?.post.photos).toEqual([photoId]);
       expect((await reopened.readList(listId))?.likes).toBe(1);
       const [{ n }] = await sql`select count(*)::int as n from post_likes where post_id = ${postId}`;
       expect(n).toBe(5);

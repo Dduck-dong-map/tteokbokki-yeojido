@@ -1,6 +1,8 @@
 // 떡볶이방(게시판) · 맛집 리스트(내 맛지도) 공용 규칙 (11-08 사용자 지시).
 // 화면과 서버가 같이 쓴다. 저장은 data/db.ts, 화면에 내보내는 값은 아래 타입만.
 
+import { MAX_PHOTOS } from "./wiki";
+
 // ───────── 떡볶이방 게시판 ─────────
 
 export const BOARD_CATS = { free: "자유", recommend: "맛집 추천", together: "같이 가요" } as const;
@@ -9,6 +11,7 @@ export type BoardCat = keyof typeof BOARD_CATS;
 export const MAX_POST_TITLE = 60;
 export const MAX_POST_BODY = 2000;
 export const MAX_COMMENT = 300;
+export const MAX_POST_PHOTOS = MAX_PHOTOS; // 글 사진 (11-21 개발자 제안). 고르기 칸(PhotoPicker)이 가게 사진과 같은 수로 막는다
 export const DAILY_POSTS = 20; // 기기·접속 위치 기준 하루 글 수
 export const DAILY_COMMENTS = 60;
 // 같은 접속 위치(IP) 전체의 하루 상한. 기기 표시만 바꿔 한도를 넘는 것을 막는다 (11-18).
@@ -24,19 +27,24 @@ export type Post = {
   title: string;
   body: string;
   storeId?: string; // 글에 붙인 가게 (선택)
+  photos?: string[]; // 글 사진 id (선택 · /api/photos/<id>, 11-21)
   comments: number;
   likes: number; // 추천(엄지척) 수
 };
 
 export type PostComment = { id: string; at: string; who: string; text: string };
 
-export function checkPost(p: { cat?: unknown; title?: unknown; body?: unknown; storeId?: unknown }): string | null {
+export function checkPost(p: { cat?: unknown; title?: unknown; body?: unknown; storeId?: unknown; photos?: unknown }): string | null {
   if (typeof p.cat !== "string" || !(p.cat in BOARD_CATS)) return "말머리를 골라 주세요";
   if (typeof p.title !== "string" || !p.title.trim()) return "제목을 써 주세요";
   if (p.title.trim().length > MAX_POST_TITLE) return `제목은 ${MAX_POST_TITLE}자까지예요`;
   if (typeof p.body !== "string" || !p.body.trim()) return "내용을 써 주세요";
   if (p.body.trim().length > MAX_POST_BODY) return `내용은 ${MAX_POST_BODY}자까지예요`;
   if (p.storeId !== undefined && p.storeId !== null && typeof p.storeId !== "string") return "가게를 다시 골라 주세요";
+  if (p.photos !== undefined && p.photos !== null) {
+    if (!Array.isArray(p.photos) || p.photos.some((x) => typeof x !== "string")) return "사진을 다시 올려 주세요";
+    if (p.photos.length > MAX_POST_PHOTOS) return `사진은 ${MAX_POST_PHOTOS}장까지 올릴 수 있어요`;
+  }
   return null;
 }
 

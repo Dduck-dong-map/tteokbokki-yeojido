@@ -20,13 +20,15 @@ export type RoomBoardViewProps = {
 };
 
 // ───────── PostForm ─────────
-// 이 View 가 그리는 것: 말머리 칩 · 제목 · 내용(글자 수) · 가게 붙이기(고른 가게 또는 StorePicker) · 닉네임 안내 · 오류 · 「올리기」.
-// 컨테이너가 넘기는 것: 말머리·제목·내용·붙인 가게, 고를 수 있는 가게들, 닉네임, 보내는 중, 오류, 각 바꿈·올리기 핸들러.
+// 이 View 가 그리는 것: 말머리 칩 · 제목 · 내용(글자 수) · 사진(선택, 11-21) · 가게 붙이기(고른 가게 또는 StorePicker) · 닉네임 안내 · 오류 · 「올리기」.
+// 컨테이너가 넘기는 것: 말머리·제목·내용·사진 id·붙인 가게, 고를 수 있는 가게들, 닉네임, 보내는 중, 오류, 각 바꿈·올리기 핸들러.
+// 사진 올리기(/api/photos)는 고르기 칸(register/fields PhotoPicker)이 고르는 즉시 하고 id 만 넘긴다 — 가게 등록과 같다.
 // 넘기지 않는 것: router · fetch · refreshOwned · checkPost(컨테이너가 하고 error 로).
 export type PostFormViewProps = {
   cat: BoardCat;
   title: string;
   body: string;
+  photos: string[]; // 올린 사진 id
   store: PickStore | null; // 붙인 가게 (없으면 StorePicker)
   stores: PickStore[];
   nick: string;
@@ -35,6 +37,7 @@ export type PostFormViewProps = {
   onCatChange: (cat: BoardCat) => void;
   onTitleChange: (v: string) => void;
   onBodyChange: (v: string) => void;
+  onPhotosChange: (ids: string[]) => void;
   onStoreChange: (id: string | null) => void;
   onSubmit: () => void;
 };

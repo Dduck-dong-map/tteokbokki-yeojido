@@ -95,6 +95,7 @@ create table posts (
   title text not null,
   body text not null,
   store_id text references stores(id) on delete set null,
+  photos jsonb,                        -- 글 사진 id 목록 (11-21 · 이미 있는 DB 는 db/migrations/2026-11-21_post_photos.sql)
   comments integer not null default 0,
   likes integer not null default 0,
   hidden boolean,
