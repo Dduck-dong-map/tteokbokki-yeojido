@@ -56,10 +56,11 @@ async function tempRealMap(ml: Ml, container: HTMLElement, center: LngLatLike, z
 // 스크립트 주소·옵션 = navermaps.github.io/maps.js.ncp (ncpKeyId · submodules=gl · gl: true).
 // GL 벡터 지도는 줌이 소수이고 기본값이 래스터보다 1 낮다(512 타일) → MapLibre 줌과 같은 값으로 맞춘다.
 type NaverLatLng = object;
-type NaverMap = { setCenter: (c: NaverLatLng) => void; setZoom: (z: number, effect?: boolean) => void; destroy: () => void };
+type NaverMap = { setCenter: (c: NaverLatLng) => void; setZoom: (z: number, effect?: boolean) => void; setSize: (s: object) => void; destroy: () => void };
 type NaverMaps = {
   Map: new (el: HTMLElement, options: Record<string, unknown>) => NaverMap;
   LatLng: new (lat: number, lng: number) => NaverLatLng;
+  Size: new (width: number, height: number) => object;
   Position: Record<string, number>;
   jsContentLoaded?: boolean;
   onJSContentLoaded?: () => void;
@@ -125,6 +126,19 @@ async function naverRealMap(ml: Ml, container: HTMLElement, center: LngLatLike, 
 
   let removed = false;
   let gone = false; // 인증 실패로 먼저 걷어 낸 뒤 remove 가 또 와도 한 번만 지운다
+  // 네이버 지도는 창 크기가 바뀔 때만 제 크기를 다시 잰다. 상세 패널이 열려 칸만 좁아지면 옛 크기로 남아
+  // 위 그림 지도와 중심이 어긋나고, 도장이 실제 자리에서 벗어나 확대할수록 움직여 보인다 (11-21) → 칸 크기를 직접 따라간다
+  const fit = new ResizeObserver(() => {
+    if (gone || !box.clientWidth || !box.clientHeight) return;
+    try {
+      map.setSize(new N.Size(box.clientWidth, box.clientHeight));
+      map.setZoom(last.z, false);
+      map.setCenter(new N.LatLng(last.c.lat, last.c.lng));
+    } catch {
+      // follow 와 같은 까닭: 인증 전·실패 직후의 지도는 명령에 오류를 낸다
+    }
+  });
+  fit.observe(box);
   let inner: RealMap = {
     follow: (c, z) => {
       if (gone || z < PRELOAD_ZOOM) return;
@@ -139,6 +153,7 @@ async function naverRealMap(ml: Ml, container: HTMLElement, center: LngLatLike, 
     remove: () => {
       if (gone) return;
       gone = true;
+      fit.disconnect();
       try {
         map.destroy(); // 인증 실패한 지도는 지우다가 오류를 낼 수 있다 → 칸은 어쨌든 걷어 낸다
       } catch {}
