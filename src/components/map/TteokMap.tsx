@@ -28,6 +28,9 @@ type Props = {
   start?: { lat: number; lng: number; zoom: number }; // 처음 보여 줄 곳. 없으면 가게들의 한가운데 13배
   interactive?: boolean; // false = 움직이지 않는 작은 지도 (가게 상세, 위에서 밀어도 페이지가 스크롤된다)
   showName?: boolean; // 도장 밑 글자를 가격 대신 가게 이름으로
+  // 지도 한가운데에 핀을 고정해 자리를 고르는 지도(등록 · 위치 옮기기)는 가운데를 기준으로 확대한다.
+  // 기본(커서 · 손가락 자리 기준)으로 두면 확대할 때마다 가운데 핀 아래의 땅이 밀려 다른 곳을 가리킨다 (11-21)
+  zoomAtCenter?: boolean;
 };
 
 // 초점(focus)으로 지도를 옮긴다: 가게 묶음이면 모두 보이게, 한 곳이면 그곳으로
@@ -75,13 +78,13 @@ function toGeoJSON(stores: Store[], showName = false): GeoJSON.FeatureCollection
 
 const SLOW_MS = 8000; // 이만큼 지나도 안 뜨면 로딩 화면을 걷는다
 
-export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange, onSettled, start, interactive = true, showName = false }: Props) {
+export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange, onSettled, start, interactive = true, showName = false, zoomAtCenter = false }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const startAt = useRef(start);
   const under = useRef<HTMLDivElement>(null);
   const [realOn, setRealOn] = useState<"naver" | "temp" | null>(null); // ① 실제 지도가 드러났을 때 어느 지도인지
   const [failed, setFailed] = useState(false); // 지도를 못 불러와도 주소·길찾기는 그대로 쓸 수 있다 (경고창#6)
-  const initial = useRef({ interactive, showName });
+  const initial = useRef({ interactive, showName, zoomAtCenter });
   const mapRef = useRef<MlMap | null>(null);
   const pendingFocus = useRef<Focus | null>(null); // 지도가 만들어지기 전에 온 초점
   const ready = useRef(false);
@@ -155,6 +158,15 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         attrib = new ml.AttributionControl({ compact: true, customAttribution: next });
         m.addControl(attrib, "bottom-left");
       };
+      if (initial.current.zoomAtCenter) {
+        // 휠 · 두 손가락 벌리기는 가운데 기준으로. 두 번 누르기는 누른 자리로 확대돼 핀이 밀리므로 끈다(＋− 단추 · 휠로 확대한다)
+        // 이미 켜진 조작은 enable 을 다시 불러도 옵션을 받지 않는다 → 껐다가 켠다
+        m.scrollZoom.disable();
+        m.scrollZoom.enable({ around: "center" });
+        m.touchZoomRotate.disable();
+        m.touchZoomRotate.enable({ around: "center" });
+        m.doubleClickZoom.disable();
+      }
       m.touchZoomRotate.disableRotation();
       // 마우스를 쓰는 넓은 화면: ＋− 단추 + 도장에 올리면 이름·가격 (웹 1차 기획 REQ-W11). 터치 노트북도 마우스가 있으면 나온다.
       const mouse = initial.current.interactive && window.matchMedia("(hover: hover) and (min-width: 768px)").matches;

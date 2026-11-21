@@ -302,7 +302,7 @@ export function MapPicker({
   return (
     <div>
       <div className={cn("relative h-56 overflow-hidden rounded-2xl border border-input", tall && "md:h-[330px]")}>
-        <TteokMap stores={stores} selectedId={null} onSelect={() => undefined} me={null} focus={focus} onBoundsChange={onBounds} start={{ lat: start?.lat ?? 37.5555, lng: start?.lng ?? 126.928, zoom: start ? 17 : 15 }} />
+        <TteokMap stores={stores} selectedId={null} onSelect={() => undefined} me={null} focus={focus} onBoundsChange={onBounds} zoomAtCenter start={{ lat: start?.lat ?? 37.5555, lng: start?.lng ?? 126.928, zoom: start ? 17 : 15 }} />
         {/* 가운데 핀(lucide MapPin): 끝이 지도 한가운데를 가리킨다. 속은 등록 버튼과 같은 제보 갈색(fill-report), 선은 그 위 글자색(currentColor).
             MapPin 의 끝은 그림 칸 아래에서 1/12 위라 그만큼(40px 의 1/12 ≈ 3px) 덜 올린다 */}
         <MapPin

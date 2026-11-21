@@ -131,17 +131,21 @@ async function naverRealMap(ml: Ml, container: HTMLElement, center: LngLatLike, 
   let gone = false; // 인증 실패로 먼저 걷어 낸 뒤 remove 가 또 와도 한 번만 지운다
   // 네이버 지도는 창 크기가 바뀔 때만 제 크기를 다시 잰다. 상세 패널이 열려 칸만 좁아지면 옛 크기로 남아
   // 위 그림 지도와 중심이 어긋나고, 도장이 실제 자리에서 벗어나 확대할수록 움직여 보인다 (11-21) → 칸 크기를 직접 따라간다
+  // 잴 곳은 바깥 칸(container)이다. setSize 는 box 에 px 크기를 못 박아서, box 를 지켜보면 한 번 맞춘 뒤로는
+  // 바깥 칸이 다시 넓어져도(패널 닫기 · 창 크기) 알아채지 못하고 좁은 채로 남는다 (11-21 둘째 수정)
   const fit = new ResizeObserver(() => {
-    if (gone || !box.clientWidth || !box.clientHeight) return;
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    if (gone || !w || !h) return;
     try {
-      map.setSize(new N.Size(box.clientWidth, box.clientHeight));
+      map.setSize(new N.Size(w, h));
       map.setZoom(last.z, false);
       map.setCenter(new N.LatLng(last.c.lat, last.c.lng));
     } catch {
       // follow 와 같은 까닭: 인증 전·실패 직후의 지도는 명령에 오류를 낸다
     }
   });
-  fit.observe(box);
+  fit.observe(container);
   let inner: RealMap = {
     follow: (c, z) => {
       if (gone || z < PRELOAD_ZOOM) return;
