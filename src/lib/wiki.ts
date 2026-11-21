@@ -65,7 +65,7 @@ export type StorePatch = {
   addPhotos?: string[];
 };
 
-const inKorea = (lat: number, lng: number) => lat > 33 && lat < 39 && lng > 124 && lng < 132;
+export const inKorea = (lat: number, lng: number) => lat > 33 && lat < 39 && lng > 124 && lng < 132;
 
 function checkMenu(menu: MenuItem[] | undefined): string | null {
   if (!menu?.length || !menu[0].name?.trim()) return "대표 메뉴 이름을 넣어 주세요";

@@ -102,9 +102,11 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
           draft={draft}
           stores={props.stores}
           mapKey={props.mapKey}
+          find={props.find}
           sending={sending}
           onChange={props.onChange}
           onPosition={props.onPosition}
+          onAddressDone={props.onAddressDone}
           onSubmit={onSubmit}
           message={message}
         />

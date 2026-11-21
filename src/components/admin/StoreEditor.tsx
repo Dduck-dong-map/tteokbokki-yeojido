@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useState, useTransition, type ReactNode } from "react";
 import { confirmStore, createStore, saveStore, setStoreStatus } from "@/app/admin/actions";
+import { canGeocode, geocode } from "@/components/map/geocode";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -167,6 +168,7 @@ export default function StoreEditor({ initial, template, templateId, research, r
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [geoNote, setGeoNote] = useState<string | null>(null); // 주소로 좌표 찾기 결과 (11-21)
   const [busy, startBusy] = useTransition();
   const dirty = JSON.stringify(d) !== JSON.stringify(start);
   const bad = fieldOf(error)?.[2];
@@ -210,10 +212,21 @@ export default function StoreEditor({ initial, template, templateId, research, r
       router.refresh();
     });
 
-  // 주소를 고치면 구·동을 주소 글에서 다시 짐작한다 (비어 있을 때만 채움)
+  // 주소 → 좌표 (네이버 지도 Geocoding · components/map/geocode.ts, 11-21). 채운 뒤 「이 좌표를 지도에서 보기」로 가게 위인지 본다
+  const findLatLng = async () => {
+    if (!d.address.trim()) return setGeoNote("주소를 먼저 넣어 주세요");
+    setGeoNote("주소로 찾는 중…");
+    const p = await geocode(d.address);
+    if (!p) return setGeoNote("주소로 못 찾았어요. 지도 앱에서 가게를 길게 눌러 나온 숫자를 넣어 주세요");
+    set({ lat: p.lat.toFixed(6), lng: p.lng.toFixed(6) });
+    setGeoNote("주소 자리로 채웠어요. 아래 링크로 가게 위인지 확인해 주세요");
+  };
+
+  // 주소를 고치면 구·동을 주소 글에서 다시 짐작한다 (비어 있을 때만 채움). 좌표가 비어 있으면 주소로 찾아 채운다
   const guessFromAddress = () => {
     const { gu, dong } = parseAddress(d.address);
     set({ gu: d.gu || (gu !== "etc" ? gu : ""), dong: d.dong || (/(동|가)$/.test(dong) ? dong : "") });
+    if (canGeocode && !d.lat.trim() && !d.lng.trim()) void findLatLng();
   };
 
   const latN = num(d.lat);
@@ -325,7 +338,7 @@ export default function StoreEditor({ initial, template, templateId, research, r
               onChange={(e) => set({ address: e.target.value })}
               onBlur={guessFromAddress}
               placeholder="서울 강남구 압구정로50길 22"
-              help="주소 검색(도로명주소 승인키)을 받으면 고르기로 바뀌고 좌표도 자동으로 채워요. 지금은 좌표를 직접 넣어요."
+              help={canGeocode ? "주소를 넣고 칸을 나오면 좌표가 비어 있을 때 네이버 지도로 찾아 채워요." : "지금은 좌표를 직접 넣어요 (네이버 지도 키가 없어 주소로 못 찾아요)."}
             />
             <Field label="구" required error={errorAt("gu")} htmlFor={`${uid}-gu`}>
               <PickSelect id={`${uid}-gu`} size="field" value={d.gu} onChange={(v) => set({ gu: v })} options={guOptions} placeholder="고르세요" />
@@ -336,18 +349,26 @@ export default function StoreEditor({ initial, template, templateId, research, r
               required
               error={errorAt("latlng")}
               hint={
-                mapLink ? (
-                  <a href={mapLink} target="_blank" rel="noreferrer" className={cn(LINK, "inline-flex items-center gap-1")}>
-                    이 좌표를 지도에서 보기 <Icon name="external" />
-                  </a>
-                ) : (
-                  "지도 앱에서 가게를 길게 눌러 나온 숫자를 넣어요."
-                )
+                <>
+                  {geoNote && <span className="block">{geoNote}</span>}
+                  {mapLink ? (
+                    <a href={mapLink} target="_blank" rel="noreferrer" className={cn(LINK, "inline-flex items-center gap-1")}>
+                      이 좌표를 지도에서 보기 <Icon name="external" />
+                    </a>
+                  ) : (
+                    !geoNote && "지도 앱에서 가게를 길게 눌러 나온 숫자를 넣어요."
+                  )}
+                </>
               }
             >
               <div className="flex items-center gap-2">
                 <Input variant="field" className="font-mono" inputMode="decimal" value={d.lat} onChange={(e) => set({ lat: e.target.value })} placeholder="37.5246" aria-label="위도" />
                 <Input variant="field" className="font-mono" inputMode="decimal" value={d.lng} onChange={(e) => set({ lng: e.target.value })} placeholder="127.0376" aria-label="경도" />
+                {canGeocode && (
+                  <Button type="button" variant="outlined" size="md" onClick={() => void findLatLng()} className="shrink-0">
+                    주소로 찾기
+                  </Button>
+                )}
               </div>
             </Field>
             <TextField

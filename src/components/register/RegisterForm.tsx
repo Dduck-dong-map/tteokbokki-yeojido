@@ -7,6 +7,7 @@ import { addMyReport } from "@/lib/mine";
 import type { Store } from "@/lib/types";
 import { MIN_PHOTOS, checkIntro, checkNewStore } from "@/lib/wiki";
 import RegisterFormView from "./RegisterFormView";
+import type { FindAddress } from "./fields";
 import type { LatLng, RegisterDraft } from "./types";
 
 // 맛집 등록 컨테이너 (보드 WB-02 · 웹 1차 기획 M-W-03 · 리팩토링 계획 2026-11-09 · 7-1 형태 2).
@@ -55,6 +56,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
   const [touched, setTouched] = useState(false);
   const [draftClosed, setDraftClosed] = useState(false);
   const [mapKey, setMapKey] = useState(0);
+  const [find, setFind] = useState<FindAddress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dup, setDup] = useState<string | null>(null); // 80m 안 같은 이름의 가게 id
   const [doneId, setDoneId] = useState<string | null>(null);
@@ -71,6 +73,15 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
 
   // 지도 가운데 핀: 손댄 것으로 치지 않는다 (지도만 움직여도 임시 저장이 시작되지 않게)
   const onPosition = (p: LatLng) => setR((cur) => ({ ...cur, ...p }));
+
+  // 주소 칸을 떠나면 그 주소 자리로 핀을 옮긴다 (11-21). 같은 주소로 다시 떠나면 옮기지 않는다(다듬은 핀이 되돌아가지 않게)
+  const asked = useRef("");
+  const onAddressDone = () => {
+    const address = r.address.trim();
+    if (!address || address === asked.current) return;
+    asked.current = address;
+    setFind((f) => ({ n: (f?.n ?? 0) + 1, address }));
+  };
 
   useEffect(() => {
     if (touched && !doneId) writeDraft(JSON.stringify({ r, step }));
@@ -149,6 +160,9 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
     const d = JSON.parse(saved) as { r: RegisterDraft; step: number };
     setR({ ...EMPTY, ...d.r });
     setStep(d.step ?? 0);
+    // 이어서 쓰면 저장된 핀 자리를 지킨다: 새로 그린 지도가 주소로 다시 옮기지 않게
+    asked.current = (d.r.address ?? "").trim();
+    setFind(null);
     setMapKey((k) => k + 1);
     setDraftClosed(true);
   };
@@ -178,12 +192,14 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
         hasSavedDraft={!!saved}
         draftClosed={draftClosed}
         mapKey={mapKey}
+        find={find}
         error={error}
         dupId={dup}
         doneId={doneId}
         sending={sending}
         onChange={set}
         onPosition={onPosition}
+        onAddressDone={onAddressDone}
         onNext={next}
         onPrev={prev}
         onSubmit={submit}

@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TteokMap, { type Bounds } from "@/components/map/TteokMap";
+import { canGeocode, geocode } from "@/components/map/geocode";
 import { MapPin, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
@@ -261,11 +262,27 @@ export function NickField() {
   );
 }
 
-// 지도를 움직여 가운데 핀을 가게 위에 맞춘다
-export function MapPicker({ stores, start, onChange, tall = false }: { stores: Store[]; start?: { lat: number; lng: number }; onChange: (p: { lat: number; lng: number }) => void; tall?: boolean }) {
+// 주소 칸을 떠날 때마다 n 이 하나 늘어난다 → 그 주소 자리로 지도를 옮긴다 (11-21)
+export type FindAddress = { n: number; address: string };
+
+// 지도를 움직여 가운데 핀을 가게 위에 맞춘다. find 가 오면 주소 자리로 먼저 옮겨 준다(사람은 조금만 다듬는다)
+export function MapPicker({ stores, start, onChange, find, tall = false }: { stores: Store[]; start?: { lat: number; lng: number }; onChange: (p: { lat: number; lng: number }) => void; find?: FindAddress | null; tall?: boolean }) {
   const [focus, setFocus] = useState<{ n: number; lat: number; lng: number; zoom: number } | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const onBounds = (b: Bounds) => onChange({ lat: (b.s + b.n) / 2, lng: (b.w + b.e) / 2 });
+  useEffect(() => {
+    if (!find || !canGeocode) return;
+    let live = true;
+    void geocode(find.address).then((p) => {
+      if (!live) return;
+      if (!p) return setMsg("주소로 자리를 못 찾았어요. 지도를 움직여 핀을 맞춰 주세요");
+      setMsg("주소 자리로 옮겼어요. 핀이 가게 위에 오게 조금만 다듬어 주세요");
+      setFocus((f) => ({ n: (f?.n ?? 0) + 1, lat: p.lat, lng: p.lng, zoom: 18 }));
+    });
+    return () => {
+      live = false;
+    };
+  }, [find]);
   const locate = () => {
     if (!navigator.geolocation) return setMsg("이 브라우저는 위치를 못 받아요");
     navigator.geolocation.getCurrentPosition(

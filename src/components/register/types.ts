@@ -5,6 +5,7 @@
 import type { Grade, RiceCake, Spice, Style, Usage } from "@/lib/taxonomy";
 import type { Hours, MenuItem, Store } from "@/lib/types";
 import type { NewStoreInput } from "@/lib/wiki";
+import type { FindAddress } from "./fields";
 
 export type LatLng = { lat: number; lng: number };
 
@@ -25,12 +26,14 @@ export type RegisterFormViewProps = {
   hasSavedDraft: boolean; // localStorage 에 쓰다 만 것이 있다
   draftClosed: boolean; // 띠를 닫았다
   mapKey: number; // 바뀌면 MapPicker 를 새로 그린다 (이어서 쓰기)
+  find: FindAddress | null; // 주소 칸을 떠나면 그 주소 자리로 지도를 옮긴다 (11-21)
   error: string | null;
   dupId: string | null; // 80m 안 같은 이름 가게 → 「그 가게 보기」「다른 가게예요」
   doneId: string | null; // 올라간 가게 id → 완료 화면
   sending: boolean;
   onChange: (patch: Partial<RegisterDraft>) => void; // 칸 하나 바꿈 (touched·error·dup 정리는 컨테이너가)
   onPosition: (p: LatLng) => void; // 지도 가운데 핀
+  onAddressDone: () => void; // 주소 칸을 떠남 → 주소가 바뀌었으면 find 를 새로
   onNext: () => void; // 폰 「다음」(마지막 단계면 올리기)
   onPrev: () => void;
   onSubmit: (notDuplicate?: boolean) => void; // PC 「지도에 올리기」 · 「다른 가게예요」

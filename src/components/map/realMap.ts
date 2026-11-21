@@ -11,7 +11,7 @@ export const PRELOAD_ZOOM = 14;
 // 네이버 지도가 드러났을 때 왼쪽 아래 저작권 표시 (네이버 로고는 지도 왼쪽 위에 따로 나온다)
 // 가게 좌표 일부는 OpenStreetMap(Nominatim)에서 찾았다 (강남 리서치 v1, 11-15) → 네이버 지도가 보일 때도 OSM 표시를 함께 둔다 (ODbL)
 export const NAVER_CREDIT = '<a href="https://www.navercorp.com" target="_blank">© NAVER Corp.</a> · 가게 좌표 <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a> contributors';
-const NAVER_KEY = process.env.NEXT_PUBLIC_NAVER_MAP_KEY; // 빌드 때 박힌다 → .env.local 을 바꾸면 개발 서버를 다시 켠다
+export const NAVER_KEY = process.env.NEXT_PUBLIC_NAVER_MAP_KEY; // 빌드 때 박힌다 → .env.local 을 바꾸면 개발 서버를 다시 켠다
 
 export type RealMap = { follow: (center: LngLatLike, zoom: number) => void; remove: () => void; kind: () => "naver" | "temp" };
 type Ml = typeof import("maplibre-gl");
@@ -53,14 +53,21 @@ async function tempRealMap(ml: Ml, container: HTMLElement, center: LngLatLike, z
 }
 
 // ── 네이버 지도 (Maps · Dynamic Map, GL 벡터) ──
-// 스크립트 주소·옵션 = navermaps.github.io/maps.js.ncp (ncpKeyId · submodules=gl · gl: true).
+// 스크립트 주소·옵션 = navermaps.github.io/maps.js.ncp (ncpKeyId · submodules=gl,geocoder · gl: true).
 // GL 벡터 지도는 줌이 소수이고 기본값이 래스터보다 1 낮다(512 타일) → MapLibre 줌과 같은 값으로 맞춘다.
+// geocoder = 주소 → 좌표 (geocode.ts, 11-21). 네이버 클라우드 콘솔의 지도 앱에서 Geocoding 을 켜야 답이 온다.
 type NaverLatLng = object;
 type NaverMap = { setCenter: (c: NaverLatLng) => void; setZoom: (z: number, effect?: boolean) => void; destroy: () => void };
+export type NaverAddress = { x: string; y: string; roadAddress?: string; jibunAddress?: string };
+type NaverService = {
+  Status: { OK: number; ERROR: number };
+  geocode: (options: { query: string }, callback: (status: number, response?: { v2?: { addresses?: NaverAddress[] } }) => void) => void;
+};
 type NaverMaps = {
   Map: new (el: HTMLElement, options: Record<string, unknown>) => NaverMap;
   LatLng: new (lat: number, lng: number) => NaverLatLng;
   Position: Record<string, number>;
+  Service?: NaverService; // geocoder 서브모듈이 있어야 생긴다
   jsContentLoaded?: boolean;
   onJSContentLoaded?: () => void;
 };
@@ -72,7 +79,7 @@ declare global {
 }
 
 let naverScript: Promise<NaverMaps> | null = null;
-function loadNaver(key: string): Promise<NaverMaps> {
+export function loadNaver(key: string): Promise<NaverMaps> {
   naverScript ??= new Promise<NaverMaps>((resolve, reject) => {
     const ready = () => {
       const maps = window.naver?.maps;
@@ -83,7 +90,7 @@ function loadNaver(key: string): Promise<NaverMaps> {
     };
     if (window.naver?.maps) return ready();
     const s = document.createElement("script");
-    s.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(key)}&submodules=gl`;
+    s.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(key)}&submodules=gl,geocoder`;
     s.async = true;
     s.onload = ready;
     s.onerror = () => reject(new Error("네이버 지도 스크립트를 받지 못함"));
