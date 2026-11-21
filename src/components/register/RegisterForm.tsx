@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type FocusEvent } from "react";
 import { geocodeAddress } from "@/components/map/realMap";
+import { naverLookup } from "@/lib/directions";
 import { send } from "@/lib/me";
 import { addMyReport } from "@/lib/mine";
 import type { Store } from "@/lib/types";
@@ -18,7 +19,8 @@ const STEPS = ["가게 · 위치", "떡 · 맛", "메뉴 · 가격", "소개글"
 const EMPTY: RegisterDraft = { name: "", address: "", rice: [], menu: [{ name: "", price: 0 }], photos: [] };
 
 // 순서대로 살펴서 처음 걸리는 칸으로 데려간다 (경고창#1). field 는 View 가 그리는 요소의 id.
-const CHECKS: { step: number; field: string; problem: (r: RegisterDraft) => string | null }[] = [
+// checked = 「최신 가격 · 영업시간을 확인했어요」 체크. 서버에 보내는 값이 아니라 올리기 전 다짐이다
+const CHECKS: { step: number; field: string; problem: (r: RegisterDraft, checked: boolean) => string | null }[] = [
   { step: 0, field: "reg-name", problem: (r) => (r.name.trim() ? null : "가게 이름을 넣어 주세요") },
   { step: 0, field: "reg-grade", problem: (r) => (r.grade ? null : "떡볶이를 어떻게 파는지 골라 주세요") },
   { step: 0, field: "reg-address", problem: (r) => (r.address.trim() ? null : "주소를 넣어 주세요") },
@@ -26,6 +28,7 @@ const CHECKS: { step: number; field: string; problem: (r: RegisterDraft) => stri
   { step: 1, field: "reg-style", problem: (r) => (r.style ? null : "스타일을 골라 주세요") },
   { step: 1, field: "reg-spice", problem: (r) => (r.spice ? null : "대표 메뉴 맵기를 골라 주세요") },
   { step: 2, field: "reg-menu", problem: (r) => (!r.menu[0].name.trim() ? "대표 메뉴 이름을 넣어 주세요" : !r.menu[0].price ? "대표 메뉴 가격을 넣어 주세요" : null) },
+  { step: 2, field: "reg-checked", problem: (_r, checked) => (checked ? null : "가격 · 영업시간이 지금도 맞는지 확인하고 체크해 주세요") },
   { step: 3, field: "reg-intro", problem: (r) => (r.memo ? checkIntro(r.memo) : null) },
   { step: 4, field: "reg-photos", problem: (r) => (r.photos.length >= MIN_PHOTOS ? null : `간판이나 메뉴판 사진을 ${MIN_PHOTOS}장 이상 올려 주세요`) },
 ];
@@ -60,6 +63,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
   const [dup, setDup] = useState<string | null>(null); // 80m 안 같은 이름의 가게 id
   const [doneId, setDoneId] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [infoChecked, setInfoChecked] = useState(false); // 가격 · 영업시간을 방금 확인했다는 체크
   const saved = useSyncExternalStore(noSubscribe, readDraft, () => null);
   const bar = useRef<HTMLDivElement>(null);
 
@@ -128,7 +132,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
 
   const submit = async (notDuplicate = false) => {
     for (const c of CHECKS) {
-      const msg = c.problem(r);
+      const msg = c.problem(r, infoChecked);
       if (msg) return goTo(c, msg);
     }
     const e = checkNewStore(r);
@@ -150,7 +154,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
   // 폰: 이 단계만 살피고 다음으로
   const next = () => {
     for (const c of CHECKS.filter((x) => x.step === step)) {
-      const msg = c.problem(r);
+      const msg = c.problem(r, infoChecked);
       if (msg) return goTo(c, msg);
     }
     setError(null);
@@ -192,7 +196,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
   const done = [
     !!(r.name.trim() && r.grade && r.address.trim()),
     !!(r.rice.length && r.style && r.spice),
-    !!(r.menu[0].name.trim() && r.menu[0].price),
+    !!(r.menu[0].name.trim() && r.menu[0].price && infoChecked),
     !!r.memo?.trim(),
     r.photos.length >= Math.max(1, MIN_PHOTOS), // 사진이 선택이어도 한 장은 올려야 ✓ (소개글 단계와 같게)
   ];
@@ -211,12 +215,18 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
         mapKey={mapKey}
         mapGoTo={mapGoTo}
         mapHint={mapHint}
+        lookupUrl={naverLookup(r.name, r.address)}
+        infoChecked={infoChecked}
         error={error}
         dupId={dup}
         doneId={doneId}
         sending={sending}
         onChange={set}
         onPosition={onPosition}
+        onInfoChecked={(v) => {
+          setInfoChecked(v);
+          setError(null);
+        }}
         onNext={next}
         onPrev={prev}
         onStep={setStep}

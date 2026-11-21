@@ -86,6 +86,7 @@ export async function fillSteps(page: Page, name: string) {
   await next(page);
   await page.locator("#reg-menu").getByLabel("메뉴 이름").first().fill("떡볶이");
   await page.locator("#reg-menu").getByRole("button", { name: "4,000원" }).click();
+  await page.locator("#reg-checked").getByRole("checkbox").click(); // 「최신 가격 · 영업시간을 확인했어요」 — 없으면 올리지 못한다
   await next(page); // → 소개글 (선택)
   await next(page); // → 사진
 }

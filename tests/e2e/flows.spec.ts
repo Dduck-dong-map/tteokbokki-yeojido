@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { SAMPLE_STORES } from "../fixtures/sample-stores";
-import { asNewDevice, asNewIp, fillSteps, submitRegister, tag, tinyJpeg, waitMap } from "./helpers";
+import { asNewDevice, asNewIp, fillSteps, isMobile, submitRegister, tag, tinyJpeg, waitMap } from "./helpers";
 
 // 저장 흐름 다섯 (계획 7-3 회귀 계약). 파일 저장소(.data-e2e)에 쓰고, 테스트마다 새 기기·새 접속 위치로 시작한다.
 // 셀렉터는 화면 코드(components/register, store, room, lists, mine)에서 읽은 id · role · 문구다.
@@ -27,6 +27,28 @@ test("① 등록 다섯 단계 끝까지 → /store/[id] 에 이름이 보인다
   await page.getByRole("link", { name: "올린 가게 보기" }).click();
   await expect(page).toHaveURL(/\/store\/s-[0-9a-f]{8}$/);
   await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
+});
+
+test("①-2 등록: 가격 · 영업시간 확인 체크가 없으면 올리지 못하고, 네이버 지도 링크는 가게 이름 · 주소로 연다", async ({ page, context }) => {
+  test.skip(isMobile(page), "폰은 단계마다 넘어가서 체크를 되돌리려면 앞 단계로 가야 한다 — 한 화면인 768 이상에서 본다");
+  await asNewDevice(context);
+  await asNewIp(page);
+  const name = `E2E 확인 ${tag()}`;
+
+  await page.goto("/register");
+  await waitMap(page);
+  await fillSteps(page, name); // 도우미가 체크까지 한다
+  const box = page.locator("#reg-checked");
+  await expect(box.getByRole("link", { name: "네이버 지도에서 확인하기" })).toHaveAttribute(
+    "href",
+    `https://map.naver.com/p/search/${encodeURIComponent(`${name} 서울 마포구 망원동 1-1`)}`,
+  );
+  await expect(box.getByRole("link", { name: "네이버 지도에서 확인하기" })).toHaveAttribute("target", "_blank");
+
+  await box.getByRole("checkbox").click(); // 체크를 푼다
+  await page.getByRole("button", { name: "지도에 올리기" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "가격 · 영업시간이 지금도 맞는지 확인하고 체크해 주세요" })).toBeVisible();
+  await expect(page).toHaveURL(/\/register$/);
 });
 
 test("② 80m 안 같은 이름 → 「이미 지도에 있는 가게 같아요」 + 그 가게 보기 / 다른 가게예요", async ({ page, context }) => {

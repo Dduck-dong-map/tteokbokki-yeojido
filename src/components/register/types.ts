@@ -27,12 +27,15 @@ export type RegisterFormViewProps = {
   mapKey: number; // 바뀌면 MapPicker 를 새로 그린다 (이어서 쓰기)
   mapGoTo: (LatLng & { n: number }) | null; // 주소로 찾은 자리. n 이 바뀌면 지도가 그리로 간다
   mapHint: string | null; // 주소로 찾은 결과 안내 (지도 아래 한 줄)
+  lookupUrl: string | null; // 「네이버 지도에서 확인하기」 주소 (가게 이름이 있어야 생긴다)
+  infoChecked: boolean; // 가격 · 영업시간을 방금 확인했다고 체크함 (올리려면 필요)
   error: string | null;
   dupId: string | null; // 80m 안 같은 이름 가게 → 「그 가게 보기」「다른 가게예요」
   doneId: string | null; // 올라간 가게 id → 완료 화면
   sending: boolean;
   onChange: (patch: Partial<RegisterDraft>) => void; // 칸 하나 바꿈 (touched·error·dup 정리는 컨테이너가)
   onPosition: (p: LatLng) => void; // 지도 가운데 핀
+  onInfoChecked: (checked: boolean) => void; // 「최신 가격 · 영업시간을 확인했어요」 체크
   onNext: () => void; // 폰 「다음」(마지막 단계면 올리기)
   onPrev: () => void;
   onStep: (i: number) => void; // PC 왼쪽 진행 표시에서 칸을 누름 (그 칸으로 가는 것은 링크가 한다)

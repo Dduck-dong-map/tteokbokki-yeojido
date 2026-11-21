@@ -111,6 +111,9 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
           mapKey={props.mapKey}
           mapGoTo={props.mapGoTo}
           mapHint={props.mapHint}
+          lookupUrl={props.lookupUrl}
+          infoChecked={props.infoChecked}
+          onInfoChecked={props.onInfoChecked}
           sending={sending}
           onChange={props.onChange}
           onPosition={props.onPosition}
