@@ -11,7 +11,7 @@ import type { RegisterFormViewProps } from "./types";
 // 그리기만 한다. 단계·입력값·오류·임시 저장 유무는 컨테이너(RegisterForm.tsx)가 props 로 넘기고,
 // 키보드 높이(--kb)·칸으로 스크롤·포커스 이동·localStorage 도 컨테이너 몫이다.
 export default function RegisterFormView(props: RegisterFormViewProps) {
-  const { step, steps, draft, done, touched, hasSavedDraft, draftClosed, error, dupId, doneId, sending, onNext, onPrev, onSubmit, onResumeDraft, onDiscardDraft } = props;
+  const { step, steps, draft, done, touched, hasSavedDraft, draftClosed, error, dupId, doneId, sending, onNext, onPrev, onStep, onSubmit, onResumeDraft, onDiscardDraft } = props;
 
   // 올린 뒤 완료 화면 (M-W-03-01)
   if (doneId)
@@ -77,14 +77,21 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
       </ol>
 
       <div className="mt-6 flex flex-1 flex-col gap-4 md:mt-0 md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-[150px_minmax(0,1fr)_minmax(0,1fr)] lg:gap-7">
-        {/* 1024 이상: 왼쪽 진행 표시. 누르면 그 칸으로, 채운 칸은 ✓
+        {/* 1024 이상: 왼쪽 진행 표시. 누르면 그 칸으로, 채운 칸은 ✓. 굵은 줄은 지금 칸(step) — 누른 칸 · 입력 중인 칸을 따라간다
+            (11-20: 「아직 못 채운 첫 칸」을 굵게 하던 것을 바꿨다. 다른 칸을 눌러도 표시가 첫 칸에 남아 있었다)
             1280 이상: 제목 아래 화면 왼쪽 끝에 붙인다 (사용자 11-08 시안 Group 3616). 칸 자리는 그대로 두고 옆으로만 옮겨 입력 칸이 움직이지 않게 한다 */}
         <nav
           aria-label="등록 칸"
           className="hidden self-start lg:sticky lg:top-[72px] lg:flex lg:flex-col lg:gap-2.5 lg:text-caption xl:mt-5 xl:translate-x-[calc(56px_-_(100vw_-_1168px)/2_-_24px)]"
         >
           {steps.map((s, i) => (
-            <a key={s} href={`#reg-${i}`} className={cn("inline-flex items-center gap-1", i === done.indexOf(false) ? "font-bold text-foreground" : "text-muted-foreground/70")}>
+            <a
+              key={s}
+              href={`#reg-${i}`}
+              onClick={() => onStep(i)}
+              aria-current={i === step ? "step" : undefined}
+              className={cn("inline-flex items-center gap-1", i === step ? "font-bold text-foreground" : "text-muted-foreground/70")}
+            >
               {i + 1}. {s}
               {/* 채운 칸 표시. 아이콘은 장식이고 스크린 리더에는 글자로 알린다 */}
               {done[i] && (
@@ -102,6 +109,8 @@ export default function RegisterFormView(props: RegisterFormViewProps) {
           draft={draft}
           stores={props.stores}
           mapKey={props.mapKey}
+          mapGoTo={props.mapGoTo}
+          mapHint={props.mapHint}
           sending={sending}
           onChange={props.onChange}
           onPosition={props.onPosition}

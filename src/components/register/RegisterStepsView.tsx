@@ -11,7 +11,7 @@ import type { RegisterFormViewProps } from "./types";
 // 왼쪽 칼럼 = 1~4단계(가게·위치 / 떡·맛 / 메뉴·가격 / 소개글), 오른쪽 칼럼 = 지도 + 5단계(사진·닉네임·PC 올리기).
 // 폰(<768)은 지금 step 과 다른 섹션을 숨긴다. 칸은 하나만 만들어 CSS 로 나눈다.
 // 그리기만 한다. 값은 draft, 바꿈은 onChange(patch) 로 컨테이너에 올린다.
-type Props = Pick<RegisterFormViewProps, "step" | "draft" | "stores" | "mapKey" | "sending" | "onChange" | "onPosition" | "onSubmit"> & {
+type Props = Pick<RegisterFormViewProps, "step" | "draft" | "stores" | "mapKey" | "mapGoTo" | "mapHint" | "sending" | "onChange" | "onPosition" | "onSubmit"> & {
   message: ReactNode; // 오류·중복 안내 블록 (PC 「지도에 올리기」 위에 둔다)
 };
 
@@ -21,7 +21,7 @@ const SUBTITLE = "mb-2 text-body-medium";
 const HINT = "font-sans text-caption font-normal text-muted-foreground/70";
 const LABEL = "text-body-small text-muted-foreground/70";
 
-export default function RegisterStepsView({ step, draft, stores, mapKey, sending, onChange, onPosition, onSubmit, message }: Props) {
+export default function RegisterStepsView({ step, draft, stores, mapKey, mapGoTo, mapHint, sending, onChange, onPosition, onSubmit, message }: Props) {
   // 폰에서는 지금 단계만 보인다
   const only = (i: number) => (step === i ? "" : "max-md:hidden");
 
@@ -114,7 +114,7 @@ export default function RegisterStepsView({ step, draft, stores, mapKey, sending
         <div className={only(0)}>
           <p className={cn("mb-1.5", LABEL)}>가게 위치</p>
           {/* mapKey 가 바뀌면(이어서 쓰기) 저장된 좌표에서 다시 그린다 */}
-          <MapPicker key={mapKey} stores={stores} start={mapKey && draft.lat !== undefined && draft.lng !== undefined ? { lat: draft.lat, lng: draft.lng } : undefined} onChange={onPosition} tall />
+          <MapPicker key={mapKey} stores={stores} start={mapKey && draft.lat !== undefined && draft.lng !== undefined ? { lat: draft.lat, lng: draft.lng } : undefined} onChange={onPosition} goTo={mapGoTo} hint={mapHint} tall />
         </div>
         <section id="reg-4" className={cn("flex scroll-mt-20 flex-col gap-5", only(4))}>
           <div id="reg-photos">

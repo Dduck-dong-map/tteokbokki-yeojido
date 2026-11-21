@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type FocusEvent } from "react";
+import { geocodeAddress } from "@/components/map/realMap";
 import { send } from "@/lib/me";
 import { addMyReport } from "@/lib/mine";
 import type { Store } from "@/lib/types";
@@ -62,11 +63,35 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
   const saved = useSyncExternalStore(noSubscribe, readDraft, () => null);
   const bar = useRef<HTMLDivElement>(null);
 
+  // 주소를 넣으면 지도가 그 자리로 간다 (네이버 Geocoding). 치는 동안에는 기다렸다가, 멈추면 한 번 찾는다.
+  // 핀은 건물 자리까지만 맞는다 → 가게 위에 오게 맞추는 마지막 손질은 사람이 한다.
+  const [mapGoTo, setMapGoTo] = useState<(LatLng & { n: number }) | null>(null);
+  const [mapHint, setMapHint] = useState<string | null>(null);
+  const lookup = useRef<{ timer?: ReturnType<typeof setTimeout>; n: number }>({ n: 0 });
+  const findAddress = (address: string) => {
+    const q = address.trim();
+    clearTimeout(lookup.current.timer);
+    const mine = ++lookup.current.n; // 늦게 온 옛 답은 버린다
+    if (q.length < 5) return setMapHint(null);
+    lookup.current.timer = setTimeout(async () => {
+      const found = await geocodeAddress(q);
+      if (mine !== lookup.current.n || found === undefined) return; // 쓸 수 없으면(키 없음 등) 조용히 둔다 — 손으로 맞추면 된다
+      if (!found) return setMapHint("주소로 자리를 못 찾았어요. 도로명이나 지번까지 적거나, 지도를 직접 움직여 주세요");
+      setMapGoTo((g) => ({ lat: found.lat, lng: found.lng, n: (g?.n ?? 0) + 1 }));
+      setMapHint(`${found.address} 자리로 옮겼어요. 핀이 가게 위에 오게 맞춰 주세요`);
+    }, 700);
+  };
+  useEffect(() => {
+    const l = lookup.current;
+    return () => clearTimeout(l.timer);
+  }, []);
+
   const set = (p: Partial<RegisterDraft>) => {
     setTouched(true);
     setError(null);
     setDup(null);
     setR((cur) => ({ ...cur, ...p }));
+    if (p.address !== undefined) findAddress(p.address);
   };
 
   // 지도 가운데 핀: 손댄 것으로 치지 않는다 (지도만 움직여도 임시 저장이 시작되지 않게)
@@ -143,6 +168,12 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
     window.scrollTo({ top: 0 });
   };
 
+  // PC 왼쪽 진행 표시: 입력 칸에 들어가면 그 칸이 든 단계를 지금 칸으로 삼는다 (폰은 지금 단계만 보여서 값이 그대로다)
+  const onFocusStep = (e: FocusEvent) => {
+    const id = (e.target as HTMLElement).closest?.('section[id^="reg-"]')?.id;
+    if (id) setStep(Number(id.slice(4)));
+  };
+
   // 「쓰다 만 등록」 띠: 이어서 쓰면 지도도 저장된 자리로 다시 그린다(mapKey)
   const onResumeDraft = () => {
     if (!saved) return;
@@ -167,7 +198,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
   ];
 
   return (
-    <div ref={bar}>
+    <div ref={bar} onFocusCapture={onFocusStep}>
       <RegisterFormView
         stores={stores}
         step={step}
@@ -178,6 +209,8 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
         hasSavedDraft={!!saved}
         draftClosed={draftClosed}
         mapKey={mapKey}
+        mapGoTo={mapGoTo}
+        mapHint={mapHint}
         error={error}
         dupId={dup}
         doneId={doneId}
@@ -186,6 +219,7 @@ export default function RegisterForm({ stores }: { stores: Store[] }) {
         onPosition={onPosition}
         onNext={next}
         onPrev={prev}
+        onStep={setStep}
         onSubmit={submit}
         onResumeDraft={onResumeDraft}
         onDiscardDraft={onDiscardDraft}

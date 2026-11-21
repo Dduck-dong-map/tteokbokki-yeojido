@@ -62,6 +62,8 @@ type NaverMaps = {
   LatLng: new (lat: number, lng: number) => NaverLatLng;
   Size: new (width: number, height: number) => object;
   Position: Record<string, number>;
+  // geocoder 서브모듈 (콘솔 Application 에 Geocoding 이 켜져 있어야 답이 온다)
+  Service?: { geocode: (o: { query: string }, cb: (status: number, res: { v2?: { addresses?: { roadAddress: string; jibunAddress: string; x: string; y: string }[] } }) => void) => void };
   jsContentLoaded?: boolean;
   onJSContentLoaded?: () => void;
 };
@@ -84,7 +86,8 @@ function loadNaver(key: string): Promise<NaverMaps> {
     };
     if (window.naver?.maps) return ready();
     const s = document.createElement("script");
-    s.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(key)}&submodules=gl`;
+    // geocoder(주소 → 좌표)도 함께 받는다. 따로 받으면 먼저 온 쪽만 남아 gl 이나 geocoder 하나가 빠진다
+    s.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(key)}&submodules=gl,geocoder`;
     s.async = true;
     s.onload = ready;
     s.onerror = () => reject(new Error("네이버 지도 스크립트를 받지 못함"));
@@ -194,4 +197,32 @@ export async function createRealMap(ml: Ml, container: HTMLElement, center: LngL
     }
   }
   return tempRealMap(ml, container, center, zoom);
+}
+
+// 주소 → 좌표 (네이버 Geocoding, 등록 화면의 「주소를 넣으면 지도가 그 자리로」).
+// 돌려주는 값: 찾음 = 좌표 + 네이버가 다듬은 주소, 못 찾음 = null, 쓸 수 없음(키 없음 · 스크립트 · 인증 실패 · 응답 없음) = undefined.
+// 도로명 · 지번 주소만 찾는다. 가게 이름으로는 못 찾는다.
+export type Geocoded = { lat: number; lng: number; address: string };
+export async function geocodeAddress(query: string): Promise<Geocoded | null | undefined> {
+  if (!NAVER_KEY) return undefined;
+  try {
+    const N = await loadNaver(NAVER_KEY);
+    const service = N.Service;
+    if (!service?.geocode) return undefined;
+    return await new Promise<Geocoded | null | undefined>((resolve) => {
+      const giveUp = setTimeout(() => resolve(undefined), 6000);
+      // service.geocode 로 부른다 — 함수만 떼어 부르면 this 가 없어 네이버 안에서 오류가 난다
+      service.geocode({ query }, (status, res) => {
+        clearTimeout(giveUp);
+        if (status !== 200) return resolve(undefined);
+        const a = res.v2?.addresses?.[0];
+        const lat = Number(a?.y);
+        const lng = Number(a?.x);
+        if (!a || !Number.isFinite(lat) || !Number.isFinite(lng)) return resolve(null);
+        resolve({ lat, lng, address: a.roadAddress || a.jibunAddress });
+      });
+    });
+  } catch {
+    return undefined;
+  }
 }

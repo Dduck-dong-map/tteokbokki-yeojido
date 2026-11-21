@@ -14,10 +14,10 @@ export type RegisterDraft = Partial<NewStoreInput> & Pick<NewStoreInput, "name" 
 // ───────── RegisterForm ─────────
 // 이 View 가 그리는 것: 다섯 단계(가게·위치 / 떡·맛 / 메뉴·가격 / 소개글 / 사진) 입력칸, 폰 진행 막대·아래 단추, PC 왼쪽 진행 표시, 「쓰다 만 등록」 띠, 오류·중복 안내, 올린 뒤 완료 화면.
 // 컨테이너가 넘기는 것: 현재 단계, 입력값, 단계별 완료 여부, 오류·중복 가게 id·완료 가게 id, 보내는 중, 임시 저장 유무, 지도 다시 그리기 키, 지도에 찍을 가게들, 그리고 모든 onX.
-// 넘기지 않는 것: router · localStorage(임시 저장) · visualViewport(키보드 높이) · fetch · addMyReport — CHECKS 순회와 포커스 이동(goTo)도 컨테이너가 하고 step·error 로 내려 준다.
+// 넘기지 않는 것: router · localStorage(임시 저장) · visualViewport(키보드 높이) · fetch · 주소 찾기(geocodeAddress) · addMyReport — CHECKS 순회와 포커스 이동(goTo)도 컨테이너가 하고 step·error 로 내려 준다.
 export type RegisterFormViewProps = {
   stores: Store[]; // MapPicker 에 함께 찍는 기존 가게
-  step: number; // 0~4
+  step: number; // 0~4. 폰은 지금 보이는 단계, PC 는 왼쪽 진행 표시에서 켜지는 칸
   steps: readonly string[]; // 단계 이름
   draft: RegisterDraft;
   done: boolean[]; // 단계마다 채웠는지 (PC 진행 표시 ✓)
@@ -25,6 +25,8 @@ export type RegisterFormViewProps = {
   hasSavedDraft: boolean; // localStorage 에 쓰다 만 것이 있다
   draftClosed: boolean; // 띠를 닫았다
   mapKey: number; // 바뀌면 MapPicker 를 새로 그린다 (이어서 쓰기)
+  mapGoTo: (LatLng & { n: number }) | null; // 주소로 찾은 자리. n 이 바뀌면 지도가 그리로 간다
+  mapHint: string | null; // 주소로 찾은 결과 안내 (지도 아래 한 줄)
   error: string | null;
   dupId: string | null; // 80m 안 같은 이름 가게 → 「그 가게 보기」「다른 가게예요」
   doneId: string | null; // 올라간 가게 id → 완료 화면
@@ -33,6 +35,7 @@ export type RegisterFormViewProps = {
   onPosition: (p: LatLng) => void; // 지도 가운데 핀
   onNext: () => void; // 폰 「다음」(마지막 단계면 올리기)
   onPrev: () => void;
+  onStep: (i: number) => void; // PC 왼쪽 진행 표시에서 칸을 누름 (그 칸으로 가는 것은 링크가 한다)
   onSubmit: (notDuplicate?: boolean) => void; // PC 「지도에 올리기」 · 「다른 가게예요」
   onResumeDraft: () => void;
   onDiscardDraft: () => void;

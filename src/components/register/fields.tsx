@@ -262,10 +262,32 @@ export function NickField() {
 }
 
 // 지도를 움직여 가운데 핀을 가게 위에 맞춘다
-export function MapPicker({ stores, start, onChange, tall = false }: { stores: Store[]; start?: { lat: number; lng: number }; onChange: (p: { lat: number; lng: number }) => void; tall?: boolean }) {
+// goTo: 밖에서 정한 자리(주소로 찾은 곳)로 지도를 옮긴다. n 이 바뀔 때마다 한 번. hint: 그때 핀 아래에 보여 줄 말
+export function MapPicker({
+  stores, start, onChange, tall = false, goTo, hint,
+}: {
+  stores: Store[];
+  start?: { lat: number; lng: number };
+  onChange: (p: { lat: number; lng: number }) => void;
+  tall?: boolean;
+  goTo?: { lat: number; lng: number; n: number } | null;
+  hint?: string | null;
+}) {
   const [focus, setFocus] = useState<{ n: number; lat: number; lng: number; zoom: number } | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
-  const onBounds = (b: Bounds) => onChange({ lat: (b.s + b.n) / 2, lng: (b.w + b.e) / 2 });
+  const [wide, setWide] = useState(false); // 아직 넓게 보는 중 (그림 지도) → 더 확대해 달라고 안내한다
+  const [went, setWent] = useState(goTo?.n);
+  if (goTo && goTo.n !== went) {
+    setWent(goTo.n);
+    setMsg(null);
+    setFocus((f) => ({ n: (f?.n ?? 0) + 1, lat: goTo.lat, lng: goTo.lng, zoom: 17 }));
+  }
+  const onBounds = (b: Bounds) => {
+    onChange({ lat: (b.s + b.n) / 2, lng: (b.w + b.e) / 2 });
+    // 세로로 250m 넘게 보이면(대략 16.5배 아래) 건물 · 상호가 안 보여 핀이 수십 m 씩 어긋난다.
+    // 넓게 찍은 좌표는 조회 화면에서 확대했을 때 다른 건물 위에 놓인다 (11-21)
+    setWide((b.n - b.s) * 111_320 > 250);
+  };
   const locate = () => {
     if (!navigator.geolocation) return setMsg("이 브라우저는 위치를 못 받아요");
     navigator.geolocation.getCurrentPosition(
@@ -293,7 +315,7 @@ export function MapPicker({ stores, start, onChange, tall = false }: { stores: S
           내 위치로
         </Button>
       </div>
-      <p className="mt-1.5 text-body-small text-muted-foreground/70">{msg ?? "지도를 움직여 핀을 가게 자리에 맞춰 주세요"}</p>
+      <p className="mt-1.5 text-body-small text-muted-foreground/70">{msg ?? (wide ? "지도를 더 확대해서 핀을 가게 건물 위에 정확히 맞춰 주세요" : (hint ?? "지도를 움직여 핀을 가게 자리에 맞춰 주세요"))}</p>
     </div>
   );
 }
