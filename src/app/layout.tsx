@@ -27,10 +27,17 @@ const TteokWordmark = localFont({
   adjustFontFallback: false,
 });
 
+const TITLE = "떡볶여지도 · 떡볶이를 사랑하는 사람들의 지도";
+const DESCRIPTION = "떡 종류와 맵기까지 골라 찾는 분식 맛집 지도. 가입 없이 바로 보고, 누구나 등록해요.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: { default: "떡볶여지도 · 떡볶이를 사랑하는 사람들의 지도", template: "%s | 떡볶여지도" },
-  description: "떡 종류와 맵기까지 골라 찾는 분식 맛집 지도. 가입 없이 바로 보고, 누구나 등록해요.",
+  title: { default: TITLE, template: "%s | 떡볶여지도" },
+  description: DESCRIPTION,
+  // 카카오톡 · 메신저 미리보기 (11-23). 그림은 같은 폴더의 opengraph-image.png(1200×630)를 Next 가 og:image 로 단다.
+  // og:title · og:description 은 title · description 을 물려받지 않아 따로 적는다. 화면마다 다르게 하려면 그 화면이 openGraph 를 낸다(가게 상세)
+  openGraph: { type: "website", siteName: "떡볶여지도", locale: "ko_KR", url: "/", title: TITLE, description: DESCRIPTION },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
   applicationName: "떡볶여지도",
   appleWebApp: { capable: true, title: "떡볶여지도", statusBarStyle: "default" },
 };

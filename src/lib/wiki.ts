@@ -158,7 +158,11 @@ export const GU_SLUGS: Record<string, string> = { 마포구: "mapo", 서대문�
 export function parseAddress(address: string): { gu: string; dong: string } {
   const words = address.trim().split(/\s+/);
   const guWord = words.find((w) => /구$/.test(w));
-  const dongWord = words.find((w) => /[동가리]$/.test(w) && !/구$/.test(w)) ?? words.find((w) => /(로|길)$/.test(w));
+  // 동 · 도로명은 번지 앞에 온다. 번지 뒤는 건물 정보(「F동 15-16호」 · 「101동」 · 상호)라 보지 않는다 (11-23: 수진분식의 동이 「F동」으로 나옴).
+  // 번지가 없는 주소는 전체를 보되, 영문 · 숫자로 시작하는 「~동」은 건물 동으로 보고 건너뛴다
+  const numberAt = words.findIndex((w) => /^\d/.test(w));
+  const head = numberAt > 0 ? words.slice(0, numberAt) : words;
+  const dongWord = head.find((w) => /[동가리]$/.test(w) && !/구$/.test(w) && !/^[A-Za-z0-9]/.test(w)) ?? head.find((w) => /(로|길)$/.test(w));
   return { gu: (guWord && GU_SLUGS[guWord]) ?? "etc", dong: dongWord ?? guWord ?? words[0] ?? "" };
 }
 

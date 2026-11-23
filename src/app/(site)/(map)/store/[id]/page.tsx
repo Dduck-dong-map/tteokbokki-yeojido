@@ -24,13 +24,21 @@ export async function generateStaticParams() {
   return ids.length ? ids : [{ id: "none" }];
 }
 
+// 사이트 공통 미리보기 그림 (app/opengraph-image.png 를 Next 가 이 주소로 내준다)
+const OG_IMAGE = { url: "/opengraph-image.png", width: 1200, height: 630, alt: "떡볶여지도 — 떡볶이를 사랑하는 사람들의 지도" };
+
 export async function generateMetadata({ params }: PageProps<"/store/[id]">): Promise<Metadata> {
   "use cache";
   const s = await getStore((await params).id);
   if (!s) return {};
+  const description = `${s.dong} ${STYLES[s.style]}떡볶이 · ${s.rice.map((r) => RICE_CAKES[r]).join("·")} · 대표 메뉴 맵기 ${s.spice} (${SPICE_LEVELS[s.spice].ref}) · 1인분 ${won(s.price)}`;
   return {
     title: s.name,
-    description: `${s.dong} ${STYLES[s.style]}떡볶이 · ${s.rice.map((r) => RICE_CAKES[r]).join("·")} · 대표 메뉴 맵기 ${s.spice} (${SPICE_LEVELS[s.spice].ref}) · 1인분 ${won(s.price)}`,
+    description,
+    // 가게 주소를 공유하면 미리보기에 가게 이름이 나오게 한다.
+    // openGraph 를 내면 루트의 것을 통째로 갈아서 그림(app/opengraph-image.png)도 빠진다 → 사이트 공통 그림을 다시 적는다
+    openGraph: { type: "website", siteName: "떡볶여지도", locale: "ko_KR", url: `/store/${s.id}`, title: `${s.name} | 떡볶여지도`, description, images: [OG_IMAGE] },
+    twitter: { card: "summary_large_image", title: `${s.name} | 떡볶여지도`, description, images: [OG_IMAGE] },
   };
 }
 

@@ -86,6 +86,15 @@ describe("parseAddress — 주소 글에서 구·동", () => {
   it("동이 없고 도로명만 있으면 로·길을 동 자리에 쓴다", () => {
     expect(parseAddress("서울 마포구 월드컵로 12")).toEqual({ gu: "mapo", dong: "월드컵로" });
   });
+  it("번지 뒤의 건물 동(F동 · 101동)은 동으로 읽지 않는다", () => {
+    expect(parseAddress("경기 성남시 중원구 산성대로 204-5 F동 15-16호 수진분식")).toEqual({ gu: "etc", dong: "산성대로" });
+    expect(parseAddress("서울 마포구 합정동 123-4 101동 1층")).toEqual({ gu: "mapo", dong: "합정동" });
+    expect(parseAddress("경기 성남시 분당구 분당로53번길 21 산호프라자 2층")).toEqual({ gu: "etc", dong: "분당로53번길" });
+  });
+  it("번지가 없어도 영문 · 숫자로 시작하는 「~동」은 건너뛴다", () => {
+    expect(parseAddress("서울 마포구 성산동 A동")).toEqual({ gu: "mapo", dong: "성산동" });
+    expect(parseAddress("서울 마포구 월드컵로 B동")).toEqual({ gu: "mapo", dong: "월드컵로" });
+  });
   it("모르는 구는 etc, 동은 그대로", () => {
     expect(parseAddress("부산 해운대구 우동 1")).toEqual({ gu: "etc", dong: "우동" });
   });
