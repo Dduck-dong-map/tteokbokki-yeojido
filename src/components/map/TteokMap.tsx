@@ -48,7 +48,9 @@ function moveTo(m: MlMap, focus: Focus, cover = 0) {
 // 첫 화면 (11-23): 가게가 모두 보이게 맞춘다. 너무 흩어져 FIT_MIN_ZOOM 아래로 내려가야 하면 가게가 가장 많은 구만 맞춘다
 // (11-16 강남 + 마포 → 둘 사이 한강 위가 되지 않게). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
 const START: [number, number] = [126.928, 37.5555];
-const FIT_MIN_ZOOM = 10; // 지도의 최소 배율(minZoom)과 같다 — 그보다 더 물러나야 하면 다 담을 수 없다
+// 지도의 최소 배율(minZoom)은 10 이다. 다 담으려면 그보다 조금 더(9 까지) 물러나야 하는 정도면 최소 배율로 가운데를 맞춘다
+// — 가장자리 몇 곳만 걸친다 (11-23 폰: 수원~위례 25곳이 9.8 배 → 분당만 보이던 것). 그보다 멀리 흩어지면(서울 + 부산) 가장 많은 구만
+const FIT_MIN_ZOOM = 9;
 function topGu(stores: Store[]): Store[] {
   const byGu = new Map<string, Store[]>();
   for (const s of stores) byGu.set(s.gu, [...(byGu.get(s.gu) ?? []), s]);
