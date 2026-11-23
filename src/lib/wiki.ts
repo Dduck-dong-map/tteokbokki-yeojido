@@ -153,7 +153,8 @@ export function checkReview(r: { stars?: number; text?: string }): string | null
 }
 
 // 주소 글에서 구·동을 뽑는다. 주소 검색 API(도로명주소 승인키)를 받으면 이 함수를 바꾼다.
-export const GU_SLUGS: Record<string, string> = { 마포구: "mapo", 서대문구: "seodaemun", 강남구: "gangnam" };
+// 주소에 적힌 구 이름 → 구 이름표 (lib/regions.ts 와 짝). 도시는 보지 않으므로 이름이 겹치는 구(중구 등)는 넣지 않는다
+export const GU_SLUGS: Record<string, string> = { 마포구: "mapo", 서대문구: "seodaemun", 강남구: "gangnam", 분당구: "bundang", 중원구: "jungwon", 수정구: "sujeong" };
 
 export function parseAddress(address: string): { gu: string; dong: string } {
   const words = address.trim().split(/\s+/);

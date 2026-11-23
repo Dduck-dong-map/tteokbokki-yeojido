@@ -22,6 +22,8 @@ import type { MapShellViewProps, SheetState } from "./types";
 
 // 시트 높이 (접힘 · 반 · 전체) — CSS 변수 --sheet-h 로 지도 단추·저작권 표시도 같이 밀린다
 const SHEET_H: Record<SheetState, string> = { peek: "64px", half: "44%", full: "calc(100% - 8px)" };
+// 폰에서 시트가 지도를 덮는 비율 (SHEET_H 와 짝). 가게를 모두 보이게 맞출 때 지도가 그만큼 아래를 비운다. 전체로 펼친 때는 반 높이 기준
+const SHEET_COVER: Record<SheetState, number> = { peek: 0.1, half: 0.44, full: 0.44 };
 
 export default function MapShellView(p: MapShellViewProps) {
   const { shown, recentReports, selectedId, routeId, wide, sheet, mapOn, mapSettled, start, focus, me, toast, filterCount, filterOpen, children } = p;
@@ -59,7 +61,7 @@ export default function MapShellView(p: MapShellViewProps) {
           {/* 큰 지도 */}
           <div className="absolute inset-0 [--attrib-bottom:calc(var(--sheet-h)-4px)] md:relative md:inset-auto md:order-3 md:min-w-0 md:flex-1 md:[--attrib-bottom:0px]">
             {mapOn && (
-              <TteokMap stores={shown} selectedId={selectedId} onSelect={p.onSelectFromMap} me={me} focus={focus} onBoundsChange={p.onBoundsChange} onSettled={p.onMapSettled} start={start} />
+              <TteokMap stores={shown} selectedId={selectedId} onSelect={p.onSelectFromMap} me={me} focus={focus} onBoundsChange={p.onBoundsChange} onSettled={p.onMapSettled} start={start} sheetCover={wide ? 0 : SHEET_COVER[sheet]} />
             )}
             <MapLoading settled={mapSettled} />
             {hasStale && mapSettled && (

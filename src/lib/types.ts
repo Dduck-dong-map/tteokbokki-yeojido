@@ -47,7 +47,8 @@ export type Fail = { ok: false; error: string; existing?: string; status: number
 
 export type StoreStatus = "active" | "hidden" | "closed";
 
-export type Region = { gu: string; name: string; city: "seoul" };
+// city = 주소 첫 칸(/seoul/mapo · /seongnam/bundang). 구 이름표(gu)는 도시가 달라도 겹치지 않게 짓는다
+export type Region = { gu: string; name: string; city: "seoul" | "seongnam" };
 
 // 한 줄 후기 · 평가 (화면에 보여도 되는 값만)
 // spice 는 예전 맵기 투표 값이라 새 평가에는 없다

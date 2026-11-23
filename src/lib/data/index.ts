@@ -28,6 +28,7 @@ export function getRegions() {
   return REGIONS;
 }
 
-export function getRegion(gu: string) {
-  return REGIONS.find((r) => r.gu === gu);
+// city 를 주면 주소의 도시 칸까지 맞는 지역만 (/seoul/bundang 은 없는 주소)
+export function getRegion(gu: string, city?: string) {
+  return REGIONS.find((r) => r.gu === gu && (city === undefined || r.city === city));
 }

@@ -9,7 +9,7 @@ import type { Region, Store } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 // 지역·취향 목록 페이지 (검색 유입용, 기획안 5·11절)
-// /seoul/mapo · /seoul/mapo/soup(스타일) · /seoul/mapo/rice(떡)
+// /seoul/mapo · /seoul/mapo/soup(스타일) · /seoul/mapo/rice(떡) · /seongnam/bundang
 export type Taste = { slug: string; label: string; match: (s: Store) => boolean };
 
 export function tastes(): Taste[] {
@@ -49,17 +49,17 @@ export function RegionList({ region, stores, taste, now }: { region: Region; sto
 
   return (
     <div className="page-wide pb-10">
-      <BackHeader title={`${region.name} ${taste ? taste.label : "떡볶이"} 지도`} href={taste ? `/seoul/${region.gu}` : "/list"} />
+      <BackHeader title={`${region.name} ${taste ? taste.label : "떡볶이"} 지도`} href={taste ? `/${region.city}/${region.gu}` : "/list"} />
       <p className="px-4 pt-4 text-body-small text-muted-foreground md:px-0 md:pt-0">
         {region.name}의 {taste ? taste.label : "떡볶이"} 가게 {shown.length}곳 · 최근 확인된 곳부터 보여요.
       </p>
       {/* 취향 칩: 폰은 가로 스크롤(스크롤바 숨김), 768 이상은 줄바꿈 */}
       <nav aria-label="취향" className="flex gap-1.5 overflow-x-auto px-4 py-3 [scrollbar-width:none] md:flex-wrap md:overflow-visible md:px-0">
-        <TasteChip href={`/seoul/${region.gu}`} active={!taste}>
+        <TasteChip href={`/${region.city}/${region.gu}`} active={!taste}>
           전체
         </TasteChip>
         {links.map((t) => (
-          <TasteChip key={t.slug} href={`/seoul/${region.gu}/${t.slug}`} active={taste?.slug === t.slug}>
+          <TasteChip key={t.slug} href={`/${region.city}/${region.gu}/${t.slug}`} active={taste?.slug === t.slug}>
             {t.label}
           </TasteChip>
         ))}

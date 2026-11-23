@@ -31,6 +31,7 @@ function toUrl(file: string) {
     .split(path.sep)
     .filter((s) => s && !/^\(.*\)$/.test(s)); // (group) 은 주소에 없다
   const url = segs.map((seg, i) => {
+    if (seg === "[city]") return "seoul"; // 지역 페이지 주소의 도시 칸 (/seoul/mapo)
     if (seg === "[gu]") return "mapo";
     if (seg === "[taste]") return "soup";
     if (seg === "[id]") {

@@ -46,7 +46,7 @@ async function Loader() {
             <Badge
               key={r.gu}
               variant="outline"
-              render={<Link href={`/seoul/${r.gu}`} />}
+              render={<Link href={`/${r.city}/${r.gu}`} />}
               className="hit h-8 overflow-visible rounded-full border-input bg-card px-3 text-caption font-medium text-muted-foreground"
             >
               {r.name} {stores.filter((s) => s.gu === r.gu).length}곳

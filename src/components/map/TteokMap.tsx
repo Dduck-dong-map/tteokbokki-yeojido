@@ -31,24 +31,45 @@ type Props = {
   // 지도 한가운데에 핀을 고정해 자리를 고르는 지도(등록 · 위치 옮기기)는 가운데를 기준으로 확대한다.
   // 기본(커서 · 손가락 자리 기준)으로 두면 확대할 때마다 가운데 핀 아래의 땅이 밀려 다른 곳을 가리킨다 (11-21)
   zoomAtCenter?: boolean;
+  // 지도 아래쪽을 덮는 것(폰의 목록 시트)이 지도 높이에서 차지하는 비율 0~1. 가게 묶음을 맞출 때 그만큼 아래를 비운다.
+  // 안 주면 가게가 시트 밑에 들어가 안 보인다 (11-23)
+  sheetCover?: number;
 };
 
+// 가게 묶음을 맞출 때의 둘레 여백. cover = 아래쪽을 덮는 시트의 비율
+const fitPadding = (m: MlMap, cover: number) => ({ top: 48, left: 48, right: 48, bottom: 48 + Math.round(m.getContainer().clientHeight * cover) });
+
 // 초점(focus)으로 지도를 옮긴다: 가게 묶음이면 모두 보이게, 한 곳이면 그곳으로
-function moveTo(m: MlMap, focus: Focus) {
-  if ("bounds" in focus) m.fitBounds([[focus.bounds.w, focus.bounds.s], [focus.bounds.e, focus.bounds.n]], { padding: 48, maxZoom: 15, duration: 600 });
+function moveTo(m: MlMap, focus: Focus, cover = 0) {
+  if ("bounds" in focus) m.fitBounds([[focus.bounds.w, focus.bounds.s], [focus.bounds.e, focus.bounds.n]], { padding: fitPadding(m, cover), maxZoom: 15, duration: 600 });
   else m.easeTo({ center: [focus.lng, focus.lat], zoom: focus.zoom ?? Math.max(m.getZoom(), 15), duration: 600 });
 }
 
-// 첫 화면 중심: 가게가 가장 많은 구의 한가운데 (11-16 강남 + 마포 → 둘 사이 한강 위가 되지 않게). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
+// 첫 화면 (11-23): 가게가 모두 보이게 맞춘다. 너무 흩어져 FIT_MIN_ZOOM 아래로 내려가야 하면 가게가 가장 많은 구만 맞춘다
+// (11-16 강남 + 마포 → 둘 사이 한강 위가 되지 않게). 가게가 없으면 마포·서대문 사이. 위치를 허용하면 내 위치로 간다.
 const START: [number, number] = [126.928, 37.5555];
-function storesCenter(stores: Store[]): [number, number] {
-  if (!stores.length) return START;
+const FIT_MIN_ZOOM = 10; // 지도의 최소 배율(minZoom)과 같다 — 그보다 더 물러나야 하면 다 담을 수 없다
+function topGu(stores: Store[]): Store[] {
   const byGu = new Map<string, Store[]>();
   for (const s of stores) byGu.set(s.gu, [...(byGu.get(s.gu) ?? []), s]);
-  const top = [...byGu.values()].sort((a, b) => b.length - a.length)[0];
-  const lngs = top.map((s) => s.lng);
-  const lats = top.map((s) => s.lat);
-  return [(Math.min(...lngs) + Math.max(...lngs)) / 2, (Math.min(...lats) + Math.max(...lats)) / 2];
+  return [...byGu.values()].sort((a, b) => b.length - a.length)[0] ?? [];
+}
+function boxOf(stores: Store[]): [[number, number], [number, number]] {
+  const lngs = stores.map((s) => s.lng);
+  const lats = stores.map((s) => s.lat);
+  return [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]];
+}
+// 지도를 만들 때의 임시 중심 (곧바로 startCamera 로 맞춘다)
+function storesCenter(stores: Store[]): [number, number] {
+  if (!stores.length) return START;
+  const [[w, s], [e, n]] = boxOf(topGu(stores));
+  return [(w + e) / 2, (s + n) / 2];
+}
+function startCamera(m: MlMap, stores: Store[], cover: number) {
+  if (!stores.length) return undefined;
+  const fit = (list: Store[]) => m.cameraForBounds(boxOf(list), { padding: fitPadding(m, cover), maxZoom: 15 });
+  const all = fit(stores);
+  return all && (all.zoom ?? 0) >= FIT_MIN_ZOOM ? all : fit(topGu(stores));
 }
 // 한글 지명·이름표 = 조선100년체 (app/layout.tsx 에서 이 이름으로 불러온다)
 const KOREAN_SERIF = "ChosunCentennial, 'Nanum Myeongjo', 'Noto Serif KR', AppleMyungjo, serif";
@@ -78,7 +99,7 @@ function toGeoJSON(stores: Store[], showName = false): GeoJSON.FeatureCollection
 
 const SLOW_MS = 8000; // 이만큼 지나도 안 뜨면 로딩 화면을 걷는다
 
-export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange, onSettled, start, interactive = true, showName = false, zoomAtCenter = false }: Props) {
+export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBoundsChange, onSettled, start, interactive = true, showName = false, zoomAtCenter = false, sheetCover = 0 }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const startAt = useRef(start);
   const under = useRef<HTMLDivElement>(null);
@@ -88,9 +109,9 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
   const mapRef = useRef<MlMap | null>(null);
   const pendingFocus = useRef<Focus | null>(null); // 지도가 만들어지기 전에 온 초점
   const ready = useRef(false);
-  const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange, onSettled });
+  const latest = useRef({ stores, selectedId, me, onSelect, onBoundsChange, onSettled, sheetCover });
   useEffect(() => {
-    latest.current = { stores, selectedId, me, onSelect, onBoundsChange, onSettled };
+    latest.current = { stores, selectedId, me, onSelect, onBoundsChange, onSettled, sheetCover };
   });
 
   useEffect(() => {
@@ -133,6 +154,11 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
         return fail(); // WebGL 을 못 쓰는 기기
       }
       map = m;
+      // 처음 볼 곳을 따로 받지 않았으면 가게가 모두 보이게 (폰은 아래 시트만큼 위로)
+      if (!startAt.current) {
+        const cam = startCamera(m, latest.current.stores, latest.current.sheetCover);
+        if (cam) m.jumpTo(cam);
+      }
       m.on("error", () => {
         if (!sawTile) fail();
       });
@@ -173,7 +199,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
       if (mouse) m.addControl(new ml.NavigationControl({ showCompass: false }), "bottom-right");
       mapRef.current = m;
       // 지도가 만들어지기 전에 온 초점(예: PC 에서 이미 허용한 내 위치가 지도 코드보다 먼저 옴)을 이제 적용한다
-      if (pendingFocus.current) moveTo(m, pendingFocus.current);
+      if (pendingFocus.current) moveTo(m, pendingFocus.current, latest.current.sheetCover);
       pendingFocus.current = null;
       if (process.env.NODE_ENV === "development" && initial.current.interactive) Object.assign(window, { __tteokMap: m }); // 개발 중 콘솔에서 지도 살펴보기
       provideStamps(m, t.map, t.css.surface);
@@ -312,7 +338,7 @@ export default function TteokMap({ stores, selectedId, onSelect, me, focus, onBo
     if (!focus) return;
     // 지도가 아직 없으면(maplibre 를 불러오는 중) 버리지 않고 기억해 두었다가 만든 뒤에 옮긴다
     if (!m) pendingFocus.current = focus;
-    else moveTo(m, focus);
+    else moveTo(m, focus, latest.current.sheetCover);
   }, [focus]);
 
   // maplibre 가 지도 상자에 position: relative 를 붙이므로, 바깥 상자로 자리를 잡는다

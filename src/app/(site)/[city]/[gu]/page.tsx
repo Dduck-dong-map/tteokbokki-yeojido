@@ -6,16 +6,17 @@ import { Suspense } from "react";
 import { ListSkeleton, RegionList } from "./regionPage";
 
 export function generateStaticParams() {
-  return getRegions().map((r) => ({ gu: r.gu }));
+  return getRegions().map((r) => ({ city: r.city, gu: r.gu }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/seoul/[gu]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/[city]/[gu]">): Promise<Metadata> {
   "use cache";
-  const r = getRegion((await params).gu);
+  const { city, gu } = await params;
+  const r = getRegion(gu, city);
   return r ? { title: `${r.name} 떡볶이 맛집 지도`, description: `${r.name} 떡볶이 가게를 떡 종류·스타일·맵기로 골라 보세요.` } : {};
 }
 
-export default function GuPage({ params }: PageProps<"/seoul/[gu]">) {
+export default function GuPage({ params }: PageProps<"/[city]/[gu]">) {
   return (
     <Suspense fallback={<ListSkeleton />}>
       <GuLoader params={params} />
@@ -23,13 +24,14 @@ export default function GuPage({ params }: PageProps<"/seoul/[gu]">) {
   );
 }
 
-async function GuLoader({ params }: Pick<PageProps<"/seoul/[gu]">, "params">) {
+async function GuLoader({ params }: Pick<PageProps<"/[city]/[gu]">, "params">) {
   await connection();
-  return <GuList gu={(await params).gu} />;
+  const { city, gu } = await params;
+  return <GuList city={city} gu={gu} />;
 }
 
-async function GuList({ gu }: { gu: string }) {
-  const region = getRegion(gu);
+async function GuList({ city, gu }: { city: string; gu: string }) {
+  const region = getRegion(gu, city);
   if (!region) notFound();
   return <RegionList region={region} stores={await getStores()} now={new Date()} />;
 }
