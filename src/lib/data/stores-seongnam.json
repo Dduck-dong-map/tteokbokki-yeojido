@@ -1,0 +1,2537 @@
+{
+  "id": "seongnam-v1",
+  "title": "분당·성남 리서치 v1",
+  "at": "2026-11-20",
+  "who": "운영 · 분당·성남 리서치 v1",
+  "doc": "docs/리서치/가게리서치_분당성남_v1_2026-11-20.xlsx",
+  "geocoder": "네이버 지도 Geocoding (주소 → 좌표, 11-23) · 못 찾은 곳은 OpenStreetMap Nominatim (© OpenStreetMap contributors)",
+  "stores": [
+    {
+      "id": "sn-01",
+      "store": {
+        "name": "디델리 미금점",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 돌마로 73 우방코아 1층",
+        "gu": "bundang",
+        "dong": "금곡동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "delivery"
+        ],
+        "menu": [
+          {
+            "name": "라볶이",
+            "price": 7000
+          },
+          {
+            "name": "라볶이그라탕",
+            "price": 9000
+          },
+          {
+            "name": "라이스그라탕",
+            "price": 8000
+          },
+          {
+            "name": "참치김밥",
+            "price": 5000
+          },
+          {
+            "name": "야채김밥",
+            "price": 4500
+          }
+        ],
+        "lastConfirmedAt": "2026-11-17",
+        "lat": 37.3504009,
+        "lng": 127.1100314,
+        "style": "classic",
+        "spice": 1,
+        "price": 7000,
+        "priceCheckedAt": "2026-11-17",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "11:30",
+          "close": "20:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "뽈레와 식신 메뉴판이 같고(라볶이 7,000원, 메뉴 등록일 모름), 뽈레 2025-07-02 후기의 라볶이그라탕 9,000원과도 맞음. 대표가 라볶이라 그 값을 price로 적음. '맵지 않다'·'맵기보단 달콤'(2026-10·2026-05 블로그, 검색 요약)으로 맵기 1, 떡볶이떡·떡국떡이 섞인다는 후기라 떡 종류는 비움. 옛 분식 체인 '디델리'의 남은 지점 중 하나로 20년 넘게 영업. 지금은 몇 곳(이대점 등)만 남았다는 이야기가 있어 전국 프랜차이즈로 보지 않음. 대표 메뉴가 떡볶이보다 라볶이·라볶이그라탕. 지역 체인",
+        "hoursNote": "매일 11:30~20:00 (14:00~16:00 쉬는 시간, 라스트오더 19:30) / 2026-11-17 블로그(검색 요약). 식신 데이터도 매일 11:30~20:00. 주차 안내는 블로그마다 달라 비움.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-17",
+        "lastEvidenceSource": "https://blog.naver.com/hisundl/224479525726",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/511auM/%EB%94%94%20%EB%8D%B8%EB%A6%AC",
+          "https://polle.com/misty8628/posts/2108",
+          "https://www.siksinhot.com/P/594178",
+          "https://blog.naver.com/hisundl/224479525726",
+          "https://blog.naver.com/empoweredboy/224438102026",
+          "https://blog.naver.com/link_apart/224291982770"
+        ]
+      }
+    },
+    {
+      "id": "sn-02",
+      "store": {
+        "name": "만나스낵",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 내정로165번길 38 양지마을청구아파트(금호행복시장) 지하1층 23호",
+        "gu": "bundang",
+        "dong": "수내동",
+        "rice": [],
+        "taste": [],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk"
+        ],
+        "usage": [
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "쌀떡볶이",
+            "price": 4000
+          },
+          {
+            "name": "순대",
+            "price": 4000
+          },
+          {
+            "name": "튀김(2개)",
+            "price": 2000
+          },
+          {
+            "name": "오뎅(2개)",
+            "price": 2000
+          },
+          {
+            "name": "떡꼬치",
+            "price": 1000
+          },
+          {
+            "name": "컵볶이",
+            "price": 2000
+          }
+        ],
+        "lastConfirmedAt": "2026-09-20",
+        "lat": 37.3767071,
+        "lng": 127.1162822,
+        "style": "classic",
+        "spice": 2,
+        "shopType": "market",
+        "price": 4000,
+        "priceCheckedAt": "2026-09-20",
+        "hours": {
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "11:00",
+          "close": "19:30"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "식신 2026-09-20 후기와 메뉴판을 직접 확인, 2026-07-16 블로그는 검색 요약. 식신 메뉴명은 '쌀떡볶이'인데 식신 요약은 '밀떡이 쫄깃'이라 떡 종류는 비움. 맵기는 '매콤하면서도 자극적이지 않은' 요약으로 2. 금호행복시장 지하의 학교 앞 분식집 분위기 가게.",
+        "hoursNote": "월~토 11:00~19:30, 일요일 휴무 / 식신 영업시간 데이터 기준(일요일 빠짐). 다른 출처로는 확인 못 함. 온누리·성남사랑상품권 가능.",
+        "statusNote": null,
+        "lastEvidence": "2026-09-20",
+        "lastEvidenceSource": "https://www.siksinhot.com/P/1632844",
+        "gapNotes": [],
+        "sources": [
+          "https://www.siksinhot.com/P/1632844",
+          "https://blog.naver.com/sthclever/224347532877"
+        ]
+      }
+    },
+    {
+      "id": "sn-03",
+      "store": {
+        "name": "맛짱분식",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 서현로210번길 16 유성트윈프라자1차 1층",
+        "gu": "bundang",
+        "dong": "서현동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "sweetsalty"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk",
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "delivery"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 4000
+          },
+          {
+            "name": "튀김범벅",
+            "price": 8000
+          },
+          {
+            "name": "튀김",
+            "price": 4000
+          },
+          {
+            "name": "순대",
+            "price": 4500
+          },
+          {
+            "name": "오뎅",
+            "price": 3000
+          },
+          {
+            "name": "라볶이",
+            "price": 6500
+          },
+          {
+            "name": "쫄볶이",
+            "price": 6500
+          },
+          {
+            "name": "참치김밥",
+            "price": 4000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-19",
+        "lat": 37.3860694,
+        "lng": 127.124371,
+        "style": "classic",
+        "spice": 2,
+        "price": 4000,
+        "priceCheckedAt": "2026-11-19",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "00:00",
+          "close": "23:59"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "식신에 2026-11-19 후기, 뽈레에 2026-10-18 후기가 있고 두 곳 메뉴판 모두 떡볶이 4,000원(메뉴 등록일은 모름). 밀떡·'달달한 편, 매운 편은 아님'은 식신 요약에서 보고 맵기 2로, 맛은 '고추장 짠맛·감칠맛·적당한 단맛'(2026-06-08 블로그, 검색 요약)으로 단짠으로 적음. 서현역 노포(25년 넘음). 무료 탄산 제공은 없어졌다는 후기.",
+        "hoursNote": "매일 24시간 / 2026-08-24 블로그 '연중무휴 24시간'(검색 요약), 식신 영업시간 데이터도 매일 00:00~00:00. 예전 식신 후기에 '새벽 5시까지'라는 말도 있어 심야 마감 여부는 확인 필요. 주차 불가.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-19",
+        "lastEvidenceSource": "https://www.siksinhot.com/P/594194",
+        "gapNotes": [],
+        "sources": [
+          "https://www.siksinhot.com/P/594194",
+          "https://polle.com/place/2hGver/%EB%A7%9B%EC%A7%B1",
+          "https://polle.com/misty8628/posts/2574",
+          "https://blog.naver.com/0321tngus/224388899905",
+          "https://blog.naver.com/dnflwlq0820/224309988797",
+          "https://blog.naver.com/luceinaltis007/224455409538"
+        ]
+      }
+    },
+    {
+      "id": "sn-04",
+      "store": {
+        "name": "방과후애",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 정자일로198번길 15 제나프라자 1층",
+        "gu": "bundang",
+        "dong": "정자동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "sundae",
+          "twigim",
+          "eomuk",
+          "gimbap"
+        ],
+        "usage": [
+          "solo",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 5000
+          },
+          {
+            "name": "순대",
+            "price": 5000
+          },
+          {
+            "name": "모듬튀김",
+            "price": 4000
+          },
+          {
+            "name": "꼬마김밥",
+            "price": 4900
+          },
+          {
+            "name": "A 세트(떡볶이·순대·모듬튀김)",
+            "price": 15000
+          },
+          {
+            "name": "1인식판한상",
+            "price": 8900
+          }
+        ],
+        "lastConfirmedAt": "2026-11-01",
+        "lat": 37.3676718,
+        "lng": 127.1076973,
+        "style": "classic",
+        "spice": 2,
+        "price": 5000,
+        "priceCheckedAt": "2026-11-01"
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "식신 메뉴(떡볶이 5,000원·A 세트 15,000원)를 직접 확인, A세트 15,000원은 2026-11-01 블로그(검색 요약)와 같음. 맵기는 식신 요약 '다소 매콤'과 2026-10 블로그 '#달달떡볶이'를 함께 보고 2. 2025년 무렵 문을 연 학교 앞 분식 콘셉트 가게. 블로그 제목에 '정자점' 표기가 있으나 다른 지점은 찾지 못함.",
+        "hoursNote": "2025-10 블로그는 매일 11:00~02:00, 식신 데이터는 일요일 빼고 11:00~00:30이라 서로 다름. 주차는 여유롭지 않다는 후기.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-01",
+        "lastEvidenceSource": "https://blog.naver.com/swpark0302/224460840985",
+        "gapNotes": [],
+        "sources": [
+          "https://www.siksinhot.com/P/1804345",
+          "https://blog.naver.com/swpark0302/224460840985",
+          "https://blog.naver.com/bukdaeg/224442302853",
+          "https://blog.naver.com/yizone/224052518401"
+        ]
+      }
+    },
+    {
+      "id": "sn-05",
+      "store": {
+        "name": "베테랑분식",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 백현로101번길 17 초림프라자 1층",
+        "gu": "bundang",
+        "dong": "수내동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk"
+        ],
+        "usage": [
+          "takeout",
+          "delivery",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 5000
+          },
+          {
+            "name": "떡튀범벅",
+            "price": 5000
+          },
+          {
+            "name": "튀김5개",
+            "price": 5000
+          },
+          {
+            "name": "순대",
+            "price": 5000
+          },
+          {
+            "name": "오뎅3개",
+            "price": 3000
+          },
+          {
+            "name": "김치볶음밥",
+            "price": 7500
+          },
+          {
+            "name": "쫄면",
+            "price": 8000
+          }
+        ],
+        "lastConfirmedAt": "2026-10-12",
+        "lat": 37.3774801,
+        "lng": 127.1125099,
+        "style": "classic",
+        "spice": 2,
+        "price": 5000,
+        "priceCheckedAt": "2026-10-12",
+        "hours": {
+          "days": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "10:30",
+          "close": "21:30"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "식신 후기 2026-10-06·뽈레 후기 2026-07-04를 직접 확인, 최신 2026-10-12 블로그는 검색 요약. 떡볶이 값은 식신 4,000원과 뽈레 5,000원이 달라, 2026 블로그의 김볶 7,500원·튀김 5개 5,000원과 맞는 뽈레 메뉴판(5,000원)을 택함. 밀떡·'매콤걸쭉하면서 달달'은 식신 요약 근거로 맵기 2. 20년 넘은 수내역 판떡볶이 분식집.",
+        "hoursNote": "화~토 10:30~21:30, 일·월 휴무 / 식신 영업시간 데이터(일·월 빼고 10:30~21:30)와 2026-07-07 블로그 '일,월 정기휴무'(검색 요약)가 같음. 식신 소개글의 '24시간'은 옛 정보로 보임.",
+        "statusNote": null,
+        "lastEvidence": "2026-10-12",
+        "lastEvidenceSource": "https://blog.naver.com/audfhrm/224438763187",
+        "gapNotes": [],
+        "sources": [
+          "https://www.siksinhot.com/P/324697",
+          "https://polle.com/place/267PPO/%EB%B2%A0%ED%85%8C%EB%9E%91",
+          "https://polle.com/casimiru/posts/2065",
+          "https://blog.naver.com/audfhrm/224438763187",
+          "https://blog.naver.com/forestmoon_/224339537562",
+          "https://blog.naver.com/kangcine96/224429526430",
+          "https://blog.naver.com/cafe_leplot/224416052600"
+        ]
+      }
+    },
+    {
+      "id": "sn-06",
+      "store": {
+        "name": "비빔계란떡볶이",
+        "grade": "specialist",
+        "address": "경기 성남시 분당구 내정로173번길 11 양지마을 603동 1층 149-1호",
+        "gu": "bundang",
+        "dong": "수내동",
+        "rice": [
+          "rice"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "gimbap",
+          "eomuk"
+        ],
+        "usage": [
+          "takeout",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "쌀떡볶이",
+            "price": 4900
+          },
+          {
+            "name": "비빔 계란",
+            "price": 800
+          },
+          {
+            "name": "순대",
+            "price": 5000
+          },
+          {
+            "name": "모둠튀김",
+            "price": 5000
+          },
+          {
+            "name": "꼬마김밥",
+            "price": 4900
+          }
+        ],
+        "lastConfirmedAt": "2026-11-09",
+        "lat": 37.3749847,
+        "lng": 127.1181636,
+        "style": "classic",
+        "spice": 1,
+        "price": 4900,
+        "priceCheckedAt": "2026-10-04",
+        "hours": {
+          "days": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "11:00",
+          "close": "21:30"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "티스토리 2026-10-04 메뉴판(쌀떡볶이 4,900원)과 식신 메뉴(쌀 떡볶이 4,900원)가 같음. 최신 2026-11-09 '쫀득한 쌀떡' 블로그는 검색 요약. 맵기는 식신 요약 '맵지 않고 달달한'으로 1. 2025년 무렵 생긴 동네 분식집(대명상가).",
+        "hoursNote": "11:00~21:30, 화요일 휴무 / 티스토리 2026-10-04 기준. 2026-10-30 블로그는 11:00~21:00·화요일 휴무(검색 요약), 식신 데이터는 토요일 휴무로 되어 있어 블로그를 따름. 상가 주차는 회차 30분 무료 후 유료.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-09",
+        "lastEvidenceSource": "https://blog.naver.com/gogumalove030/224470182646",
+        "gapNotes": [],
+        "sources": [
+          "https://jijibear.tistory.com/28",
+          "https://www.siksinhot.com/P/1708530",
+          "https://blog.naver.com/gogumalove030/224470182646",
+          "https://blog.naver.com/room_ruler/224446709879",
+          "https://blog.naver.com/ghning19/224150964540"
+        ]
+      }
+    },
+    {
+      "id": "sn-07",
+      "store": {
+        "name": "뽀빠이(뽀빠이분식)",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 돌마로 481 우성프라자 217호",
+        "gu": "bundang",
+        "dong": "서현동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [],
+        "usage": [
+          "solo",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "떡쫄라",
+            "price": 6000
+          },
+          {
+            "name": "짜장쫄라",
+            "price": 6000
+          },
+          {
+            "name": "뽀빠이볶음밥",
+            "price": 7000
+          },
+          {
+            "name": "돈쫄라",
+            "price": 8000
+          },
+          {
+            "name": "짜장돈쫄라",
+            "price": 8000
+          },
+          {
+            "name": "모짜렐라치즈볶음밥",
+            "price": 9000
+          },
+          {
+            "name": "라면과 볶음밥",
+            "price": 11000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-13",
+        "lat": 37.3777547,
+        "lng": 127.1328741,
+        "style": "instant",
+        "spice": 2,
+        "shopType": "school",
+        "price": 6000,
+        "priceCheckedAt": "2026-09-28",
+        "hours": {
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "12:00",
+          "close": "20:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "식신 메뉴(떡쫄라 6,000원·볶음밥 7,000원)와 2026-09-28·2026-11-13 블로그 메뉴판(검색 요약)이 같음. 맛은 식신 요약 '매콤보다는 달콤함에 가까운'을 보고 단맛·맵기 2로 적었고, 떡 종류는 근거가 없어 비움. 즉석으로 끓여 내는 떡쫄라가 대표라 style은 즉석. 30년 된 서현동 분식집(우성프라자 2층). 대진고 주변 학교 앞 분식집으로 소개됨. 떡쫄라=떡볶이+쫄면+라면을 주문 즉시 끓여 냄.",
+        "hoursNote": "월~토 12:00~20:00 (14:00~17:00 쉬는 시간), 일요일 휴무 / 2026-10-08·2026-11-13 블로그(검색 요약). 식신 데이터는 토요일이 빠져 있어 블로그 기준으로 적음. 사리 추가: 계란 500원·떡 1,000원.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-13",
+        "lastEvidenceSource": "https://blog.naver.com/jsh960115/224475354743",
+        "gapNotes": [],
+        "sources": [
+          "https://www.siksinhot.com/P/574133",
+          "https://blog.naver.com/jsh960115/224475354743",
+          "https://blog.naver.com/lifeandlife2511/224424920880",
+          "https://blog.naver.com/soyjournal/224434827440",
+          "https://blog.naver.com/woosu950221/224448132230",
+          "https://blog.naver.com/celina0206/224440211781"
+        ]
+      }
+    },
+    {
+      "id": "sn-08",
+      "store": {
+        "name": "수진분식 정자점",
+        "grade": "specialist",
+        "address": "경기 성남시 분당구 정자일로 146 엠코헤리츠 1단지 1층 A125호",
+        "gu": "bundang",
+        "dong": "정자동",
+        "rice": [
+          "rice"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "sundae",
+          "twigim",
+          "eomuk"
+        ],
+        "usage": [
+          "takeout",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "치즈맛 쌀 떡볶이",
+            "price": 6000
+          },
+          {
+            "name": "시장 찰 순대",
+            "price": 5500
+          },
+          {
+            "name": "참치마요 유부초밥",
+            "price": 3700
+          },
+          {
+            "name": "김말이 4알(추가)",
+            "price": 1500
+          }
+        ],
+        "lastConfirmedAt": "2026-11-16",
+        "lat": 37.3630091,
+        "lng": 127.1065333,
+        "style": "classic",
+        "spice": 1,
+        "price": 6000,
+        "priceCheckedAt": "2026-11-10",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "11:00",
+          "close": "20:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "치즈맛 쌀떡볶이 1인분 6,000원을 블로그 두 곳(2026-11-03·2026-11-10, 검색 요약)에서 확인, 식신에 매장 등록과 '꾸덕한 소스와 쌀떡' 소개가 있음. 맵찔이도 편하게 먹을 만큼 안 맵다는 2026-11-02 블로그(검색 요약)로 맵기 1. 수정구 수진역 지하상가 '수진분식'(Since 2000)의 2호점으로 2026-10-28 무렵 문을 엶. 본점은 수정구(C 구역).",
+        "hoursNote": "매일 11:00~20:00 (라스트오더 19:30) / 2026-11-03·2026-11-09·2026-11-10 블로그(검색 요약). 주차 2시간 무료. 식신 소개: 홀이 2인 테이블 4개뿐.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-16",
+        "lastEvidenceSource": "https://blog.naver.com/lcb7810/224478807066",
+        "gapNotes": [],
+        "sources": [
+          "https://blog.naver.com/sunshine9521/224471326072",
+          "https://blog.naver.com/ong_simi/224463191449",
+          "https://blog.naver.com/happycaptivate80/224461548885",
+          "https://blog.naver.com/esb2967/224456826655",
+          "https://blog.naver.com/lcb7810/224478807066",
+          "https://www.siksinhot.com/P/1978746"
+        ]
+      }
+    },
+    {
+      "id": "sn-09",
+      "store": {
+        "name": "영심이떡볶이 (미금 본점)",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 성남대로 165 천사의도시1 오피스텔 1층",
+        "gu": "bundang",
+        "dong": "금곡동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk",
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "delivery",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 4000
+          },
+          {
+            "name": "범벅이(떡+튀김)",
+            "price": 9000
+          },
+          {
+            "name": "순대",
+            "price": 5000
+          },
+          {
+            "name": "오뎅",
+            "price": 3000
+          },
+          {
+            "name": "튀김 5개",
+            "price": 5000
+          },
+          {
+            "name": "라볶이",
+            "price": 7000
+          },
+          {
+            "name": "영심이김밥",
+            "price": 4000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-11",
+        "lat": 37.350748,
+        "lng": 127.1083309,
+        "style": "classic",
+        "spice": 2,
+        "price": 4000,
+        "priceCheckedAt": "2026-10-21",
+        "hours": {
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "09:00",
+          "close": "21:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "뽈레 메뉴판(떡볶이 4,000원·범벅이 9,000원)과 2026-10-21 블로그 메뉴판 떡볶이 4,000원(검색 요약)이 같음. 밀떡·'엄청 맵지는 않고 달달'(2026-09-26 블로그, 식신 요약 '통통한 밀떡')으로 맵기 2. 직접 연 최신 근거는 뽈레 2025-10-03, 최신 근거 2026-11-11은 검색 요약. 분당 지역 체인(수내·구미·판교역·야탑 2호점 등)의 본점. 전국 프랜차이즈는 아님. 정자역 지점은 없어졌다는 2026-11 블로그 언급이 있음. 지역 체인",
+        "hoursNote": "월~금 09:00~21:00, 토 09:00~20:00, 일요일 휴무 / 2026-09-12·2026-09-20·2026-10-21 블로그(검색 요약)가 같고, 식신 데이터의 토요일 09:00~20:00과도 맞음.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-11",
+        "lastEvidenceSource": "https://blog.naver.com/hisundl/224471777414",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/5kjdQl/%EC%98%81%EC%8B%AC%EC%9D%B4%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+          "https://polle.com/misty8628/posts/2090",
+          "https://www.siksinhot.com/P/539050",
+          "https://blog.naver.com/hisundl/224471777414",
+          "https://blog.naver.com/hnjang_/224448904878",
+          "https://blog.naver.com/teachers88/224423281472",
+          "https://blog.naver.com/chikapoo_/224430398000"
+        ]
+      }
+    },
+    {
+      "id": "sn-10",
+      "store": {
+        "name": "영심이떡볶이김밥 분당구미점",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 미금로 48 110호",
+        "gu": "bundang",
+        "dong": "구미동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk",
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "delivery"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 5500
+          },
+          {
+            "name": "범벅이",
+            "price": 10500
+          },
+          {
+            "name": "미니 범벅이",
+            "price": 6000
+          },
+          {
+            "name": "나혼자 떡순튀",
+            "price": 7500
+          },
+          {
+            "name": "누들로제떡볶이(2인분)",
+            "price": 11000
+          },
+          {
+            "name": "라볶이",
+            "price": 7500
+          }
+        ],
+        "lastConfirmedAt": "2026-07-30",
+        "lat": 37.3377441,
+        "lng": 127.1165279,
+        "style": "classic",
+        "spice": 2,
+        "price": 5500,
+        "priceCheckedAt": "2026-07-30"
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "식신 메뉴판(떡볶이 5,500원)을 직접 확인, 영업 근거는 2026-07-30 블로그(검색 요약) 한 건. '매콤 달달'은 식신 요약 근거로 맵기 2, 떡 종류는 이 지점 근거가 없어 비움. 영심이떡볶이(미금 본점) 분당 지역 체인의 구미점. 본점과 메뉴·값이 다름(누들로제떡볶이 등). 지역 체인",
+        "hoursNote": "식신 데이터에 10:30~20:10이 있으나 요일 표시가 일부만 있어 비움.",
+        "statusNote": null,
+        "lastEvidence": "2026-07-30",
+        "lastEvidenceSource": "https://blog.naver.com/snowman311/224362441384",
+        "gapNotes": [],
+        "sources": [
+          "https://www.siksinhot.com/P/1013965",
+          "https://blog.naver.com/snowman311/224362441384"
+        ]
+      }
+    },
+    {
+      "id": "sn-11",
+      "store": {
+        "name": "코끼리분식",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 내정로166번길 7-6 파크타운대림아파트 코끼리상가 1층",
+        "gu": "bundang",
+        "dong": "수내동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk"
+        ],
+        "usage": [
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 4000
+          },
+          {
+            "name": "순대 1인분",
+            "price": 4500
+          }
+        ],
+        "lastConfirmedAt": "2026-09-24",
+        "lat": 37.3731117,
+        "lng": 127.1204219,
+        "style": "jjajang",
+        "spice": 1,
+        "shopType": "market",
+        "price": 4000,
+        "priceCheckedAt": "2026-09-24"
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "뽈레 2026-01-16 후기를 직접 확인했고, 2026-09-24 블로그 메뉴판의 떡볶이 4,000원·순대 4,500원은 검색 요약뿐. 짜장 섞은 맛·안 매움은 식신 소개와 2021 지역내일 기사·뽈레 후기에서 보고 맵기 1로 적음. 20년 넘은 노포. 고추장에 짜장을 섞은 검은빛 떡볶이로 알려졌으나 2026-01 뽈레 후기는 '이젠 평범한 집'이라고 함. 떡꼬치·슬러시도 팖.",
+        "hoursNote": "영업시간을 적은 출처를 찾지 못함. 뽈레에 '주차불가' 표시.",
+        "statusNote": null,
+        "lastEvidence": "2026-09-24",
+        "lastEvidenceSource": "https://blog.naver.com/jjusshop/224422061703",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/3jOjDe/%EC%BD%94%EB%81%BC%EB%A6%AC%20%EB%B6%84%EC%8B%9D",
+          "https://polle.com/misty8628/posts/2224",
+          "https://www.siksinhot.com/P/412944",
+          "https://blog.naver.com/jjusshop/224422061703",
+          "https://www.localnaeil.com/News/View/646757"
+        ]
+      }
+    },
+    {
+      "id": "sn-12",
+      "store": {
+        "name": "한울김밥",
+        "grade": "menu",
+        "address": "경기 성남시 분당구 내정로165번길 38 금호행복시장 지하1층 8호",
+        "gu": "bundang",
+        "dong": "수내동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "gimbap"
+        ],
+        "usage": [
+          "solo",
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "즉석떡볶이",
+            "price": 4500
+          }
+        ],
+        "lastConfirmedAt": "2026-11-06",
+        "lat": 37.3767071,
+        "lng": 127.1162822,
+        "style": "instant",
+        "spice": 2,
+        "shopType": "market",
+        "price": 4500,
+        "priceCheckedAt": "2026-10-14",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "08:00",
+          "close": "20:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "모두 네이버 블로그 검색 요약: 2026-10-14 글에 즉석떡볶이 4,500원·'매콤달콤'(맵기 2), 2026-11-06 포장 후기. 메뉴판 사진이나 두 번째 출처의 가격은 직접 확인 못 함. 김밥 전문점(키토김밥 등)인데 즉석떡볶이를 함께 팖. 금호행복시장 지하 푸드코트 좌석 이용.",
+        "hoursNote": "매일 08:00~20:00, 격주 일요일 휴무 / 2026-09-16·2026-09-19 블로그(검색 요약).",
+        "statusNote": null,
+        "lastEvidence": "2026-11-06",
+        "lastEvidenceSource": "https://blog.naver.com/florabelle_/224467478436",
+        "gapNotes": [],
+        "sources": [
+          "https://blog.naver.com/hyeri6010/224441816562",
+          "https://blog.naver.com/hsansls/224413423183",
+          "https://blog.naver.com/florabelle_/224467478436",
+          "https://blog.naver.com/dark1oo6/224416400281"
+        ]
+      }
+    },
+    {
+      "id": "sn-13",
+      "store": {
+        "name": "떡볶이닷컴",
+        "grade": "specialist",
+        "address": "경기 성남시 중원구 원터로106번길 2 1층",
+        "gu": "jungwon",
+        "dong": "성남동",
+        "rice": [],
+        "taste": [],
+        "sides": [
+          "twigim"
+        ],
+        "usage": [
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "즉석떡볶이 1인분(2인분부터 주문)",
+            "price": 4500
+          },
+          {
+            "name": "라면사리",
+            "price": 1500
+          },
+          {
+            "name": "쫄면사리",
+            "price": 1500
+          },
+          {
+            "name": "김말이 1개",
+            "price": 500
+          },
+          {
+            "name": "야끼만두 1개",
+            "price": 500
+          },
+          {
+            "name": "계란 1개",
+            "price": 500
+          },
+          {
+            "name": "볶음밥",
+            "price": 2000
+          },
+          {
+            "name": "주먹밥",
+            "price": 2000
+          },
+          {
+            "name": "쫄면",
+            "price": 7000
+          },
+          {
+            "name": "칼국수",
+            "price": 7000
+          }
+        ],
+        "lastConfirmedAt": "2026-08-05",
+        "lat": 37.4360829,
+        "lng": 127.1426358,
+        "style": "instant",
+        "spice": 2,
+        "spiceLabel": "기본맛·중간맛·매운맛 중 고름",
+        "shopType": "school",
+        "price": 4500,
+        "priceCheckedAt": "2026-02-18",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "10:30",
+          "close": "21:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "경인일보 2026-02-18 기사와 뽈레 메뉴판 모두 1인분 4,500원·기본/중간/매운맛 선택, 뽈레 2026-08-05 후기로 영업 확인. 「2인분부터」는 다이닝코드 검색 요약. 맵기는 중간맛도 순하다는 후기와 「살짝 매콤」 후기로 기본맛 2로 추정. 초등학교 앞·학원가라 school. 경인일보(2026-02-18)는 '수정구 수진동, 성남중앙초 앞'으로 적었으나 뽈레·다이닝코드 주소는 중원구 원터로106번길 2(지번 성남동 2581). 기사상 현 사장이 이 자리에서 29년째. 양배추 사리가 특징 맵기 이름: 기본맛·중간맛·매운맛 중 고름, 기본맛 기준(중간맛도 자극적이지 않다는 후기)",
+        "hoursNote": "10:30~21:00 무렵 / 다이닝코드 검색 요약에 10:30~20:00과 10:30~21:00 두 가지가 나옴. 주차장 없음",
+        "statusNote": null,
+        "lastEvidence": "2026-08-05",
+        "lastEvidenceSource": "https://polle.com/ys03246/posts/6222",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/4T1kXF/%EB%96%A1%EB%B3%B6%EC%9D%B4%EB%8B%B7%EC%BB%B4",
+          "https://polle.com/ys03246/posts/6222",
+          "https://www.kyeongin.com/article/1759166",
+          "https://www.diningcode.com/profile.php?rid=pHbBTomTLDsU"
+        ]
+      }
+    },
+    {
+      "id": "sn-14",
+      "store": {
+        "name": "수진분식 성남중앙지하쇼핑몰점",
+        "grade": "bunsik",
+        "address": "경기 성남시 중원구 산성대로 지하204-8 성남중앙지하쇼핑몰 F-마-16",
+        "gu": "jungwon",
+        "dong": "성남동",
+        "rice": [
+          "rice"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk",
+          "gimbap"
+        ],
+        "usage": [
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이(김말이·삶은계란 기본)",
+            "price": 6000
+          },
+          {
+            "name": "김말이튀김(2개) 추가",
+            "price": 1500
+          },
+          {
+            "name": "계란(2개) 추가",
+            "price": 1500
+          },
+          {
+            "name": "순대",
+            "price": 5500
+          },
+          {
+            "name": "김밥",
+            "price": 4000
+          },
+          {
+            "name": "어묵(3개)",
+            "price": 3000
+          },
+          {
+            "name": "라면",
+            "price": 5000
+          },
+          {
+            "name": "쫄면",
+            "price": 9000
+          }
+        ],
+        "lastConfirmedAt": "2026-09-09",
+        "lat": 37.438698,
+        "lng": 127.142396,
+        "style": "classic",
+        "spice": 2,
+        "price": 6000,
+        "priceCheckedAt": "2026-09-09",
+        "hours": {
+          "days": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "10:50",
+          "close": "19:15"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "building",
+        "basis": "뽈레 가게 페이지에서 주소·메뉴판(떡볶이 6,000원)을, 2026-09-09·2026-08-31·2026-04-19 후기로 영업 중임을 확인. 2025-06-27 후기는 쌀떡·1인분 5천원이라 적어 그 뒤 값이 오른 것으로 보이며, 메뉴판 날짜는 알 수 없어 price_source_date는 비움. 맵기는 「꾸덕하고 살짝 매콤」 같은 후기로 2, 달달한 치즈 맛이라 taste는 sweet. 치즈를 넣지 않았는데 치즈 맛이 나는 소스로 알려진 집. 생활의 달인 소개 이력이 있다는 블로그 글이 여럿(검색 요약). 신흥역~수진역 지하상가 안",
+        "hoursNote": "10:50~19:15 무렵, 화요일 휴무 / 블로그 요약마다 마감이 19:15·19:30으로 다르고 재료가 떨어지면 일찍 닫는다는 후기가 많음 (검색 요약)",
+        "statusNote": "운영 DB 의 수진분식(s-322630cb · 산성대로 204-5 F동 15-16호)과 같은 가게로 보임 — 같은 지하상가. 확인 필요",
+        "lastEvidence": "2026-09-09",
+        "lastEvidenceSource": "https://polle.com/jwji1000/posts/764",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/2fRaUH/%EC%88%98%EC%A7%84%EB%B6%84%EC%8B%9D",
+          "https://polle.com/jwji1000/posts/764",
+          "https://polle.com/hjl/posts/8",
+          "https://polle.com/20220202/posts/770",
+          "https://polle.com/lifemin23/posts/37",
+          "https://www.diningcode.com/profile.php?rid=sP3NMiPXBDpN"
+        ]
+      }
+    },
+    {
+      "id": "sn-15",
+      "store": {
+        "name": "순창 떡볶이 김밥",
+        "grade": "bunsik",
+        "address": "경기 성남시 수정구 산성대로255번길 10 1층",
+        "gu": "sujeong",
+        "dong": "신흥동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk",
+          "gimbap"
+        ],
+        "usage": [
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 2500
+          },
+          {
+            "name": "떡튀김범벅",
+            "price": 3500
+          },
+          {
+            "name": "튀김범벅",
+            "price": 3500
+          },
+          {
+            "name": "순대",
+            "price": 3000
+          },
+          {
+            "name": "오뎅",
+            "price": 1000
+          },
+          {
+            "name": "야채김밥",
+            "price": 3000
+          },
+          {
+            "name": "꼬마김밥",
+            "price": 3000
+          }
+        ],
+        "lastConfirmedAt": "2025-12-29",
+        "lat": 37.4411333,
+        "lng": 127.1451652,
+        "style": "classic",
+        "spice": 2,
+        "price": 2500,
+        "priceCheckedAt": "2025-08-26"
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "뽈레 메뉴판과 2025-08-26 후기 둘 다 떡볶이 2,500원(떡튀김범벅 3,500원), 2025-12-29 후기로 영업 확인. 같은 후기에서 밀떡·「적당히 매콤하고 달달」이라 맵기 2·sweet. 다이닝코드에도 같은 가게가 올라 있음. 뽈레 태그상 주차 불가. 다이닝코드 신흥역 떡볶이 목록 상위(검색 요약)",
+        "hoursNote": null,
+        "statusNote": "최근 영업 근거가 2025-12-29 로 오래됨 — 지금도 하는지 확인 필요",
+        "lastEvidence": "2025-12-29",
+        "lastEvidenceSource": "https://polle.com/mapamatjip/posts/599",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/2Qp3Gu/%EC%88%9C%EC%B0%BD%20%EB%96%A1%EB%B3%B6%EC%9D%B4%20%EA%B9%80%EB%B0%A5",
+          "https://polle.com/mapamatjip/posts/599",
+          "https://polle.com/lifemin23/posts/80",
+          "https://www.diningcode.com/profile.php?rid=GEOGb74eDcYJ"
+        ]
+      }
+    },
+    {
+      "id": "sn-16",
+      "store": {
+        "name": "짱구네 떡볶이",
+        "grade": "specialist",
+        "address": "경기 성남시 수정구 시민로142번길 10 1층",
+        "gu": "sujeong",
+        "dong": "신흥동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "pepper",
+          "sweet"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk",
+          "gimbap"
+        ],
+        "usage": [],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 3000
+          },
+          {
+            "name": "튀김",
+            "price": 4500
+          },
+          {
+            "name": "꼬마김밥",
+            "price": 3000
+          },
+          {
+            "name": "순대",
+            "price": 4500
+          },
+          {
+            "name": "오뎅",
+            "price": 1000
+          }
+        ],
+        "lastConfirmedAt": "2026-07-12",
+        "lat": 37.4410998,
+        "lng": 127.1449067,
+        "style": "classic",
+        "spice": 2,
+        "price": 3000,
+        "priceCheckedAt": "2026-07-12"
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "뽈레 가게 페이지의 주소·메뉴판(떡볶이 3,000원, 날짜 모름)과 2026-07-12·2026-05-24·2025-11-05·2025-07-23 후기를 봄. 「보통맛도 살짝 맵」다는 후기로 보통맛을 2로 두고, 후추맛+달달함·판밀떡 느낌이라는 후기로 밀떡·pepper/sweet. 값은 뽈레 메뉴판 한 곳뿐이라 medium. 바로 옆 순창 떡볶이 김밥과 함께 신흥동에서 오래된 떡볶이집으로 소개됨(다이닝코드 검색 요약). 위례에 같은 상호의 위례점이 따로 있음 맵기 이름: 보통맛·매운맛 두 가지 중 보통맛 기준(매운맛은 신라면 두 배쯤이라는 후기) 지역 체인",
+        "hoursNote": null,
+        "statusNote": null,
+        "lastEvidence": "2026-07-12",
+        "lastEvidenceSource": "https://polle.com/ys03246/posts/6151",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/5iE9ZA/%EC%A7%B1%EA%B5%AC%EB%84%A4%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+          "https://polle.com/ys03246/posts/6151",
+          "https://polle.com/hynorii/posts/2051",
+          "https://polle.com/lifemin23/posts/65",
+          "https://polle.com/breadnbutter/posts/55",
+          "https://www.diningcode.com/profile.php?rid=cRGugHxEzbKW"
+        ]
+      }
+    },
+    {
+      "id": "sn-17",
+      "store": {
+        "name": "짱구네 떡볶이 위례점",
+        "grade": "specialist",
+        "address": "경기 성남시 수정구 위례광장로 9-9 남위례역 푸르지오시티 1층",
+        "gu": "sujeong",
+        "dong": "창곡동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "pepper"
+        ],
+        "sides": [
+          "twigim",
+          "sundae",
+          "eomuk",
+          "gimbap"
+        ],
+        "usage": [],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 4000
+          },
+          {
+            "name": "꼬마김밥",
+            "price": 4000
+          },
+          {
+            "name": "순대",
+            "price": 4500
+          },
+          {
+            "name": "튀김",
+            "price": 4500
+          },
+          {
+            "name": "오뎅",
+            "price": 1000
+          }
+        ],
+        "lastConfirmedAt": "2025-12-31",
+        "lat": 37.4644861,
+        "lng": 127.1411484,
+        "style": "classic",
+        "spice": 3,
+        "spiceLabel": "보통맛 기준",
+        "price": 4000,
+        "priceCheckedAt": "2025-12-31"
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "뽈레 가게 페이지에서 주소·메뉴판(떡볶이 4,000원)을, 2025-12-31 후기에서 밀떡·후추향에 살짝 카레향·「보통맛도 꽤 매콤」을 봄. 맵기는 보통맛 기준 3. 근거가 뽈레 한 곳뿐이라 medium. 신흥동 짱구네 떡볶이와 같은 상호의 위례점. 같은 집의 지점인지는 확인 못 함. 동은 남위례역 일대라 창곡동으로 적음(주소상 동 표기는 못 봄) 맵기 이름: 보통맛 기준 지역 체인",
+        "hoursNote": null,
+        "statusNote": "최근 영업 근거가 2025-12-31 로 오래됨 — 지금도 하는지 확인 필요",
+        "lastEvidence": "2025-12-31",
+        "lastEvidenceSource": "https://polle.com/chani/posts/1946",
+        "gapNotes": [],
+        "sources": [
+          "https://polle.com/place/3hWxYZ/%EC%A7%B1%EA%B5%AC%EB%84%A4%20%EB%96%A1%EB%B3%B6%EC%9D%B4",
+          "https://polle.com/chani/posts/1946"
+        ]
+      }
+    },
+    {
+      "id": "sn-18",
+      "store": {
+        "name": "갈현동떡볶이 현대백화점 판교점",
+        "grade": "specialist",
+        "address": "경기 성남시 분당구 판교역로146번길 20 현대백화점 판교점 지하1층 식품관",
+        "gu": "bundang",
+        "dong": "백현동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [],
+        "sides": [
+          "sundae",
+          "twigim",
+          "eomuk"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "찬란한 떡볶이 1인분",
+            "price": 7000
+          },
+          {
+            "name": "찬란한 떡볶이 2인분",
+            "price": 10000
+          },
+          {
+            "name": "꼬치어묵 1개",
+            "price": 2500
+          },
+          {
+            "name": "물떡꼬치 1개",
+            "price": 2500
+          },
+          {
+            "name": "순대(내장 포함)",
+            "price": 7000
+          },
+          {
+            "name": "옛날튀김 1개",
+            "price": 1500
+          }
+        ],
+        "lastConfirmedAt": "2026-10-31",
+        "lat": 37.3927946,
+        "lng": 127.1120875,
+        "style": "soup",
+        "spice": 2,
+        "price": 7000,
+        "priceCheckedAt": "2026-10-31",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "10:30",
+          "close": "20:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "1인분 7,000원은 2026-10-31 블로그 메뉴 사진 정리 한 곳뿐(식신 메뉴 5,000~6,000원은 옛값으로 봄). 2026-09-14 블로그 「한 입 크기의 밀떡」, 「과하게 맵지 않은」 깔끔한 매콤함과 식신 요약 「적당히 매콤」으로 맵기 2. 국물을 숟가락으로 떠먹는 맑은 국물이라는 묘사로 soup. 매장 간판은 「찬란한분식 갈현동떡볶이」. 서울 은평구 갈현동떡볶이의 백화점 입점 매장. 식신에 「갈현동떡볶이」·「갈현떡볶이 현대백화점판교점」 두 항목으로 겹쳐 등록됨. 지역 체인",
+        "hoursNote": "월~목 10:30~20:00 · 금~일 10:30~20:30 (백화점 영업시간) / 백화점 휴점일엔 쉼. 2026-10-31 블로그의 백화점 영업시간 기준.",
+        "statusNote": null,
+        "lastEvidence": "2026-10-31",
+        "lastEvidenceSource": "https://blog.naver.com/gotry-/224460402157",
+        "gapNotes": [],
+        "sources": [
+          "https://blog.naver.com/gotry-/224460402157",
+          "https://blog.naver.com/nujel/224410290446",
+          "https://blog.naver.com/yoonvely_94/224425012640",
+          "https://blog.naver.com/matdami/224385332574",
+          "https://www.siksinhot.com/P/1411440",
+          "https://www.siksinhot.com/P/1566591"
+        ]
+      }
+    },
+    {
+      "id": "sn-19",
+      "store": {
+        "name": "옛날분식대장",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 판교대장로5길 30 근린생활시설-1동 1-102호 (더샵 판교포레스트 12단지 상가)",
+        "gu": "bundang",
+        "dong": "대장동",
+        "rice": [],
+        "taste": [
+          "pepper"
+        ],
+        "sides": [
+          "sundae",
+          "twigim",
+          "gimbap"
+        ],
+        "usage": [],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 4000
+          }
+        ],
+        "lastConfirmedAt": "2025-12-05",
+        "lat": 37.3647375,
+        "lng": 127.0725941,
+        "style": "classic",
+        "spice": 2,
+        "shopType": "school",
+        "price": 4000,
+        "priceCheckedAt": "2025-12-05"
+      },
+      "missing": [],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "2025-10-28·11-16·12-05 블로그로 운영 확인(1년 안이지만 그 뒤 근거는 못 찾음). 「적당히 매콤함」(11-16)으로 맵기 2, 식신 요약의 후추·마늘향 강함으로 pepper. 가격 4,000원은 식신 메뉴(날짜 없음)뿐. 2025년 8월께 개업(식신 등록 2025-08-06). 대장초등학교 가까운 단지 상가, 어린이 벽화가 가득한 옛날 학교 앞 분식 콘셉트. 떡꼬치·슬러시도 팖.",
+        "hoursNote": "식신에는 월·화 11:30~20:00, 수~토 11:30~18:00, 일요일 표시 없음으로 적혀 있으나 날짜 없음.",
+        "statusNote": "최근 영업 근거가 2025-12-05 로 오래됨 — 지금도 하는지 확인 필요",
+        "lastEvidence": "2025-12-05",
+        "lastEvidenceSource": "https://blog.naver.com/monicabrown/224099412613",
+        "gapNotes": [],
+        "sources": [
+          "https://blog.naver.com/monicabrown/224099412613",
+          "https://blog.naver.com/zzzinlog/224077743033",
+          "https://blog.naver.com/yam_yamji/224056527519",
+          "https://www.siksinhot.com/P/1819875"
+        ]
+      }
+    },
+    {
+      "id": "sn-20",
+      "store": {
+        "name": "짱구네떡볶이 판교운중점",
+        "grade": "specialist",
+        "address": "경기 성남시 분당구 하오개로351번길 3 101호",
+        "gu": "bundang",
+        "dong": "운중동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "sundae",
+          "twigim",
+          "eomuk",
+          "gimbap"
+        ],
+        "usage": [
+          "takeout",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 5000
+          },
+          {
+            "name": "순대",
+            "price": 5000
+          },
+          {
+            "name": "꼬마김밥",
+            "price": 5000
+          },
+          {
+            "name": "튀김",
+            "price": 5500
+          },
+          {
+            "name": "오뎅 3개",
+            "price": 3000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-11",
+        "lat": 37.3917482,
+        "lng": 127.0579794,
+        "style": "classic",
+        "spice": 2,
+        "price": 5000,
+        "priceCheckedAt": "2026-11-11",
+        "hours": {
+          "days": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "11:00",
+          "close": "20:30"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "떡볶이 5,000원을 2026-11-11 블로그와 식신 메뉴에서 확인. 「밀떡의 쫄깃함」(11-11)으로 밀떡, 「옛날 학교앞 매콤달콤」(09-30)으로 맵기 2·단맛. 이 지점은 주문하면 바로 조리해 즉석 느낌이 난다는 후기(10-10)도 있으나 기본은 분식집 떡볶이라 classic으로 둠. 성남 신흥동 본점(1988년부터)에서 시작한 체인의 분점. 식신 기준 서울·경기 10곳 안팎이라 대형 전국 체인은 아니어서 후보로 넣었지만, 프랜차이즈로 칠지는 중앙에서 정할 것. 운중동 먹거리촌, 식신 등록 2026-02-26. 지역 체인",
+        "hoursNote": "화~일 11:00~20:30 · 월요일 휴무 / 2026-09-30·11-11 블로그 기준. 식신은 12:00~21:00(월 휴무)로 다르게 적혀 있음. 가게 앞 주차장·야외 자리 있음.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-11",
+        "lastEvidenceSource": "https://blog.naver.com/herutopia/224473235360",
+        "gapNotes": [],
+        "sources": [
+          "https://blog.naver.com/herutopia/224473235360",
+          "https://blog.naver.com/doubleh_09/224427061706",
+          "https://blog.naver.com/merry_rabbits/224437311442",
+          "https://blog.naver.com/godsams/224454362636",
+          "https://www.siksinhot.com/P/1876671"
+        ]
+      }
+    },
+    {
+      "id": "sn-21",
+      "store": {
+        "name": "혜선이떡볶이",
+        "grade": "specialist",
+        "address": "경기 성남시 분당구 운중로 135 1층 101·102호",
+        "gu": "bundang",
+        "dong": "운중동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [],
+        "sides": [],
+        "usage": [],
+        "menu": [
+          {
+            "name": "떡볶이 2인(떡·오뎅·계란·라면·당면·야채·고기만두)",
+            "price": 20000
+          },
+          {
+            "name": "떡볶이 3인",
+            "price": 29000
+          },
+          {
+            "name": "떡볶이 4인",
+            "price": 38000
+          },
+          {
+            "name": "버터갈릭 감자튀김",
+            "price": 10000
+          },
+          {
+            "name": "기본볶음밥",
+            "price": 3000
+          },
+          {
+            "name": "날치알볶음밥",
+            "price": 3500
+          }
+        ],
+        "lastConfirmedAt": "2026-11-13",
+        "lat": 37.3919471,
+        "lng": 127.0781514,
+        "style": "instant",
+        "spice": 3,
+        "spiceLabel": "안매운맛·매운맛 중 고름",
+        "price": 10000,
+        "priceCheckedAt": "2026-11-13",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "open": "11:30",
+          "close": "20:00"
+        }
+      },
+      "missing": [],
+      "research": {
+        "confidence": "high",
+        "geo": "naver",
+        "basis": "2인 20,000원·3인 29,000원을 2026-09-17·11-13 블로그 두 곳에서 확인 — 가정값: 2인 20,000원 ÷ 2 = 10,000원(식신 메뉴 18,000원은 옛값으로 봄). 맵기는 2단계 선택이라 매운맛을 기본으로 3, 「안맵게로 시켜도 꽤 칼칼」(2026-10-24)이라는 후기 반영. 떡은 식신 요약의 밀떡을 따름. 버터갈릭 감자튀김은 분식 튀김과 달라 sides에 넣지 않음. 예전 판교역 쪽(판교역로192번길 14-2 골드타워 2층)에서 운중동으로 옮겨 다시 연 가게(식신 등록 2024-12-28). 사장 1인 운영. 맵기 이름: 안매운맛·매운맛 중 고름 — 매운맛 기준(안매운맛도 꽤 칼칼하다는 후기)",
+        "hoursNote": "일~금 11:30~20:00 (브레이크 14:30~18:00, 라스트오더 19:30) · 토요일 휴무 / 2026-09-11·09-17·09-21·10-24·11-13 블로그가 모두 토요일 정기휴무·20시 마감으로 같음. 전용 주차장 없음(운중동 공영·민영주차장 이용).",
+        "statusNote": null,
+        "lastEvidence": "2026-11-13",
+        "lastEvidenceSource": "https://blog.naver.com/cozymunge/224475733861",
+        "gapNotes": [],
+        "sources": [
+          "https://blog.naver.com/cozymunge/224475733861",
+          "https://blog.naver.com/hodada_dak/224415029278",
+          "https://blog.naver.com/leezi__/224452243492",
+          "https://blog.naver.com/ryuichiya/224418409754",
+          "https://www.siksinhot.com/P/1749793",
+          "https://polle.com/place/1rYbKj/%ED%98%9C%EC%84%A0%EC%9D%B4%20%EB%96%A1%EB%B3%B6%EC%9D%B4"
+        ]
+      }
+    },
+    {
+      "id": "sn-22",
+      "store": {
+        "name": "엄마분식",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 불정로 219 한솔청구상가 지하1층 B동 135호",
+        "gu": "bundang",
+        "dong": "정자동",
+        "rice": [],
+        "taste": [],
+        "sides": [
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [],
+        "menu": [
+          {
+            "name": "오므라이스",
+            "price": 5500
+          },
+          {
+            "name": "제육덮밥",
+            "price": 6500
+          },
+          {
+            "name": "비빔밥",
+            "price": 6500
+          }
+        ],
+        "lastConfirmedAt": "2026-11-06",
+        "style": "classic",
+        "spice": 1
+      },
+      "missing": [
+        "가격",
+        "핀"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "rough",
+        "basis": "2026-11-06 방문 블로그(검색 요약)와 식신 등록을 확인. 떡볶이 값은 찾지 못해 비웠고(식신 메뉴는 식사류만), 식신 요약 '빨개 보이지만 매운맛이라곤 없다'로 맵기 1. 한솔마을 청구1단지 상가 지하의 오래된 동네 분식집.",
+        "hoursNote": "영업시간 출처 없음. 2024-07 블로그에 '토요일엔 떡볶이를 안 만든다'는 말이 있음(검색 요약, 지금도 그런지 모름).",
+        "statusNote": null,
+        "lastEvidence": "2026-11-06",
+        "lastEvidenceSource": "https://blog.naver.com/sbyjsbyj/224466739682",
+        "gapNotes": [
+          "빈 칸: 가격 · 핀"
+        ],
+        "sources": [
+          "https://blog.naver.com/sbyjsbyj/224466739682",
+          "https://www.siksinhot.com/P/1449076",
+          "https://blog.naver.com/boramy0930/223516280343"
+        ]
+      }
+    },
+    {
+      "id": "sn-23",
+      "store": {
+        "name": "꼭미남떡볶이",
+        "grade": "specialist",
+        "address": "경기 성남시 수정구 수정로 109 중앙공설시장 116·117호",
+        "gu": "sujeong",
+        "dong": "태평동",
+        "rice": [
+          "rice"
+        ],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "sundae",
+          "eomuk",
+          "twigim"
+        ],
+        "usage": [
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이 1인분",
+            "price": 5000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-19",
+        "style": "classic",
+        "spice": 2,
+        "shopType": "market",
+        "price": 5000,
+        "priceCheckedAt": "2026-11-19",
+        "hours": {
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "10:00",
+          "close": "19:40"
+        }
+      },
+      "missing": [
+        "핀"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "rough",
+        "basis": "주소는 114 안내(지자체 인허가 자료)와 다이닝코드 검색 요약이 같음. 최근 근거는 키자드(네이버 블로그 색인)의 2026-11-19 포장 후기로, 제목에 매콤달콤 쌀떡볶이·찰순대·어묵. 1인분 5,000원은 당근 동네가게 검색 요약뿐이라 날짜 비움. 맵기는 '매콤달콤'으로 2. 성남 중앙공설시장 안 분식집. 블로그 해시태그에 수진역·태평역이 붙어 있으나 가장 가까운 역은 확인 못 함",
+        "hoursNote": "월~토 10:00~19:40, 일요일 휴무 / 다이닝코드·당근 검색 요약. 로컬맵은 첫째·셋째 일요일 휴무로 적어 엇갈림. 전화번호도 출처마다 다름",
+        "statusNote": null,
+        "lastEvidence": "2026-11-19",
+        "lastEvidenceSource": "https://keyzard.cc/views/nb/Mzo6LD4mMzApOmVlbW1ra2pqa2drbGlu",
+        "gapNotes": [
+          "빈 칸: 핀"
+        ],
+        "sources": [
+          "https://keyzard.cc/views/nb/Mzo6LD4mMzApOmVlbW1ra2pqa2drbGlu",
+          "https://114.co.kr/search/detail?comp_id=8214813&comp_tp_cd=GOV&godata_tp_cd=LOCALDATA&upjong_cd=",
+          "https://www.diningcode.com/profile.php?rid=6ZPtP0MUnHS8",
+          "http://localmap.co.kr/web/splus/kmap/view.php?sigun=6410000&gugun=3780000&keyno=251&keyname=꼭미남떡볶이&keylink=3790000-104-2020-00171"
+        ]
+      }
+    },
+    {
+      "id": "sn-24",
+      "store": {
+        "name": "한줄한컵",
+        "grade": "menu",
+        "address": "경기 성남시 중원구 제일로 41 1층 103호",
+        "gu": "jungwon",
+        "dong": "성남동",
+        "rice": [],
+        "taste": [],
+        "sides": [
+          "gimbap",
+          "eomuk",
+          "rabokki"
+        ],
+        "usage": [],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 6600
+          },
+          {
+            "name": "로제떡볶이",
+            "price": 7100
+          },
+          {
+            "name": "라볶이",
+            "price": 7100
+          },
+          {
+            "name": "로제라볶이",
+            "price": 7600
+          },
+          {
+            "name": "로제쫄볶이",
+            "price": 8100
+          },
+          {
+            "name": "한줄김밥",
+            "price": 4200
+          },
+          {
+            "name": "오뎅꼬치 3개",
+            "price": 3800
+          }
+        ],
+        "lastConfirmedAt": "2026-02-11",
+        "style": "classic",
+        "price": 6600,
+        "priceCheckedAt": "2026-02-11"
+      },
+      "missing": [
+        "맵기",
+        "핀"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "rough",
+        "basis": "뽈레 가게 페이지에서 주소와 메뉴판(떡볶이 6,600원·로제떡볶이 7,100원, 날짜 모름)을, 2026-02-11 김밥 후기로 영업 중임을 봄. 떡볶이 맛·맵기 근거가 없어 spice·taste는 비움. style은 일반 떡볶이 메뉴라 classic으로 둠. 큰 김밥이 주력인 김밥집. 떡볶이 맛을 다룬 후기는 못 찾음",
+        "hoursNote": null,
+        "statusNote": "최근 영업 근거가 2026-02-11 로 오래됨 — 지금도 하는지 확인 필요",
+        "lastEvidence": "2026-02-11",
+        "lastEvidenceSource": "https://polle.com/ys03246/posts/5751",
+        "gapNotes": [
+          "빈 칸: 맵기 · 핀"
+        ],
+        "sources": [
+          "https://polle.com/place/2KcA2P/%ED%95%9C%EC%A4%84%ED%95%9C%EC%BB%B5",
+          "https://polle.com/ys03246/posts/5751"
+        ]
+      }
+    },
+    {
+      "id": "sn-25",
+      "store": {
+        "name": "김떡순 동판교점",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 동판교로 212 봇들마을6단지아파트 605동 1층",
+        "gu": "bundang",
+        "dong": "삼평동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "sundae",
+          "twigim",
+          "gimbap"
+        ],
+        "usage": [
+          "solo"
+        ],
+        "menu": [
+          {
+            "name": "칼국수",
+            "price": 6000
+          },
+          {
+            "name": "쫄면",
+            "price": 6500
+          },
+          {
+            "name": "멸추김밥",
+            "price": 4000
+          },
+          {
+            "name": "치즈김밥",
+            "price": 3500
+          },
+          {
+            "name": "순대꼬치",
+            "price": 1500
+          },
+          {
+            "name": "떡꼬치",
+            "price": 1000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-12",
+        "style": "instant",
+        "spice": 2,
+        "shopType": "pojang",
+        "hours": {
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "09:00",
+          "close": "22:00"
+        }
+      },
+      "missing": [
+        "가격",
+        "핀"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "rough",
+        "basis": "2026-11-06·11-12 블로그가 즉석떡볶이를 주로 소개해 style은 instant(일반 떡볶이·떡꼬치도 있음). 「매콤달달한 맛」(11-06)과 식신 키워드 달콤한맛으로 맵기 2. 떡볶이 가격은 메뉴 사진에만 있어 확인 못 함 — 메뉴 칸은 식신(날짜 없음) 값. 「약간 포장마차 분위기」·밤 야장포차라 pojang. 봇들마을 6단지 앞. 「김떡순」은 전국에 같은 이름 가게가 흔한 일반 상호로, 체인 관계는 확인 안 됨.",
+        "hoursNote": "월~토 09:00~22:00 · 일요일 휴무 / 2026-05-25·11-12 블로그 기준. 저녁엔 옆의 「분식포차」를 함께 운영(야장).",
+        "statusNote": null,
+        "lastEvidence": "2026-11-12",
+        "lastEvidenceSource": "https://blog.naver.com/nara-ya/224474270916",
+        "gapNotes": [
+          "빈 칸: 가격 · 핀"
+        ],
+        "sources": [
+          "https://blog.naver.com/nara-ya/224474270916",
+          "https://blog.naver.com/ghning19/224465247801",
+          "https://blog.naver.com/dlgnldnjs93/224296209316",
+          "https://www.siksinhot.com/P/717540",
+          "https://polle.com/place/2wGAAO/%EA%B9%80%EB%96%A1%EC%88%9C"
+        ]
+      }
+    },
+    {
+      "id": "sn-26",
+      "store": {
+        "name": "디엣테이블",
+        "grade": "menu",
+        "address": "경기 성남시 분당구 판교역로 240 삼환하이펙스 A동 지하1층 124호",
+        "gu": "bundang",
+        "dong": "삼평동",
+        "rice": [
+          "rice"
+        ],
+        "taste": [],
+        "sides": [
+          "gimbap",
+          "twigim"
+        ],
+        "usage": [
+          "solo",
+          "takeout"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이류 + 튀김류 세트",
+            "price": 11900
+          },
+          {
+            "name": "김밥 2개 + 떡볶이류 세트",
+            "price": 15900
+          },
+          {
+            "name": "기본 키토김밥",
+            "price": 6900
+          }
+        ],
+        "lastConfirmedAt": "2026-11-20",
+        "lat": 37.4021113,
+        "lng": 127.1105401,
+        "style": "rose"
+      },
+      "missing": [
+        "맵기",
+        "가격"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "2026-11-20 블로그에서 운영·로제현미떡볶이(「현미떡이 쫄깃」) 확인, 키토김밥 6,900원은 이 글과 식신 메뉴가 같음. 떡볶이 단품 가격·맵기는 못 찾아 비우고 세트값은 식신(날짜 없음). 키토김밥 전문 분식집. 떡볶이는 현미떡을 쓴 로제현미떡볶이·로제오뎅볶이 등.",
+        "hoursNote": "식신에는 월~토 09:30~20:30으로 적혀 있으나 날짜 없음.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-20",
+        "lastEvidenceSource": "https://blog.naver.com/omumnew/224484550025",
+        "gapNotes": [
+          "빈 칸: 맵기 · 가격"
+        ],
+        "sources": [
+          "https://blog.naver.com/omumnew/224484550025",
+          "https://www.siksinhot.com/P/1636988"
+        ]
+      }
+    },
+    {
+      "id": "sn-27",
+      "store": {
+        "name": "랄라 분식방앗간",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 장미로 42 야탑리더스 1층 114호",
+        "gu": "bundang",
+        "dong": "야탑동",
+        "rice": [
+          "garae"
+        ],
+        "taste": [],
+        "sides": [
+          "sundae",
+          "twigim",
+          "eomuk",
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "가래떡 떡볶이",
+            "price": 5000
+          },
+          {
+            "name": "옛날떡볶이",
+            "price": 5000
+          },
+          {
+            "name": "라볶이(밀떡)",
+            "price": 7000
+          },
+          {
+            "name": "어묵(3개)",
+            "price": 2700
+          },
+          {
+            "name": "수제튀김(3개)",
+            "price": 3000
+          },
+          {
+            "name": "떡꽈배기",
+            "price": 3000
+          },
+          {
+            "name": "오떡순튀 세트",
+            "price": 17000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-14",
+        "style": "classic",
+        "spice": 2,
+        "price": 5000,
+        "priceCheckedAt": "2026-11-14"
+      },
+      "missing": [
+        "핀"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "rough",
+        "basis": "2026-11-14 블로그에서 운영·주소·통가래떡+어묵+계란 구성 확인, 「너무 맵지도 않은데 칼칼」과 2025-09-30 「심하게 맵지 않은 매콤함」으로 맵기 2. 가격 5,000원은 식신 메뉴(날짜 없음)뿐이라 날짜는 비움(오떡순튀 세트 17,000원만 2026-11-14 확인). 국물이 자작한 집떡볶이라 classic. 2025년 5월 개업. 매장 안 기계로 쌀 가래떡을 날마다 직접 뽑음. 성남종합버스터미널 뒤 오피스텔 1층, 건물 주차 2시간 무료라는 식신 요약.",
+        "hoursNote": "식신에는 월·화·목·금 11:00~19:30, 수 11:00~15:00, 토 10:30~16:30, 일요일 표시 없음으로 적혀 있으나 날짜가 없어 확정하지 않음.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-14",
+        "lastEvidenceSource": "https://blog.naver.com/hotoil78/224476781744",
+        "gapNotes": [
+          "빈 칸: 핀"
+        ],
+        "sources": [
+          "https://blog.naver.com/hotoil78/224476781744",
+          "https://blog.naver.com/overthewynter/224027237725",
+          "https://blog.naver.com/yomo_zomo_/223871722917",
+          "https://www.siksinhot.com/P/1804748"
+        ]
+      }
+    },
+    {
+      "id": "sn-28",
+      "store": {
+        "name": "모아분식 판교도서관점",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 판교공원로3길 4 1층",
+        "gu": "bundang",
+        "dong": "판교동",
+        "rice": [],
+        "taste": [],
+        "sides": [
+          "sundae",
+          "twigim",
+          "eomuk",
+          "gimbap"
+        ],
+        "usage": [],
+        "menu": [
+          {
+            "name": "떡볶이(1인 기본)",
+            "price": 5000
+          },
+          {
+            "name": "국물 떡볶이 추가",
+            "price": 4000
+          },
+          {
+            "name": "찹쌀 순대",
+            "price": 4500
+          },
+          {
+            "name": "김밥",
+            "price": 4500
+          },
+          {
+            "name": "튀김(1개)",
+            "price": 1000
+          },
+          {
+            "name": "어묵(1개)",
+            "price": 1000
+          },
+          {
+            "name": "제주산 생 돈가스",
+            "price": 5500
+          }
+        ],
+        "lastConfirmedAt": "2026-02-05",
+        "lat": 37.3908671,
+        "lng": 127.0904415,
+        "spice": 3,
+        "price": 5000,
+        "priceCheckedAt": "2025-11-25"
+      },
+      "missing": [
+        "스타일"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "떡볶이 기본 5,000원(달걀·깻잎·어묵튀김 등 토핑 추가)을 2025-11-25 블로그와 식신 메뉴 「1인 기본 5000」에서 확인. 마지막 근거는 2025-12-08 방문기를 올린 2026-02-05 글이라 9개월 전. 「색은 안 빨갛지만 제법 매웠어요」로 맵기 3. 2025년 8월 판교도서관 앞(옛 호화식탁 자리)에 연 가게. 판교원마을 7단지 상가의 원조 모아분식(판교원로 237) 사장님 따님이 운영한다는 후기 — 7단지 점포는 직접 근거를 못 찾아 따로 넣지 않음. 생맥주도 팖.",
+        "hoursNote": "식신에는 매일 10:30~20:00으로 적혀 있으나 날짜 없음.",
+        "statusNote": "최근 영업 근거가 2026-02-05 로 오래됨 — 지금도 하는지 확인 필요",
+        "lastEvidence": "2026-02-05",
+        "lastEvidenceSource": "https://blog.naver.com/jykim575/224172839660",
+        "gapNotes": [
+          "빈 칸: 스타일"
+        ],
+        "sources": [
+          "https://blog.naver.com/jykim575/224172839660",
+          "https://blog.naver.com/herutopia/224088067902",
+          "https://blog.naver.com/jooeungen/224032507915",
+          "https://www.siksinhot.com/P/1824411"
+        ]
+      }
+    },
+    {
+      "id": "sn-29",
+      "store": {
+        "name": "보글분식",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 판교대장로4길 13 1층",
+        "gu": "bundang",
+        "dong": "대장동",
+        "rice": [],
+        "taste": [],
+        "sides": [
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "떡볶이",
+            "price": 5000
+          },
+          {
+            "name": "로제떡볶이",
+            "price": 6500
+          },
+          {
+            "name": "라볶이",
+            "price": 6000
+          },
+          {
+            "name": "쫄면",
+            "price": 6500
+          },
+          {
+            "name": "라면",
+            "price": 4000
+          },
+          {
+            "name": "참치김밥",
+            "price": 5500
+          }
+        ],
+        "lastConfirmedAt": "2026-11-10",
+        "lat": 37.3648725,
+        "lng": 127.0681523,
+        "spiceLabel": "기본맛 기준",
+        "price": 5000,
+        "priceCheckedAt": "2026-10-07",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            6
+          ],
+          "open": "10:30",
+          "close": "19:30"
+        }
+      },
+      "missing": [
+        "스타일",
+        "맵기"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "떡볶이 5,000원 등 메뉴·영업시간을 2026-10-07 블로그(메뉴판 정리)에서 확인, 쫄면 6,500원·참치김밥 5,500원은 09-18 블로그와 일치. 떡볶이 가격은 한 곳뿐이고 떡 종류·맵기 묘사는 못 찾아 비움. 2026년 여름 개업(식신 등록 2026-07-06). 치즈 추가 2,000원, 분모자 2줄 추가 1,500원. 맵기 이름: 기본맛 기준 — 매운맛은 500원 추가로 고름",
+        "hoursNote": "평일 10:30~19:30 · 주말·공휴일 10:00~19:00 · 수요일 휴무 / 2026-10-07 블로그(가게 앞 안내판), 2026-08-18 블로그도 수요일 휴무·주말 10시 개점으로 같음. 가게 앞 주차 2대 정도.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-10",
+        "lastEvidenceSource": "https://blog.naver.com/cheer0/224472072043",
+        "gapNotes": [
+          "빈 칸: 스타일 · 맵기"
+        ],
+        "sources": [
+          "https://blog.naver.com/unblieve/224434323656",
+          "https://blog.naver.com/cheer0/224472072043",
+          "https://blog.naver.com/tory_jeong/224415381428",
+          "https://blog.naver.com/ddarupporu/224381765676",
+          "https://www.siksinhot.com/P/1931095"
+        ]
+      }
+    },
+    {
+      "id": "sn-30",
+      "store": {
+        "name": "영심이떡볶이&김밥 야탑2호점",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 성남대로926번길 6 야탑대덕프라자",
+        "gu": "bundang",
+        "dong": "야탑동",
+        "rice": [],
+        "taste": [],
+        "sides": [
+          "twigim",
+          "gimbap",
+          "rabokki"
+        ],
+        "usage": [],
+        "menu": [
+          {
+            "name": "라볶이+치즈 추가",
+            "price": 8000
+          },
+          {
+            "name": "모둠튀김",
+            "price": 5000
+          },
+          {
+            "name": "라면",
+            "price": 5000
+          },
+          {
+            "name": "반반김밥",
+            "price": 6000
+          }
+        ],
+        "lastConfirmedAt": "2026-10-28",
+        "lat": 37.4121837,
+        "lng": 127.1298493,
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "09:00",
+          "close": "23:00"
+        }
+      },
+      "missing": [
+        "스타일",
+        "맵기",
+        "가격"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "2026-10-18·10-28 블로그로 운영·주소·영업시간 확인, 메뉴 칸은 10-18 블로그 주문값. 떡볶이 단품 가격·떡 종류·맵기는 근거를 못 찾아 비움. 야탑역 1번 출구 바로 뒤. 판교2호점과 같은 지역 체인. 뽈레의 「영심이 떡볶이 야탑점」(다른 지점)은 폐점 표시. 지역 체인",
+        "hoursNote": "매일 09:00~23:00 (주문 마감 22:30) / 2026-10-28 블로그 기준 한 곳뿐.",
+        "statusNote": null,
+        "lastEvidence": "2026-10-28",
+        "lastEvidenceSource": "https://blog.naver.com/causeis/224451481050",
+        "gapNotes": [
+          "빈 칸: 스타일 · 맵기 · 가격"
+        ],
+        "sources": [
+          "https://blog.naver.com/causeis/224451481050",
+          "https://blog.naver.com/maengdue/224445452710",
+          "https://www.siksinhot.com/P/572627"
+        ]
+      }
+    },
+    {
+      "id": "sn-31",
+      "store": {
+        "name": "영심이떡볶이&김밥 판교2호점",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 대왕판교로606번길 45 판교역푸르지오시티 1층",
+        "gu": "bundang",
+        "dong": "삼평동",
+        "rice": [
+          "wheat"
+        ],
+        "taste": [
+          "sweetsalty",
+          "pepper"
+        ],
+        "sides": [
+          "twigim",
+          "eomuk",
+          "gimbap",
+          "sundae"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "delivery",
+          "parking"
+        ],
+        "menu": [
+          {
+            "name": "범벅이(떡볶이+튀김)",
+            "price": 10500
+          }
+        ],
+        "lastConfirmedAt": "2026-11-08",
+        "lat": 37.3968964,
+        "lng": 127.1119239,
+        "style": "classic",
+        "spice": 2,
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "10:00",
+          "close": "21:30"
+        }
+      },
+      "missing": [
+        "가격"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "범벅이가 2026-09-03 9,500원 → 11-08 10,500원으로 올라, 식신·뽈레의 떡볶이 5,000원(날짜 없음)은 옛값일 가능성이 커서 price는 비움. 식신 요약 「밀떡, 많이 맵지 않고 단짠」과 2025-11-02 「끝에 후추맛」으로 맵기 2·단짠·후추. 쿠팡이츠 배달 후기(2026-08-26) 있음. 분당 서현 쪽에서 시작한 지역 체인(식신 기준 분당·동탄·구리 등 9곳 안팎). 대형 전국 체인은 아니어서 후보로 넣음. 지역 체인",
+        "hoursNote": "월~금 10:00~21:30 · 토·일 10:00~20:30 / 2026-10-11 블로그 기준(11-08 블로그는 10:00~21:30만 적음). 건물 지하 주차 1시간 무료 등록.",
+        "statusNote": null,
+        "lastEvidence": "2026-11-08",
+        "lastEvidenceSource": "https://blog.naver.com/syw4262/224467542839",
+        "gapNotes": [
+          "빈 칸: 가격"
+        ],
+        "sources": [
+          "https://blog.naver.com/syw4262/224467542839",
+          "https://blog.naver.com/hungrycotton/224438388543",
+          "https://blog.naver.com/cih4150/224451703786",
+          "https://blog.naver.com/jkjy4886/224061949863",
+          "https://www.siksinhot.com/P/572708",
+          "https://polle.com/place/1seymr/%EC%98%81%EC%8B%AC%EC%9D%B4"
+        ]
+      }
+    },
+    {
+      "id": "sn-32",
+      "store": {
+        "name": "후라이보스 야탑직영점",
+        "grade": "bunsik",
+        "address": "경기 성남시 분당구 벌말로 37 1층 6호",
+        "gu": "bundang",
+        "dong": "야탑동",
+        "rice": [],
+        "taste": [
+          "sweet"
+        ],
+        "sides": [
+          "sundae",
+          "twigim",
+          "gimbap"
+        ],
+        "usage": [
+          "solo",
+          "takeout",
+          "delivery"
+        ],
+        "menu": [
+          {
+            "name": "어묵채 떡볶이",
+            "price": 5000
+          },
+          {
+            "name": "순대(내장 포함)",
+            "price": 5000
+          },
+          {
+            "name": "꼬마김밥",
+            "price": 3500
+          },
+          {
+            "name": "오징어튀김",
+            "price": 3500
+          },
+          {
+            "name": "꿔바로우",
+            "price": 7000
+          }
+        ],
+        "lastConfirmedAt": "2026-11-18",
+        "lat": 37.4113526,
+        "lng": 127.1380138,
+        "spice": 2,
+        "price": 5000,
+        "priceCheckedAt": "2026-11-18",
+        "hours": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "open": "11:00",
+          "close": "21:20"
+        }
+      },
+      "missing": [
+        "스타일"
+      ],
+      "research": {
+        "confidence": "medium",
+        "geo": "naver",
+        "basis": "2026-11-18 블로그에서 주소·영업시간·메뉴값 확인, 「매콤달콤 떡볶이」로 맵기 2·단맛. price는 이 블로그에 나온 어묵채 떡볶이 값이고 일반 떡볶이 단품값은 확인 못 함. 다이닝코드 「야탑 떡볶이」 순위 1위로 올라 있음(사진 2026-10-08). 지번 야탑동 274-1, 야탑역 2번 출구에서 걸어서 10분. 문 연 지 얼마 안 된 듯하다는 후기. 「직영점」 이름이지만 식신에는 이 한 곳뿐이라 체인 규모는 확인 안 됨.",
+        "hoursNote": "월~금 11:00~21:20 · 토·일 11:00~24:00 / 2026-11-18 블로그 한 곳 기준(라스트오더 평일 21:15, 주말 23:55).",
+        "statusNote": null,
+        "lastEvidence": "2026-11-18",
+        "lastEvidenceSource": "https://blog.naver.com/homejoyi/224482449934",
+        "gapNotes": [
+          "빈 칸: 스타일"
+        ],
+        "sources": [
+          "https://blog.naver.com/homejoyi/224482449934",
+          "https://blog.naver.com/yunnai04/224383050058",
+          "https://www.siksinhot.com/P/1828553"
+        ]
+      }
+    }
+  ]
+}
