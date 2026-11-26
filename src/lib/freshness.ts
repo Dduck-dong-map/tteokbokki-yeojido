@@ -53,6 +53,8 @@ export function todayHoursText(hours: Hours | undefined, now: Date) {
 }
 
 export const DAY_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
+// 요일 숫자는 Date.getDay() 와 같다(0 = 일). 화면에 월요일부터 늘어놓을 때의 순서
+export const WEEK_FROM_MON = [1, 2, 3, 4, 5, 6, 0];
 
 export function hoursText(hours: Hours | undefined) {
   if (!hours) return "아직 몰라요";

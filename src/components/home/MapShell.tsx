@@ -98,8 +98,10 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
   const shown = useMemo(() => filtered.filter((s) => matchQuery(s, q)), [filtered, q]);
   // 검색할 때는 지도 범위와 상관없이 찾는다. 지도를 확대해 둔 채 다른 동네를 찾아도 나와야 한다
   const searching = q.trim().length > 0;
-  const inView = useMemo(() => (bounds && !searching ? shown.filter((s) => s.lng >= bounds.w && s.lng <= bounds.e && s.lat >= bounds.s && s.lat <= bounds.n) : shown), [shown, bounds, searching]);
   const effSort = sort ?? (me ? "near" : "recent");
+  // 가까운순도 지도 범위와 상관없이 조건에 맞는 가게를 모두 가까운 차례로 보여 준다 (11-26: 내 위치로 확대된 지도에 걸려 요일 필터 결과가 2~3곳만 보였다)
+  const nearAll = effSort === "near" && !!me;
+  const inView = useMemo(() => (bounds && !searching && !nearAll ? shown.filter((s) => s.lng >= bounds.w && s.lng <= bounds.e && s.lat >= bounds.s && s.lat <= bounds.n) : shown), [shown, bounds, searching, nearAll]);
   const list = useMemo(() => {
     const arr = [...inView];
     if (effSort === "near" && me) arr.sort((a, b) => distanceM(me, a) - distanceM(me, b));

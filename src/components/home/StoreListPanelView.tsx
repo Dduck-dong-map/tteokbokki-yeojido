@@ -30,7 +30,7 @@ export default function StoreListPanelView({
   // 손잡이: 컨테이너가 포인터 셋을 주면 끌기·탭 판정을 컨테이너가 한다(Pointer 우선). 없으면 탭 = 반 ↔ 전체 토글만.
   const drag = !!onHandlePointerDown;
   const toggleSheet = () => onSheetChange(sheet === "full" ? "half" : "full");
-  const title = inViewCount ? `${searching ? "검색으로" : "현재 지도에서"} 찾은 가게 ${inViewCount}곳` : shown.length ? "이 지도 안에는 가게가 없어요" : "조건에 맞는 가게가 없어요";
+  const title = inViewCount ? `${searching ? "검색으로" : sort === "near" && me ? "가까운 순으로" : "현재 지도에서"} 찾은 가게 ${inViewCount}곳` : shown.length ? "이 지도 안에는 가게가 없어요" : "조건에 맞는 가게가 없어요";
 
   return (
     <section

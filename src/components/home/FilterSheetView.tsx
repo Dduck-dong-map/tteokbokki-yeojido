@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Chip as UiChip } from "@/components/ui/chip";
 import { Sheet, SheetClose, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { DEFAULT_FILTERS, type Filters } from "@/lib/filters";
+import { DAY_NAMES, WEEK_FROM_MON } from "@/lib/freshness";
 import { PRICE_STEPS, RICE_CAKES, SPICE_LEVELS, STYLES, keysOf, type Spice } from "@/lib/taxonomy";
 import { cn } from "@/lib/utils";
 import type { FilterSheetViewProps } from "./types";
@@ -25,9 +26,9 @@ function nextSpice([lo, hi]: Filters["spice"], lv: Spice): Filters["spice"] {
 }
 
 // 고르기 칩 = 디자인 시스템 FilterChip (ui/chip). 켜짐은 Chip 이 aria-pressed 로 알린다. 누름은 그대로 onClick 으로 넘긴다
-function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: ReactNode }) {
+function Chip({ on, onClick, label, children }: { on: boolean; onClick: () => void; label?: string; children: ReactNode }) {
   return (
-    <UiChip type="button" selected={on} onClick={onClick}>
+    <UiChip type="button" selected={on} onClick={onClick} aria-label={label}>
       {children}
     </UiChip>
   );
@@ -105,6 +106,15 @@ function FilterBody({ value: f, resultCount: n, inline = false, onChange, onClos
         {PRICE_STEPS.map((p) => (
           <Chip key={p} on={f.priceMax === p} onClick={() => onChange({ ...f, priceMax: f.priceMax === p ? null : p })}>
             {(p / 1000).toLocaleString()}천 원 이하
+          </Chip>
+        ))}
+      </Section>
+
+      {/* 지금 시각과 무관하게 그 요일에 여는 가게만 (11-26: 일요일에 쉬는 가게가 많다). 여러 개면 고른 요일에 모두 여는 곳 */}
+      <Section id="filter-days" title="영업 요일" hint="여러 개 · 고른 요일에 모두 여는 곳">
+        {WEEK_FROM_MON.map((d) => (
+          <Chip key={d} on={f.days.includes(d)} label={`${DAY_NAMES[d]}요일`} onClick={() => onChange({ ...f, days: toggle(f.days, d) })}>
+            {DAY_NAMES[d]}
           </Chip>
         ))}
       </Section>

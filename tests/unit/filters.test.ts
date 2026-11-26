@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_FILTERS, activeFilterCount, applyFilters, distanceM, distanceText, matchQuery, parseFilters, serializeFilters, won } from "@/lib/filters";
+import { DEFAULT_FILTERS, activeFilterCount, applyFilters, distanceM, distanceText, matchQuery, opensOn, parseFilters, serializeFilters, won } from "@/lib/filters";
 import type { Store } from "@/lib/types";
 
 // 거리·가격 표시 규칙과 필터 적용 (lib/filters.ts)
@@ -92,7 +92,7 @@ describe("parseFilters ↔ serializeFilters", () => {
   it("기본값은 빈 문자열로, 바꾼 값만 주소에 남는다", () => {
     expect(serializeFilters(DEFAULT_FILTERS)).toBe("");
     const f = parseFilters(new URLSearchParams("rice=rice,cheese&style=soup&spice=2-4&price=5000&open=1&solo=1&menu=0"));
-    expect(f).toEqual({ rice: ["rice", "cheese"], style: ["soup"], spice: [2, 4], priceMax: 5000, openNow: true, solo: true, showMenuGrade: false });
+    expect(f).toEqual({ rice: ["rice", "cheese"], style: ["soup"], spice: [2, 4], priceMax: 5000, openNow: true, days: [], solo: true, showMenuGrade: false });
     expect(parseFilters(new URLSearchParams(serializeFilters(f)))).toEqual(f);
     expect(activeFilterCount(f)).toBe(7);
   });
@@ -101,6 +101,61 @@ describe("parseFilters ↔ serializeFilters", () => {
     expect(f.rice).toEqual([]);
     expect(f.spice).toEqual([1, 5]);
     expect(f.priceMax).toBeNull();
+  });
+});
+
+// 요일 숫자는 Hours.days 와 같다: 0 = 일 … 6 = 토
+describe("영업 요일 필터 (days)", () => {
+  const ids = (f: Partial<typeof DEFAULT_FILTERS>) => applyFilters(dayStores, { ...DEFAULT_FILTERS, ...f }, NOW).map((s) => s.id);
+  const dayStores: Store[] = [
+    { ...base, id: "all", hours: { days: [0, 1, 2, 3, 4, 5, 6], open: "11:00", close: "21:00" } },
+    { ...base, id: "noSun", rice: ["rice"], hours: { days: [1, 2, 3, 4, 5, 6], open: "11:00", close: "21:00" } },
+    { ...base, id: "weekdays", hours: { days: [1, 2, 3, 4, 5], open: "11:00", close: "21:00" } },
+    { ...base, id: "night", hours: { days: [6], open: "18:00", close: "02:00" } }, // 토요일 밤에 열어 일요일 새벽에 닫는다
+    { ...base, id: "unknown" }, // 영업시간 모름
+  ];
+
+  it("주소 값: 0~6 만 받고, 겹친 값·모르는 값은 버리고 정렬한다", () => {
+    expect(parseFilters(new URLSearchParams("")).days).toEqual([]);
+    expect(parseFilters(new URLSearchParams("days=0")).days).toEqual([0]);
+    expect(parseFilters(new URLSearchParams("days=6,0,6,7,-1,x,1.5,,%200")).days).toEqual([0, 6]);
+    expect(parseFilters(new URLSearchParams("days=sun")).days).toEqual([]);
+  });
+  it("비어 있으면 키를 쓰지 않고, 고르면 정렬해서 쓴다 (왕복)", () => {
+    expect(serializeFilters({ ...DEFAULT_FILTERS, days: [] })).toBe("");
+    expect(serializeFilters({ ...DEFAULT_FILTERS, days: [0] })).toBe("days=0");
+    expect(new URLSearchParams(serializeFilters({ ...DEFAULT_FILTERS, days: [6, 0, 6, 9] })).get("days")).toBe("0,6");
+    const f = { ...DEFAULT_FILTERS, days: [0, 6], openNow: true };
+    expect(parseFilters(new URLSearchParams(serializeFilters(f)))).toEqual(f);
+  });
+  it("요일을 고르지 않으면 영업시간을 모르는 가게도 남는다", () => {
+    expect(ids({})).toEqual(["all", "noSun", "weekdays", "night", "unknown"]);
+  });
+  it("요일 하나: 그 요일에 여는 가게만, 영업시간을 모르는 가게는 뺀다", () => {
+    expect(ids({ days: [0] })).toEqual(["all"]);
+    expect(ids({ days: [6] })).toEqual(["all", "noSun", "night"]);
+    expect(ids({ days: [3] })).toEqual(["all", "noSun", "weekdays"]);
+  });
+  it("여러 요일: 고른 요일 모두에 여는 가게만 (AND)", () => {
+    expect(ids({ days: [0, 6] })).toEqual(["all"]);
+    expect(ids({ days: [5, 6] })).toEqual(["all", "noSun"]);
+  });
+  it("자정을 넘기는 가게는 여는 날로만 센다 (토요일 밤 → 일요일 새벽은 일요일이 아니다)", () => {
+    expect(opensOn({ days: [6], open: "18:00", close: "02:00" }, [0])).toBe(false);
+    expect(opensOn({ days: [6], open: "18:00", close: "02:00" }, [6])).toBe(true);
+    expect(opensOn(undefined, [])).toBe(true);
+    expect(opensOn(undefined, [1])).toBe(false);
+  });
+  it("다른 필터와 함께 걸린다", () => {
+    expect(ids({ days: [6], rice: ["rice"] })).toEqual(["noSun"]);
+    // NOW = 월요일 12:00 → 「지금 영업 중」은 all · noSun · weekdays, 거기에 토요일 조건
+    expect(ids({ openNow: true })).toEqual(["all", "noSun", "weekdays"]);
+    expect(ids({ openNow: true, days: [6] })).toEqual(["all", "noSun"]);
+  });
+  it("요일을 하나라도 고르면 켜진 필터 +1", () => {
+    expect(activeFilterCount(DEFAULT_FILTERS)).toBe(0);
+    expect(activeFilterCount({ ...DEFAULT_FILTERS, days: [0] })).toBe(1);
+    expect(activeFilterCount({ ...DEFAULT_FILTERS, days: [0, 6] })).toBe(1);
   });
 });
 

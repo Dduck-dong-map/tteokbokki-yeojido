@@ -23,7 +23,7 @@ export type MapShellViewProps = {
   stores: Store[]; // 전체 (빈 상태의 「가게 N곳이 다시 보여요」 숫자)
   shown: Store[]; // 필터 + 검색어를 통과한 가게 (지도에 찍는다)
   list: Store[]; // shown 중 지도 범위 안 + 정렬까지 끝난 줄
-  inViewCount: number; // 「현재 지도에서 찾은 가게 N곳」
+  inViewCount: number; // 「현재 지도에서 찾은 가게 N곳」. 검색 중 · 가까운순(위치 있음)이면 지도 범위와 상관없이 조건에 맞는 전체
   searching: boolean; // 검색어가 있으면 지도 범위를 무시했다는 뜻
   query: string;
   recentReports: number;
@@ -70,7 +70,7 @@ export type MapShellViewProps = {
 };
 
 // ───────── FilterSheet ─────────
-// 이 View 가 그리는 것: 떡·스타일·맵기·가격·더 고르기 칩과 「가게 N곳 보기」/「필터 초기화」 단추. 폰은 아래 시트, 768 이상은 패널 안 칸(inline).
+// 이 View 가 그리는 것: 떡·스타일·맵기·가격·영업 요일·더 고르기 칩과 「가게 N곳 보기」/「필터 초기화」 단추. 폰은 아래 시트, 768 이상은 패널 안 칸(inline).
 // 컨테이너가 넘기는 것: 현재 필터 값, 그 값으로 걸러진 가게 수, 바꿀 때·닫을 때 핸들러.
 // 넘기지 않는 것: 가게 배열 · now — 개수 계산은 컨테이너(countWith)가 한다.
 export type FilterSheetViewProps = {

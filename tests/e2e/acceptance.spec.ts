@@ -62,6 +62,22 @@ test("F002 0곳 조합 → 「조건에 맞는 가게가 없어요」 + [필터 
   await expect(rows(page).first()).toBeVisible();
 });
 
+test("F002 영업 요일 「일」을 고르면 주소에 days=0 이 붙고 가게 수가 줄어든다", async ({ page }) => {
+  // 시험 자료 16곳 가운데 일요일에 여는 곳은 절반쯤이다 (tests/fixtures/sample-stores.ts 의 noSun · weekdays)
+  await page.goto("/");
+  await expect(rows(page).first()).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: /^필터/ }).filter({ visible: true }).first().click();
+  const done = page.getByRole("button", { name: /^가게 \d+곳 보기$/ });
+  const count = async () => Number(/\d+/.exec((await done.textContent()) ?? "")![0]);
+  const before = await count();
+  const sunday = page.getByRole("button", { name: "일요일" });
+  await sunday.click();
+  await expect(sunday).toHaveAttribute("aria-pressed", "true");
+  await expect(page).toHaveURL(/[?&]days=0(&|$)/);
+  await expect.poll(count).toBeLessThan(before);
+  expect(await count()).toBeGreaterThan(0);
+});
+
 // ───────── F003 주변 가게 목록 ─────────
 
 test("F003 위치 허용 → 가까운순, 「최근 확인순」을 누르면 마지막 확인일 순", async ({ page, context }) => {
@@ -130,6 +146,9 @@ test("F003 지도 범위 안 0곳 → 「이 지도 안에는 가게가 없어�
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 33.4507, longitude: 126.5707 });
   await page.goto("/");
+  // 위치가 있으면 가까운순이고, 가까운순은 지도 범위와 상관없이 모두 보여 준다 → 지도 범위를 따르는 최근 확인순으로 바꿔서 본다
+  await expect(panel(page).getByRole("heading", { name: /가까운 순으로 찾은 가게 [1-9]\d*곳/ })).toBeVisible({ timeout: 30_000 });
+  await panel(page).getByRole("button", { name: "최근 확인순" }).click();
   await expect(panel(page).getByRole("heading", { name: "이 지도 안에는 가게가 없어요" })).toBeVisible({ timeout: 30_000 });
   const all = panel(page).getByRole("button", { name: /가게 \d+곳 모두 보기/ });
   const n = Number(/(\d+)곳/.exec((await all.textContent()) ?? "")![1]);
