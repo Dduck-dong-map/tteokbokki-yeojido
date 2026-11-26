@@ -23,7 +23,7 @@ export type MapShellViewProps = {
   stores: Store[]; // 전체 (빈 상태의 「가게 N곳이 다시 보여요」 숫자)
   shown: Store[]; // 필터 + 검색어를 통과한 가게 (지도에 찍는다)
   list: Store[]; // shown 중 지도 범위 안 + 정렬까지 끝난 줄
-  inViewCount: number; // 「현재 지도에서 찾은 가게 N곳」. 검색 중 · 가까운순(위치 있음)이면 지도 범위와 상관없이 조건에 맞는 전체
+  inViewCount: number; // 목록에 나오는 가게 수. 가까운순이면 지도 범위 안(「현재 지도에서 찾은 가게 N곳」), 그 밖에는 조건에 맞는 전체
   searching: boolean; // 검색어가 있으면 지도 범위를 무시했다는 뜻
   query: string;
   recentReports: number;
@@ -40,7 +40,7 @@ export type MapShellViewProps = {
   me: LatLng | null;
   toast: string | null;
   // 정렬
-  sort: SortKey; // 실제 적용 중인 정렬 (null 해석은 컨테이너가 끝낸다)
+  sort: SortKey | null; // 켜진 정렬. null = 아무것도 고르지 않음(두 칩 모두 꺼짐)
   // 필터
   filters: Filters;
   filterCount: number;

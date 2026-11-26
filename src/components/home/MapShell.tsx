@@ -19,7 +19,7 @@ import type { LatLng, SheetState } from "./types";
 //   ┌──────────────────── MapShell (상태) ─────────────────────┐
 //   │ 선택 가게 selected = routeId ?? picked                    │
 //   │ 필터 filters(주소) → filtered → 검색 shown → 범위 inView  │
-//   │ 정렬 effSort → list · 시트 sheet · 필터칸 filterOpen       │
+//   │ 정렬 sort → list    · 시트 sheet · 필터칸 filterOpen       │
 //   │ 내 위치 me · 지도 초점 focus · 범위 bounds · 토스트 toast  │
 //   └───────────┬───────────────────────────────┬─────────────┘
 //               │ props + onX                   │ children (가게 상세)
@@ -64,7 +64,7 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
   const filters = useMemo(() => parseFilters(new URLSearchParams(params.toString())), [params]);
   const now = useMemo(() => new Date(nowIso), [nowIso]);
   const q = useSearch();
-  const [sort, setSort] = useState<"near" | "recent" | null>(null); // null = 위치 있으면 가까운순, 없으면 최근 확인순
+  const [sort, setSort] = useState<"near" | "recent" | null>(null); // null = 아무 정렬도 고르지 않음 (필터 결과 전부). 누르면 켜지고 다시 누르면 꺼진다
   const [sheet, setSheet] = useState<SheetState>("half");
   const [filterOpen, setFilterOpen] = useState(false);
   const [picked, setPicked] = useState<string | null>(askedStore);
@@ -98,16 +98,16 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
   const shown = useMemo(() => filtered.filter((s) => matchQuery(s, q)), [filtered, q]);
   // 검색할 때는 지도 범위와 상관없이 찾는다. 지도를 확대해 둔 채 다른 동네를 찾아도 나와야 한다
   const searching = q.trim().length > 0;
-  const effSort = sort ?? (me ? "near" : "recent");
-  // 가까운순도 지도 범위와 상관없이 조건에 맞는 가게를 모두 가까운 차례로 보여 준다 (11-26: 내 위치로 확대된 지도에 걸려 요일 필터 결과가 2~3곳만 보였다)
-  const nearAll = effSort === "near" && !!me;
-  const inView = useMemo(() => (bounds && !searching && !nearAll ? shown.filter((s) => s.lng >= bounds.w && s.lng <= bounds.e && s.lat >= bounds.s && s.lat <= bounds.n) : shown), [shown, bounds, searching, nearAll]);
+  // 지도 범위로 자르는 것은 가까운순뿐이다(지금 보는 지도 안에서 가까운 차례). 고르지 않았을 때와 최근 확인순은 조건에 맞는 가게 전부다
+  // (11-26: 위치를 받으면 지도가 내 둘레로 가는데, 목록이 늘 지도 범위를 따라가서 요일 필터 결과가 2~3곳만 보였다)
+  const near = sort === "near" && !!me;
+  const inView = useMemo(() => (bounds && !searching && near ? shown.filter((s) => s.lng >= bounds.w && s.lng <= bounds.e && s.lat >= bounds.s && s.lat <= bounds.n) : shown), [shown, bounds, searching, near]);
   const list = useMemo(() => {
     const arr = [...inView];
-    if (effSort === "near" && me) arr.sort((a, b) => distanceM(me, a) - distanceM(me, b));
-    else arr.sort(byRecentlyConfirmed);
+    if (near && me) arr.sort((a, b) => distanceM(me, a) - distanceM(me, b));
+    else arr.sort(byRecentlyConfirmed); // 고르지 않았을 때의 차례도 마지막 확인일 순
     return arr;
-  }, [inView, effSort, me]);
+  }, [inView, near, me]);
 
   // 필터는 주소에 담는다 → 주소를 그대로 공유하면 같은 지도가 열린다
   const setFilters = useCallback((f: Filters) => {
@@ -144,9 +144,11 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
       { enableHighAccuracy: true, timeout: 8000 },
     );
   };
-  const locate = () => askLocation((here) => flyTo({ ...here, zoom: 15 }), "위치를 못 받았어요. 지도를 직접 움직여 주세요");
-  // 「가까운순」은 위치가 없어도 누를 수 있다 → 그 자리에서 위치를 묻고, 받으면 정렬만 바꾼다(지도는 옮기지 않는다: 목록이 지도 범위를 따라가서 가게가 사라질 수 있다)
+  const locate = () => askLocation((here) => flyTo({ ...here, zoom: ME_ZOOM }), "위치를 못 받았어요. 지도를 직접 움직여 주세요");
+  // 정렬 칩은 필터 칩처럼 켜고 끈다: 켜진 것을 다시 누르면 꺼진다.
+  // 「가까운순」은 위치가 없어도 누를 수 있다 → 그 자리에서 위치를 묻고, 받으면 정렬만 바꾼다(지도는 옮기지 않는다)
   const changeSort = (key: "near" | "recent") => {
+    if (key === sort) return setSort(null);
     if (key === "near" && !me) return askLocation(() => setSort("near"), "위치를 못 받아 가까운순으로 볼 수 없어요");
     setSort(key);
   };
@@ -162,7 +164,7 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
         (p) => {
           const here = { lat: p.coords.latitude, lng: p.coords.longitude };
           setMe(here);
-          if (!askedStore) setFocus((f) => ({ ...here, zoom: 15, n: (f?.n ?? 0) + 1 }));
+          if (!askedStore) setFocus((f) => ({ ...here, zoom: ME_ZOOM, n: (f?.n ?? 0) + 1 }));
         },
         () => undefined,
         { enableHighAccuracy: true, timeout: 8000 },
@@ -267,7 +269,7 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
       focus={focus}
       me={me}
       toast={toast}
-      sort={effSort}
+      sort={sort}
       filters={filters}
       filterCount={nFilters}
       filterChips={FILTER_CHIPS.map((c) => ({ id: c.id, label: c.label, on: c.on(filters) }))}
@@ -295,6 +297,9 @@ export default function MapShell({ stores, recentReports, nowIso, children }: { 
     </MapShellView>
   );
 }
+
+// 내 위치로 갈 때의 배율. 15(둘레 1km쯤)이면 가까운순 목록에 2~3곳만 남아서 13(폰 화면에 가로 3km · 세로 6km쯤)으로 넓혔다
+const ME_ZOOM = 13;
 
 function boundsOf(stores: Store[]): Bounds {
   const lats = stores.map((s) => s.lat);

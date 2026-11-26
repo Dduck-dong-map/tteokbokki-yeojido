@@ -58,7 +58,7 @@ test("F002 0곳 조합 → 「조건에 맞는 가게가 없어요」 + [필터 
   await expect(panel(page).getByRole("heading", { name: "조건에 맞는 가게가 없어요" })).toBeVisible();
   await panel(page).getByRole("button", { name: "필터 초기화" }).click();
   await expect(page).not.toHaveURL(/rice=|style=|spice=/);
-  await expect(panel(page).getByRole("heading", { name: /찾은 가게 \d+곳|이 지도 안에는 가게가 없어요/ })).toBeVisible();
+  await expect(panel(page).getByRole("heading", { name: /전체 가게 \d+곳/ })).toBeVisible();
   await expect(rows(page).first()).toBeVisible();
 });
 
@@ -80,12 +80,18 @@ test("F002 영업 요일 「일」을 고르면 주소에 days=0 이 붙고 가�
 
 // ───────── F003 주변 가게 목록 ─────────
 
-test("F003 위치 허용 → 가까운순, 「최근 확인순」을 누르면 마지막 확인일 순", async ({ page, context }) => {
+test("F003 정렬 칩은 처음에 둘 다 꺼져 있고, 누르면 켜지고 다시 누르면 꺼진다 (가까운순 = 지도 안 거리순 · 최근 확인순 = 마지막 확인일 순)", async ({ page, context }) => {
   const near = sample("mangwon-soup");
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: near.lat, longitude: near.lng });
   await page.goto("/");
+  // 위치를 받아도 저절로 가까운순이 켜지지 않는다 → 조건에 맞는 가게 전부
+  await expect(panel(page).getByRole("heading", { name: /전체 가게 [1-9]\d*곳/ })).toBeVisible({ timeout: 30_000 });
+  await expect(panel(page).getByRole("button", { name: "가까운순" })).toHaveAttribute("aria-pressed", "false");
+  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "false");
+  await panel(page).getByRole("button", { name: "가까운순" }).click();
   await expect(panel(page).getByRole("button", { name: "가까운순" })).toHaveAttribute("aria-pressed", "true");
+  await expect(panel(page).getByRole("heading", { name: /현재 지도에서 찾은 가게 [1-9]\d*곳/ })).toBeVisible({ timeout: 30_000 });
   await expect(rows(page).first()).toBeVisible();
   await expect.poll(async () => (await metaTexts(rows(page))).length).toBeGreaterThan(1);
   const dists = (await metaTexts(rows(page))).map(meters);
@@ -95,26 +101,31 @@ test("F003 위치 허용 → 가까운순, 「최근 확인순」을 누르면 �
   await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "true");
   const ages = (await metaTexts(rows(page))).map(ageDays);
   expect(isSorted(ages), `최근 확인순 ${ages.join(",")}`).toBe(true);
+
+  // 켜진 칩을 다시 누르면 꺼진다
+  await panel(page).getByRole("button", { name: "최근 확인순" }).click();
+  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "false");
+  await expect(panel(page).getByRole("button", { name: "가까운순" })).toHaveAttribute("aria-pressed", "false");
 });
 
-test("F003 위치 없음 → 최근 확인순, 「가까운순」을 누르면 위치를 묻고 못 받으면 그대로", async ({ page }) => {
+test("F003 위치 없음 → 정렬을 고르지 않은 채 마지막 확인일 순, 「가까운순」을 누르면 위치를 묻고 못 받으면 그대로", async ({ page }) => {
   await page.goto("/");
-  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "true");
+  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "false");
   await expect(rows(page).first()).toBeVisible();
   const ages = (await metaTexts(rows(page))).map(ageDays);
   expect(isSorted(ages), `최근 확인순 ${ages.join(",")}`).toBe(true);
 
-  // 위치 권한이 없는 채로 누른다 → 안내가 뜨고 정렬은 최근 확인순 그대로
+  // 위치 권한이 없는 채로 누른다 → 안내가 뜨고 가까운순은 켜지지 않는다
   await expect(panel(page).getByRole("button", { name: "가까운순" })).toBeEnabled();
   await panel(page).getByRole("button", { name: "가까운순" }).click();
   await expect(page.getByText("위치를 못 받아 가까운순으로 볼 수 없어요")).toBeVisible();
-  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "true");
+  await expect(panel(page).getByRole("button", { name: "가까운순" })).toHaveAttribute("aria-pressed", "false");
 });
 
 test("F003 위치 없이 들어와 「가까운순」을 눌러 위치를 허용하면 가까운순", async ({ page, context }) => {
   const near = sample("mangwon-soup");
   await page.goto("/");
-  await expect(panel(page).getByRole("button", { name: "최근 확인순" })).toHaveAttribute("aria-pressed", "true");
+  await expect(panel(page).getByRole("button", { name: "가까운순" })).toHaveAttribute("aria-pressed", "false");
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: near.lat, longitude: near.lng });
   await panel(page).getByRole("button", { name: "가까운순" }).click();
@@ -146,9 +157,9 @@ test("F003 지도 범위 안 0곳 → 「이 지도 안에는 가게가 없어�
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 33.4507, longitude: 126.5707 });
   await page.goto("/");
-  // 위치가 있으면 가까운순이고, 가까운순은 지도 범위와 상관없이 모두 보여 준다 → 지도 범위를 따르는 최근 확인순으로 바꿔서 본다
-  await expect(panel(page).getByRole("heading", { name: /가까운 순으로 찾은 가게 [1-9]\d*곳/ })).toBeVisible({ timeout: 30_000 });
-  await panel(page).getByRole("button", { name: "최근 확인순" }).click();
+  // 지도 범위를 따르는 것은 가까운순뿐이다. 고르기 전에는 지도가 어디에 있든 전부 나온다
+  await expect(panel(page).getByRole("heading", { name: /전체 가게 [1-9]\d*곳/ })).toBeVisible({ timeout: 30_000 });
+  await panel(page).getByRole("button", { name: "가까운순" }).click();
   await expect(panel(page).getByRole("heading", { name: "이 지도 안에는 가게가 없어요" })).toBeVisible({ timeout: 30_000 });
   const all = panel(page).getByRole("button", { name: /가게 \d+곳 모두 보기/ });
   const n = Number(/(\d+)곳/.exec((await all.textContent()) ?? "")![1]);
